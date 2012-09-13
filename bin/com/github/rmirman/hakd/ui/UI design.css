@@ -1,0 +1,24 @@
+.terminal-text {
+	-fx-text-fill: rgb(0, 150, 0);
+	-fx-font-size: 14px;
+	-fx-background-color:#000000;
+}
+#terminal-input {
+	-fx-font-weight: bold;
+	-fx-background-color:#3B3B3B;
+}
+.menu {
+	-fx-text-fill: #e37f1b;
+}
+#menu-bar {
+	-fx-background-color:#6A6A6A;
+}
+.enemy-network {
+	-fx-fill:#cc0000;
+}
+.nuetral-network {
+	-fx-fill:#bfbfbf;
+}
+.friendly-network {
+	-fx-fill:#33b6ff;
+}

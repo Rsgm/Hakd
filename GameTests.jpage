@@ -1,0 +1,108 @@
+String test =(int)(Math.random()*14+63) + "." + (int)(Math.random()*25+30) + "." + (int)(Math.random()*150+100) + "." + (int)(Math.random()*255+0);
+test
+
+
+
+boolean t = false;
+for(int i=0; i<100000000; i++){
+	if((0+1)+((int)(Math.random()*2)) == 3) {
+		t=true;
+		break;
+	}
+}
+t
+
+
+String ipTest = null;
+ipTest = Dns.assignIp(0);
+Dns.assignIp(1);
+Dns.assignIp(2);
+Dns.assignIp(4);
+ipTest
+
+
+
+String part1 = "a +";
+String part2 = " b";
+part1 + part2
+
+
+String[][] dnsList1 = new String[3][2];
+dnsList1[0][0] = Dns.assignIp(2);
+dnsList1[0][1] = "google.com";
+dnsList1[1][0] = Dns.assignIp(1);
+dnsList1[1][1] = "spotify.com";
+dnsList1[2][0] = Dns.assignIp(0);
+dnsList1[2][1] = "japan.jp";
+dnsList1
+
+
+
+int iTest = -1;
+for(int i=0; i<1; i++){
+iTest = i;
+}
+iTest
+
+
+int i = 4;
+Modem[] mArray = new Modem[i];
+mArray[0] = new Modem();
+mArray[1] = new Modem();
+mArray[0].setBrand("belkin");
+mArray[1].setModel("1234321");
+mArray
+
+
+
+Dns.assignIp(0)
+
+
+
+String ipv4 = null;
+ipv4 = Dns.assignIp(0);
+Dns.addUrl(ipv4, "facebook.com");
+Dns.getIp("facebook.com")
+
+
+
+Network n1 = new Network("new player");
+n1
+
+
+
+Dns dnsServer = new Dns(0);
+Network nTest = new Network("new player");
+dnsServer
+nTest
+
+
+
+Dns dnsServer = new Dns();
+for(int i=0; i<50; i++){
+	Network.network[i] = new Network(i, "test");
+	Network.network[i].populate();
+}
+Network.network
+
+
+
+Motherboard m = new Motherboard();
+m
+
+Network.setNetwork(Network("new player") network[3]);
+Network.network
+
+
+
+Random r = new Random();
+r.nextLong()
+
+
+
+Motherboard m1 = new Motherboard(0);
+m1.populate();
+boolean test = m1.installProgram("windows8", 25);
+m1.installProgram("ophcrack", 500);
+boolean find = m1.find(null);
+find
