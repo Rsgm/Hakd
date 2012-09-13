@@ -14,7 +14,6 @@ public class StartGame {
 		Network.network[0].populate();
 		Store store = new Store();
 		//UiController.addServer();
-
 	}
 
 	public void quitGame(String reason){

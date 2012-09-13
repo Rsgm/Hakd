@@ -109,7 +109,7 @@ public class UiController extends Application{
 
 	// terminal
 	final TextArea terminalDisplay = new TextArea("Starting...\ndone");
-	final TextField terminalInput = new TextField("C\\Windows\\System32>");
+	final TextField terminalInput = new TextField("C:\\Windows\\System32>");
 
 	splitAnchor2.getChildren().addAll(terminalDisplay, terminalInput);
 	terminalDisplay.setEditable(false);
@@ -150,9 +150,9 @@ public class UiController extends Application{
 	AnchorPane.setLeftAnchor(infoScreen, 0.0);
 	AnchorPane.setRightAnchor(infoScreen, 0.0);
 	AnchorPane.setTopAnchor(infoScreen, 0.0);
-	
+
 	world.setContent(networks[1]);
-	
+
 	primaryStage.show();
 
 	// event handles
@@ -161,11 +161,11 @@ public class UiController extends Application{
 		public void handle(KeyEvent textInput) {
 			try{
 				if(textInput.getText().charAt(0) == 13){
-					if(terminalDisplay.getText() == null){
-						terminalDisplay.setText(terminalInput.getText());
-					} else {
-						terminalDisplay.setText(terminalDisplay.getText() + "\n" + terminalInput.getText());
+					if(terminalInput.getText().equals("C:\\Windows\\System32>help")){
+						System.out.print("jfkwjflkg" + terminalInput.getText() + "'");
+						terminalDisplay.setText("Cannot Divide by 0");
 					}
+					terminalDisplay.setText(terminalDisplay.getText() + "\n" + terminalInput.getText());
 					terminalDisplay.end();
 					System.out.println(terminalInput.getText());
 					terminalInput.setText("C:\\Windows\\System32>");
@@ -181,7 +181,7 @@ public class UiController extends Application{
 	});
 
 	// game
-	System.out.println("test");
+	//	System.out.println("test");
 	}
 
 	public static void addServer(){
