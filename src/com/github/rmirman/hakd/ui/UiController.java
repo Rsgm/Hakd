@@ -161,12 +161,12 @@ public class UiController extends Application{
 		public void handle(KeyEvent textInput) {
 			try{
 				if(textInput.getText().charAt(0) == 13){
-					if(terminalInput.getText().equals("C:\\Windows\\System32>help")){
-						System.out.print("jfkwjflkg" + terminalInput.getText() + "'");
-						terminalDisplay.setText("Cannot Divide by 0");
-					}
 					terminalDisplay.setText(terminalDisplay.getText() + "\n" + terminalInput.getText());
 					terminalDisplay.end();
+					if(terminalInput.getText().equals("C:\\Windows\\System32>help")){
+						terminalDisplay.setText(terminalDisplay.getText() + "\nCannot Divide by 0");
+					}
+					// call a method with the text as an argument for commands
 					System.out.println(terminalInput.getText());
 					terminalInput.setText("C:\\Windows\\System32>");
 					terminalInput.end();
