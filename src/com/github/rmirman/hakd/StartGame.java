@@ -9,14 +9,14 @@ public class StartGame {
 	public static void main(String [ ] args){
 		UiController.run(args);
 		Dns dnsServer = new Dns();
-		
+
 		Network.network[0] = new Network(0, "new player");
 		Network.network[0].populate();
 		Store store = new Store();
 		//UiController.addServer();
 	}
 
-	public void quitGame(String reason){
+	public static void quitGame(String reason){
 		if(reason == null){
 			System.exit(0);
 		}
@@ -24,7 +24,7 @@ public class StartGame {
 			System.exit(1);
 		}
 	}
-} 
+}
 
 /*This is not a game for eight year old kids who call themselves hackers on COD.
  * This is a game for those who wish to see what it is like hacking minus the programming (but with the logic?).
