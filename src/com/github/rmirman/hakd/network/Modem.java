@@ -13,7 +13,7 @@ public class Modem {
 	private String model;
 	
 	//display
-	private int rLocation;
+	private int slot;
 	
 	// stats
 	private int speed; // in Mb per second, may want to change it to MBps
@@ -54,14 +54,6 @@ public class Modem {
 
 	public void setSpeed(int speed) {
 		this.speed = speed;
-	}
-
-	public int getrLocation() {
-		return rLocation;
-	}
-
-	public void setrLocation(int rLocation) {
-		this.rLocation = rLocation;
 	}
 
 	public int getLevel() {

@@ -4,15 +4,11 @@ import java.lang.Math;
 
 public class Dns {
 	
-	private String ip;
+	private String ip = assignIp(0);
 	
 	
 	private static String[][] dnsList = new String[100][2];
 	
-	public Dns() {
-		ip = assignIp(0); 
-		
-	}
 	
 	public static String assignIp(int ipRegion){ // assigns an ip to an object that requests one, also checks it and adds it to the dns list
 		String ip = null;
@@ -59,7 +55,7 @@ public class Dns {
 		return;
 	}
 	
-	public String getIp(String url){ // returns the ip given the url
+	public static String getIp(String url){ // returns the ip given the url
 		for(int i=0; i<dnsList.length; i++){
 			if (dnsList[i][1] == url){
 				return dnsList[i][0];
@@ -68,7 +64,7 @@ public class Dns {
 		return "127.0.0.1";
 	}
 	
-	public boolean addUrl(String ip, String url){ // registers a url to an ip
+	public static boolean addUrl(String ip, String url){ // registers a url to an ip
 		for(int i=0; i<dnsList.length; i++){ // ip can only be a player's ip if they buy it
 			if(dnsList[i][1] == url){
 				return false; // "Sorry, either that URL is already registered, or the dns list is full(which would be a bug)."

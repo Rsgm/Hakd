@@ -2,6 +2,8 @@ package com.github.rmirman.hakd.network;
 
 import java.lang.Math;
 
+import com.github.rmirman.hakd.ui.UiController;
+
 
 public class Network {
 
@@ -12,22 +14,22 @@ public class Network {
 	private int servers; // amount of server objects to make
 	private int modems; // amount of modem objects to make
 	private int networkId;
-	
+
 	// display
 	private int region; // where the network is in the world
 	private int xCoordinate; // where the network is in the region
 	private int yCoordinate;
-	
+
 	//objects
 	private String[][] networkList = new String[8][2]; // holds each server/modems ip
 	private Server[] server = new Server[5];
 	private Modem[] modem = new Modem[3];
 	public static Network[] network = new Network[50];
-	
+
 	public Network(int id, String type){ // make a network array in a region class
 		networkId = id;
 		level = (int)(Math.random()*8);
-		
+
 		switch(type){
 		case "new player":	// only happens at the start of the game
 			region = 0;
@@ -36,10 +38,10 @@ public class Network {
 			owner = "rsgm";
 			servers = 1;
 			modems = 1;
-			xCoordinate = (int)(Math.random()*100);
-			yCoordinate = (int)(Math.random()*100);
+			xCoordinate = (int)(Math.random()*20)*30+14;
+			yCoordinate = (int)(Math.random()*20)*30+14;
 			break;
-			
+
 		case "company":
 			region = 1;
 			ip = Dns.assignIp(region);
@@ -47,10 +49,10 @@ public class Network {
 			servers = (int)(Math.random()*3+3); // 3-5
 			modems = (int)(Math.random()*2+1); // 1-2
 			level = (int)(Math.random()*8);
-			xCoordinate = (int)(Math.random()*100); // 0-100
-			yCoordinate = (int)(Math.random()*100); // 0-100
+			xCoordinate = (int)(Math.random()*20)*30+14; // 0-100
+			yCoordinate = (int)(Math.random()*20)*30+14; // 0-100
 			break;
-			
+
 		case "test":
 			region = 2;
 			ip = Dns.assignIp(region);
@@ -58,12 +60,12 @@ public class Network {
 			servers = 5;
 			modems = 3;
 			level = 7;
-			xCoordinate = (int)(Math.random()*100);
-			yCoordinate = (int)(Math.random()*100);
+			xCoordinate = (int)(Math.random()*20)*30+14;
+			yCoordinate = (int)(Math.random()*20)*30+14;
 			break;
 		}
 	}
-	
+
 	public void populate(){
 		for(int i=0, m=0; m<modems;i++){ // create modems on the network and gives them an ip
 			if (networkList[i][1] == null){
@@ -84,6 +86,7 @@ public class Network {
 				s++;
 			}
 		}
+		UiController.addNetwork(xCoordinate, yCoordinate, region);
 	}
 
 

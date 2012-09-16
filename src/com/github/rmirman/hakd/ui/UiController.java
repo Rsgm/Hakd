@@ -1,7 +1,5 @@
 package com.github.rmirman.hakd.ui;
 
-import com.github.rmirman.hakd.gameplay.Commands;
-
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -18,10 +16,13 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
+
+import com.github.rmirman.hakd.gameplay.Commands;
 
 public class UiController extends Application{
 
@@ -40,6 +41,7 @@ public class UiController extends Application{
 	public static AnchorPane regionPane = new AnchorPane();
 	public static AnchorPane networkPane = new AnchorPane();
 	public static AnchorPane computerPane = new AnchorPane();
+	Circle region0 = new Circle();
 
 	// info screen
 	public static TabPane infoScreen = new TabPane();
@@ -61,15 +63,14 @@ public class UiController extends Application{
 	public static SplitPane splitPane2 = new SplitPane();
 	public static AnchorPane splitAnchor1 = new AnchorPane();
 	public static AnchorPane splitAnchor2 = new AnchorPane();
-	public static AnchorPane splitAnchor3 = new AnchorPane();
-	public static AnchorPane splitAnchor4 = new AnchorPane();
 
 	// terminal
 	public static TextArea terminalDisplay = new TextArea("Starting...\ndone");
 	public static TextField terminalInput = new TextField(ip);
 
-
-	static AnchorPane aptest = new AnchorPane();
+	// networks
+	public static Circle[] networks = new Circle[500];
+	public static Line[] connection = new Line[500];
 
 	public static void run(String[] args){
 		launch(args);
@@ -99,7 +100,7 @@ public class UiController extends Application{
 		splitPane1.getItems().addAll(splitAnchor1,splitAnchor2);
 		splitPane1.setOrientation(Orientation.VERTICAL);
 		splitAnchor1.getChildren().add(splitPane2);
-		splitPane2.getItems().addAll(splitAnchor3, splitAnchor4);
+		splitPane2.getItems().addAll(infoScreen, mainScreen);
 		splitPane2.setOrientation(Orientation.HORIZONTAL);
 		splitPane1.setDividerPositions(0.78);
 		splitPane2.setDividerPositions(.23);
@@ -112,14 +113,6 @@ public class UiController extends Application{
 		AnchorPane.setLeftAnchor(splitAnchor2, 0.0);
 		AnchorPane.setRightAnchor(splitAnchor2, 0.0);
 		AnchorPane.setTopAnchor(splitAnchor2, 0.0);
-		AnchorPane.setBottomAnchor(splitAnchor3, 0.0);
-		AnchorPane.setLeftAnchor(splitAnchor3, 0.0);
-		AnchorPane.setRightAnchor(splitAnchor3, 0.0);
-		AnchorPane.setTopAnchor(splitAnchor3, 0.0);
-		AnchorPane.setBottomAnchor(splitAnchor4, 0.0);
-		AnchorPane.setLeftAnchor(splitAnchor4, 0.0);
-		AnchorPane.setRightAnchor(splitAnchor4, 0.0);
-		AnchorPane.setTopAnchor(splitAnchor4, 0.0);
 		AnchorPane.setBottomAnchor(splitPane1, 0.0);
 		AnchorPane.setLeftAnchor(splitPane1, 0.0);
 		AnchorPane.setRightAnchor(splitPane1, 0.0);
@@ -146,7 +139,6 @@ public class UiController extends Application{
 		AnchorPane.setRightAnchor(terminalInput, 0.0);
 
 		// main screen
-		splitAnchor4.getChildren().add(mainScreen);
 		mainScreen.getTabs().addAll(world, region, network, computer);
 		mainScreen.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
 		world.setClosable(false);
@@ -154,29 +146,21 @@ public class UiController extends Application{
 		region.setContent(regionPane);
 		network.setContent(networkPane);
 		computer.setContent(computerPane);
-
-		AnchorPane.setBottomAnchor(mainScreen, 0.0);
-		AnchorPane.setLeftAnchor(mainScreen, 0.0);
-		AnchorPane.setRightAnchor(mainScreen, 0.0);
-		AnchorPane.setTopAnchor(mainScreen, 0.0);
+		worldPane.getChildren().add(region0);
+		region0.setRadius(50);
+		region0.setLayoutX(100);
+		region0.setLayoutY(100);
+		
+		
 
 		// info screen
-		splitAnchor3.getChildren().add(infoScreen);
 		infoScreen.getTabs().addAll(info, resources, runningPrograms);
 		infoScreen.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		info.setContent(infoPane);
 		resources.setContent(resourcesPane);
 		runningPrograms.setContent(runningProgramsPane);
 
-		AnchorPane.setBottomAnchor(infoScreen, 0.0);
-		AnchorPane.setLeftAnchor(infoScreen, 0.0);
-		AnchorPane.setRightAnchor(infoScreen, 0.0);
-		AnchorPane.setTopAnchor(infoScreen, 0.0);
-
 		primaryStage.show();
-
-
-		AnchorPane aptest = new AnchorPane();
 
 
 		// event handles
@@ -200,25 +184,32 @@ public class UiController extends Application{
 				}
 			}
 		});
-
+		region0.setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent click) {
+				if(region.getTabPane() != mainScreen){
+					mainScreen.getTabs().add(1, region);
+				}
+				mainScreen.getSelectionModel().select(region);
+			}
+		});
+		
+		
 		// game
 	}
 
-	public static void addNetwork(){
-		Circle[] networks = new Circle[2];
-		networks[1] = new Circle();
-		regionPane.getChildren().add(networks[1]);
-		networks[1].setLayoutX(600);
-		networks[1].setLayoutY(300);
-		networks[1].setRadius(50.0);
-		networks[1].setFill(Paint.valueOf("#bfbfbf"));
+	public static void addNetwork(int xCoordinate, int yCoordinate, int region){
 		networks[0] = new Circle();
-		networks[0].setLayoutX(300);
-		networks[0].setLayoutY(350);
-		networks[0].setRadius(50.0);
-		networks[0].setFill(Paint.valueOf("#000000"));
 		regionPane.getChildren().add(networks[0]);
-		System.out.println(region.getContent());
+		networks[0].setLayoutX(xCoordinate);
+		networks[0].setLayoutY(yCoordinate);
+		networks[0].setRadius(12);
+		networks[0].getStyleClass().add("nuetral-network");
+		networks[0].setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent click) {
+				System.out.println("network");
+				
+			}
+		});
 	}
 
 }
