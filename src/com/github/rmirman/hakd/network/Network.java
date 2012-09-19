@@ -8,16 +8,19 @@ import com.github.rmirman.hakd.ui.UiController;
 public class Network {
 
 	// stats
+	//private String isp; // for example infinity LTD.
 	private int level; // 0-7, 0 for player because you start with almost nothing // remember that there are 8 of most objects and object amounts start at 1 unlike level or arrays
 	private String ip; // all network variables will be in IP format
 	private String owner; // owner, company, player
 	private int servers; // amount of server objects to make
 	private int modems; // amount of modem objects to make
 	private int networkId;
+	private String connectedTo = null;
+	public String[][] ports = new String[65536][3]; // this has two extra ports not used in real life, 0 and 65535
 
 	// display
 	private int region; // where the network is in the world
-	private int xCoordinate; // where the network is in the region
+	private int xCoordinate; // where the network is in the region/map
 	private int yCoordinate;
 
 	//objects
@@ -25,6 +28,8 @@ public class Network {
 	private Server[] server = new Server[5];
 	private Modem[] modem = new Modem[3];
 	public static Network[] network = new Network[50];
+	
+	
 
 	public Network(int id, String type){ // make a network array in a region class
 		networkId = id;
@@ -38,30 +43,24 @@ public class Network {
 			owner = "rsgm";
 			servers = 1;
 			modems = 1;
-			xCoordinate = (int)(Math.random()*20)*30+14;
-			yCoordinate = (int)(Math.random()*20)*30+14;
 			break;
 
 		case "company":
-			region = 1;
+			region = 4;
 			ip = Dns.assignIp(region);
 			owner = "company"; // random company name // company.assignName();
 			servers = (int)(Math.random()*3+3); // 3-5
 			modems = (int)(Math.random()*2+1); // 1-2
 			level = (int)(Math.random()*8);
-			xCoordinate = (int)(Math.random()*20)*30+14; // 0-100
-			yCoordinate = (int)(Math.random()*20)*30+14; // 0-100
 			break;
 
 		case "test":
-			region = 2;
+			region = 0;
 			ip = Dns.assignIp(region);
 			owner = "test";
 			servers = 5;
 			modems = 3;
 			level = 7;
-			xCoordinate = (int)(Math.random()*20)*30+14;
-			yCoordinate = (int)(Math.random()*20)*30+14;
 			break;
 		}
 	}
@@ -72,7 +71,6 @@ public class Network {
 				modem[m] = new Modem(networkId);
 				networkList[i][0] = "192.168.1." + (i+1);
 				networkList[i][1] = "modem[" + m + "]";
-				modem[m].setIp(networkList[i][0]);
 				m++;
 			}
 		}
@@ -86,7 +84,7 @@ public class Network {
 				s++;
 			}
 		}
-		UiController.addNetwork(xCoordinate, yCoordinate, region);
+		UiController.addNetwork(region, networkId);
 	}
 
 
@@ -99,10 +97,17 @@ public class Network {
 		}
 	}
 	
-	public void connect(String connectTo, String connectFrom){ //get the ip from the url and connect to the network using it
-		//if(ip == network) ip connect to default server or lowest server ip // or random server
-		
+	public boolean connect(String address, String program, int port){
+		if(program.equals(ports[port][0])&&ports[port][2].equals("open")){
+			return (Network.network[networkId].server[Integer.parseInt(ports[port][1])].connect(address, program, port));
+		}else{
+			return false;
+		}
 	}
+	
+	//public void connect(String connectTo, String connectFrom){ //get the ip from the url and connect to the network using it
+	//	if(ip == network) ip connect to default server or lowest server ip // or random server
+	//}
 	
 	
 	
@@ -202,13 +207,13 @@ public class Network {
 	public void setLevel(int level) {
 		this.level = level;
 	}
-	
-	public static Network[] getNetwork() {
-		return network;
+
+	public String getConnectedTo() {
+		return connectedTo;
 	}
 
-	public static void setNetwork(Network[] network) {
-		Network.network = network;
+	public void setConnectedTo(String connectedTo) {
+		this.connectedTo = connectedTo;
 	}
 	
 }

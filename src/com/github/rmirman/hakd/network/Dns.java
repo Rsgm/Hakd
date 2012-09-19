@@ -7,7 +7,7 @@ public class Dns {
 	private String ip = assignIp(0);
 	
 	
-	private static String[][] dnsList = new String[100][2];
+	public static String[][] dnsList = new String[500][2];
 	
 	
 	public static String assignIp(int ipRegion){ // assigns an ip to an object that requests one, also checks it and adds it to the dns list
@@ -16,7 +16,7 @@ public class Dns {
 		boolean taken = true;
 		
 		do{
-			switch(region){	// creates a realistic ip based on registered ipv4 irl //0 == random, 1 == usa, 2 == europe
+			switch(region){	// creates a realistic ip based on registered ipv4 irl //0 == random, 1 == usa, 2 == europe, 3 == asia
 			case 0:	
 				ip = (int)(Math.random()*256) + "." + (int)(Math.random()*256) + "." + (int)(Math.random()*256) + "." + (int)(Math.random()*256);
 				break;

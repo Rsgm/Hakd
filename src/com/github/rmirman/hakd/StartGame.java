@@ -1,19 +1,12 @@
 package com.github.rmirman.hakd;
 
-import com.github.rmirman.hakd.network.*;
-import com.github.rmirman.hakd.store.*;
-import com.github.rmirman.hakd.ui.*;
+import com.github.rmirman.hakd.ui.UiController;
 
 public class StartGame {
 
 	public static void main(String [ ] args){
 		UiController.run(args);
-		Dns dnsServer = new Dns();
 
-		Network.network[0] = new Network(0, "new player");
-		Network.network[0].populate();
-		Store store = new Store();
-		//UiController.addServer();
 	}
 
 	public static void quitGame(String reason){

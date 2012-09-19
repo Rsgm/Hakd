@@ -106,3 +106,12 @@ boolean test = m1.installProgram("windows8", 25);
 m1.installProgram("ophcrack", 500);
 boolean find = m1.find(null);
 find
+
+
+String[][] s = new String[10][10];
+s[5][5] = "test1";
+s[5][5] == "test1"
+
+
+
+Desktop.getDesktop().browse(new File("/files/Hakd/src/com/github/rmirman/hakd/ui/icons/region5.png").toURI());

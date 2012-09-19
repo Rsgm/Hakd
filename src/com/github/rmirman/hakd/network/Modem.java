@@ -6,24 +6,17 @@ public class Modem {
 
 	// location
 	private int network;
-	private String ip;
 	private int level;
 	
 	private String brand;
 	private String model;
 	
 	//display
-	private int slot;
+	//private int modemSpot;
 	
 	// stats
 	private int speed; // in Mb per second, may want to change it to MBps
 
-//		networkIp = modemNetworkIp;
-//		internalIP = modemInternalIp;
-//		connection = modemConnection;
-//		brand = modemBrand;
-//		model = modemModel;
-//		speed = modemSpeed;
 
 	public Modem(int networkId){
 		network = networkId;
@@ -70,13 +63,5 @@ public class Modem {
 	
 	public int getNetwork() {
 		return network;
-	}
-
-	public String getIp() {
-		return ip;
-	}
-
-	public void setIp(String ip) {
-		this.ip = ip;
 	}
 }

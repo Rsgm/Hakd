@@ -1,6 +1,8 @@
 package com.github.rmirman.hakd.network;
 
-import java.lang.Math;
+import java.awt.*;
+import java.io.File;
+import java.io.IOException;
 
 public class Server {
 
@@ -8,7 +10,10 @@ public class Server {
 	private int network; // which network a server belongs to
 	private String ip; // network ip location
 	private int motherboards; // how many motherboards this server can have, adds to the customization
-	private int level; // level of the network
+	private int level;
+	int webserver = 0;
+	public String[][] ports = new String[65536][2];
+	private String [][] logs = new String[100][2]; // (connecting from, action)
 	
 	private String brand; // for example bell
 	private String model;
@@ -48,6 +53,44 @@ public class Server {
 		}
 		return;
 	}
+
+	public boolean connect(String address, String program, int port){
+		
+		for(int i=0; i<logs.length; i++)
+			if(logs[i][0] != null){
+				logs[i][0] = address;
+				logs[i][1] = "connected";
+				break;
+			}
+		
+		if(program.equals(ports[port][0])&&ports[port][1].equals("open")){
+			switch(port){
+			case 31337:
+				// grant complete access
+				// open ssh
+				break;
+			default: // 80, 443
+				if(webserver > 0){ // find a way to open from the game directory so it doesnt have to be g:/files/...
+					try {
+						Desktop.getDesktop().browse(new File("/com/github/rmirman/hakd/web/files/" + webserver + ".html").toURI());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}else{
+					try {
+						Desktop.getDesktop().browse(new File("/com/github/rmirman/hakd/web/files/error.html").toURI());
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+
+		return false;
+
+	}
+
+
 
 	public int getNetwork() {
 		return network;
@@ -112,5 +155,4 @@ public class Server {
 	public void setLevel(int level) {
 		this.level = level;
 	}
-	
 }

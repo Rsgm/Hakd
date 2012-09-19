@@ -1,4 +1,4 @@
-package com.github.rmirman.hakd.store;
+package com.github.rmirman.hakd.web;
 
 public class PlayerController {
 
