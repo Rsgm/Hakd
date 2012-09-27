@@ -1,4 +1,4 @@
-package com.github.rmirman.hakd.network;
+package com.github.rmirman.hakd.network.serverparts;
 
 import java.lang.Math;
 

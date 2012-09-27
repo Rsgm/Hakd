@@ -1,7 +1,5 @@
 package com.github.rmirman.hakd;
 
-import com.github.rmirman.hakd.network.Dns;
-import com.github.rmirman.hakd.network.Network;
 
 
 public class RunGame implements Runnable {
@@ -15,7 +13,8 @@ public class RunGame implements Runnable {
 		boolean running = true;
 		do{
 			try {
-
+				
+				
 				Thread.sleep(17);
 			} catch (InterruptedException e) {
 				e.printStackTrace();

@@ -115,3 +115,34 @@ s[5][5] == "test1"
 
 
 Desktop.getDesktop().browse(new File("/files/Hakd/src/com/github/rmirman/hakd/ui/icons/region5.png").toURI());
+
+
+
+Network.setNetwork(0, "new player");
+Network.getNetwork(0).populate();
+for(int i=0; i<Network.getNetwork(0).getPorts().length; i++){
+	Network.getNetwork(0).setPorts(i, test);
+}
+Network.getNetwork(0)
+
+
+Vector<String> logs = new Vector<String>(0, 1); // or 1, 1
+logs.add("hello");
+logs
+
+
+
+Server[] s = new Server[10];
+s
+
+for(int i=0; i<1500; i++){
+	//Vector<String> test = new Vector<String>(500000, 1);
+	Network.getNetwork().add(new Network("test"));
+	Network.getNetwork().get(Network.getNetwork().size()-1).populate();
+	Network.getNetwork().get(Network.getNetwork().size()-1).getServer().get(0).setPorts(80, "program1");
+	Network.getNetwork().get(Network.getNetwork().size()-1).getServer().get(0).setPorts(443, "program2");
+	Network.getNetwork().get(Network.getNetwork().size()-1).getServer().get(0).removePort(443);
+	Network.getNetwork().get(Network.getNetwork().size()-1).getServer().get(0).setPorts(1, "program3");
+}
+Network.getNetwork()
+//Dns.findNetwork(Network.getNetwork().get(1).getIp())

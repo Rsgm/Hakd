@@ -1,6 +1,7 @@
-package com.github.rmirman.hakd.network;
+package com.github.rmirman.hakd.network.serverparts;
 
 import java.lang.Math;
+import java.util.Vector;
 
 public class Motherboard{
 
@@ -18,13 +19,14 @@ public class Motherboard{
 	private int gpuSlots;
 
 	// objects
-	private Cpu[] cpu = new Cpu[8];
-	private Gpu[] gpu = new Gpu[8];
-	private Memory[] memory = new Memory[8];
-	private Storage[] storage = new Storage[8];
+	private Vector<Cpu> cpu = new Vector<Cpu>(1,1);
+	private Vector<Gpu> gpu = new Vector<Gpu>(1,1);
+	private Vector<Memory> memory = new Vector<Memory>(1,1);
+	private Vector<Storage> storage = new Vector<Storage>(1,1);
 
-	public Motherboard(int networkId){ // network // on create cpus = network[whatever].getcpus and other parts
+	public Motherboard(int networkId, int id){ // network // on create cpus = network[whatever].getcpus and other parts
 		network = networkId;
+		server = id;
 		level = 7;//Network.network[network].getLevel();
 
 		switch(level){
@@ -49,43 +51,28 @@ public class Motherboard{
 		}
 	}
 
-	public void populate(){
+	public void populate(int id){
 		for(int i=0; i<cpuSockets;i++){
-			if(cpu[i] == null){
-				cpu[i] = new Cpu();
-			}
+			cpu.add(new Cpu());
 		}
 		for(int i=0; i<gpuSlots;i++){
-			if(gpu[i] == null){
-				gpu[i] = new Gpu();
-			}
+			gpu.add(new Gpu());
 		}
 		for(int i=0; i<memorySlots;i++){
-			if(memory[i] == null){
-				memory[i] = new Memory();
-			}
+			memory.add(new Memory());
 		}
 		for(int i=0; i<storageSlots;i++){
-			if(storage[i] == null){
-				storage[i] = new Storage();
-			}
+			storage.add(new Storage());
 		}
 		return;
 	}
 
 	public boolean installProgram(String name, int size){
-		for(int i=0; i<(storage.length-1);){
-			if(storage[i] != null && storage[i].addProgram(name, size) == true){
+		for(int i=0; i<(storage.size()-1);){
+			if(storage.get(i) != null && storage.get(i).addProgram(name, size) == true){
 				return true;
 			}
 			else break;
-		}
-		return false;
-	}
-
-	public boolean find(String name){
-		if(name != null){
-			return storage[0].findProgram(name);
 		}
 		return false;
 	}
@@ -146,38 +133,6 @@ public class Motherboard{
 		this.gpuSlots = gpuSlots;
 	}
 
-	public Cpu[] getCpu() {
-		return cpu;
-	}
-
-	public void setCpu(Cpu[] cpu) {
-		this.cpu = cpu;
-	}
-
-	public Gpu[] getGpu() {
-		return gpu;
-	}
-
-	public void setGpu(Gpu[] gpu) {
-		this.gpu = gpu;
-	}
-
-	public Memory[] getMemory() {
-		return memory;
-	}
-
-	public void setMemory(Memory[] memory) {
-		this.memory = memory;
-	}
-
-	public Storage[] getStorage() {
-		return storage;
-	}
-
-	public void setStorage(Storage[] storage) {
-		this.storage = storage;
-	}
-
 	public int getNetwork() {
 		return network;
 	}
@@ -192,5 +147,21 @@ public class Motherboard{
 
 	public void setLevel(int level) {
 		this.level = level;
+	}
+
+	public Vector<Cpu> getCpu() {
+		return cpu;
+	}
+
+	public Vector<Gpu> getGpu() {
+		return gpu;
+	}
+
+	public Vector<Memory> getMemory() {
+		return memory;
+	}
+
+	public Vector<Storage> getStorage() {
+		return storage;
 	}
 }

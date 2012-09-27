@@ -1,5 +1,7 @@
 package com.github.rmirman.hakd.ui;
 
+import java.util.Vector;
+
 import javafx.application.Application;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -32,8 +34,7 @@ import com.github.rmirman.hakd.network.Network;
 
 public class UiController extends Application{
 
-	public static String ip;
-	public static String mobo;
+	private static String ip;
 
 	//root
 	public static AnchorPane root = new AnchorPane();
@@ -85,7 +86,7 @@ public class UiController extends Application{
 	public static TextField terminalInput = new TextField(ip);
 
 	// networks
-	public static Circle[] nCircle = new Circle[500];
+	public static Vector<Circle> nCircle = new Vector<Circle>(1, 1);
 	public static Line[] connection = new Line[500];
 
 
@@ -201,10 +202,10 @@ public class UiController extends Application{
 				try{
 					if(textInput.getText().charAt(0) == 13){
 						terminalDisplay.setText(terminalDisplay.getText() + "\n" + terminalInput.getText());
-						Commands.command(terminalInput.getText());
-						terminalDisplay.end();
 						System.out.println(terminalInput.getText());
+						Commands.command(terminalInput.getText());
 						terminalInput.setText(ip);
+						terminalDisplay.end();
 						terminalInput.end();
 					}else{
 						//System.out.println(terminalInput.getText() + textInput.getText());
@@ -270,90 +271,92 @@ public class UiController extends Application{
 		// game
 		Dns dnsServer = new Dns();
 		dnsServer.hashCode();
-		Network.network[0] = new Network(0, "new player");
-		Network.network[0].populate();
-	//	Store store = new Store();
-	//	store.hashCode();
+		Network.getNetwork().add(new Network("new player"));
+		Network.getNetwork().get(Network.getNetwork().size()-1).populate();
 
-		ip =  Network.network[0].getIp() + "¬0»";
-		
+		terminalInput.setText(ip);
+
 		new RunGame();
 	}
 
-	public static void addNetwork(int region, int id){
+	public static void addNetwork(int network){ // to a region
 		boolean taken = false;
-		nCircle[id] = new Circle();
-		switch(region){
+		nCircle.add(new Circle());
+		switch(Network.getNetwork().get(network).getRegion()){
 		case 1:
-			region1Pane.getChildren().add(nCircle[id]);
+			region1Pane.getChildren().add(nCircle.get(nCircle.size()-1));
 			break;
 		case 2:
-			region2Pane.getChildren().add(nCircle[id]);
+			region2Pane.getChildren().add(nCircle.get(nCircle.size()-1));
 			break;
 		case 3:
-			region3Pane.getChildren().add(nCircle[id]);
+			region3Pane.getChildren().add(nCircle.get(nCircle.size()-1));
 			break;
 		case 4:
-			region4Pane.getChildren().add(nCircle[id]);
+			region4Pane.getChildren().add(nCircle.get(nCircle.size()-1));
 			break;
 		case 5:
-			region5Pane.getChildren().add(nCircle[id]);
+			region5Pane.getChildren().add(nCircle.get(nCircle.size()-1));
 			break;
 		default:
-			region1Pane.getChildren().add(nCircle[id]);
+			region1Pane.getChildren().add(nCircle.get(nCircle.size()-1));
 			break;
 		}
 		do{
 			System.out.println("1");
-			nCircle[id].setLayoutX((int)(Math.random()*20)*30+14);
-			nCircle[id].setLayoutY((int)(Math.random()*20)*30+14);
+			nCircle.get(nCircle.size()-1).setLayoutX((int)(Math.random()*20)*30+14);
+			nCircle.get(nCircle.size()-1).setLayoutY((int)(Math.random()*19)*30+14);
 			System.out.println("2");
-			for(int i=0; i<nCircle.length; i++){
-				if(i == id){
-					System.out.println("3.1");
+			for(int i=0; i<nCircle.size()-2; i++){
+				if(nCircle.get(i).getLayoutX() != nCircle.get(nCircle.size()-1).getLayoutX()||nCircle.get(i).getLayoutY() != nCircle.get(nCircle.size()-1).getLayoutY()){
+					System.out.println("3.5");
 					taken = false;
-				}else if(nCircle[i] != null){
-					if(nCircle[id].getLayoutX() != nCircle[i].getLayoutX()||nCircle[id].getLayoutY() != nCircle[i].getLayoutY()){
-						System.out.println("3.5");
-						taken = false;
-					}else if(nCircle[id].getLayoutX() == nCircle[i].getLayoutX()&&nCircle[id].getLayoutY() == nCircle[i].getLayoutY()){
-						System.out.println("4");
-						taken = true;
-						break;
-					}
+				}else{
+					System.out.println("4");
+					taken = true;
+					break;
 				}
 			}
 			System.out.println("5");
 		}while(taken == true);
 		System.out.println("6");
 
-		nCircle[id].setRadius(12);
-		switch(0){
+		nCircle.get(nCircle.size()-1).setRadius(12);
+		
+		switch(Network.getNetwork().get(network).getStance()){
 		case 0:
-			nCircle[id].getStyleClass().add("friendly-network");
+			nCircle.get(nCircle.size()-1).getStyleClass().add("friendly-network");
 			break;
 		case 1:
-			nCircle[id].getStyleClass().add("nuetral-network");
+			nCircle.get(nCircle.size()-1).getStyleClass().add("nuetral-network");
 			break;
 		case 2:
-			nCircle[id].getStyleClass().add("enemy-network");
+			nCircle.get(nCircle.size()-1).getStyleClass().add("enemy-network");
 			break;
 		default:
-			nCircle[id].getStyleClass().add("nuetral-network");
+			nCircle.get(nCircle.size()-1).getStyleClass().add("nuetral-network");
 			break;
 		}
-		Tooltip t = new Tooltip(Network.network[id].getIp());
-		Tooltip.install(nCircle[id], t);
+		//Tooltip t = new Tooltip(Network.getNetwork().get(id).getIp());
+		Tooltip.install(nCircle.get(nCircle.size()-1), new Tooltip(Network.getNetwork().get(nCircle.size()-1).getIp()));
 
-		Network.network[id].setxCoordinate((int) nCircle[id].getLayoutX());
-		Network.network[id].setyCoordinate((int) nCircle[id].getLayoutY());
+		Network.getNetwork().get(nCircle.size()-1).setxCoordinate((int) nCircle.get(nCircle.size()-1).getLayoutX());
+		Network.getNetwork().get(nCircle.size()-1).setyCoordinate((int) nCircle.get(nCircle.size()-1).getLayoutY());
 
-		nCircle[id].setOnMouseClicked(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent click) {
-				//System.out.println("network" + Network.network[id].getIp());
-
-			}
-		});
+//		nCircle.get(nCircle.size()-1).setOnMouseClicked(new EventHandler<MouseEvent>() {
+//			public void handle(MouseEvent click) {
+//				//System.out.println("network" + Network.getNetwork(id).getIp());
+//
+//			}
+//		});
 	}
 
+	
+	public static String getIp() {
+		return ip;
+	}
+
+	public static void setIp(String ip) {
+		UiController.ip = ip;
+	}
 }

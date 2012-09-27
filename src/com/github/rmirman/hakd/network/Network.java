@@ -1,11 +1,12 @@
 package com.github.rmirman.hakd.network;
 
-import java.lang.Math;
+import java.util.Vector;
 
-import com.github.rmirman.hakd.ui.UiController;
+import com.github.rmirman.hakd.gameplay.PlayerController;
 
 
-public class Network {
+
+public class Network { // todo make all objects vectors
 
 	// stats
 	//private String isp; // for example infinity LTD.
@@ -15,8 +16,10 @@ public class Network {
 	private int servers; // amount of server objects to make
 	private int modems; // amount of modem objects to make
 	private int networkId;
+	private int circleId;
+	private int stance; // friendly, enemy, nutral
 	private String connectedTo = null;
-	public String[][] ports = new String[65536][3]; // this has two extra ports not used in real life, 0 and 65535
+	private Vector<String> ports = new Vector<String>(1, 1); // port, program, server
 
 	// display
 	private int region; // where the network is in the world
@@ -24,16 +27,16 @@ public class Network {
 	private int yCoordinate;
 
 	//objects
-	private String[][] networkList = new String[8][2]; // holds each server/modems ip
-	private Server[] server = new Server[5];
-	private Modem[] modem = new Modem[3];
-	public static Network[] network = new Network[50];
-	
-	
+	private Vector<Server> server = new Vector<Server>(1, 1);
+	private Vector<Modem> modem = new Vector<Modem>(1, 1);
+	private static Vector<Network> network = new Vector<Network>(1, 1);
 
-	public Network(int id, String type){ // make a network array in a region class
-		networkId = id;
+
+
+	public Network(String type){ // make a network array in a region class
+		networkId = network.size();
 		level = (int)(Math.random()*8);
+		stance = 1;
 
 		switch(type){
 		case "new player":	// only happens at the start of the game
@@ -43,8 +46,11 @@ public class Network {
 			owner = "rsgm";
 			servers = 1;
 			modems = 1;
+			stance = 0;
+			PlayerController.setHomeNetwork(ip);
+			PlayerController.setCurrentNetwork(ip);
+			PlayerController.setCurrentServer(0);
 			break;
-
 		case "company":
 			region = 4;
 			ip = Dns.assignIp(region);
@@ -65,53 +71,58 @@ public class Network {
 		}
 	}
 
-	public void populate(){
-		for(int i=0, m=0; m<modems;i++){ // create modems on the network and gives them an ip
-			if (networkList[i][1] == null){
-				modem[m] = new Modem(networkId);
-				networkList[i][0] = "192.168.1." + (i+1);
-				networkList[i][1] = "modem[" + m + "]";
-				m++;
-			}
+	public void populate(){ // populates the network after the network is created so the network devices can get variables from the network
+
+		for(int i=0; i<modems;i++){ // create modems on the network
+			modem.add(new Modem(networkId));
 		}
-		for(int i=0, s=0; s<servers;i++){ // create servers on the network and gives them an ip
-			if (networkList[i][1] == null){
-				server[s] = new Server(networkId, s);
-				networkList[i][0] = "192.168.1." + (i+1);
-				networkList[i][1] = "server[" + s + "]";
-				server[s].setIp(networkList[i][0]);
-				server[s].populate();
-				s++;
-			}
+		for(int i=0; i<servers;i++){ // create servers on the network
+			server.add(new Server(networkId));
+			server.get(server.size()-1).populate(server.size()-1);
 		}
-		UiController.addNetwork(region, networkId);
+		//UiController.addNetwork(networkId);
 	}
 
-
-	public void removeDevice(String oldIp){ // removes a device, like from 3 servers to 2
-		for(int i=0; i<networkList.length; i++ ){
-			if (networkList[i][0] == oldIp){
-				networkList[i][1] = null;
-				break;
-			}
-		}
-	}
-	
 	public boolean connect(String address, String program, int port){
-		if(program.equals(ports[port][0])&&ports[port][2].equals("open")){
-			return (Network.network[networkId].server[Integer.parseInt(ports[port][1])].connect(address, program, port));
+		if(program.equals(ports.get(port*3))&&ports.get(port*3+2).equals("open")){
+			return (server.get(Integer.parseInt(ports.get(port+1))).connect(address, program, port));
 		}else{
 			return false;
 		}
 	}
+
+	public void testArray(){
+		for(int i=0; i<ports.size()-1; i++){
+			ports.add(i*3, i + "");
+		}
+	}
+
+
+	public boolean setPorts(int port, String program, int server){
+		for(int i=0; i<ports.size()-1; i+=3){
+			if (ports.get(i).equals(port + "")){
+				return false;
+			}
+		}
+		ports.add(port + "");
+		ports.add(program);
+		ports.add(server + "");
+		return true;
+	}
 	
-	//public void connect(String connectTo, String connectFrom){ //get the ip from the url and connect to the network using it
-	//	if(ip == network) ip connect to default server or lowest server ip // or random server
-	//}
-	
-	
-	
-	
+	public boolean removePort(int port){
+		for(int i=0; i<ports.size()-1; i+=3){
+			if (ports.get(i).equals(port + "")){
+				ports.remove(i+2);
+				ports.remove(i+1);
+				ports.remove(i);
+				return true;
+			}
+		}
+		return false;
+	}
+
+
 	public int getNetworkId() {
 		return networkId;
 	}
@@ -176,30 +187,6 @@ public class Network {
 		this.yCoordinate = yCoordinate;
 	}
 
-	public String[][] getNetworkList() {
-		return networkList;
-	}
-
-	public void setNetworkList(String[][] networkList) {
-		this.networkList = networkList;
-	}
-
-	public Server[] getServer() {
-		return server;
-	}
-
-	public void setServer(Server[] server) {
-		this.server = server;
-	}
-
-	public Modem[] getModem() {
-		return modem;
-	}
-
-	public void setModem(Modem[] modem) {
-		this.modem = modem;
-	}
-	
 	public int getLevel() {
 		return level;
 	}
@@ -215,5 +202,48 @@ public class Network {
 	public void setConnectedTo(String connectedTo) {
 		this.connectedTo = connectedTo;
 	}
-	
+
+	public Vector<Server> getServer() {
+		return server;
+	}
+
+	public void setServer(Vector<Server> server) {
+		this.server = server;
+	}
+
+	public Vector<Modem> getModem() {
+		return modem;
+	}
+
+	public void setModem(Vector<Modem> modem) {
+		this.modem = modem;
+	}
+
+	public static Vector<Network> getNetwork() {
+		return network;
+	}
+
+	public static void setNetwork(Vector<Network> network) {
+		Network.network = network;
+	}
+
+	public int getCircleId() {
+		return circleId;
+	}
+
+	public void setCircleId(int circleId) {
+		this.circleId = circleId;
+	}
+
+	public int getStance() {
+		return stance;
+	}
+
+	public void setStance(int stance) {
+		this.stance = stance;
+	}
+
+	public Vector<String> getPorts() {
+		return ports;
+	}
 }

@@ -19,10 +19,4 @@ public class StartGame {
 	}
 }
 
-/*This is not a game for eight year old kids who call themselves hackers on COD.
- * This is a game for those who wish to see what it is like hacking minus the programming (but with the logic?).
- * If you want to take a step further, then I encourage you to write your own hacks to use in this game,
- * but I will leave that up to you to figure out.*/
-
-
 /*have some servers in this game with port 80 open direct you to a website like xkcd using a built in web browser, is this plagerism/illegal?*/

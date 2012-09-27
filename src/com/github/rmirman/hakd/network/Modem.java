@@ -20,7 +20,7 @@ public class Modem {
 
 	public Modem(int networkId){
 		network = networkId;
-		level = Network.network[network].getLevel();
+		//level = Network.getNetwork().get(network).getLevel();
 		
 	}
 	
