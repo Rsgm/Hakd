@@ -67,14 +67,18 @@ public class Motherboard{
 		return;
 	}
 
-	public boolean installProgram(String name, int size){
-		for(int i=0; i<(storage.size()-1);){
-			if(storage.get(i) != null && storage.get(i).addProgram(name, size) == true){
-				return true;
+	public boolean addProgram(String name, int size){ // TODO test this
+		for(int i=0; i<storage.size(); i++){
+			if(storage.get(i).getData().indexOf(name) == -1){
+				break;
+			}else if(storage.get(i).getData().size() <= storage.get(i).getCapacity()){
+				for(int j=0; j<size; j++){
+					storage.get(i).getData().add(name);
+				}
 			}
-			else break;
+			
 		}
-		return false;
+		return false; // could not install
 	}
 
 	public int getServer() {

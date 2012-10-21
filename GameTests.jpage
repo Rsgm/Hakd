@@ -1,148 +1,49 @@
-String test =(int)(Math.random()*14+63) + "." + (int)(Math.random()*25+30) + "." + (int)(Math.random()*150+100) + "." + (int)(Math.random()*255+0);
-test
+String s1 = new String("147.149.247.110¬0»help");
+Scanner scan = new Scanner(s1);
+scan.findInLine("»(\\S+)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*)");
+scan.match().group(1)
 
 
 
-boolean t = false;
-for(int i=0; i<100000000; i++){
-	if((0+1)+((int)(Math.random()*2)) == 3) {
-		t=true;
-		break;
-	}
-}
-t
 
-
-String ipTest = null;
-ipTest = Dns.assignIp(0);
-Dns.assignIp(1);
-Dns.assignIp(2);
-Dns.assignIp(4);
-ipTest
+String target = "35.8.8.8";
+target.matches("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")
 
 
 
-String part1 = "a +";
-String part2 = " b";
-part1 + part2
-
-
-String[][] dnsList1 = new String[3][2];
-dnsList1[0][0] = Dns.assignIp(2);
-dnsList1[0][1] = "google.com";
-dnsList1[1][0] = Dns.assignIp(1);
-dnsList1[1][1] = "spotify.com";
-dnsList1[2][0] = Dns.assignIp(0);
-dnsList1[2][1] = "japan.jp";
-dnsList1
+String text = "1.1.1.1";
+text.matches("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")/*&&scan.match().group(4).matches("\\S+")&&scan.match().group(5).matches("^\\d+$")*/
 
 
 
-int iTest = -1;
-for(int i=0; i<1; i++){
-iTest = i;
-}
-iTest
+Network.getNetwork().add(new Network("new player"));
+Network.getNetwork().get(Network.getNetwork().size()-1).populate();
+PlayerController.setHomeNetwork(Network.getNetwork().get(Network.getNetwork().size()-1).getIp());
+PlayerController.setPlayerName("ryan mirman");
 
-
-int i = 4;
-Modem[] mArray = new Modem[i];
-mArray[0] = new Modem();
-mArray[1] = new Modem();
-mArray[0].setBrand("belkin");
-mArray[1].setModel("1234321");
-mArray
-
-
-
-Dns.assignIp(0)
-
-
-
-String ipv4 = null;
-ipv4 = Dns.assignIp(0);
-Dns.addUrl(ipv4, "facebook.com");
-Dns.getIp("facebook.com")
-
-
-
-Network n1 = new Network("new player");
-n1
-
-
-
-Dns dnsServer = new Dns(0);
-Network nTest = new Network("new player");
-dnsServer
-nTest
-
-
-
-Dns dnsServer = new Dns();
-for(int i=0; i<50; i++){
-	Network.network[i] = new Network(i, "test");
-	Network.network[i].populate();
-}
-Network.network
-
-
-
-Motherboard m = new Motherboard();
-m
-
-Network.setNetwork(Network("new player") network[3]);
-Network.network
-
-
-
-Random r = new Random();
-r.nextLong()
-
-
-
-Motherboard m1 = new Motherboard(0);
-m1.populate();
-boolean test = m1.installProgram("windows8", 25);
-m1.installProgram("ophcrack", 500);
-boolean find = m1.find(null);
-find
-
-
-String[][] s = new String[10][10];
-s[5][5] = "test1";
-s[5][5] == "test1"
-
-
-
-Desktop.getDesktop().browse(new File("/files/Hakd/src/com/github/rmirman/hakd/ui/icons/region5.png").toURI());
-
-
-
-Network.setNetwork(0, "new player");
-Network.getNetwork(0).populate();
-for(int i=0; i<Network.getNetwork(0).getPorts().length; i++){
-	Network.getNetwork(0).setPorts(i, test);
-}
-Network.getNetwork(0)
-
-
-Vector<String> logs = new Vector<String>(0, 1); // or 1, 1
-logs.add("hello");
-logs
-
-
-
-Server[] s = new Server[10];
-s
-
-for(int i=0; i<1500; i++){
-	//Vector<String> test = new Vector<String>(500000, 1);
-	Network.getNetwork().add(new Network("test"));
-	Network.getNetwork().get(Network.getNetwork().size()-1).populate();
-	Network.getNetwork().get(Network.getNetwork().size()-1).getServer().get(0).setPorts(80, "program1");
-	Network.getNetwork().get(Network.getNetwork().size()-1).getServer().get(0).setPorts(443, "program2");
-	Network.getNetwork().get(Network.getNetwork().size()-1).getServer().get(0).removePort(443);
-	Network.getNetwork().get(Network.getNetwork().size()-1).getServer().get(0).setPorts(1, "program3");
-}
 Network.getNetwork()
-//Dns.findNetwork(Network.getNetwork().get(1).getIp())
+
+String target = Network.getNetwork().get(0).getIp();
+
+Network.getNetwork().get()
+
+Network.getNetwork().get(Dns.findNetwork(target)).connect(PlayerController.getCurrentNetwork(), scan.match().group(2), Integer.parseInt(scan.match().group(4))) == true)
+
+
+// /hakd.jar?
+Desktop.getDesktop().browse(new File("/files/Hakd/src/com/github/rmirman/hakd/web/websites/404.html").toURI());
+
+//=====connection testing=====
+Network.getNetwork().add(new Network("new player"));
+Network.getNetwork().get(0).populate();
+Network.getNetwork().add(new Network("test"));
+Network.getNetwork().get(1).populate();
+Network.getNetwork().get(0).getServer().get(0).addPorts(22, "ssh");
+Network.getNetwork().get(0).addPorts(22, "ssh", 0);
+//Network.getNetwork()
+Network.connect(Network.getNetwork().get(1).getIp(), Network.getNetwork().get(0).getIp(), "ssh", 22)
+
+
+
+Math.sin((Math.PI*0)/180)*20 // these are pixles does the decimal matter that much?
+Math.cos(Math.toRadians(270))*20 // TODO test this ^^^

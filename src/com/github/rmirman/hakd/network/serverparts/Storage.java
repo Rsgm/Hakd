@@ -1,6 +1,7 @@
 package com.github.rmirman.hakd.network.serverparts;
 
 import java.lang.Math;
+import java.util.Vector;
 
 public class Storage {
 	
@@ -18,7 +19,7 @@ public class Storage {
 	private String model;
 	
 	// data
-	private String[] data;
+	private Vector<String> data = new Vector<String>();
 	
 	
 	public Storage(){
@@ -36,33 +37,14 @@ public class Storage {
 			speed *= 2;
 			capacity /= 2;
 		}
-		data = new String[capacity];
 	}
 	
 	public boolean addProgram(String name, int size){
-		for(int i=0; i<(data.length-size); i++){	// problem when a program is for e.g. 4 GB and i = 3
-			for(int j=0; j<size;){
-				if(j==(size-1) && data[i+j]==null){
-					for(int k=0; k<size; k++){
-						data[i+k] = name;
-					}
-					return true;
-				}else if(data[i+j] == null && j!=size /* -1? */ ){
-					j++;
-				}
-				else if(data[i+j] != null){
-					break;
-				}
+		if(data.size()+size <= capacity){
+			for(int i=0; i<size; i++){
+				data.add(name);
 			}
-		}
-		return false;
-	}
-	
-	public boolean findProgram(String name){
-		for(int i=0;i<data.length;i++){
-			if(data[i] == name){
-				return true;
-			}
+			return true;
 		}
 		return false;
 	}
@@ -137,6 +119,14 @@ public class Storage {
 
 	public void setCapacity(int capacity) {
 		this.capacity = capacity;
+	}
+
+	public synchronized Vector<String> getData() {
+		return data;
+	}
+
+	public synchronized void setData(Vector<String> data) {
+		this.data = data;
 	}
 	
 }

@@ -2,11 +2,10 @@ package com.github.rmirman.hakd;
 
 import com.github.rmirman.hakd.ui.UiController;
 
-public class StartGame {
+public class StartGame{
 
-	public static void main(String [ ] args){
+	public static void main(String[] args){
 		UiController.run(args);
-
 	}
 
 	public static void quitGame(String reason){
@@ -16,6 +15,10 @@ public class StartGame {
 		if(reason != null){
 			System.exit(1);
 		}
+	}
+	
+	public static void runGame(){
+		UiController.launch((String[])null);
 	}
 }
 

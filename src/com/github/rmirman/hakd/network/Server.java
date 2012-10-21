@@ -1,6 +1,6 @@
 package com.github.rmirman.hakd.network;
 
-import java.awt.*;
+import java.awt.Desktop;
 import java.io.File;
 import java.io.IOException;
 import java.util.Vector;
@@ -28,6 +28,7 @@ public class Server {
 
 	// total stats?
 
+	//--------constructor--------
 	public Server(int networkId){
 
 		network = networkId;
@@ -46,6 +47,7 @@ public class Server {
 		}
 	}
 
+	//--------methods--------
 	void populate(int id){
 		for(int i=0; i<motherboards;i++){
 			motherboard.add(new Motherboard(network, id));
@@ -53,62 +55,53 @@ public class Server {
 		}
 	}
 
-	boolean connect(String address, String program, int port){
-
+	boolean connect(String address, String program, String port){
 		logs.add(address);
-		logs.add("connected");
-
-
-		if(program.equals(ports.get(port*2))&&ports.get(port*2+1).equals("open")){
-			switch(port){
-			default: // 80, 443, others but just get directed to a 404 if not a website
-				if(webserver > 0){ // TODO find a way to open from the game directory so it doesnt have to be g:/files/...
-					try {
-						Desktop.getDesktop().browse(new File("/com/github/rmirman/hakd/web/files/" + webserver + ".html").toURI());
-					} catch (IOException e) {
-						e.printStackTrace();
+		logs.add("connected " + program + " " + port);
+		if (ports.get(ports.indexOf(port)+1).equals(program)){
+			try{
+				switch(port){
+				default: // 80, 443, others but just get directed to a 404 if not a website
+					if(webserver > 0){ // TODO find a way to open from the game directory so it doesnt have to be g:/files/...
+						Desktop.getDesktop().browse(new File("/files/Hakd/src/com/github/rmirman/hakd/web/websites/" + webserver +".html").toURI());
+					}else{
+						Desktop.getDesktop().browse(new File("/files/Hakd/src/com/github/rmirman/hakd/web/websites/404.html").toURI());
 					}
-				}else{
-					try {
-						Desktop.getDesktop().browse(new File("/com/github/rmirman/hakd/web/files/error.html").toURI());
-					} catch (IOException e) {
-						e.printStackTrace();
-					}
+					break;
+				case "31337":
+					// grant complete(root?) access
+					// open ssh
+					break;
 				}
-			case 31337:
-				// grant complete access
-				// open ssh
-				break;
+			}catch (IOException e) {
+				e.printStackTrace();
 			}
-		} // TODO make a switch statement method to choose the website in a class in /web to make it cleaner
-
+			return true;
+		} 
 		return false;
 
 	}
 
-	public boolean setPorts(int port, String program){
-		for(int i=0; i<ports.size()-1; i+=2){
-			if (ports.get(i).equals(port + "")){
-				return false;
-			}
+	public boolean addPorts(int port, String program){
+		if(ports.indexOf(ports) == -1){
+			ports.add(port + "");
+			ports.add(program);
+			return true;
 		}
-		ports.add(port + "");
-		ports.add(program);
-		return true;
+		return false;
 	}
-	
+
 	public boolean removePort(int port){
-		for(int i=0; i<ports.size()-1; i+=2){
-			if (ports.get(i).equals(port + "")){
-				ports.remove(i+1);
-				ports.remove(i);
-				return true;
-			}
+		int index = ports.indexOf(port);
+		if (ports.indexOf(port) != -1){
+			ports.remove(index+1);
+			ports.remove(index);
+			return true;
 		}
 		return false;
 	}
-	
 
+	//--------getters/setters--------
 	public int getNetwork() {
 		return network;
 	}

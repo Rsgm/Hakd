@@ -1,5 +1,6 @@
 package com.github.rmirman.hakd.ui;
 
+import java.util.Scanner;
 import java.util.Vector;
 
 import javafx.application.Application;
@@ -17,48 +18,48 @@ import javafx.scene.control.TabPane.TabClosingPolicy;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToolBar;
-import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 
 import com.github.rmirman.hakd.RunGame;
+import com.github.rmirman.hakd.StartGame;
 import com.github.rmirman.hakd.gameplay.Commands;
-import com.github.rmirman.hakd.network.Dns;
+import com.github.rmirman.hakd.gameplay.PlayerController;
 import com.github.rmirman.hakd.network.Network;
 
 public class UiController extends Application{
 
 	private static String ip;
+	private static AnchorPane root = new AnchorPane();
 
-	//root
-	public static AnchorPane root = new AnchorPane();
+	//------menu user interface
+	private static AnchorPane menuInterface = new AnchorPane();
+
+	// terminal
+	public static TextField menuInput = new TextField();
+	public static TextArea menuDisplay = new TextArea("Hak'd\nBy Ryam Mirman");
+
+	//------game user interface
+	public static AnchorPane gameInterface = new AnchorPane();
 
 	// main screen
 	public static TabPane mainScreen = new TabPane();
 	public static Tab world = new Tab("World");
-	public static Tab region = new Tab("Region");
+	public static Tab regionTab = new Tab("Region");
 	public static Tab network = new Tab("Network");
 	public static Tab computer = new Tab("Computer");
-	public static AnchorPane worldPane = new AnchorPane();
-	public static AnchorPane region1Pane = new AnchorPane();
-	public static AnchorPane region2Pane = new AnchorPane();
-	public static AnchorPane region3Pane = new AnchorPane();
-	public static AnchorPane region4Pane = new AnchorPane();
-	public static AnchorPane region5Pane = new AnchorPane();
-	public static AnchorPane networkPane = new AnchorPane();
-	public static AnchorPane computerPane = new AnchorPane();
-	ImageView region1 = new ImageView();
-	ImageView region2 = new ImageView();
-	ImageView region3 = new ImageView();
-	ImageView region4 = new ImageView();
-	ImageView region5 = new ImageView();
-
+	public static AnchorPane worldView = new AnchorPane();
+	public static Vector<AnchorPane> regionView = new Vector<AnchorPane>(1, 1);
+	public static AnchorPane networkView = new AnchorPane();
+	public static AnchorPane computerView = new AnchorPane();
+	public static Vector<ImageView> regionImage = new Vector<ImageView>();
 
 	// info screen
 	public static TabPane infoScreen = new TabPane();
@@ -86,22 +87,88 @@ public class UiController extends Application{
 	public static TextField terminalInput = new TextField(ip);
 
 	// networks
-	public static Vector<Circle> nCircle = new Vector<Circle>(1, 1);
-	public static Line[] connection = new Line[500];
+	public static Vector<Line> connection = new Vector<Line>(1, 1);
+
+	// settings menu
+	private AnchorPane settings = new AnchorPane();
 
 
 	public static void run(String[] args){
 		launch(args);
 	}
 
-	@Override
-	public void start(Stage primaryStage) throws Exception {
-		primaryStage.setTitle("Hak'd"); // put this code in a class not a method and make them public maybe static
-		primaryStage.setScene(new Scene(root, 1024, 768));
+	public void start(Stage gameStage) throws Exception { // start menu
+		gameStage.setTitle("Hak'd");
+		gameStage.setScene(new Scene(root, /*500*/1024, /*400*/768));
 		root.getStylesheets().add(UiController.class.getResource("UI design.css").toExternalForm());
+		root.getChildren().add(menuInterface);
+
+		AnchorPane.setBottomAnchor(menuInterface, 0.0);
+		AnchorPane.setLeftAnchor(menuInterface, 0.0);
+		AnchorPane.setRightAnchor(menuInterface, 0.0);
+		AnchorPane.setTopAnchor(menuInterface, 0.0);
+
+		// menu terminal
+		menuInterface.getChildren().addAll(menuDisplay, menuInput);
+		menuDisplay.setEditable(false);
+		menuInput.setEditable(true);
+		menuDisplay.setMinHeight(25.0);
+		menuDisplay.getStyleClass().add("terminal-text");
+		menuInput.getStyleClass().add("terminal-text");
+		menuInput.setId("terminal-input");
+		menuInput.setFocusTraversable(true);
+		menuInput.requestFocus();
+
+		AnchorPane.setBottomAnchor(menuDisplay, 22.0);
+		AnchorPane.setLeftAnchor(menuDisplay, 0.0);
+		AnchorPane.setRightAnchor(menuDisplay, 0.0);
+		AnchorPane.setTopAnchor(menuDisplay, 0.0);
+		AnchorPane.setBottomAnchor(menuInput, 0.0);
+		AnchorPane.setLeftAnchor(menuInput, 0.0);
+		AnchorPane.setRightAnchor(menuInput, 0.0);
+
+		gameStage.show();
+
+		// event handlers
+		menuInput.setOnKeyPressed(new EventHandler<KeyEvent>() {
+			public void handle(KeyEvent textInput) {
+				try{
+					if(textInput.getText().charAt(0) == 13){
+						menuDisplay.setText(menuDisplay.getText() + "\n" + menuInput.getText());
+						menuCommands(menuInput.getText());
+						menuInput.setText("");
+						menuDisplay.end();
+						menuInput.end();
+					}
+				}
+
+				catch (Exception ex) {
+				}
+			}
+		});		
+
+		gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+			public void handle(WindowEvent arg0) {
+				StartGame.quitGame(null);
+			}
+		});
+
+		//game
+		new RunMenu();
+	}
+
+	private void startGame(){
+		root.getChildren().remove(menuInterface);
+		menuInterface = null;
+		root.getChildren().add(gameInterface);
+
+		AnchorPane.setBottomAnchor(gameInterface, 0.0);
+		AnchorPane.setLeftAnchor(gameInterface, 0.0);
+		AnchorPane.setRightAnchor(gameInterface, 0.0);
+		AnchorPane.setTopAnchor(gameInterface, 0.0);
 
 		// menu
-		root.getChildren().add(menuBar);
+		gameInterface.getChildren().add(menuBar);
 		menuBar.getItems().addAll(time, new Separator(), menuButton1);
 		menuButton1.getItems().add(menuItem1);
 		menuBar.setMaxHeight(28);
@@ -114,7 +181,7 @@ public class UiController extends Application{
 		AnchorPane.setRightAnchor(menuBar, 0.0);
 
 		// split panes
-		root.getChildren().add(splitPane1);
+		gameInterface.getChildren().add(splitPane1);
 		splitPane1.getItems().addAll(splitAnchor1,splitAnchor2);
 		splitPane1.setOrientation(Orientation.VERTICAL);
 		splitAnchor1.getChildren().add(splitPane2);
@@ -148,6 +215,8 @@ public class UiController extends Application{
 		terminalInput.getStyleClass().add("terminal-text");
 		terminalInput.setId("terminal-input");
 		terminalInput.setFocusTraversable(true);
+		terminalInput.requestFocus();
+		terminalInput.setText(ip);
 
 		AnchorPane.setBottomAnchor(terminalDisplay, 22.0);
 		AnchorPane.setLeftAnchor(terminalDisplay, 0.0);
@@ -161,29 +230,35 @@ public class UiController extends Application{
 		mainScreen.getTabs().add(world);
 		mainScreen.setTabClosingPolicy(TabClosingPolicy.ALL_TABS);
 		world.setClosable(false);
-		world.setContent(worldPane);
-		Image region1Icon = new Image("/com/github/rmirman/hakd/ui/icons/region1.png");
-		Image region2Icon = new Image("/com/github/rmirman/hakd/ui/icons/region2.png");
-		Image region3Icon = new Image("/com/github/rmirman/hakd/ui/icons/region3.png");
-		Image region4Icon = new Image("/com/github/rmirman/hakd/ui/icons/region4.png");
-		Image region5Icon = new Image("/com/github/rmirman/hakd/ui/icons/region5.png");
-		region1.setImage(region1Icon);
-		region2.setImage(region2Icon);
-		region3.setImage(region3Icon);
-		region4.setImage(region4Icon);
-		region5.setImage(region5Icon);
-		region1.setLayoutX(15);
-		region1.setLayoutY(210);
-		region2.setLayoutX(350);
-		region2.setLayoutY(30);
-		region3.setLayoutX(600);
-		region3.setLayoutY(350);
-		region4.setLayoutX(10);
-		region4.setLayoutY(10);
-		region5.setLayoutX(250);
-		region5.setLayoutY(370);
-		worldPane.getChildren().addAll(region1, region2, region3, region4, region5);
+		world.setContent(worldView);
 
+		//regionView.add(new AnchorPane());
+		//regionView.add(new AnchorPane());
+		//regionView.add(new AnchorPane());
+		//regionView.add(new AnchorPane());
+		//regionView.add(new AnchorPane());
+		for(int i=0; i<5; i++){
+			regionView.add(new AnchorPane());
+		}
+
+		regionImage.add(new ImageView(new Image("/com/github/rmirman/hakd/ui/icons/region0.png")));
+		regionImage.add(new ImageView(new Image("/com/github/rmirman/hakd/ui/icons/region1.png")));
+		regionImage.add(new ImageView(new Image("/com/github/rmirman/hakd/ui/icons/region2.png")));
+		regionImage.add(new ImageView(new Image("/com/github/rmirman/hakd/ui/icons/region3.png")));
+		regionImage.add(new ImageView(new Image("/com/github/rmirman/hakd/ui/icons/region4.png")));
+		
+		regionImage.get(0).setLayoutX(15);
+		regionImage.get(0).setLayoutY(210);
+		regionImage.get(1).setLayoutX(350);
+		regionImage.get(1).setLayoutY(30);
+		regionImage.get(2).setLayoutX(600);
+		regionImage.get(2).setLayoutY(350);
+		regionImage.get(3).setLayoutX(10);
+		regionImage.get(3).setLayoutY(10);
+		regionImage.get(4).setLayoutX(250);
+		regionImage.get(4).setLayoutY(370);
+
+		worldView.getChildren().addAll(regionImage); // can either use the vector variable or individual indexes in the vector
 
 		// info screen
 		infoScreen.getTabs().addAll(info, resources, runningPrograms);
@@ -192,11 +267,7 @@ public class UiController extends Application{
 		resources.setContent(resourcesPane);
 		runningPrograms.setContent(runningProgramsPane);
 
-		primaryStage.show();
-
-
-		// event handles
-
+		// event handlers
 		terminalInput.setOnKeyPressed(new EventHandler<KeyEvent>() {
 			public void handle(KeyEvent textInput) {
 				try{
@@ -216,147 +287,129 @@ public class UiController extends Application{
 				}
 			}
 		});
-		region1.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent click) {
-				if(region.getTabPane() != mainScreen){
-					mainScreen.getTabs().add(1, region);
-				}
-				region.setContent(region1Pane);
-				mainScreen.getSelectionModel().select(region);
-				region.setText("North America");
-			}
-		});
-		region2.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent click) {
-				if(region.getTabPane() != mainScreen){
-					mainScreen.getTabs().add(1, region);
-				}
-				region.setContent(region2Pane);
-				mainScreen.getSelectionModel().select(region);
-				region.setText("Europe");
-			}
-		});
-		region3.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent click) {
-				if(region.getTabPane() != mainScreen){
-					mainScreen.getTabs().add(1, region);
-				}
-				region.setContent(region3Pane);
-				mainScreen.getSelectionModel().select(region);
-				region.setText("Asia");
-			}
-		});
-		region4.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent click) {
-				if(region.getTabPane() != mainScreen){
-					mainScreen.getTabs().add(1, region);
-				}
-				region.setContent(region4Pane);
-				mainScreen.getSelectionModel().select(region);
-				region.setText("Companies");
-			}
-		});
-		region5.setOnMouseClicked(new EventHandler<MouseEvent>() {
-			public void handle(MouseEvent click) {
-				if(region.getTabPane() != mainScreen){
-					mainScreen.getTabs().add(1, region);
-				}
-				region.setContent(region5Pane);
-				mainScreen.getSelectionModel().select(region);
-				region.setText("The Dark Net");
-			}
-		});
 
+		regionImage.get(0).setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent click) {
+				if(regionTab.getTabPane() != mainScreen){
+					mainScreen.getTabs().add(1, regionTab);
+				}
+				regionTab.setContent(regionView.get(0));
+				mainScreen.getSelectionModel().select(regionTab);
+				regionTab.setText("North America");
+			}
+		});
+		regionImage.get(1).setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent click) {
+				if(regionTab.getTabPane() != mainScreen){
+					mainScreen.getTabs().add(1, regionTab);
+				}
+				regionTab.setContent(regionView.get(1));
+				mainScreen.getSelectionModel().select(regionTab);
+				regionTab.setText("Europe");
+			}
+		});
+		regionImage.get(2).setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent click) {
+				if(regionTab.getTabPane() != mainScreen){
+					mainScreen.getTabs().add(1, regionTab);
+				}
+				regionTab.setContent(regionView.get(2));
+				mainScreen.getSelectionModel().select(regionTab);
+				regionTab.setText("Asia");
+			}
+		});
+		regionImage.get(3).setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent click) {
+				if(regionTab.getTabPane() != mainScreen){
+					mainScreen.getTabs().add(1, regionTab);
+				}
+				regionTab.setContent(regionView.get(3));
+				mainScreen.getSelectionModel().select(regionTab);
+				regionTab.setText("Companies");
+			}
+		});
+		regionImage.get(4).setOnMouseClicked(new EventHandler<MouseEvent>() {
+			public void handle(MouseEvent click) {
+				if(regionTab.getTabPane() != mainScreen){
+					mainScreen.getTabs().add(1, regionTab);
+				}
+				regionTab.setContent(regionView.get(4));
+				mainScreen.getSelectionModel().select(regionTab);
+				regionTab.setText("The Dark Net");
+			}
+		});
 
 		// game
-		Dns dnsServer = new Dns();
-		dnsServer.hashCode();
-		Network.getNetwork().add(new Network("new player"));
 		Network.getNetwork().get(Network.getNetwork().size()-1).populate();
-
-		terminalInput.setText(ip);
-
+		
 		new RunGame();
 	}
 
-	public static void addNetwork(int network){ // to a region
-		boolean taken = false;
-		nCircle.add(new Circle());
-		switch(Network.getNetwork().get(network).getRegion()){
-		case 1:
-			region1Pane.getChildren().add(nCircle.get(nCircle.size()-1));
-			break;
-		case 2:
-			region2Pane.getChildren().add(nCircle.get(nCircle.size()-1));
-			break;
-		case 3:
-			region3Pane.getChildren().add(nCircle.get(nCircle.size()-1));
-			break;
-		case 4:
-			region4Pane.getChildren().add(nCircle.get(nCircle.size()-1));
-			break;
-		case 5:
-			region5Pane.getChildren().add(nCircle.get(nCircle.size()-1));
-			break;
-		default:
-			region1Pane.getChildren().add(nCircle.get(nCircle.size()-1));
-			break;
+	private void menuCommands(String input) {
+		if(input.equals("help")){ //TODO add more stuff to do outside of the game
+			menuDisplay.setText(menuDisplay.getText() +
+					"\nCommands:\nhelp - shows this list\nquit - exits this game\nstart [player name] - starts the game" +
+					"\nnmap - scans the computers on the network for open ports and other stuff" +
+					"\nsettings - opens settings window");
+		}else if(input.equals("quit")){
+			StartGame.quitGame(null);
+		}else if(input.matches("^(start)\\s+(.+)")){
+			//gameStartup(); // the loading screen
+
+			Scanner scanner = new Scanner(input);
+			scanner.findInLine("^(start)\\s+(.+)");
+			
+			Network.getNetwork().add(new Network(0));
+			PlayerController.setPlayerName(scanner.match().group(2));
+			
+			scanner.close();
+			startGame();
+		}else if(input.equals("settings")){
+			settingsWindow();
+		}else if(input.equals("nmap")){
+			//run nmap
+		}else{
+			menuDisplay.setText(menuDisplay.getText() + "\n'" + input + "' is not a recognized command, try using the 'help' command");
 		}
-		do{
-			System.out.println("1");
-			nCircle.get(nCircle.size()-1).setLayoutX((int)(Math.random()*20)*30+14);
-			nCircle.get(nCircle.size()-1).setLayoutY((int)(Math.random()*19)*30+14);
-			System.out.println("2");
-			for(int i=0; i<nCircle.size()-2; i++){
-				if(nCircle.get(i).getLayoutX() != nCircle.get(nCircle.size()-1).getLayoutX()||nCircle.get(i).getLayoutY() != nCircle.get(nCircle.size()-1).getLayoutY()){
-					System.out.println("3.5");
-					taken = false;
-				}else{
-					System.out.println("4");
-					taken = true;
-					break;
-				}
-			}
-			System.out.println("5");
-		}while(taken == true);
-		System.out.println("6");
-
-		nCircle.get(nCircle.size()-1).setRadius(12);
-		
-		switch(Network.getNetwork().get(network).getStance()){
-		case 0:
-			nCircle.get(nCircle.size()-1).getStyleClass().add("friendly-network");
-			break;
-		case 1:
-			nCircle.get(nCircle.size()-1).getStyleClass().add("nuetral-network");
-			break;
-		case 2:
-			nCircle.get(nCircle.size()-1).getStyleClass().add("enemy-network");
-			break;
-		default:
-			nCircle.get(nCircle.size()-1).getStyleClass().add("nuetral-network");
-			break;
-		}
-		//Tooltip t = new Tooltip(Network.getNetwork().get(id).getIp());
-		Tooltip.install(nCircle.get(nCircle.size()-1), new Tooltip(Network.getNetwork().get(nCircle.size()-1).getIp()));
-
-		Network.getNetwork().get(nCircle.size()-1).setxCoordinate((int) nCircle.get(nCircle.size()-1).getLayoutX());
-		Network.getNetwork().get(nCircle.size()-1).setyCoordinate((int) nCircle.get(nCircle.size()-1).getLayoutY());
-
-//		nCircle.get(nCircle.size()-1).setOnMouseClicked(new EventHandler<MouseEvent>() {
-//			public void handle(MouseEvent click) {
-//				//System.out.println("network" + Network.getNetwork(id).getIp());
-//
-//			}
-//		});
 	}
 
-	
-	public static String getIp() {
+	private void settingsWindow(){
+		root.getChildren().add(settings);
+
+		AnchorPane.setBottomAnchor(settings, 10.0);
+		AnchorPane.setLeftAnchor(settings, 50.0);
+		AnchorPane.setRightAnchor(settings, 50.0);
+		AnchorPane.setTopAnchor(settings, 30.0);
+
+		Rectangle settings1 = new Rectangle();
+		settings1.setWidth(settings.getWidth());
+		settings1.setHeight(settings.getHeight());
+		settings.getChildren().add(settings1);
+		settings1.setId("settings");
+
+		AnchorPane.setBottomAnchor(settings1, 0.0);
+		AnchorPane.setLeftAnchor(settings1, 0.0);
+		AnchorPane.setRightAnchor(settings1, 0.0);
+		AnchorPane.setTopAnchor(settings1, 0.0);
+	}
+
+	private void gameStartup(){ // TODO this wont display
+		try{
+			menuDisplay.setText(UiController.menuDisplay.getText() + "\nLoading...");
+			menuDisplay.setText(UiController.menuDisplay.getText() + "\nFinished");
+			Thread.sleep(1500+((int)Math.random()*3500));
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		return;
+	}
+
+
+	public synchronized static String getIp() {
 		return ip;
 	}
 
-	public static void setIp(String ip) {
+	public synchronized static void setIp(String ip) {
 		UiController.ip = ip;
 	}
 }
