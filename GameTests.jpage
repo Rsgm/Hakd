@@ -1,8 +1,7 @@
-String s1 = new String("147.149.247.110¬0»help");
+String s1 = new String("147.149.247.110/0>help");
 Scanner scan = new Scanner(s1);
-scan.findInLine("»(\\S+)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*)");
+scan.findInLine("ï¿½(\\S+)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*)");
 scan.match().group(1)
-
 
 
 
@@ -47,3 +46,23 @@ Network.connect(Network.getNetwork().get(1).getIp(), Network.getNetwork().get(0)
 
 Math.sin((Math.PI*0)/180)*20 // these are pixles does the decimal matter that much?
 Math.cos(Math.toRadians(270))*20 // TODO test this ^^^
+
+
+double x1,x2,y1,y2,a,b,c,m,n;
+x1 = 100;
+y1 = 150;
+x2 = 50;
+y2 =300;
+
+a = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)); //line>AB
+b = y2 + 1; //line>BC, point C is only (x2,y2+1)
+c = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 + 1 - y1, 2)); //line>CA
+
+//Math.acos((a * a - b * b - c * c) / (-2 * a * b))
+Math.sin(Math.acos((a * a - b * b - c * c) / (-2 * a * b)))
+
+
+
+
+java.util.Scanner scan1 = new java.util.Scanner("  1           2 3 4   5");
+scan1.next("//s*")
