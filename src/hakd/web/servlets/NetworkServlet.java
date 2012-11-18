@@ -32,7 +32,7 @@ public class NetworkServlet extends HttpServlet {
 
 		PrintWriter line = response.getWriter();
 		FileInputStream readFile = new FileInputStream(
-				new File(".").getPath() + "/src/com/github/rmirman/hakd/web/websites/" + website + ".html");
+				new File(".").getPath() + "/src/hakd/web/websites/" + website + ".html");
 
 		DataInputStream input = new DataInputStream(readFile);
 		BufferedReader buffer = new BufferedReader(new InputStreamReader(input));

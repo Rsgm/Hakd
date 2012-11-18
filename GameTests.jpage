@@ -60,9 +60,3 @@ c = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 + 1 - y1, 2)); //line>CA
 
 //Math.acos((a * a - b * b - c * c) / (-2 * a * b))
 Math.sin(Math.acos((a * a - b * b - c * c) / (-2 * a * b)))
-
-
-
-
-java.util.Scanner scan1 = new java.util.Scanner("  1           2 3 4   5");
-scan1.next("//s*")

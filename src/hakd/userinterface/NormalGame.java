@@ -4,9 +4,6 @@ import hakd.gameplay.Commands;
 import hakd.network.Network;
 import hakd.userinterface.threads.RunGame;
 import hakd.userinterface.threads.RunMenu;
-
-import java.util.Vector;
-
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Orientation;
@@ -18,11 +15,7 @@ import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 
-
 public class NormalGame {
-	private static int recall = 0;
-	private static Vector<String> lines = new Vector<String>(0, 1);
-
 	static void startGame() {
 		Controller.root.getChildren().remove(Controller.menuInterface);
 		Controller.menuInterface = null;
@@ -37,8 +30,7 @@ public class NormalGame {
 
 // menu
 		Controller.gameInterface.getChildren().add(Controller.menuBar);
-		Controller.menuBar.getItems().addAll(Controller.time, new Separator(),
-				Controller.menuButton1);
+		Controller.menuBar.getItems().addAll(Controller.time, new Separator(), Controller.menuButton1);
 		Controller.menuButton1.getItems().add(Controller.menuItem1);
 		Controller.menuBar.setMaxHeight(28);
 		Controller.menuBar.setId("menu-bar");
@@ -77,8 +69,7 @@ public class NormalGame {
 		AnchorPane.setTopAnchor(Controller.splitPane2, 0.0);
 
 // terminal
-		Controller.splitAnchor2.getChildren().addAll(Controller.terminalDisplay,
-				Controller.terminalInput);
+		Controller.splitAnchor2.getChildren().addAll(Controller.terminalDisplay, Controller.terminalInput);
 		Controller.terminalDisplay.setEditable(false);
 		Controller.terminalDisplay.setMinHeight(25.0);
 		Controller.terminalDisplay.getStyleClass().add("terminal-text");
@@ -106,16 +97,11 @@ public class NormalGame {
 			Controller.regionView.add(new AnchorPane());
 		}
 
-		Controller.regionImage.add(new ImageView(new Image(
-				"/com/github/rmirman/hakd/userinterface/icons/region0.png")));
-		Controller.regionImage.add(new ImageView(new Image(
-				"/com/github/rmirman/hakd/userinterface/icons/region1.png")));
-		Controller.regionImage.add(new ImageView(new Image(
-				"/com/github/rmirman/hakd/userinterface/icons/region2.png")));
-		Controller.regionImage.add(new ImageView(new Image(
-				"/com/github/rmirman/hakd/userinterface/icons/region3.png")));
-		Controller.regionImage.add(new ImageView(new Image(
-				"/com/github/rmirman/hakd/userinterface/icons/region4.png")));
+		Controller.regionImage.add(new ImageView(new Image("/hakd/userinterface/icons/region0.png")));
+		Controller.regionImage.add(new ImageView(new Image("/hakd/userinterface/icons/region1.png")));
+		Controller.regionImage.add(new ImageView(new Image("/hakd/userinterface/icons/region2.png")));
+		Controller.regionImage.add(new ImageView(new Image("/hakd/userinterface/icons/region3.png")));
+		Controller.regionImage.add(new ImageView(new Image("/hakd/userinterface/icons/region4.png")));
 
 		Controller.regionImage.get(0).setLayoutX(15);
 		Controller.regionImage.get(0).setLayoutY(210);
@@ -137,8 +123,7 @@ public class NormalGame {
 		Controller.worldView.getChildren().addAll(Controller.regionImage);
 
 // info screen
-		Controller.infoScreen.getTabs().addAll(Controller.info, Controller.resources,
-				Controller.runningPrograms);
+		Controller.infoScreen.getTabs().addAll(Controller.info, Controller.resources, Controller.runningPrograms);
 		Controller.infoScreen.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		Controller.info.setContent(Controller.infoPane);
 		Controller.resources.setContent(Controller.resourcesPane);
