@@ -2,41 +2,37 @@ package hakd.network;
 
 import hakd.gameplay.PlayerController;
 import hakd.gui.GameGui;
+import hakd.networking.Dns;
 
 import java.awt.Desktop;
+import java.awt.Paint;
+import java.awt.Polygon;
+import java.awt.datatransfer.Clipboard;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import javafx.event.EventHandler;
-import javafx.scene.control.Tooltip;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ClipboardContent;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Polygon;
-
 public class Network { // TODO make all objects ArrayLists
 	// stats
-	private String					isp;		    			// address of region isp // what makes a network an isp? // for example infinity LTD.
-	private int						level;										// 0-7, 0 for player because you start with almost nothing
-	private int						speed;										// in Mb per second(1/1024*Gb), may want to change it to MBps
-	private String					ip;										// all network variables will be in IP format
-	private String					owner;										// owner, company, player
-	private int						serverLimit;								// amount of server objects to make
-	private int						networkId;
-	private int						stance;									// friendly, enemy, neutral
-	private String					connectedTo;
-	private ArrayList<String>	ports		= new ArrayList<String>();	// port, program, server
+	private String						isp;									// address of region isp // what makes a network an isp? // for
+// example infinity LTD.
+	private int							level;									// 0-7, 0 for player because you start with almost nothing
+	private int							speed;									// in Mb per second(1/1024*Gb), may want to change it to MBps
+	private String						ip;									// all network variables will be in IP format
+	private String						owner;									// owner, company, player
+	private int							serverLimit;							// amount of server objects to make
+	private int							networkId;
+	private int							stance;								// friendly, enemy, neutral
+	private String						connectedTo;
+	private final ArrayList<String>		ports		= new ArrayList<String>();	// port, program, server
 
 	// objects
 	private ArrayList<Server>			servers		= new ArrayList<Server>();
 	private static ArrayList<Network>	networks	= new ArrayList<Network>();
 
 	// gui
-	private int						region;									// where the network is in the world
-	private int						xCoordinate;								// where the network is in the regionTab/map
-	private int						yCoordinate;
+	private int							region;								// where the network is in the world
+	private int							xCoordinate;							// where the network is in the regionTab/map
+	private int							yCoordinate;
 
 	// --------constructor--------
 	public Network(int type) { // make a network array in a regionTab class
@@ -71,7 +67,8 @@ public class Network { // TODO make all objects ArrayLists
 				isp = PlayerController.getHomeNetwork().getIp();
 				break;
 		}
-		// do not add code referencing the player network(home/current) after here, because it has not been added to the playerController class yet, but more obvously it is still being initilized
+		// do not add code referencing the player network(home/current) after here, because it has not been added to the playerController class yet,
+// but more obvously it is still being initilized
 	}
 
 	// --------methods--------
@@ -85,7 +82,8 @@ public class Network { // TODO make all objects ArrayLists
 		Dns.addConnection(this, isp); // creates a connection with an isp
 	}
 
-	public static boolean connect(String fromAddress, String toAddress, String program, int portInt) { // TODO test and if possible fix, otherwise rewrite
+	public static boolean connect(String fromAddress, String toAddress, String program, int portInt) { // TODO test and if possible fix, otherwise
+// rewrite
 		int id = Dns.findNetwork(toAddress);
 		String port = portInt + "";
 		if (networks.get(id).ports.get(networks.get(id).ports.indexOf(port) + 1).equals(program) && Dns.findNetwork(fromAddress) != -1) {
@@ -95,7 +93,7 @@ public class Network { // TODO make all objects ArrayLists
 		return false;
 	}
 
-	public boolean addPorts(int port, String program, int server) { 
+	public boolean addPorts(int port, String program, int server) {
 		if (ports.contains(ports)) {
 			ports.add(port + "");
 			ports.add(program);
@@ -121,16 +119,16 @@ public class Network { // TODO make all objects ArrayLists
 		ArrayList<Circle> circles = GameGui.getCircles();
 		int radius = GameGui.getRadius();
 
-
 		do { // this will check if this network is too close to another network, and it will re-pick coordinates for it.
 			taken = false;
 
-			xCoordinate = (int) (Math.random() * 1920 + radius); // just a limit for now based on 1080p screens, not that you could fit the entire region tab on the screen
+			xCoordinate = (int) (Math.random() * 1920 + radius); // just a limit for now based on 1080p screens, not that you could fit the entire
+// region tab on the screen
 			yCoordinate = (int) (Math.random() * 1080 + radius);
 
 			for (Circle c : circles/*old: int i = 0; i < circles.size() - 2; i++*/) { // this checks if this network is within r+2 of another network
-				if (!((xCoordinate - 2 * radius - 20 <= c.getCenterX() && c.getCenterX() <= xCoordinate + 2 * radius + 20) && (yCoordinate
-						- 2 * radius - 20 <= c.getCenterX() && c.getCenterX() <= yCoordinate + 2 * radius + 20))) {
+				if (!((xCoordinate - 2 * radius - 20 <= c.getCenterX() && c.getCenterX() <= xCoordinate + 2 * radius + 20) && (yCoordinate - 2
+						* radius - 20 <= c.getCenterX() && c.getCenterX() <= yCoordinate + 2 * radius + 20))) {
 					taken = false;
 				} else {
 					System.out.println("too close to another network");
@@ -139,7 +137,7 @@ public class Network { // TODO make all objects ArrayLists
 				}
 			}
 		} while (taken == true);
-		
+
 		Circle c = new Circle();
 		circles.add(c);
 		c.setCenterX(xCoordinate);
@@ -156,7 +154,7 @@ public class Network { // TODO make all objects ArrayLists
 				c.getStyleClass().add("friendly-network");
 				break;
 			case 1:
-				c.getStyleClass().add("nuetral-network");
+				c.getStyleClass().add("neutral-network");
 				break;
 			case 2:
 				c.getStyleClass().add("enemy-network");
@@ -170,19 +168,19 @@ public class Network { // TODO make all objects ArrayLists
 		c.setOnMouseClicked(new EventHandler<MouseEvent>() {
 			@Override
 			public void handle(MouseEvent click) {
-				if(click.isAltDown()){
-				     Clipboard clipboard = Clipboard.getSystemClipboard();
-				     ClipboardContent content = new ClipboardContent();
-				     content.putString(ip);
-				     clipboard.setContent(content);
-			}else{
-				System.out.println("network " + ip + " " + owner);
-				try { // open port 80 of that network in the web browser
-					Desktop.getDesktop().browse(java.net.URI.create("http://localhost:80/network/" + ip));
-				} catch (IOException e) {
-					e.printStackTrace();
+				if (click.isAltDown()) {
+					Clipboard clipboard = Clipboard.getSystemClipboard();
+					ClipboardContent content = new ClipboardContent();
+					content.putString(ip);
+					clipboard.setContent(content);
+				} else {
+					System.out.println("network " + ip + " " + owner);
+					try { // open port 80 of that network in the web browser
+						Desktop.getDesktop().browse(java.net.URI.create("http://localhost:80/network/" + ip));
+					} catch (IOException e) {
+						e.printStackTrace();
+					}
 				}
-			}
 			}
 		});
 		GameGui.updateRegion();
@@ -201,7 +199,7 @@ public class Network { // TODO make all objects ArrayLists
 
 		poly.setLayoutX(circles.get(circles.size() - 1).getCenterX() - (Math.sin(Math.toRadians(360 / serverLimit * server)) * radius));
 		poly.setLayoutY(circles.get(circles.size() - 1).getCenterY() - (Math.cos(Math.toRadians(360 / serverLimit * server)) * radius));
-		GameGui.updateRegion();
+		// GameGui.updateRegion();
 	}
 
 	// --------getters/setters--------

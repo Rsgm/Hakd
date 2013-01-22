@@ -1,16 +1,18 @@
-package hakd.network;
+package hakd.networking;
 
 import hakd.gui.GameGui;
+import hakd.network.Network;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 
 public class Dns {
 
-	private static ArrayList<String>	dnsList		= new ArrayList<String>();
-	private static ArrayList<String>	connection	= new ArrayList<String>(); // TODO make connection a class/objects
+	private static ArrayList<String>	dnsList				= new ArrayList<String>();
+	private static ArrayList<String>	serviceProviders	= new ArrayList<String>();
 
 	// --------methods--------
 	public static String assignIp(int region) { // assigns an ip to an object that requests one, also checks it and adds it to the dns list
@@ -44,7 +46,8 @@ public class Dns {
 		return ip;
 	}
 
-	public static boolean addUrl(String ip, String url) { // registers a url to an ip just so not everything is an ip // ip can only be a player's ip if they buy it
+	public static boolean addUrl(String ip, String url) { // registers a url to an ip just so not everything is an ip // ip can only be a player's ip
+// if they buy it
 		if (url.matches("")) {
 			if (!dnsList.contains(url) && dnsList.contains(ip)) {
 				dnsList.set(dnsList.indexOf(ip) + 1, url);
@@ -55,26 +58,23 @@ public class Dns {
 	}
 
 	public static int findNetwork(String address) {
-		if (!address
-				.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b")) { // ip regex
+		if (!address.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b")) { // ip regex
 			address = dnsList.get(dnsList.indexOf(address) + 1);
-		}else if (address.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b")&&dnsList.contains(address)) {
+		} else if (address.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b") && dnsList.contains(address)) {
 			return dnsList.indexOf(address) / 2;
 		}
 		return -1;
 	}
 
-	public static void addConnection(Network network, String address2) {
-		ArrayList<Line> lines = GameGui.getLines();
+	public static void addConnection(Network network, String address) {
+		Vector<Line> lines = GameGui.getLines();
 		int radius = GameGui.getRadius();
-
-		String address1 = network.getIp();
 		double r, a, b, c, xTrig, yTrig, x1, y1, x2, y2; // triangle>ABC
 
 		x1 = network.getxCoordinate();
 		y1 = network.getyCoordinate();
-		x2 = Network.getNetworks().get(findNetwork(address2)).getxCoordinate();
-		y2 = Network.getNetworks().get(findNetwork(address2)).getyCoordinate();
+		x2 = Network.getNetworks().get(findNetwork(address)).getxCoordinate();
+		y2 = Network.getNetworks().get(findNetwork(address)).getyCoordinate();
 		r = radius;
 
 		a = 1; // line BC, point C is only (x2,y2+1)
@@ -116,10 +116,9 @@ public class Dns {
 		line.setStrokeWidth(1.15);
 		line.setOpacity(0.3);
 		lines.add(line);
-		connection.add(address1);
-		connection.add(address2);
+		Connection.getConnection().add(new Connection(network, Network.getNetworks().get(findNetwork(address))));
 
-		GameGui.updateRegion();
+		// GameGui.updateRegion();
 		return;
 	}
 
@@ -132,7 +131,11 @@ public class Dns {
 		Dns.dnsList = dnsList;
 	}
 
-	public static ArrayList<String> getConnection() {
-		return connection;
+	public static ArrayList<String> getServiceProviders() {
+		return serviceProviders;
+	}
+
+	public static void setServiceProviders(ArrayList<String> serviceProviders) {
+		Dns.serviceProviders = serviceProviders;
 	}
 }

@@ -1,10 +1,10 @@
 package hakd.gui;
 
+import hakd.Hakd;
 import hakd.gameplay.Commands;
-import hakd.gui.threads.RunGame;
-import hakd.gui.threads.RunMenu;
 
 import java.util.ArrayList;
+import java.util.Vector;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -21,24 +21,24 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 
 public class GameGui {
-	private static int				region		= -1;						// -1 == not visible
-	private static String			regionName;
-	private static int				network		= -1; // TODO these
-	private static String			networkName;
-	private static int				server		= -1;
-	private static String			serverName;
+	private static int					region		= -1;						// -1 == not visible
+	private static String				regionName;
+	private static int					network		= -1;						// TODO these
+	private static String				networkName;
+	private static int					server		= -1;
+	private static String				serverName;
 
 	// network
-	private static ArrayList<Circle>	circles		= new ArrayList<Circle>(); // tab ArrayList of circle ArrayLists? tab.getchildren.addall(tabs.get(1))
+	private static ArrayList<Circle>	circles		= new ArrayList<Circle>();	// tab ArrayList of circle ArrayLists?
+// tab.getchildren.addall(tabs.get(1))
 	private static ArrayList<Polygon>	polygons	= new ArrayList<Polygon>();
-	private static ArrayList<Line>		lines		= new ArrayList<Line>();
-	private static final int		radius		= 35;
+	private static Vector<Line>			lines		= new Vector<Line>();
+	private static final int			radius		= 35;
 
 	// --------methods--------
 	static void startGame() {
 		GuiController.root.getChildren().remove(GuiController.menuInterface);
 		GuiController.menuInterface = null;
-		RunMenu.setRunning(false);
 		GuiController.root.getChildren().add(GuiController.gameInterface);
 		GuiController.gameInterface.setStyle("pane-background");
 
@@ -118,7 +118,7 @@ public class GameGui {
 		GuiController.serverTab.setContent(GuiController.serverScroll);
 		GuiController.serverScroll.setContent(GuiController.serverPane);
 
-		GuiController.regionImage.add(new ImageView(new Image("/hakd/gui/icons/region3.png"))); // TODO change this back to 0.png
+		GuiController.regionImage.add(new ImageView(new Image("/hakd/gui/icons/region0.png")));
 		GuiController.regionImage.add(new ImageView(new Image("/hakd/gui/icons/region1.png")));
 		GuiController.regionImage.add(new ImageView(new Image("/hakd/gui/icons/region2.png")));
 		GuiController.regionImage.add(new ImageView(new Image("/hakd/gui/icons/region3.png")));
@@ -136,7 +136,7 @@ public class GameGui {
 		GuiController.regionImage.get(4).setLayoutY(370);
 
 		GuiController.regionImage.get(0).setVisible(true);
-		for (int i = 1; i < GuiController.regionImage.size(); i++) {
+		for (int i = 1; i < GuiController.regionImage.size(); i++) { // skip the first image
 			GuiController.regionImage.get(i).setVisible(false);
 		}
 
@@ -144,7 +144,8 @@ public class GameGui {
 		GuiController.worldPane.getChildren().addAll(GuiController.regionImage);
 
 		// info screen
-		GuiController.infoScreenTab.getTabs().addAll(GuiController.infoTab, GuiController.resourceTab, GuiController.runningProgramsTab, GuiController.debugTab);
+		GuiController.infoScreenTab.getTabs().addAll(GuiController.infoTab, GuiController.resourceTab, GuiController.runningProgramsTab,
+				GuiController.debugTab);
 		GuiController.infoScreenTab.setTabClosingPolicy(TabClosingPolicy.UNAVAILABLE);
 		GuiController.infoTab.setContent(GuiController.infoScroll);
 		GuiController.resourceTab.setContent(GuiController.resourceScroll);
@@ -178,7 +179,7 @@ public class GameGui {
 			@Override
 			public void handle(MouseEvent click) {
 				region = 0;
-				updateRegionTab("North America");
+				changeRegionTab("North America");
 			}
 		});
 
@@ -186,7 +187,7 @@ public class GameGui {
 			@Override
 			public void handle(MouseEvent click) {
 				region = 1;
-				updateRegionTab("Europe");
+				changeRegionTab("Europe");
 			}
 		});
 
@@ -194,7 +195,7 @@ public class GameGui {
 			@Override
 			public void handle(MouseEvent click) {
 				region = 2;
-				updateRegionTab("Asia");
+				changeRegionTab("Asia");
 			}
 		});
 
@@ -202,7 +203,7 @@ public class GameGui {
 			@Override
 			public void handle(MouseEvent click) {
 				region = 3;
-				updateRegionTab("Companies");
+				changeRegionTab("Companies");
 			}
 		});
 
@@ -210,7 +211,7 @@ public class GameGui {
 			@Override
 			public void handle(MouseEvent click) {
 				region = 4;
-				updateRegionTab("The Dark Net");
+				changeRegionTab("The Dark Net");
 			}
 		});
 
@@ -222,11 +223,14 @@ public class GameGui {
 		});
 
 // game code
-		new RunGame(); // all this is is a thread thaat does nothing right now, the game is being run by javafx
+		// new RunGame(); // all this is is a thread thaat does nothing right now, the game is being run by javafx
+
+		Hakd.running = true;
+		new UpdateThread();
 	}
 
-// tab stuff
-	private static void updateRegionTab(String name) { // updates the tab(opens it, closes it, renames it), only accessible by the tab handlers
+// gui updates
+	private static void changeRegionTab(String name) { // updates the tab(opens it, closes it, renames it), only accessible by the tab handlers
 		regionName = name;
 		if (region == -1) {
 			GuiController.mainScreen.getTabs().remove(GuiController.regionTab);
@@ -248,11 +252,19 @@ public class GameGui {
 
 	}
 
-	public static void updateRegion() { // updates the nodes in the region tab by removing all then adding all
+	public static void updateRegion() { // updates the nodes in the tab by removing all then adding all
 		GuiController.regionPane.getChildren().clear();
 		GuiController.regionPane.getChildren().addAll(circles);
 		GuiController.regionPane.getChildren().addAll(polygons);
 		GuiController.regionPane.getChildren().addAll(lines);
+	}
+
+	public static void updateServer() {
+
+	}
+
+	public static void updateNetwork() {
+
 	}
 
 	// --------getters/setters--------
@@ -272,11 +284,11 @@ public class GameGui {
 		GameGui.polygons = polygons;
 	}
 
-	public static ArrayList<Line> getLines() {
+	public static Vector<Line> getLines() {
 		return lines;
 	}
 
-	public static void setLines(ArrayList<Line> lines) {
+	public static void setLines(Vector<Line> lines) {
 		GameGui.lines = lines;
 	}
 

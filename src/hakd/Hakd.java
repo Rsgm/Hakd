@@ -14,6 +14,7 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
 
 public final class Hakd {
+	public static boolean	running	= false;
 
 	public static void main(String[] args) {
 		startServer();
@@ -33,6 +34,7 @@ public final class Hakd {
 
 	public static void quitGame(String reason) {
 		System.out.print("quitting");
+		running = false;
 		if (reason == null) {
 			System.exit(0);
 		}

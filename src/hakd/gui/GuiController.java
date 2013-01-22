@@ -28,72 +28,71 @@ import javafx.stage.WindowEvent;
 public class GuiController extends Application {
 	// just for simplicity and to make it easier to implement new game modes these are all public with no getters and setters
 
-	private static String					ip;
-	static AnchorPane				root				= new AnchorPane();
+	private static String				ip;
+	static AnchorPane					root					= new AnchorPane();
 
 	// ------menu
-	static AnchorPane				menuInterface		= new AnchorPane();
+	static AnchorPane					menuInterface			= new AnchorPane();
 
 	// terminal
-	public static TextArea			menuTerminal		= new TextArea("Hak'd\nBy Ryam Mirman");
-	public static TextField			menuInput			= new TextField();
+	public static TextArea				menuTerminal			= new TextArea("Hak'd\nBy Ryam Mirman");
+	public static TextField				menuInput				= new TextField();
 
 	// ------game
-	public static AnchorPane		gameInterface		= new AnchorPane();
+	public static AnchorPane			gameInterface			= new AnchorPane();
 
 	// main screen
-	public static TabPane			mainScreen			= new TabPane();
-	public static Tab				worldTab				= new Tab("World");
-	public static Tab				regionTab			= new Tab();
-	public static Tab				networkTab				= new Tab();
-	public static Tab				serverTab				= new Tab();
-	public static ScrollPane		worldScroll			= new ScrollPane();
-	public static ScrollPane		regionScroll			= new ScrollPane();
-	public static ScrollPane		networkScroll			= new ScrollPane();
-	public static ScrollPane		serverScroll			= new ScrollPane();
-	public static AnchorPane		worldPane			= new AnchorPane();
-	public static AnchorPane		regionPane			= new AnchorPane();
-	public static AnchorPane		networkPane			= new AnchorPane();
-	public static AnchorPane		serverPane			= new AnchorPane();
-	public static ArrayList<ImageView>	regionImage			= new ArrayList<ImageView>();
+	public static TabPane				mainScreen				= new TabPane();
+	public static Tab					worldTab				= new Tab("World");
+	public static Tab					regionTab				= new Tab();
+	public static Tab					networkTab				= new Tab();
+	public static Tab					serverTab				= new Tab();
+	public static ScrollPane			worldScroll				= new ScrollPane();
+	public static ScrollPane			regionScroll			= new ScrollPane();
+	public static ScrollPane			networkScroll			= new ScrollPane();
+	public static ScrollPane			serverScroll			= new ScrollPane();
+	public static AnchorPane			worldPane				= new AnchorPane();
+	public static AnchorPane			regionPane				= new AnchorPane();
+	public static AnchorPane			networkPane				= new AnchorPane();
+	public static AnchorPane			serverPane				= new AnchorPane();
+	public static ArrayList<ImageView>	regionImage				= new ArrayList<ImageView>();
 
 	// info screen
-	public static TabPane			infoScreenTab			= new TabPane();
-	public static Tab				infoTab				= new Tab("Info");
-	public static Tab				resourceTab			= new Tab("Resources");
-	public static Tab				runningProgramsTab		= new Tab("Running Programs");
-	public static Tab				debugTab				= new Tab("debug");
-	public static ScrollPane		infoScroll			= new ScrollPane();
-	public static ScrollPane		resourceScroll		= new ScrollPane();
-	public static ScrollPane		runningProgramsScroll	= new ScrollPane();
-	public static ScrollPane		debugScroll = new ScrollPane();
-	public static GridPane		infoGrid			= new GridPane();
-	public static GridPane		resourceGrid		= new GridPane();
-	public static GridPane		runningProgramsGrid	= new GridPane();
-	public static GridPane		debugGrid = new GridPane();
-
+	public static TabPane				infoScreenTab			= new TabPane();
+	public static Tab					infoTab					= new Tab("Info");
+	public static Tab					resourceTab				= new Tab("Resources");
+	public static Tab					runningProgramsTab		= new Tab("Running Programs");
+	public static Tab					debugTab				= new Tab("debug");
+	public static ScrollPane			infoScroll				= new ScrollPane();
+	public static ScrollPane			resourceScroll			= new ScrollPane();
+	public static ScrollPane			runningProgramsScroll	= new ScrollPane();
+	public static ScrollPane			debugScroll				= new ScrollPane();
+	public static GridPane				infoGrid				= new GridPane();
+	public static GridPane				resourceGrid			= new GridPane();
+	public static GridPane				runningProgramsGrid		= new GridPane();
+	public static GridPane				debugGrid				= new GridPane();
 
 	// menu
-	public static ToolBar			menuBar				= new ToolBar();							// add some more icons and stuff
-	public static Label				time				= new Label("10:54 PM");					// add a setter/getter
-	public static MenuButton		menuButton1			= new MenuButton("GuiController");
-	public static MenuItem			menuItem1			= new MenuItem("settings");
+	public static ToolBar				menuBar					= new ToolBar();							// add some more icons and stuff
+	public static Label					time					= new Label("10:54 PM");					// add a setter/getter
+	public static MenuButton			menuButton1				= new MenuButton("GuiController");
+	public static MenuItem				menuItem1				= new MenuItem("settings");
 
 	// split panes
-	public static SplitPane			splitPane1			= new SplitPane();
-	public static SplitPane			splitPane2			= new SplitPane();
-	public static AnchorPane		splitAnchor1		= new AnchorPane();
-	public static AnchorPane		splitAnchor2		= new AnchorPane();
+	public static SplitPane				splitPane1				= new SplitPane();
+	public static SplitPane				splitPane2				= new SplitPane();
+	public static AnchorPane			splitAnchor1			= new AnchorPane();
+	public static AnchorPane			splitAnchor2			= new AnchorPane();
 
 	// terminal
-	public static TextArea			terminalDisplay		= new TextArea("Loading . . .\nReady");
-	public static TextField			terminalInput		= new TextField(ip);
+	public static TextArea				terminalDisplay			= new TextArea("Loading . . .\nReady");
+	public static TextField				terminalInput			= new TextField(ip);
 
 	// networks
-	public static ArrayList<Line>		connection			= new ArrayList<Line>();
+	public static ArrayList<Line>		connection				= new ArrayList<Line>();
 
 	// settings menu
-	private static AnchorPane		settings			= new AnchorPane();
+	private static AnchorPane			settings				= new AnchorPane();
 
 	public static void run(String[] args) {
 		launch(args);
@@ -103,7 +102,8 @@ public class GuiController extends Application {
 	public void start(Stage gameStage) throws Exception {
 		gameStage.setTitle("Hak'd");
 		gameStage.setScene(new Scene(root, /* 500 */1024, /* 400 */768));
-		root.getStylesheets().add(GuiController.class.getResource("UI design.css").toExternalForm()); // maybe move this to gamegui to allow for different looks to the players OS
+		root.getStylesheets().add(GuiController.class.getResource("Gui.css").toExternalForm()); // maybe move this to gamegui to allow for
+// different looks to the players OS
 		gameStage.show();
 		MenuGui.startMenu();
 

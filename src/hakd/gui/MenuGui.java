@@ -2,11 +2,10 @@ package hakd.gui;
 
 import hakd.Hakd;
 import hakd.gameplay.PlayerController;
-import hakd.gui.threads.RunMenu;
 import hakd.network.Network;
 
-import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.Scanner;
 
 import javafx.event.EventHandler;
 import javafx.scene.input.KeyCode;
@@ -16,7 +15,7 @@ import javafx.scene.layout.AnchorPane;
 
 public class MenuGui {
 
-	private static int				recall	= 0;
+	private static int					recall	= 0;
 	private static ArrayList<String>	lines	= new ArrayList<String>();
 
 	public static void startMenu() {
@@ -82,7 +81,7 @@ public class MenuGui {
 		});
 
 		// game
-		new RunMenu();
+
 	}
 
 	static void menuCommands(String input) {
@@ -104,7 +103,7 @@ public class MenuGui {
 			network.populate();
 			PlayerController.setHomeNetwork(network);
 			PlayerController.setCurrentNetwork(network);
-			PlayerController.setCurrentServer(network.getServers().get(network.getServers().size()-1));
+			PlayerController.setCurrentServer(network.getServers().get(network.getServers().size() - 1));
 			PlayerController.setPlayerName(scanner.match().group(1));
 			PlayerController.updateCurrentIp(); // current server is set in the network class if it is the home network
 

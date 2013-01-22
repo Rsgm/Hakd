@@ -23,7 +23,7 @@
 	-fx-fill: #cc0000;
 }
 
-.nuetral-network {
+.neutral-network {
 	-fx-fill: #bfbfbf;
 }
 
@@ -38,6 +38,6 @@
 	-fx-background-color: blue;
 }
 
-.pane-background {
+.pane-background{
 	-fx-background-color: black;
 }
