@@ -1,30 +1,30 @@
 package hakd.network.serverparts;
 
-import java.lang.Math;
-
 public class Gpu {
 
 	// stats
-	private int network;
-	private int server;
-	private int motherboard;
-	private int level;
+	private int		network;
+	private int		server;
+	private int		motherboard;
+	private int		level;
 
-	private int speed; // in MHz
+	private int		speed;			// in MHz
 
-	private String brand;
-	private String model;
+	private String	brand;
+	private String	model;
 
-	public Gpu(){
-		level = 7; // (int)(Math.random()*7); //Network.network[network].getLevel();
+	public Gpu(int level, int network, int server) {
+		this.level = level; // (int)(Math.random()*7); //Network.network[network].getLevel();
+		this.network = network;
+		this.server = server;
 
-		switch(level){
-		case 0:
-			speed = (int)(Math.random()*200+100);
-			break;
-		default:
-			speed = (level+1)*150+(int)(Math.random()*400-200);
-			break;
+		switch (level) {
+			case 0:
+				speed = (int) (Math.random() * 200 + 100);
+				break;
+			default:
+				speed = (level + 1) * 150 + (int) (Math.random() * 400 - 200);
+				break;
 		}
 	}
 
@@ -83,5 +83,5 @@ public class Gpu {
 	public void setModel(String model) {
 		this.model = model;
 	}
-	
+
 }

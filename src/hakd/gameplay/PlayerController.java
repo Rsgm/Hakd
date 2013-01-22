@@ -1,21 +1,28 @@
 package hakd.gameplay;
 
-import hakd.network.Dns;
+import hakd.gui.GuiController;
 import hakd.network.Network;
-import hakd.userinterface.Controller;
+import hakd.network.Server;
 
 public class PlayerController {
 
-	private static int money; // in $
-	private static String playerName;
+	// player stats
+	private static int		money;			// in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or no redundancy with strong encryption
+	private static String	playerName;
 
 	// networks
-	private static String homeNetwork;
+	private static Network	homeNetwork; // meant to be used as the players home base
 
-	private static String currentNetwork;
-	private static int currentServer;
+	private static Network	currentNetwork;
+	private static Server	currentServer;
+	
+	// --------methods--------
 
-
+	public static void updateCurrentIp(){
+		GuiController.setIp(currentNetwork.getIp() + "/" + currentServer.getServerId() + ">");
+	}
+	
+	// --------getters/setters--------
 	public static int getMoney() {
 		return money;
 	}
@@ -24,30 +31,28 @@ public class PlayerController {
 		PlayerController.money = money;
 	}
 
-	public static String getHomeNetwork() {
+	public static Network getHomeNetwork() {
 		return homeNetwork;
 	}
 
-	public static void setHomeNetwork(String homeNetwork) {
+	public static void setHomeNetwork(Network homeNetwork) {
 		PlayerController.homeNetwork = homeNetwork;
 	}
 
-	public static String getCurrentNetwork() {
+	public static Network getCurrentNetwork() {
 		return currentNetwork;
 	}
 
-	public static void setCurrentNetwork(String currentNetwork) {
+	public static void setCurrentNetwork(Network currentNetwork) {
 		PlayerController.currentNetwork = currentNetwork;
-		Controller.setIp(currentNetwork + "/" + currentServer + ">");
 	}
 
-	public static int getCurrentServer() {
+	public static Server getCurrentServer() {
 		return currentServer;
 	}
 
-	public static void setCurrentServer(int currentServer) {
+	public static void setCurrentServer(Server currentServer) {
 		PlayerController.currentServer = currentServer;
-		Controller.setIp(currentNetwork + "/" + currentServer + ">");
 	}
 
 	public static String getPlayerName() {
@@ -56,6 +61,6 @@ public class PlayerController {
 
 	public static void setPlayerName(String playerName) {
 		PlayerController.playerName = playerName;
-		Network.getNetworks().get(Dns.findNetwork(homeNetwork)).setOwner(playerName);
+		homeNetwork.setOwner(playerName);
 	}
 }

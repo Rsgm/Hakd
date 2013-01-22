@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/jre7"/>
-	<classpathentry kind="lib" path="G:/files/java/jre7/lib/jfxrt.jar"/>
-	<classpathentry kind="lib" path="G:/GitHub/hakd/tomcat-embed-core.jar"/>
-	<classpathentry kind="lib" path="G:/GitHub/hakd/tomcat-embed-logging-juli.jar"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libraries/tomcat-embed-core.jar"/>
+	<classpathentry kind="lib" path="libraries/tomcat-embed-logging-juli.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jdk1.7.0_09/jre/lib/jfxrt.jar"/>
+	<classpathentry kind="lib" path="libraries/luaj-jse-3.0-alpha1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

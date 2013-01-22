@@ -1,17 +1,16 @@
 package hakd.network;
 
-import hakd.userinterface.Controller;
+import hakd.gui.GameGui;
 
-import java.util.Vector;
+import java.util.ArrayList;
 
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Line;
 
 public class Dns {
 
-	private static Vector<String>	dnsList			= new Vector<String>(2, 1);
-	private static Vector<String>	connection		= new Vector<String>(1, 1);
-	private static Vector<Line>		connectionLine	= new Vector<Line>(1, 1);
+	private static ArrayList<String>	dnsList		= new ArrayList<String>();
+	private static ArrayList<String>	connection	= new ArrayList<String>(); // TODO make connection a class/objects
 
 	// --------methods--------
 	public static String assignIp(int region) { // assigns an ip to an object that requests one, also checks it and adds it to the dns list
@@ -39,15 +38,15 @@ public class Dns {
 									+ (int) (Math.random() * 256);
 					break;
 			}
-		} while (dnsList.indexOf(ip) != -1);
+		} while (dnsList.contains(ip));
 		dnsList.add(ip);
 		dnsList.add("");
 		return ip;
 	}
 
-	public static boolean addUrl(String ip, String url) { // registers a url to an ip // ip can only be a player's ip if they buy it
+	public static boolean addUrl(String ip, String url) { // registers a url to an ip just so not everything is an ip // ip can only be a player's ip if they buy it
 		if (url.matches("")) {
-			if (dnsList.indexOf(url) == -1 && dnsList.indexOf(ip) != -1) {
+			if (!dnsList.contains(url) && dnsList.contains(ip)) {
 				dnsList.set(dnsList.indexOf(ip) + 1, url);
 				return true; // "you have successfully registered the url " + url + " for the ip " + ip;
 			}
@@ -57,16 +56,18 @@ public class Dns {
 
 	public static int findNetwork(String address) {
 		if (!address
-				.matches("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")) {
+				.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b")) { // ip regex
 			address = dnsList.get(dnsList.indexOf(address) + 1);
-		}
-		if (dnsList.indexOf(address) != -1) {
+		}else if (address.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b")&&dnsList.contains(address)) {
 			return dnsList.indexOf(address) / 2;
 		}
 		return -1;
 	}
 
 	public static void addConnection(Network network, String address2) {
+		ArrayList<Line> lines = GameGui.getLines();
+		int radius = GameGui.getRadius();
+
 		String address1 = network.getIp();
 		double r, a, b, c, xTrig, yTrig, x1, y1, x2, y2; // triangle>ABC
 
@@ -74,7 +75,7 @@ public class Dns {
 		y1 = network.getyCoordinate();
 		x2 = Network.getNetworks().get(findNetwork(address2)).getxCoordinate();
 		y2 = Network.getNetworks().get(findNetwork(address2)).getyCoordinate();
-		r = Network.getRadius();
+		r = radius;
 
 		a = 1; // line BC, point C is only (x2,y2+1)
 		b = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 + 1 - y1) * (y2 + 1 - y1)); // line CA
@@ -84,9 +85,6 @@ public class Dns {
 		if (x2 - x1 != 0) {
 			xTrig = r * Math.sin(Math.acos((a * a - b * b + c * c) / (2 * a * c)));
 			yTrig = r * Math.cos(Math.acos((a * a - b * b + c * c) / (2 * a * c)));
-
-			System.out.print(xTrig + "\n" + yTrig + "\n" + ((a * a - b * b + c * c) / (-2 * a * c)) + "\n");
-			System.out.println(a + "  " + b + "  " + c);
 			if (x2 - x1 > 0) {
 				line.setStartX(x1 + xTrig);
 				line.setStartY(y1 - yTrig);
@@ -100,11 +98,11 @@ public class Dns {
 			}
 		} else {
 			if (y2 - y1 > 0) {
-				// line.setendx(x2);
-				// line.setendy(y2+radius);
+				line.setEndX(x2);
+				line.setEndY(y2 + r);
 			} else if (y2 - y1 < 0) {
-				// line.setendx(x2);
-				// line.setendy(y2-radius);
+				line.setEndX(x2);
+				line.setEndY(y2 - r);
 			} else {
 				return;
 			}
@@ -117,24 +115,24 @@ public class Dns {
 		line.setFill(Paint.valueOf("black"));
 		line.setStrokeWidth(1.15);
 		line.setOpacity(0.3);
-		connectionLine.add(line);
+		lines.add(line);
 		connection.add(address1);
 		connection.add(address2);
 
-		Controller.regionView.get(network.getRegion()).getChildren().add(line);
+		GameGui.updateRegion();
 		return;
 	}
 
 	// --------getters/setters--------
-	public static Vector<String> getDnsList() {
+	public static ArrayList<String> getDnsList() {
 		return dnsList;
 	}
 
-	public static void setDnsList(Vector<String> dnsList) {
+	public static void setDnsList(ArrayList<String> dnsList) {
 		Dns.dnsList = dnsList;
 	}
 
-	public static Vector<String> getConnection() {
+	public static ArrayList<String> getConnection() {
 		return connection;
 	}
 }

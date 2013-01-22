@@ -1,4 +1,4 @@
-package hakd.userinterface.threads;
+package hakd.gui.threads;
 
 public class RunMenu implements Runnable {
 	Thread t;
