@@ -4,10 +4,9 @@ import hakd.gameplay.PlayerController;
 import hakd.gui.GameGui;
 import hakd.networking.Dns;
 
-import java.awt.Desktop;
-import java.awt.Paint;
-import java.awt.Polygon;
-import java.awt.datatransfer.Clipboard;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.MouseEvent;
 import java.io.IOException;
 import java.util.ArrayList;
 
