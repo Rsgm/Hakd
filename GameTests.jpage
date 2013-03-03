@@ -1,0 +1,83 @@
+String s1 = new String("147.149.247.110/0>help");
+Scanner scan = new Scanner(s1);
+scan.findInLine(">(\\S+)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*)");
+scan.match().group(1)
+
+
+
+String target = "35.8.8.8";
+target.matches("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")
+
+
+
+String text = "1.1.1.1";
+text.matches("^([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])\\.([01]?\\d\\d?|2[0-4]\\d|25[0-5])$")/*&&scan.match().group(4).matches("\\S+")&&scan.match().group(5).matches("^\\d+$")*/
+
+
+
+Network.getNetwork().add(new Network("new player"));
+Network.getNetwork().get(Network.getNetwork().size()-1).populate();
+PlayerController.setHomeNetwork(Network.getNetwork().get(Network.getNetwork().size()-1).getIp());
+PlayerController.setPlayerName("ryan mirman");
+
+Network.getNetwork()
+
+String target = Network.getNetwork().get(0).getIp();
+
+Network.getNetwork().get()
+
+Network.getNetwork().get(Dns.findNetwork(target)).connect(PlayerController.getCurrentNetwork(), scan.match().group(2), Integer.parseInt(scan.match().group(4))) == true)
+
+
+// /hakd.jar?
+Desktop.getDesktop().browse(new File("/files/Hakd/src/com/github/rmirman/hakd/web/websites/404.html").toURI());
+
+//=====connection testing=====
+Network.getNetwork().add(new Network("new player"));
+Network.getNetwork().get(0).populate();
+Network.getNetwork().add(new Network("test"));
+Network.getNetwork().get(1).populate();
+Network.getNetwork().get(0).getServer().get(0).addPorts(22, "ssh");
+Network.getNetwork().get(0).addPorts(22, "ssh", 0);
+//Network.getNetwork()
+Network.connect(Network.getNetwork().get(1).getIp(), Network.getNetwork().get(0).getIp(), "ssh", 22)
+
+
+
+Math.sin((Math.PI*0)/180)*20 // these are pixles does the decimal matter that much?
+Math.cos(Math.toRadians(270))*20 // TODO test this ^^^
+
+
+double x1,x2,y1,y2,a,b,c,m,n;
+x1 = 100;
+y1 = 150;
+x2 = 50;
+y2 =300;
+
+a = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 - y1, 2)); //line>AB
+b = y2 + 1; //line>BC, point C is only (x2,y2+1)
+c = Math.sqrt(Math.pow(x2 - x1, 2) + Math.pow(y2 + 1 - y1, 2)); //line>CA
+
+//Math.acos((a * a - b * b - c * c) / (-2 * a * b))
+Math.sin(Math.acos((a * a - b * b - c * c) / (-2 * a * b)))
+
+
+int k=0;
+for(int i=0; i<1000000000; i++){
+	k = ((int)((Math.random() * 30)+1));
+	if(k==31){
+		break;
+	}
+}
+k
+
+Programs.runProgram("hello");
+
+
+
+java.util.ArrayList<String> text = new java.util.ArrayList<String>();
+text.add("test0");
+text.add("test");
+text.add("test");
+text.lastIndexOf("test");
+text.get(0)

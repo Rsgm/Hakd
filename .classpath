@@ -2,5 +2,9 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="lib" path="libraries/tomcat-embed-core.jar"/>
+	<classpathentry kind="lib" path="libraries/tomcat-embed-logging-juli.jar"/>
+	<classpathentry kind="lib" path="C:/Program Files/Java/jdk1.7.0_11/jre/lib/jfxrt.jar"/>
+	<classpathentry kind="lib" path="libraries/luaj-jse-3.0-alpha1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

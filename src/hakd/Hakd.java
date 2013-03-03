@@ -1,66 +1,67 @@
 package hakd;
 
-import com.badlogic.gdx.ApplicationListener;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureRegion;
+import hakd.gui.GuiController;
+import hakd.web.servlets.NetworkServlet;
+import hakd.web.servlets.StoreServlet;
 
-public class Hakd implements ApplicationListener {
-	private OrthographicCamera	camera;
-	private SpriteBatch			batch;
-	private Texture				texture;
-	private Sprite				sprite;
+import java.io.File;
 
-	@Override
-	public void create() {
-		float w = Gdx.graphics.getWidth();
-		float h = Gdx.graphics.getHeight();
+import org.apache.catalina.Context;
+import org.apache.catalina.LifecycleException;
+import org.apache.catalina.startup.Tomcat;
+import org.luaj.vm2.Globals;
+import org.luaj.vm2.LuaValue;
+import org.luaj.vm2.lib.jse.JsePlatform;
 
-		camera = new OrthographicCamera(1, h / w);
-		batch = new SpriteBatch();
+public final class Hakd {
+	public static boolean	running	= false;
 
-		texture = new Texture(Gdx.files.internal("data/libgdx.png"));
-		texture.setFilter(TextureFilter.Linear, TextureFilter.Linear);
-
-		TextureRegion region = new TextureRegion(texture, 0, 0, 512, 275);
-
-		sprite = new Sprite(region);
-		sprite.setSize(0.9f, 0.9f * sprite.getHeight() / sprite.getWidth());
-		sprite.setOrigin(sprite.getWidth() / 2, sprite.getHeight() / 2);
-		sprite.setPosition(-sprite.getWidth() / 2, -sprite.getHeight() / 2);
+	public static void main(String[] args) {
+		startServer();
+		// startLua(); // TODO set this to the lua method in programs
+		GuiController.run(args);// start the user interface, that also runs the game
 	}
 
-	@Override
-	public void dispose() {
-		batch.dispose();
-		texture.dispose();
+	private static void startLua() { // I don't think this is needed, it is all handled in the programs class
+		String script = "lua/hello.lua";
+
+		Globals globals = JsePlatform.standardGlobals();
+
+		LuaValue chunk = globals.loadFile(script);
+
+		chunk.call(LuaValue.valueOf(script));
 	}
 
-	@Override
-	public void render() {
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-
-		batch.setProjectionMatrix(camera.combined);
-		batch.begin();
-		sprite.draw(batch);
-		batch.end();
+	public static void quitGame(String reason) {
+		System.out.print("quitting");
+		running = false;
+		if (reason == null) {
+			System.exit(0);
+		}
+		if (reason != null) {
+			System.exit(1);
+		}
 	}
 
-	@Override
-	public void resize(int width, int height) {
-	}
+	private static void startServer() { // start tomcat and servlets
+		// TODO move this at some point to a controller class in the servlet folder so each game mode has its own, if needed. and so its not running
+// during modes that don't need it
+		Tomcat tomcat = new Tomcat();
+		tomcat.setPort(80);
+		Context context = tomcat.addContext("/", new File(".").getAbsolutePath());
 
-	@Override
-	public void pause() {
-	}
+		StoreServlet store = new StoreServlet();
+		Tomcat.addServlet(context, "store", store);
+		context.addServletMapping("/store/*", "store");
 
-	@Override
-	public void resume() {
+		NetworkServlet network = new NetworkServlet();
+		Tomcat.addServlet(context, "network", network);
+		context.addServletMapping("/network/*", "network");
+
+		try {
+			tomcat.start();
+		} catch (LifecycleException e) {
+			e.printStackTrace();
+		}
 	}
 }

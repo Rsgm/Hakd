@@ -1,25 +1,27 @@
 package hakd.gameplay;
 
-import hakd.networking.Network;
+import hakd.gui.GuiController;
+import hakd.network.Network;
+import hakd.network.Server;
 
 public class PlayerController {
+
 	// player stats
-	private static int		money;			// in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or
-// no redundancy with strong encryption
+	private static int		money;			// in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or no redundancy with strong encryption
 	private static String	playerName;
 
 	// networks
-	private static Network	homeNetwork;	// meant to be used as the players home base
+	private static Network	homeNetwork; // meant to be used as the players home base
 
 	private static Network	currentNetwork;
 	private static Server	currentServer;
-
+	
 	// --------methods--------
 
-	public static void updateCurrentIp() {
+	public static void updateCurrentIp(){
 		GuiController.setIp(currentNetwork.getIp() + "/" + currentServer.getServerId() + ">");
 	}
-
+	
 	// --------getters/setters--------
 	public static int getMoney() {
 		return money;
