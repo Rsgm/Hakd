@@ -2,7 +2,7 @@ package hakd.network;
 
 import hakd.gameplay.PlayerController;
 import hakd.gui.GameGui;
-import hakd.networking.Dns;
+import hakd.networking.Dns_old;
 
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -42,7 +42,7 @@ public class Network { // TODO make all objects ArrayLists
 		switch (type) {
 			case 0:// new player // only happens at the start of the game
 				region = 0;
-				ip = Dns.assignIp(region);
+				ip = Dns_old.assignIp(region);
 				level = 0;
 				serverLimit = 1;
 				stance = 0;
@@ -50,7 +50,7 @@ public class Network { // TODO make all objects ArrayLists
 				break;
 			case 1: // company // random company name // company.assignName();
 				region = 0;
-				ip = Dns.assignIp(region);
+				ip = Dns_old.assignIp(region);
 				serverLimit = (int) (Math.random() * 19 + 1); // 1-19, the absolute maximum without upgrading
 				level = (int) (Math.random() * 8);
 				owner = "company"; // TODO choose random names, either from a file or an enum, so there will be no need to use io
@@ -58,7 +58,7 @@ public class Network { // TODO make all objects ArrayLists
 				break;
 			case 2:
 				region = 0;
-				ip = Dns.assignIp(region);
+				ip = Dns_old.assignIp(region);
 				owner = "test";
 				serverLimit = 5;
 				level = 7;
@@ -78,14 +78,14 @@ public class Network { // TODO make all objects ArrayLists
 			servers.get(servers.size() - 1).populate(servers.size() - 1);
 		}
 		addNetwork(); // creates a circle representing the network with squares on it representing the servers
-		Dns.addConnection(this, isp); // creates a connection with an isp
+		Dns_old.addConnection(this, isp); // creates a connection with an isp
 	}
 
 	public static boolean connect(String fromAddress, String toAddress, String program, int portInt) { // TODO test and if possible fix, otherwise
 // rewrite
-		int id = Dns.findNetwork(toAddress);
+		int id = Dns_old.findNetwork(toAddress);
 		String port = portInt + "";
-		if (networks.get(id).ports.get(networks.get(id).ports.indexOf(port) + 1).equals(program) && Dns.findNetwork(fromAddress) != -1) {
+		if (networks.get(id).ports.get(networks.get(id).ports.indexOf(port) + 1).equals(program) && Dns_old.findNetwork(fromAddress) != -1) {
 			return (networks.get(id).servers.get(Integer.parseInt(networks.get(id).ports.get(networks.get(id).ports.indexOf(port) + 2))).connect(
 					fromAddress, program, port));
 		}

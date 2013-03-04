@@ -1,12 +1,12 @@
 package hakd.networking;
 
-import hakd.network.Network;
+import hakd.networking.devices.Dns;
 
 public class ServiceProvider extends Network {
 
-	public ServiceProvider(int type) {
-		super(type);
+	public ServiceProvider() {
+		super(Network.Types.ISP);
 
+		getDevices().add(new Dns(true)); // give each isp a dns server
 	}
-
 }

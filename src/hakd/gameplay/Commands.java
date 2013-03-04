@@ -3,7 +3,7 @@ package hakd.gameplay;
 import hakd.Hakd;
 import hakd.gui.GuiController;
 import hakd.network.Network;
-import hakd.networking.Dns;
+import hakd.networking.Dns_old;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -72,7 +72,7 @@ public class Commands {
 				Hakd.quitGame(null); // TODO this will give a null pointer
 				break;
 			case "test":
-				System.out.println(Dns.getDnsList().size());
+				System.out.println(Dns_old.getDnsList().size());
 				break;
 			case "home":
 				PlayerController.setCurrentNetwork(PlayerController.getHomeNetwork());

@@ -1,27 +1,28 @@
 package hakd.gameplay;
 
 import hakd.gui.GuiController;
-import hakd.network.Network;
-import hakd.network.Server;
+import hakd.networking.Network;
+import hakd.networking.devices.Server;
 
 public class PlayerController {
-
 	// player stats
-	private static int		money;			// in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or no redundancy with strong encryption
+	private static int		money;			// in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or
+// no redundancy with strong encryption
 	private static String	playerName;
+	private String			terminalText;
 
 	// networks
-	private static Network	homeNetwork; // meant to be used as the players home base
+	private static Network	homeNetwork;	// meant to be used as the players home base
 
 	private static Network	currentNetwork;
 	private static Server	currentServer;
-	
+
 	// --------methods--------
 
-	public static void updateCurrentIp(){
+	public static void updateTerminalText() {
 		GuiController.setIp(currentNetwork.getIp() + "/" + currentServer.getServerId() + ">");
 	}
-	
+
 	// --------getters/setters--------
 	public static int getMoney() {
 		return money;
@@ -62,5 +63,13 @@ public class PlayerController {
 	public static void setPlayerName(String playerName) {
 		PlayerController.playerName = playerName;
 		homeNetwork.setOwner(playerName);
+	}
+
+	public String getTerminalText() {
+		return terminalText;
+	}
+
+	public void setTerminalText(String terminalText) {
+		this.terminalText = terminalText;
 	}
 }
