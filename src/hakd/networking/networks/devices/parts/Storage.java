@@ -12,7 +12,9 @@ public class Storage extends Part {
 	// storage ArrayLists
 	private ArrayList<File>	osFiles			= new ArrayList<File>();	// operating system files, !FUN!.
 	private ArrayList<File>	userFiles		= new ArrayList<File>();	// random files people save
-	private ArrayList<File>	programFiles	= new ArrayList<File>();	// (lua)programs able to run // is this copywritten?(will Microsoft sue me?)
+	private ArrayList<File>	programFiles	= new ArrayList<File>();	// (lua)programs able to run, is this copywritten, will Microsoft sue?
+	private ArrayList<File>	logFiles		= new ArrayList<File>();	// these log arrays have infinite storage,
+// thanks to a new leap in quantum physics
 
 	public Storage(int level, Network network, Device device) {
 		super(level, network, device);
@@ -34,11 +36,13 @@ public class Storage extends Part {
 
 	}
 
-	public void addProgram(int size, String name, String data, String type) {
+	// adds a file to the end of user files
+	public void addFile(int size, String name, String data, String type) {
 		userFiles.add(new File(size, name, data, type));
 	}
 
-	public void removeProgram(Directory directory, String name) {// removes the first file with the specified name from the specified directory
+	// removes the first file with the specified name from the specified directory
+	public void removeFile(Directory directory, String name) {
 		switch (directory) {
 			case OSFILES:
 				for (File f : osFiles) {
@@ -60,11 +64,52 @@ public class Storage extends Part {
 						programFiles.remove(f);
 					}
 				}
+				break;
+			case LOGFILES:
+				for (File f : logFiles) {
+					if (f.getName() == name) {
+						logFiles.remove(f);
+					}
+				}
 		}
 	}
 
+	// removes the first file with the specified name from the specified directory
+	public File getFile(Directory directory, String name) {
+		switch (directory) {
+			case OSFILES:
+				for (File f : osFiles) {
+					if (f.getName() == name) {
+						return osFiles.get(osFiles.indexOf(f));
+					}
+				}
+				break;
+			default:
+				for (File f : userFiles) {
+					if (f.getName() == name) {
+						return userFiles.get(userFiles.indexOf(f));
+					}
+				}
+				break;
+			case PROGRAMFILES:
+				for (File f : programFiles) {
+					if (f.getName() == name) {
+						return programFiles.get(programFiles.indexOf(f));
+					}
+				}
+				break;
+			case LOGFILES:
+				for (File f : logFiles) {
+					if (f.getName() == name) {
+						return logFiles.get(logFiles.indexOf(f));
+					}
+				}
+		}
+		return null;
+	}
+
 	public enum Directory {
-		OSFILES, USERFILES, PROGRAMFILES;
+		OSFILES, USERFILES, PROGRAMFILES, LOGFILES;
 		private Directory() {
 		}
 	}
@@ -107,5 +152,13 @@ public class Storage extends Part {
 
 	public void setProgramFiles(ArrayList<File> programFiles) {
 		this.programFiles = programFiles;
+	}
+
+	public ArrayList<File> getLogFiles() {
+		return logFiles;
+	}
+
+	public void setLogFiles(ArrayList<File> logFiles) {
+		this.logFiles = logFiles;
 	}
 }

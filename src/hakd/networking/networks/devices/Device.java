@@ -11,6 +11,7 @@ import hakd.networking.networks.devices.parts.Storage;
 import java.awt.Desktop;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
 
 public class Device implements ConnectableDevice {
 
@@ -90,8 +91,8 @@ public class Device implements ConnectableDevice {
 
 	@Override
 	public boolean Connect(Network network, String program, int port) {
-		logs.add(network.);
-		logs.add("connecting to " + program + ":" + port);
+		File log = new File(0, "Log - " + network.getIp(), "connecting to " + program + ":" + port, ".log");
+		parts.indexOf() //TODO figure out how to search the parts array, try collections
 		if (ports.get(ports.indexOf(port) + 1).equals(program)) {
 			try {
 				switch (port) {
