@@ -12,7 +12,7 @@ public class File {
 		this.size = size;
 		this.name = name;
 		this.data = data;
-		this.setType(type);
+		this.type = type;
 	}
 
 	public int getSize() {
