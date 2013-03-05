@@ -1,8 +1,8 @@
 package hakd;
 
 import hakd.gui.GuiController;
-import hakd.web.servlets.NetworkServlet;
-import hakd.web.servlets.StoreServlet;
+import hakd.websites.servlets.NetworkServlet;
+import hakd.websites.servlets.StoreServlet;
 
 import java.io.File;
 

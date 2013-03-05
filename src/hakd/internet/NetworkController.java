@@ -1,8 +1,8 @@
-package hakd.networking;
+package hakd.internet;
 
-import hakd.networking.networks.Network;
-import hakd.networking.networks.ServiceProvider;
-import hakd.networking.networks.devices.Dns;
+import hakd.networks.Network;
+import hakd.networks.ServiceProvider;
+import hakd.networks.devices.Dns;
 
 import java.util.ArrayList;
 

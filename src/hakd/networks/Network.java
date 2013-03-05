@@ -1,8 +1,8 @@
-package hakd.networking.networks;
+package hakd.networks;
 
-import hakd.networking.ConnectableNetwork;
-import hakd.networking.NetworkController;
-import hakd.networking.networks.devices.Device;
+import hakd.internet.ConnectableNetwork;
+import hakd.internet.NetworkController;
+import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
 

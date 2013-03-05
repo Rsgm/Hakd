@@ -1,7 +1,7 @@
-package hakd.networking.networks.devices.parts;
+package hakd.networks.devices.parts;
 
-import hakd.networking.networks.Network;
-import hakd.networking.networks.devices.Device;
+import hakd.networks.Network;
+import hakd.networks.devices.Device;
 
 public class Memory extends Part {
 	private int	capacity;

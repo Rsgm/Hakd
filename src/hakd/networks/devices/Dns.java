@@ -1,8 +1,7 @@
-package hakd.networking.networks.devices;
+package hakd.networks.devices;
 
-import hakd.networking.Connection;
-import hakd.networking.NetworkController;
-import hakd.networking.networks.Network;
+import hakd.internet.Connection;
+import hakd.networks.Network;
 
 import java.awt.Paint;
 import java.util.ArrayList;
@@ -11,8 +10,11 @@ import java.util.Vector;
 import javax.sound.sampled.Line;
 
 public class Dns extends Device { // TODO make this an object not a static class, and let DNSs communicate a bit.
+	ArrayList<Connection>	hosts;
+
 	public Dns(Boolean publicDns, Network network) {
 		super(network);
+
 	}
 
 	// --------methods--------

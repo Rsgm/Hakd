@@ -1,4 +1,4 @@
-package hakd.web;
+package hakd.websites;
 
 public class Store {
 

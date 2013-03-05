@@ -1,4 +1,4 @@
-package hakd.networking.networks.devices.parts;
+package hakd.networks.devices.parts;
 
 public class File {
 

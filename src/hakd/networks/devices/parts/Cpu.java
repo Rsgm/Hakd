@@ -1,7 +1,7 @@
-package hakd.networking.networks.devices.parts;
+package hakd.networks.devices.parts;
 
-import hakd.networking.networks.Network;
-import hakd.networking.networks.devices.Device;
+import hakd.networks.Network;
+import hakd.networks.devices.Device;
 
 public class Cpu extends Part {
 	private int	cores;	// core modifier speed = speed (1.8*cores) // in MHz, 3.5GHz -> 3500MHz

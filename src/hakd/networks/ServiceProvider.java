@@ -1,4 +1,4 @@
-package hakd.networking.networks;
+package hakd.networks;
 
 import hakd.networking.NetworkController;
 import hakd.networking.networks.devices.Dns;

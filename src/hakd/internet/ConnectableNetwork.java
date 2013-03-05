@@ -1,6 +1,6 @@
-package hakd.networking;
+package hakd.internet;
 
-import hakd.networking.networks.Network;
+import hakd.networks.Network;
 
 public interface ConnectableNetwork {
 

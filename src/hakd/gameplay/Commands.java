@@ -2,7 +2,7 @@ package hakd.gameplay;
 
 import hakd.Hakd;
 import hakd.gui.GuiController;
-import hakd.networking.Dns_old;
+import hakd.internet.Dns_old;
 
 import java.util.ArrayList;
 import java.util.Scanner;

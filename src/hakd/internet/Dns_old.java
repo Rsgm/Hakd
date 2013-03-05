@@ -1,4 +1,4 @@
-package hakd.networking;
+package hakd.internet;
 
 import hakd.gui.GameGui;
 import hakd.network.Network;

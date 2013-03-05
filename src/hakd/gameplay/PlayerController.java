@@ -1,8 +1,8 @@
 package hakd.gameplay;
 
 import hakd.gui.GuiController;
-import hakd.networking.devices.Server;
-import hakd.networking.networks.Network;
+import hakd.internet.devices.Server;
+import hakd.networks.Network;
 
 public class PlayerController {
 	// player stats

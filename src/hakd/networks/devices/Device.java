@@ -1,26 +1,28 @@
-package hakd.networking.networks.devices;
+package hakd.networks.devices;
 
-import hakd.networking.networks.Network;
-import hakd.networking.networks.devices.parts.Cpu;
-import hakd.networking.networks.devices.parts.File;
-import hakd.networking.networks.devices.parts.Gpu;
-import hakd.networking.networks.devices.parts.Memory;
-import hakd.networking.networks.devices.parts.Part;
-import hakd.networking.networks.devices.parts.Storage;
+import hakd.internet.Connectable;
+import hakd.internet.Connection;
+import hakd.internet.Connection.Protocol;
+import hakd.networks.Network;
+import hakd.networks.devices.parts.Cpu;
+import hakd.networks.devices.parts.File;
+import hakd.networks.devices.parts.Gpu;
+import hakd.networks.devices.parts.Memory;
+import hakd.networks.devices.parts.Part;
+import hakd.networks.devices.parts.Storage;
 
 import java.awt.Desktop;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collections;
 
-public class Device implements ConnectableDevice {
+public class Device implements Connectable {
 
 	// stats
-	private Network					network;
-	private int						level;
+	private final Network			network;
+	private final int				level;
 
 	// private final int webserver = 0; // 0 = 404, if port 80 is open
-	private ArrayList<String>		ports	= new ArrayList<String>();	// port,
+	private final ArrayList<String>	ports	= new ArrayList<String>();	// port,
 // program / if its closed just
 // delete it
 	private File					logs;								// TODO make this a file instead //
@@ -90,14 +92,14 @@ public class Device implements ConnectableDevice {
 	// --------methods--------
 
 	@Override
-	public boolean Connect(Network network, String program, int port) {
-		File log = new File(0, "Log - " + network.getIp(), "connecting to " + program + ":" + port, ".log");
-		parts.indexOf() //TODO figure out how to search the parts array, try collections
+	public boolean Connect(Device client, String program, int port) {
+		Connection c = new Connection(this, network, Protocol.getProtocol(port));
+
 		if (ports.get(ports.indexOf(port) + 1).equals(program)) {
 			try {
 				switch (port) {
 					default: // 80, 443, others but just get directed to a 404 if not a website
-						Desktop.getDesktop().browse(java.net.URI.create("http://localhost:80/network/" + address));
+						Desktop.getDesktop().browse(java.net.URI.create("http://localhost:80/network/" + network.getIp()));
 					case 31337:
 						// grant complete(root?) access
 						// open ssh
@@ -112,13 +114,13 @@ public class Device implements ConnectableDevice {
 	}
 
 	@Override
-	public boolean Disconnect(Network network, String program, int port) {
+	public boolean Disconnect(Device device, String program, int port) {
 
 		return false;
 	}
 
 	@Override
-	public boolean addPorts(int port, String program, int server) {
+	public boolean addPorts(int port, String program, Device device) {
 		if (ports.contains(ports) == false) {
 
 			ports.add(port + "");
@@ -129,7 +131,7 @@ public class Device implements ConnectableDevice {
 	}
 
 	@Override
-	public boolean removePort(int port, String program, int server) {
+	public boolean removePort(int port, String program, Device device) {
 		int index = ports.indexOf(port);
 		if (ports.contains(port)) {
 			ports.remove(index + 1);
@@ -139,52 +141,18 @@ public class Device implements ConnectableDevice {
 		return false;
 	}
 
+	@Override
+	public void log(Device host, Device client, String program, String port) {
+		File log = new File(0, "Log - " + network.getIp(), "connecting to " + program + ":" + port, ".log");
+		parts.indexOf(null); // TODO figure out how to search the parts array, try collections
+	}
+
 	// --------getters/setters--------
-	public Network getNetwork() {
-		return network;
-	}
-
-	public void setNetwork(Network network) {
-		this.network = network;
-	}
-
-	public int getNetworkId() {
-		return n;
-	}
-
-	public void setNetworkId(int networkId) {
-		this.n = networkId;
-	}
-
-	public int getServerId() {
-		return serverId;
-	}
-
-	public void setServerId(int serverId) {
-		this.serverId = serverId;
-	}
-
-	public int getLevel() {
-		return level;
-	}
-
-	public void setLevel(int level) {
-		this.level = level;
-	}
-
-	public ArrayList<String> getPorts() {
-		return ports;
-	}
-
-	public void setPorts(ArrayList<String> ports) {
-		this.ports = ports;
-	}
-
-	public ArrayList<String> getLogs() {
+	public File getLogs() {
 		return logs;
 	}
 
-	public void setLogs(ArrayList<String> logs) {
+	public void setLogs(File logs) {
 		this.logs = logs;
 	}
 
@@ -236,8 +204,19 @@ public class Device implements ConnectableDevice {
 		this.gpuSlots = gpuSlots;
 	}
 
+	public Network getNetwork() {
+		return network;
+	}
+
+	public int getLevel() {
+		return level;
+	}
+
+	public ArrayList<String> getPorts() {
+		return ports;
+	}
+
 	public ArrayList<Part> getParts() {
 		return parts;
 	}
-
 }

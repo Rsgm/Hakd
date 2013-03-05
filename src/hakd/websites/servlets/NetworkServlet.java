@@ -1,4 +1,4 @@
-package hakd.web.servlets;
+package hakd.websites.servlets;
 
 import java.io.BufferedReader;
 import java.io.DataInputStream;

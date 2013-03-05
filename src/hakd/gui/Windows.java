@@ -1,7 +1,7 @@
 package hakd.gui;
 
+import hakd.internet.Dns_old;
 import hakd.network.Network;
-import hakd.networking.Dns_old;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package hakd.web;
+package hakd.websites;
 
 import java.io.File;
 import java.io.IOException;
