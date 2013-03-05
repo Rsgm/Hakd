@@ -1,5 +1,7 @@
 package hakd.networking;
 
+import hakd.networking.networks.Network;
+
 public interface ConnectableNetwork {
 
 	// connects to a specified network on the specified port

@@ -25,7 +25,7 @@ public class Server {
 
 	// objects
 	private int						cpuSockets;							// easier than using a for loop to count the amount, just remember to
-	// change this value
+	// change this port
 	private int						memorySlots;
 	private int						storageSlots;
 	private int						gpuSlots;

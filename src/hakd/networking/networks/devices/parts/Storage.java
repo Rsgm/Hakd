@@ -1,4 +1,4 @@
-package hakd.networking.devices.parts;
+package hakd.networking.networks.devices.parts;
 
 import java.util.ArrayList;
 
@@ -7,16 +7,11 @@ public class Storage extends Part {
 	// stats
 	private int		network;
 	private int		server;
-	private int		motherboard;
 	private int		level;
 
 	private boolean	ssd;										// doubles the speed
-	private int		speed;										// in MB/s // what do i use speed for? an extra factor in start up times(for security
-	// machines?), copying/pasting files
+	private int		speed;
 	private int		capacity;									// in GB
-
-	private String	brand;
-	private String	model;
 
 	// storage ArrayLists
 	ArrayList<File>	osFiles			= new ArrayList<File>();	// operating system files, !FUN!.

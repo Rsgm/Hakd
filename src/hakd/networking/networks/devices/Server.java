@@ -1,6 +1,6 @@
-package hakd.networking.devices;
+package hakd.networking.networks.devices;
 
-import hakd.networking.Network;
+import hakd.networking.networks.Network;
 
 public class Server extends Device {
 

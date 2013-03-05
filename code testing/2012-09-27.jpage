@@ -81,3 +81,5 @@ text.add("test");
 text.add("test");
 text.lastIndexOf("test");
 text.get(0)
+
+

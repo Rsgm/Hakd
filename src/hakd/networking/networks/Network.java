@@ -1,7 +1,8 @@
-package hakd.networking;
+package hakd.networking.networks;
 
-import hakd.networking.devices.Device;
-import hakd.networking.devices.Server;
+import hakd.networking.ConnectableNetwork;
+import hakd.networking.NetworkController;
+import hakd.networking.networks.devices.Device;
 
 import java.util.ArrayList;
 
@@ -100,30 +101,21 @@ public class Network implements ConnectableNetwork {
 
 	// --------enumerations--------
 	public enum Types {
-		PLAYER(0), COMPANY(1), TEST(2), ISP(3), DNS(4);
-		private int	value;
-
-		private Types(int value) {
-			this.value = value;
+		PLAYER(), COMPANY(), TEST(), ISP();// more to come
+		private Types() {
 		}
 	};
 
 	public enum Stances {
-		FRIENDLY(0), NEUTRAL(1), ENEMY(2);
-		private int	value;
-
-		private Stances(int value) {
-			this.value = value;
+		FRIENDLY(), NEUTRAL(), ENEMY();
+		private Stances() {
 		}
 
 	};
 
 	public enum Regions {
-		NA(0), SA(1), ASIA(2); // others
-		private int	value;
-
-		private Regions(int value) {
-			this.value = value;
+		NA(), SA(), ASIA(); // others
+		private Regions() {
 		}
 
 	}

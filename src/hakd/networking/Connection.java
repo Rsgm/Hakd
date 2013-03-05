@@ -1,25 +1,30 @@
 package hakd.networking;
 
-import hakd.networking.devices.Dns;
+import hakd.networking.networks.devices.Device;
+import hakd.networking.networks.devices.Dns;
 
 import java.util.ArrayList;
 
 public class Connection {
+	private Device	sender;	// not the best names, but it beats master/slave in political correctness, though not geekiness
+	private Device	reciever;
+	private String	senderIp;
+	private String	recieverIp;
 
-	private int				speed;
-	private final Network[]	network	= new Network[2];
-	private String			ip;
+	// other info
+	private int		speed;
 
 // private// --------constructor--------
-	public Connection(Network net0, Network net1, Protocol protocol) {
-		network[0] = net0;
-		network[1] = net1;
+	public Connection(Device sender, Device reciever, Protocol protocol) {
+		this.sender = sender;
+		this.reciever = reciever;
 
-		if (network[0].getSpeed() >= network[1].getSpeed()) {
-			speed = network[0].getSpeed();
+		if (sender.getNetwork().getSpeed() >= reciever.getNetwork().getSpeed()) { // slowest speed goes
+			speed = reciever.getNetwork().getSpeed();
 		} else {
-			speed = network[1].getSpeed();
+			speed = sender.getNetwork().getSpeed();
 		}
+
 	}
 
 	// --------methods-------- // like sending data and secure data
@@ -37,13 +42,51 @@ public class Connection {
 	public enum Protocol { // protocol(port)
 		FTP(21), SSH(22), SMTP(25), WHOIS(43), DNS(53), HTTP(80), HTTPS(443), STEAM(1725), XBOX(3074), MYSQL(3306), RDP(3389), WOW(3724), UPUP(5000),
 		IRC(6667), TORRENT(6881), LAMBDA(27015), COD(28960), LEET(31337);
-		private int	value;
+		int	port;
 
-		private Protocol(int value) {
-			this.value = value;
+		private Protocol(int port) {
+			this.port = port;
 		}
-	};
+	}
 
 	// --------getters/setters--------
+	public Device getSender() {
+		return sender;
+	}
 
+	public void setSender(Device sender) {
+		this.sender = sender;
+	}
+
+	public Device getReciever() {
+		return reciever;
+	}
+
+	public void setReciever(Device reciever) {
+		this.reciever = reciever;
+	}
+
+	public String getSenderIp() {
+		return senderIp;
+	}
+
+	public void setSenderIp(String senderIp) {
+		this.senderIp = senderIp;
+	}
+
+	public String getRecieverIp() {
+		return recieverIp;
+	}
+
+	public void setRecieverIp(String recieverIp) {
+		this.recieverIp = recieverIp;
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
+	};
 }

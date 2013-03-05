@@ -2,7 +2,6 @@ package hakd.gameplay;
 
 import hakd.Hakd;
 import hakd.gui.GuiController;
-import hakd.network.Network;
 import hakd.networking.Dns_old;
 
 import java.util.ArrayList;
@@ -12,8 +11,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 
 public class Commands {
-	private static int				recall	= 0; // holds the position of the ArrayList
-	private static ArrayList<String>	lines	= new ArrayList<String>(); // holds previously used commands for easy access
+	private static int					recall	= 0;						// holds the position of the ArrayList
+	private static ArrayList<String>	lines	= new ArrayList<String>();	// holds previously used commands for easy access
 
 	public static void inputHandler(KeyEvent input) {
 		if (input.getCode() == KeyCode.ENTER) {
@@ -57,33 +56,33 @@ public class Commands {
 			}
 
 			switch (args.get(0)) { // change all scanner groups to args
-			default:
-				GuiController.terminalDisplay.setText(GuiController.terminalDisplay.getText() + "\n'" + args.get(0)
-						+ "' is not a recognized command");
-				break;
-			case "help":
-				help();
-				break;
-			case "add":
-				Network.getNetworks().add(new Network(1));
-				Network.getNetworks().get(Network.getNetworks().size() - 1).populate();
-				break;
-			case "quit":
-				Hakd.quitGame(null); // TODO this will give a null pointer
-				break;
-			case "test":
-				System.out.println(Dns_old.getDnsList().size());
-				break;
-			case "home":
-				PlayerController.setCurrentNetwork(PlayerController.getHomeNetwork());
-				PlayerController.setCurrentServer(PlayerController.getHomeNetwork().getServers().get(0));
-				PlayerController.updateCurrentIp();
-				break;
-			case "run": // runs a lua script program, can I do it without using the word "run"
-				break;
-			case "debug":
-				hakd.gui.Windows.debug(args.get(1));
-				break;
+				default:
+					GuiController.terminalDisplay.setText(GuiController.terminalDisplay.getText() + "\n'" + args.get(0)
+							+ "' is not a recognized command");
+					break;
+				case "help":
+					help();
+					break;
+				case "add":
+					Network.getNetworks().add(new Network(1));
+					Network.getNetworks().get(Network.getNetworks().size() - 1).populate();
+					break;
+				case "quit":
+					Hakd.quitGame(null); // TODO this will give a null pointer
+					break;
+				case "test":
+					System.out.println(Dns_old.getDnsList().size());
+					break;
+				case "home":
+					PlayerController.setCurrentNetwork(PlayerController.getHomeNetwork());
+					PlayerController.setCurrentServer(PlayerController.getHomeNetwork().getServers().get(0));
+					PlayerController.updateCurrentIp();
+					break;
+				case "run": // runs a lua script program, can I do it without using the word "run"
+					break;
+				case "debug":
+					hakd.gui.Windows.debug(args.get(1));
+					break;
 			}
 		} else if (input.equals(GuiController.getIp())) {
 		} else {
