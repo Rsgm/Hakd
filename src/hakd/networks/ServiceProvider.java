@@ -1,23 +1,30 @@
 package hakd.networks;
 
-import hakd.networking.NetworkController;
-import hakd.networking.networks.devices.Dns;
+import hakd.internet.NetworkController;
+import hakd.networks.devices.Dns;
+import other.enumerations.Types;
 
 public class ServiceProvider extends Network {
-	private final Dns	dns;
+	private Dns	dns;
 
 	public ServiceProvider() {
-		super(Network.Types.ISP);
-		dns = new Dns(true, null);
+		super(Types.ISP);
+		Dns dns = new Dns(true, null);
 		NetworkController.getPublicDns().add(dns);
 		getDevices().add(dns); // give each isp a dns server
 	}
 
 	public static String register(Network network, int speed) {
 		network.setSpeed(speed);
-		
+
 		return "";
 	}
-	
-	public 
+
+	public Dns getDns() {
+		return dns;
+	}
+
+	public void setDns(Dns dns) {
+		this.dns = dns;
+	}
 }

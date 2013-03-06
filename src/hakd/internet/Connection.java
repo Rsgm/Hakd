@@ -5,6 +5,8 @@ import hakd.networks.devices.Dns;
 
 import java.util.ArrayList;
 
+import other.enumerations.Protocols;
+
 public class Connection { // connections are one way, and one connection to one port // for two way connections just use two connections
 
 	private Device	host;
@@ -16,7 +18,7 @@ public class Connection { // connections are one way, and one connection to one 
 	private int		speed;
 
 // private// --------constructor--------
-	public Connection(Device host, Device client, Protocol protocol) {
+	public Connection(Device host, Device client, Protocols protocols) {
 		this.host = host;
 		this.client = client;
 
@@ -28,8 +30,8 @@ public class Connection { // connections are one way, and one connection to one 
 
 	}
 
-	// --------methods-------- // like sending data and secure data
-	public void close() { // TODO removes this connection and updates the pane
+	// --------methods--------, like sending data and secure data
+	public void close() { // TODO this removes connection and updates the pane
 		ArrayList<Dns> dnsList = NetworkController.getPublicDns();
 
 		for (Dns d : dnsList) {
@@ -39,27 +41,7 @@ public class Connection { // connections are one way, and one connection to one 
 		}
 	}
 
-	// --------enumerations--------
-	public enum Protocol { // protocol(port)
-		FTP(21), SSH(22), SMTP(25), WHOIS(43), DNS(53), HTTP(80), HTTPS(443), STEAM(1725), XBOX(3074), MYSQL(3306), RDP(3389), WOW(3724), UPUP(5000),
-		IRC(6667), TORRENT(6881), LAMBDA(27015), COD(28960), LEET(31337);
-		int	port;
-
-		private Protocol(int port) {
-			this.port = port;
-		}
-
-		public static Protocol getProtocol(int port) {
-			for (Protocol p : Protocol.values()) {
-				if (p.port == port) {
-					return p;
-				}
-			}
-			return HTTP;
-		}
-		// --------getters/setters--------
-	}
-
+	// --------getters/setters--------
 	public Device getHost() {
 		return host;
 	}

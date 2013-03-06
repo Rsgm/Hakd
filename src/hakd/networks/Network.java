@@ -6,12 +6,17 @@ import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
 
+import other.enumerations.Regions;
+import other.enumerations.Stances;
+import other.enumerations.Types;
+
 public class Network implements ConnectableNetwork {
 	// stats
 	private ServiceProvider			isp;								// address of region isp // for example infinity LTD.
 	private int						level;								// 0-7, 0 for player because you start with almost nothing
 	private int						speed;								// in Mb per second(1/1024*Gb), may want to change it to MBps
 	private String					ip;								// all network variables will be in IP format
+	private String					address;
 	private String					owner;								// owner, company, player
 	private int						serverLimit;						// amount of server objects to make
 	private Stances					stance;							// friendly, enemy, neutral
@@ -21,7 +26,7 @@ public class Network implements ConnectableNetwork {
 	private final ArrayList<Device>	devices	= new ArrayList<Device>();
 
 	// gui
-	private int						region;							// where the network is in the world
+	private Regions					region;							// where the network is in the world
 	private int						xCoordinate;						// where the network is in the regionTab/map
 	private int						yCoordinate;
 
@@ -32,7 +37,7 @@ public class Network implements ConnectableNetwork {
 
 		switch (type) {
 			case PLAYER:// new player // only happens at the start of the game
-				region = 0;
+				region = Regions.NA;
 				isp = NetworkController.getServiceProviders().get(0); // TODO this
 				ip = isp.getDns.assignIp(region);
 				level = 0;
@@ -40,7 +45,7 @@ public class Network implements ConnectableNetwork {
 				stance = Stances.FRIENDLY;
 				break;
 			case COMPANY: // company // random company name // company.assignName();
-				region = 0;
+				region = Regions.COMPANIES;
 				isp = NetworkController.getServiceProviders().get(0);
 				ip = isp.getDns.assignIp(region);
 				serverLimit = (int) (Math.random() * 19 + 1); // 1-19, the absolute maximum without upgrading
@@ -48,7 +53,7 @@ public class Network implements ConnectableNetwork {
 				owner = "company"; // TODO choose random names, either from a file or an enum, so there will be no need to use io
 				break;
 			case TEST: // TODO remove this if necessary
-				region = 0;
+				region = Regions.COMPANIES; // why not
 				isp = NetworkController.getServiceProviders().get(0); // TODO random isp in region
 				ip = isp.getDns.assignIp(region);
 				owner = "test";
@@ -97,27 +102,6 @@ public class Network implements ConnectableNetwork {
 	public boolean removePort(int port, String program, int server) {
 		// TODO Auto-generated method stub
 		return false;
-	}
-
-	// --------enumerations--------
-	public enum Types {
-		PLAYER(), COMPANY(), TEST(), ISP();// more to come
-		private Types() {
-		}
-	};
-
-	public enum Stances {
-		FRIENDLY(), NEUTRAL(), ENEMY();
-		private Stances() {
-		}
-
-	};
-
-	public enum Regions {
-		NA(), SA(), ASIA(); // others
-		private Regions() {
-		}
-
 	}
 
 	// --------getters/setters--------
@@ -207,6 +191,14 @@ public class Network implements ConnectableNetwork {
 
 	public ArrayList<Device> getDevices() {
 		return devices;
+	}
+
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
 	}
 
 }

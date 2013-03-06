@@ -1,16 +1,14 @@
 package hakd.networks.devices;
 
-import hakd.internet.Connection;
+import hakd.internet.NetworkController;
 import hakd.networks.Network;
 
-import java.awt.Paint;
 import java.util.ArrayList;
-import java.util.Vector;
 
-import javax.sound.sampled.Line;
+import other.enumerations.Regions;
 
 public class Dns extends Device { // TODO make this an object not a static class, and let DNSs communicate a bit.
-	ArrayList<Connection>	hosts;
+	ArrayList<Network>	hosts;
 
 	public Dns(Boolean publicDns, Network network) {
 		super(network);
@@ -18,59 +16,77 @@ public class Dns extends Device { // TODO make this an object not a static class
 	}
 
 	// --------methods--------
-	public String assignIp(int region) { // assigns an ip to an object that requests one, also checks it and adds it to the dns list
+	public String assignIp(Regions region) { // assigns an ip to an object that requests one, also checks it and adds it to the dns list
 		String ip;
-		boolean taken = true;
+		boolean taken;
 
 		do {
-			switch (region) { // creates a realistic ip based on registered ipv4 irl //0 == random, 1 == usa, 2 == europe, 3 == asia
-				case 0:
-					ip =
-							(int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "."
-									+ (int) (Math.random() * 256);
-					break;
-				case 1:
-					ip =
-							(int) (Math.random() * 14 + 63) + "." + (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "."
-									+ (int) (Math.random() * 256);
-					break;
-				case 2:
-					ip =
-							(int) (Math.random() * 15 + 77) + "." + (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "."
-									+ (int) (Math.random() * 256);
-					break;
-				default:
-					ip =
-							(int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "."
-									+ (int) (Math.random() * 256);
-					break;
+			ip = generateIp(region);
+			taken = false;
+
+			for (Network n : hosts) {
+				if (n.getIp().equals(ip)) {
+					taken = true;
+				}
 			}
-			for (Connection c : hosts) {
-				if(c.)
-			}
-		} while (taken);
-		hosts.add(new Connection());
+		} while (taken == true); // better practice to do this rather than while(true); and break;
+		NetworkController.addPublicNetwork(findNetwork(ip));
 		return ip;
 	}
 
-	public boolean addUrl(String ip, String url) { // registers a url to an ip just so not everything is an ip // ip can only be a player's ip
-// if they buy it
-		if (url.matches("")) {
-			if (!hosts.contains(url) && hosts.contains(ip)) {
-				hosts.set(hosts.indexOf(ip) + 1, url);
-				return true; // "you have successfully registered the url " + url + " for the ip " + ip;
-			}
+	// used to create a realistic, random ip based on registered ipv4 IRL(or AFK if your from sweeden). used mostly with the assign ip method, but can
+	// be useful for other things
+	public String generateIp(Regions region) {
+		switch (region) { //
+			default:
+				return (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "."
+						+ (int) (Math.random() * 256);
+			case COMPANIES:
+				return (int) (Math.random() * 50 + 6) + "." + (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "."
+						+ (int) (Math.random() * 256);
+			case NA:
+				return (int) (Math.random() * 13 + 63) + "." + (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "."
+						+ (int) (Math.random() * 256);
+			case EUROPE:
+				return (int) (Math.random() * 15 + 77) + "." + (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "."
+						+ (int) (Math.random() * 256);
+		}
+	}
+
+	// registers a url to an ip just so not everything is an ip // ip can only be a player's ip if they buy it
+	public boolean addUrl(String ip, String address) {
+		if (address.matches("^[\\d|\\w]{1,64}\\.\\w{2,3}$") && NetworkController.getIp(address) == null) { // address regex
+			findNetwork(ip).setAddress(address);
+			return true; // "you have successfully registered the url " + url + " for the ip " + ip;
 		}
 		return false; // "Sorry, either that URL is already registered, or a bug)."
 	}
 
-	public int findNetwork(String address) {
+	public Network findNetwork(String address) {
 		if (!address.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b")) { // ip regex
-			address = hosts.get(hosts.indexOf(address) + 1);
-		} else if (address.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b") && hosts.contains(address)) {
-			return hosts.indexOf(address) / 2;
+			address = NetworkController.getIp(address);
 		}
-		return -1;
+
+		for (Network n : hosts) {
+			if (n.getIp().equals(address)) {
+				return n;
+			}
+		}
+		return null;
+	}
+
+	public String getIp(String address) {
+		for (Network n : hosts) {
+			if (n.getAddress().equals(address)) {
+				return n.getIp();
+			}
+		}
+		return null;
+	}
+
+	int getRandomNumber() {
+		return 4; // chosen by fair dice roll
+					// guaranteed to be random
 	}
 
 	{ // old method
@@ -132,11 +148,11 @@ public class Dns extends Device { // TODO make this an object not a static class
 	}
 
 	// --------getters/setters--------
-	public ArrayList<Connection> getHosts() {
+	public ArrayList<Network> getHosts() {
 		return hosts;
 	}
 
-	public void setHosts(ArrayList<Connection> hosts) {
+	public void setHosts(ArrayList<Network> hosts) {
 		this.hosts = hosts;
 	}
 }

@@ -92,8 +92,8 @@ public class Device implements Connectable {
 	// --------methods--------
 
 	@Override
-	public boolean Connect(Device client, String program, int port) {
-		Connection c = new Connection(this, network, Protocol.getProtocol(port));
+	public boolean Connect(Device client, String program, int port) { // TODO work on connections and these
+		Connection c = new Connection(this, network, Protocols.getProtocol(port));
 
 		if (ports.get(ports.indexOf(port) + 1).equals(program)) {
 			try {
