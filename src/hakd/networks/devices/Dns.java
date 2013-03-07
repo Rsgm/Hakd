@@ -2,10 +2,9 @@ package hakd.networks.devices;
 
 import hakd.internet.NetworkController;
 import hakd.networks.Network;
+import hakd.other.enumerations.Region;
 
 import java.util.ArrayList;
-
-import other.enumerations.Regions;
 
 public class Dns extends Device { // TODO make this an object not a static class, and let DNSs communicate a bit.
 	ArrayList<Network>	hosts;
@@ -16,7 +15,7 @@ public class Dns extends Device { // TODO make this an object not a static class
 	}
 
 	// --------methods--------
-	public String assignIp(Regions region) { // assigns an ip to an object that requests one, also checks it and adds it to the dns list
+	public String assignIp(Region region) { // assigns an ip to an object that requests one, also checks it and adds it to the dns list
 		String ip;
 		boolean taken;
 
@@ -30,13 +29,13 @@ public class Dns extends Device { // TODO make this an object not a static class
 				}
 			}
 		} while (taken == true); // better practice to do this rather than while(true); and break;
-		NetworkController.addPublicNetwork(findNetwork(ip));
+		NetworkController.addPublicNetwork(getNetwork(ip));
 		return ip;
 	}
 
 	// used to create a realistic, random ip based on registered ipv4 IRL(or AFK if your from sweeden). used mostly with the assign ip method, but can
 	// be useful for other things
-	public String generateIp(Regions region) {
+	public String generateIp(Region region) {
 		switch (region) { //
 			default:
 				return (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "."
@@ -56,14 +55,15 @@ public class Dns extends Device { // TODO make this an object not a static class
 	// registers a url to an ip just so not everything is an ip // ip can only be a player's ip if they buy it
 	public boolean addUrl(String ip, String address) {
 		if (address.matches("^[\\d|\\w]{1,64}\\.\\w{2,3}$") && NetworkController.getIp(address) == null) { // address regex
-			findNetwork(ip).setAddress(address);
+			getNetwork(ip).setAddress(address);
 			return true; // "you have successfully registered the url " + url + " for the ip " + ip;
 		}
 		return false; // "Sorry, either that URL is already registered, or a bug)."
 	}
 
-	public Network findNetwork(String address) {
-		if (!address.matches("\\b\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\.\\d{1,3}\\b")) { // ip regex
+	// returns the network with the given address or ip
+	public Network getNetwork(String address) {
+		if (address.matches("^[\\d|\\w]{1,64}\\.\\w{2,3}$")) {
 			address = NetworkController.getIp(address);
 		}
 
@@ -75,6 +75,7 @@ public class Dns extends Device { // TODO make this an object not a static class
 		return null;
 	}
 
+	// gets the ip of the given address
 	public String getIp(String address) {
 		for (Network n : hosts) {
 			if (n.getAddress().equals(address)) {

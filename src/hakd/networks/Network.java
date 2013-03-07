@@ -1,106 +1,115 @@
 package hakd.networks;
 
-import hakd.internet.ConnectableNetwork;
 import hakd.internet.NetworkController;
 import hakd.networks.devices.Device;
+import hakd.networks.devices.Dns;
+import hakd.networks.devices.Router;
+import hakd.networks.devices.Server;
+import hakd.other.enumerations.DeviceType;
+import hakd.other.enumerations.NetworkType;
+import hakd.other.enumerations.Protocol;
+import hakd.other.enumerations.Region;
+import hakd.other.enumerations.Stance;
 
 import java.util.ArrayList;
 
-import other.enumerations.Regions;
-import other.enumerations.Stances;
-import other.enumerations.Types;
-
-public class Network implements ConnectableNetwork {
+public class Network { // this only holds a set of devices and info, connecting to this just forwards you to the router
 	// stats
-	private ServiceProvider			isp;								// address of region isp // for example infinity LTD.
-	private int						level;								// 0-7, 0 for player because you start with almost nothing
-	private int						speed;								// in Mb per second(1/1024*Gb), may want to change it to MBps
-	private String					ip;								// all network variables will be in IP format
-	private String					address;
-	private String					owner;								// owner, company, player
-	private int						serverLimit;						// amount of server objects to make
-	private Stances					stance;							// friendly, enemy, neutral
-	private final ArrayList<String>	ports	= new ArrayList<String>();	// port, program, server
+	private ServiceProvider		isp;								// address of region isp // for example infinity LTD.
+	private int					level;								// 0-7, 0 for player because you start with almost nothing
+	private int					speed;								// in Mb per second(1/1024*Gb), may want to change it to MBps
+	private String				ip;								// all network variables will be in IP format
+	private String				address;
+	private String				owner;								// owner, company, player
+	private int					serverLimit;						// amount of server objects to begin with and the limit
+	private int					dnsLimit;							// same as serverLimit but for DNSs
+	private int					routerLimit;
+	private Stance				stance;
+	private NetworkType			type;
 
 	// objects
-	private final ArrayList<Device>	devices	= new ArrayList<Device>();
+	private ArrayList<Device>	devices	= new ArrayList<Device>();
 
 	// gui
-	private Regions					region;							// where the network is in the world
-	private int						xCoordinate;						// where the network is in the regionTab/map
-	private int						yCoordinate;
+	private Region				region;							// where the network is in the world
+	private int					xCoordinate;						// where the network is in the regionTab/map
+	private int					yCoordinate;
 
 	// --------constructor--------
-	public Network(Types type) { // make a network array in a regionTab class
+	public Network(NetworkType type) { // make a network array in a regionTab class
 		level = (int) (Math.random() * 8);
-		stance = Stances.NEUTRAL;
+		stance = Stance.NEUTRAL;
+		this.type = type;
 
-		switch (type) {
+		switch (type) { // I should really clean these up, meh, later
 			case PLAYER:// new player // only happens at the start of the game
-				region = Regions.NA;
-				isp = NetworkController.getServiceProviders().get(0); // TODO this
-				ip = isp.getDns.assignIp(region);
+				region = Region.NA;
+				isp = NetworkController.getServiceProviders().get(0); // TODO random isp in region
+				ip = isp.getDns().assignIp(region);
 				level = 0;
 				serverLimit = 1;
-				stance = Stances.FRIENDLY;
+				routerLimit = 1;
+				stance = Stance.FRIENDLY;
 				break;
-			case COMPANY: // company // random company name // company.assignName();
-				region = Regions.COMPANIES;
+			case TEST:
+				region = Region.NA;
 				isp = NetworkController.getServiceProviders().get(0);
-				ip = isp.getDns.assignIp(region);
-				serverLimit = (int) (Math.random() * 19 + 1); // 1-19, the absolute maximum without upgrading
-				level = (int) (Math.random() * 8);
-				owner = "company"; // TODO choose random names, either from a file or an enum, so there will be no need to use io
-				break;
-			case TEST: // TODO remove this if necessary
-				region = Regions.COMPANIES; // why not
-				isp = NetworkController.getServiceProviders().get(0); // TODO random isp in region
-				ip = isp.getDns.assignIp(region);
+				ip = isp.getDns().assignIp(region);
 				owner = "test";
-				serverLimit = 5;
+				serverLimit = 32; // max possible
+				dnsLimit = 2;
+				routerLimit = 1; // for now just one
 				level = 7;
-				stance = Stances.NEUTRAL;
+				stance = Stance.NEUTRAL;
+				break;
+			case COMPANY: // company // random company name
+				region = Region.COMPANIES;
+				isp = NetworkController.getServiceProviders().get(0);
+				ip = isp.getDns().assignIp(region);
+				serverLimit = (int) ((level + 1) * (Math.random() * 3 + 1)); // the absolute maximum without upgrading
+				dnsLimit = (int) (level / 3.5);
+				routerLimit = 1;
+				owner = "company"; // TODO choose random names, either from a file or an enum, so there will be no need to use io
 				break;
 			case ISP: // company // random company name // company.assignName();
-				region = 0;
-				isp = NetworkController.getServiceProviders().get(0); // what does the isp connect to?
-				ip = isp.getDns.assignIp(region); // TODO how can this be done? default isp maybe?
-				serverLimit = (int) (Math.random() * 19 + 1); // 1-19, the absolute maximum without upgrading
+				region = Region.COMPANIES;
+				isp = NetworkController.getServiceProviders().get(0); // TODO what does the isp connect to?
+				ip = isp.getDns().assignIp(region);
+				serverLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
 				level = (int) (Math.random() * 8);
-				owner = "company"; // TODO choose random names, either from a file or an enum, so there will be no need to use io
+				dnsLimit = level / 3;
+				routerLimit = 1;
+				owner = "company";
 				break;
 		}
 
-		int s = (int) (Math.random() * (serverLimit - 1) + 1); // how many servers out of the maximum to give it, though can buy more
+		// used to add randomness to the amount of servers to make given serverLimit
+		int s = (int) Math.round(serverLimit * (Math.random() * 0.35 + 0.65));
+
 		for (int i = 0; i < s; i++) { // create servers on the network
-			servers.add(new Server(this)); // creates two player network servers
+			devices.add(new Server(this));
 		}
-// addNetwork(); // creates a circle representing the network with squares on it representing the servers
-		isp.addConnection(this, isp); // creates a connection with an isp
+
+		for (int i = 0; i < dnsLimit; i++) { // create DNSs on the network
+			if (type == NetworkType.ISP) {
+				devices.add(new Dns(true, isp));
+			} else {
+				devices.add(new Dns(false, isp));
+			}
+		}
+
+		for (int i = 0; i < routerLimit; i++) { // create servers on the network
+			devices.add(new Router(this));
+		}
 	}
 
 	// --------methods--------
-	@Override
-	public boolean Connect(Network network, String program, int port) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean Disconnect(Network Network, String program, int port) {
-		// TODO Auto-generated method stub
-		return false;
-	};
-
-	@Override
-	public boolean addPorts(int port, String program, int server) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean removePort(int port, String program, int server) {
-		// TODO Auto-generated method stub
+	public boolean Connect(Device client, String program, int port, Protocol protocol) {
+		for (Device d : devices) {
+			if (d.getType() == DeviceType.ROUTER) {
+				return d.Connect(client, program, port, protocol);
+			}
+		}
 		return false;
 	}
 
@@ -137,6 +146,14 @@ public class Network implements ConnectableNetwork {
 		this.ip = ip;
 	}
 
+	public String getAddress() {
+		return address;
+	}
+
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
 	public String getOwner() {
 		return owner;
 	}
@@ -153,19 +170,35 @@ public class Network implements ConnectableNetwork {
 		this.serverLimit = serverLimit;
 	}
 
-	public Stances getStance() {
+	public int getDnsLimit() {
+		return dnsLimit;
+	}
+
+	public void setDnsLimit(int dnsLimit) {
+		this.dnsLimit = dnsLimit;
+	}
+
+	public Stance getStance() {
 		return stance;
 	}
 
-	public void setStance(Stances stance) {
+	public void setStance(Stance stance) {
 		this.stance = stance;
 	}
 
-	public int getRegion() {
+	public ArrayList<Device> getDevices() {
+		return devices;
+	}
+
+	public void setDevices(ArrayList<Device> devices) {
+		this.devices = devices;
+	}
+
+	public Region getRegion() {
 		return region;
 	}
 
-	public void setRegion(int region) {
+	public void setRegion(Region region) {
 		this.region = region;
 	}
 
@@ -185,20 +218,19 @@ public class Network implements ConnectableNetwork {
 		this.yCoordinate = yCoordinate;
 	}
 
-	public ArrayList<String> getPorts() {
-		return ports;
+	public int getRouterLimit() {
+		return routerLimit;
 	}
 
-	public ArrayList<Device> getDevices() {
-		return devices;
+	public void setRouterLimit(int routerLimit) {
+		this.routerLimit = routerLimit;
 	}
 
-	public String getAddress() {
-		return address;
+	public NetworkType getType() {
+		return type;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
+	public void setType(NetworkType type) {
+		this.type = type;
 	}
-
 }

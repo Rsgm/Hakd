@@ -2,14 +2,16 @@ package hakd.networks.devices;
 
 import hakd.internet.Connectable;
 import hakd.internet.Connection;
-import hakd.internet.Connection.Protocol;
 import hakd.networks.Network;
 import hakd.networks.devices.parts.Cpu;
-import hakd.networks.devices.parts.File;
 import hakd.networks.devices.parts.Gpu;
 import hakd.networks.devices.parts.Memory;
 import hakd.networks.devices.parts.Part;
 import hakd.networks.devices.parts.Storage;
+import hakd.other.File;
+import hakd.other.Port;
+import hakd.other.enumerations.DeviceType;
+import hakd.other.enumerations.Protocol;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -18,40 +20,32 @@ import java.util.ArrayList;
 public class Device implements Connectable {
 
 	// stats
-	private final Network			network;
-	private final int				level;
+	private Network					network;
+	private int						level;
+	// private int webserver = 0; // 0 = 404, if port 80 is open
+	private ArrayList<Port>			ports		= new ArrayList<Port>();		// port, program / if its closed just delete it
+	private ArrayList<Connection>	connections	= new ArrayList<Connection>();
+	private File					logs;										// TODO make this a file instead connecting from and the action after
+// that
 
-	// private final int webserver = 0; // 0 = 404, if port 80 is open
-	private final ArrayList<String>	ports	= new ArrayList<String>();	// port,
-// program / if its closed just
-// delete it
-	private File					logs;								// TODO make this a file instead //
-// connecting from and the action after that
-
-	private String					brand;								// for
-// example bell
+	private String					brand;										// for example bell, or HQ
 	private String					model;
 
 	// objects
-	private int						cpuSockets;						// easier
-// than using a for loop to
-// count the amount, just remember to
-																		// change
-// this port
-	private int						memorySlots;						// maybe
-// have a maximum part number,
-// so you can specialize a server
+	private int						cpuSockets;								// easier than using a for loop to count the amount, just remember to
+// change this port
+	private int						memorySlots;								// maybe have a maximum part number, so you can specialize a server
 	private int						storageSlots;
 	private int						gpuSlots;
+	private Storage					masterStorage;								// TODO where the os resides
+	private DeviceType				type;
 
 	// objects
-	private final ArrayList<Part>	parts	= new ArrayList<Part>();
+	private ArrayList<Part>			parts		= new ArrayList<Part>();
 
 	// --------constructor--------
-	public Device(Network network) {
-		this.network = network;
-// serverId = NetworkController.getNetworks().get(networkId).getServers().size(); // are these needed?
-// networkId = network.getNetworkId();
+	public Device(Network network) { // have random smartphone connections and disconnections
+		this.network = network; // smartphones are like insects on a network, many types, random behavior, and there are lots of them
 		level = network.getLevel();
 
 		switch (level) {
@@ -92,10 +86,11 @@ public class Device implements Connectable {
 	// --------methods--------
 
 	@Override
-	public boolean Connect(Device client, String program, int port) { // TODO work on connections and these
-		Connection c = new Connection(this, network, Protocols.getProtocol(port));
+	public boolean Connect(Device client, String program, int port, Protocol protocol) { // TODO work on connections and these
+		Connection c = new Connection(this, client, Protocol.getProtocol(port));
+		connections.add(c);
 
-		if (ports.get(ports.indexOf(port) + 1).equals(program)) {
+		if (Port.checkPortAnd(ports, program, port, protocol)) {
 			try {
 				switch (port) {
 					default: // 80, 443, others but just get directed to a 404 if not a website
@@ -120,31 +115,30 @@ public class Device implements Connectable {
 	}
 
 	@Override
-	public boolean addPorts(int port, String program, Device device) {
-		if (ports.contains(ports) == false) {
-
-			ports.add(port + "");
-			ports.add(program);
+	public boolean addPorts(Device device, String program, int port, Protocol protocol) {
+		if (Port.checkPortOr(ports, null, null, port, null) == false) {
+			ports.add(new Port(null, program, port, protocol));
 			return true;
 		}
 		return false;
 	}
 
 	@Override
-	public boolean removePort(int port, String program, Device device) {
-		int index = ports.indexOf(port);
-		if (ports.contains(port)) {
-			ports.remove(index + 1);
-			ports.remove(index);
-			return true;
-		}
-		return false;
+	public boolean removePort(int port) { // this may be a memory leak where devices can't remove the ports they bind when they are removed
+		return ports.remove(Port.getPort(ports, null, port));
 	}
 
 	@Override
-	public void log(Device host, Device client, String program, String port) {
-		File log = new File(0, "Log - " + network.getIp(), "connecting to " + program + ":" + port, ".log");
+	public void log(Device client, String program, int port, Protocol protocol) {
+		File log =
+				new File(0, "Log - " + client.getNetwork().getIp(), "Connecting with " + program + " through port" + port + " using " + protocol
+						+ "\n" + program + ":" + port + ">" + protocol, ".log");
 		parts.indexOf(null); // TODO figure out how to search the parts array, try collections
+		/* ---Example---
+		 * Log - 243.15.66.24
+		 * Connecting with half life 3 through port 28190 using LAMBDA
+		 * half life 3:28190>LAMBDA
+		 * */
 	}
 
 	// --------getters/setters--------
@@ -212,11 +206,51 @@ public class Device implements Connectable {
 		return level;
 	}
 
-	public ArrayList<String> getPorts() {
+	public ArrayList<Port> getPorts() {
 		return ports;
 	}
 
 	public ArrayList<Part> getParts() {
 		return parts;
+	}
+
+	public Storage getMasterStorage() {
+		return masterStorage;
+	}
+
+	public void setMasterStorage(Storage masterStorage) {
+		this.masterStorage = masterStorage;
+	}
+
+	public void setNetwork(Network network) {
+		this.network = network;
+	}
+
+	public void setLevel(int level) {
+		this.level = level;
+	}
+
+	public void setPorts(ArrayList<Port> ports) {
+		this.ports = ports;
+	}
+
+	public void setParts(ArrayList<Part> parts) {
+		this.parts = parts;
+	}
+
+	public ArrayList<Connection> getConnections() {
+		return connections;
+	}
+
+	public void setConnections(ArrayList<Connection> connections) {
+		this.connections = connections;
+	}
+
+	public DeviceType getType() {
+		return type;
+	}
+
+	public void setType(DeviceType type) {
+		this.type = type;
 	}
 }

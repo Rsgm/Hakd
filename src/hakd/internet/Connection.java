@@ -1,11 +1,7 @@
 package hakd.internet;
 
 import hakd.networks.devices.Device;
-import hakd.networks.devices.Dns;
-
-import java.util.ArrayList;
-
-import other.enumerations.Protocols;
+import hakd.other.enumerations.Protocol;
 
 public class Connection { // connections are one way, and one connection to one port // for two way connections just use two connections
 
@@ -18,7 +14,7 @@ public class Connection { // connections are one way, and one connection to one 
 	private int		speed;
 
 // private// --------constructor--------
-	public Connection(Device host, Device client, Protocols protocols) {
+	public Connection(Device host, Device client, Protocol protocol) {
 		this.host = host;
 		this.client = client;
 
@@ -30,15 +26,10 @@ public class Connection { // connections are one way, and one connection to one 
 
 	}
 
-	// --------methods--------, like sending data and secure data
-	public void close() { // TODO this removes connection and updates the pane
-		ArrayList<Dns> dnsList = NetworkController.getPublicDns();
-
-		for (Dns d : dnsList) {
-			if (d.getHosts().contains(this)) {
-				d.getHosts().remove(this);
-			}
-		}
+	// --------methods-------- // TODO make methods for sending data and secure data from host to client // does it need a buffer?
+	public void close() {
+		host.getConnections().remove(this);
+		client.getConnections().remove(this);
 	}
 
 	// --------getters/setters--------

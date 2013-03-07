@@ -1,3 +1,10 @@
+/* about these tests, I know I should be using junit testing, but I only want small quick tests,
+ * plus these give lots of data about the objects it tests.
+ * also, these are dated by first creation */
+
+
+
+
 String s1 = new String("147.149.247.110/0>help");
 Scanner scan = new Scanner(s1);
 scan.findInLine(">(\\S+)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*)\\s*(\\S*)");

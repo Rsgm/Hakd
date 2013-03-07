@@ -2,6 +2,7 @@ package hakd.networks.devices.parts;
 
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
+import hakd.other.File;
 
 import java.util.ArrayList;
 

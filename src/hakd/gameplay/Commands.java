@@ -2,7 +2,9 @@ package hakd.gameplay;
 
 import hakd.Hakd;
 import hakd.gui.GuiController;
-import hakd.internet.Dns_old;
+import hakd.internet.NetworkController;
+import hakd.networks.Network;
+import hakd.other.enumerations.NetworkType;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -52,6 +54,8 @@ public class Commands {
 			for (int i = 0; i < input.length(); i++) {
 				if (scanner.hasNext()) {
 					args.add(scanner.next());
+				} else {
+					break;
 				}
 			}
 
@@ -64,14 +68,13 @@ public class Commands {
 					help();
 					break;
 				case "add":
-					Network.getNetworks().add(new Network(1));
-					Network.getNetworks().get(Network.getNetworks().size() - 1).populate();
+					NetworkController.getNetworks().add(new Network(NetworkType.NPC));
 					break;
 				case "quit":
 					Hakd.quitGame(null); // TODO this will give a null pointer
 					break;
 				case "test":
-					System.out.println(Dns_old.getDnsList().size());
+					System.out.println("Total networks - " + NetworkController.getNetworks().size());
 					break;
 				case "home":
 					PlayerController.setCurrentNetwork(PlayerController.getHomeNetwork());
