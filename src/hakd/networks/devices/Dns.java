@@ -29,7 +29,7 @@ public class Dns extends Device { // TODO make this an object not a static class
 				}
 			}
 		} while (taken == true); // better practice to do this rather than while(true); and break;
-		NetworkController.addPublicNetwork(getNetwork(ip));
+		NetworkController.addPublicNetwork(findNetwork(ip));
 		return ip;
 	}
 
@@ -55,14 +55,14 @@ public class Dns extends Device { // TODO make this an object not a static class
 	// registers a url to an ip just so not everything is an ip // ip can only be a player's ip if they buy it
 	public boolean addUrl(String ip, String address) {
 		if (address.matches("^[\\d|\\w]{1,64}\\.\\w{2,3}$") && NetworkController.getIp(address) == null) { // address regex
-			getNetwork(ip).setAddress(address);
+			findNetwork(ip).setAddress(address);
 			return true; // "you have successfully registered the url " + url + " for the ip " + ip;
 		}
 		return false; // "Sorry, either that URL is already registered, or a bug)."
 	}
 
 	// returns the network with the given address or ip
-	public Network getNetwork(String address) {
+	public Network findNetwork(String address) {
 		if (address.matches("^[\\d|\\w]{1,64}\\.\\w{2,3}$")) {
 			address = NetworkController.getIp(address);
 		}

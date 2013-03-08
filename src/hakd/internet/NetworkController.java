@@ -14,7 +14,7 @@ public class NetworkController {
 	// returns the network at the given address
 	public static Network getNetwork(String address) {
 		for (Dns d : publicDns) {
-			Network n = d.getNetwork(address);
+			Network n = d.findNetwork(address);
 			if (n != null) {
 				return n;
 			}

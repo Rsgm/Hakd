@@ -11,6 +11,7 @@ import hakd.networks.devices.parts.Storage;
 import hakd.other.File;
 import hakd.other.Port;
 import hakd.other.enumerations.DeviceType;
+import hakd.other.enumerations.FileType;
 import hakd.other.enumerations.Protocol;
 
 import java.awt.Desktop;
@@ -86,7 +87,7 @@ public class Device implements Connectable {
 	// --------methods--------
 
 	@Override
-	public boolean Connect(Device client, String program, int port, Protocol protocol) { // TODO work on connections and these
+	public boolean Connect(Device client, String program, int port, Protocol protocol) { // TODO this
 		Connection c = new Connection(this, client, Protocol.getProtocol(port));
 		connections.add(c);
 
@@ -110,7 +111,7 @@ public class Device implements Connectable {
 
 	@Override
 	public boolean Disconnect(Device device, String program, int port) {
-
+		// TODO this
 		return false;
 	}
 
@@ -130,10 +131,8 @@ public class Device implements Connectable {
 
 	@Override
 	public void log(Device client, String program, int port, Protocol protocol) {
-		File log =
-				new File(0, "Log - " + client.getNetwork().getIp(), "Connecting with " + program + " through port" + port + " using " + protocol
-						+ "\n" + program + ":" + port + ">" + protocol, ".log");
-		parts.indexOf(null); // TODO figure out how to search the parts array, try collections
+		masterStorage.addFile(new File(0, "Log - " + client.getNetwork().getIp() + ".log", "Connecting with " + program + " through port" + port
+				+ " using " + protocol + "\n" + program + ":" + port + ">" + protocol, FileType.LOG));
 		/* ---Example---
 		 * Log - 243.15.66.24
 		 * Connecting with half life 3 through port 28190 using LAMBDA

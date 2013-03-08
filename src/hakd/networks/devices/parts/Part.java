@@ -2,24 +2,38 @@ package hakd.networks.devices.parts;
 
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
+import hakd.other.enumerations.PartType;
+
+import java.util.ArrayList;
 
 public class Part {
 
 	// stats
-	private Network	network;
-	private Device	device;
+	private Network		network;
+	private Device		device;
+	private PartType	type;
 
-	private int		level;
-	private int		speed;		// either MHz or Mbps(megabyte, not bit) depending on the part // cpu also has core modifier speed = speed
+	private int			level;
+	private int			speed;		// either MHz or MB/s(megabyte/s, not megabit/s) depending on the part // cpu also has core modifier speed = speed
 // (1.8*cores)
 
-	private String	brand;
-	private String	model;
+	private String		brand;
+	private String		model;
 
 	public Part(int level, Network network, Device device) {
 		this.level = level;
 		this.network = network;
 		this.device = device;
+	}
+
+	public static Part[] findParts(ArrayList<Part> parts, PartType type) {
+		ArrayList<Part> returnParts = new ArrayList<Part>();
+		for (Part p : parts) {
+			if (p.getType() == type) {
+				returnParts.add(p);
+			}
+		}
+		return (Part[]) returnParts.toArray();
 	}
 
 	public Network getNetwork() {
@@ -68,5 +82,13 @@ public class Part {
 
 	public void setModel(String model) {
 		this.model = model;
+	}
+
+	public PartType getType() {
+		return type;
+	}
+
+	public void setType(PartType type) {
+		this.type = type;
 	}
 }

@@ -3,6 +3,7 @@ package hakd.networks.devices.parts;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
 import hakd.other.File;
+import hakd.other.enumerations.FileType;
 
 import java.util.ArrayList;
 
@@ -11,11 +12,11 @@ public class Storage extends Part {
 	private int				capacity;									// in GB
 
 	// storage ArrayLists
-	private ArrayList<File>	osFiles			= new ArrayList<File>();	// operating system files, !FUN!.
+	private ArrayList<File>	osFiles			= new ArrayList<File>();	// operating system files, !FUN!
 	private ArrayList<File>	userFiles		= new ArrayList<File>();	// random files people save
 	private ArrayList<File>	programFiles	= new ArrayList<File>();	// (lua)programs able to run, is this copywritten, will Microsoft sue?
-	private ArrayList<File>	logFiles		= new ArrayList<File>();	// these log arrays have infinite storage,
-// thanks to a new leap in quantum physics
+	private ArrayList<File>	logFiles		= new ArrayList<File>();	// these log arrays have infinite storage, thanks to a new leap in quantum
+// physics
 
 	public Storage(int level, Network network, Device device) {
 		super(level, network, device);
@@ -37,15 +38,27 @@ public class Storage extends Part {
 
 	}
 
-	// adds a file to the end of user files
-	public void addFile(int size, String name, String data, String type) {
-		userFiles.add(new File(size, name, data, type));
+	// adds a file to the end of one of the arraylists
+	public void addFile(File file) {
+		switch (file.getType()) {
+			case OS:
+				osFiles.add(file);
+				break;
+			case USER:
+				osFiles.add(file);
+				break;
+			case PROGRAM:
+				osFiles.add(file);
+				break;
+			default: // user
+				break;
+		}
 	}
 
 	// removes the first file with the specified name from the specified directory
-	public void removeFile(Directory directory, String name) {
-		switch (directory) {
-			case OSFILES:
+	public void removeFile(FileType type, String name) {
+		switch (type) {
+			case OS:
 				for (File f : osFiles) {
 					if (f.getName() == name) {
 						osFiles.remove(f);
@@ -59,14 +72,14 @@ public class Storage extends Part {
 					}
 				}
 				break;
-			case PROGRAMFILES:
+			case PROGRAM:
 				for (File f : programFiles) {
 					if (f.getName() == name) {
 						programFiles.remove(f);
 					}
 				}
 				break;
-			case LOGFILES:
+			case LOG:
 				for (File f : logFiles) {
 					if (f.getName() == name) {
 						logFiles.remove(f);
@@ -76,9 +89,9 @@ public class Storage extends Part {
 	}
 
 	// removes the first file with the specified name from the specified directory
-	public File getFile(Directory directory, String name) {
-		switch (directory) {
-			case OSFILES:
+	public File getFile(FileType type, String name) {
+		switch (type) {
+			case OS:
 				for (File f : osFiles) {
 					if (f.getName() == name) {
 						return osFiles.get(osFiles.indexOf(f));
@@ -92,14 +105,14 @@ public class Storage extends Part {
 					}
 				}
 				break;
-			case PROGRAMFILES:
+			case PROGRAM:
 				for (File f : programFiles) {
 					if (f.getName() == name) {
 						return programFiles.get(programFiles.indexOf(f));
 					}
 				}
 				break;
-			case LOGFILES:
+			case LOG:
 				for (File f : logFiles) {
 					if (f.getName() == name) {
 						return logFiles.get(logFiles.indexOf(f));
@@ -107,12 +120,6 @@ public class Storage extends Part {
 				}
 		}
 		return null;
-	}
-
-	public enum Directory {
-		OSFILES, USERFILES, PROGRAMFILES, LOGFILES;
-		private Directory() {
-		}
 	}
 
 	public boolean isSsd() {

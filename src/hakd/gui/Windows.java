@@ -16,7 +16,7 @@ public class Windows { // no idea why I called this windows
 
 	public static void debug(String ip) {
 		GuiController.debugGrid.getChildren().clear();
-		int id = Dns_old.getNetwork(ip);
+		int id = Dns_old.findNetwork(ip);
 		System.out.println(id);
 
 		if(id == -1){ // if the network does not exist return

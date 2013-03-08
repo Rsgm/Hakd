@@ -1,14 +1,16 @@
 package hakd.other;
 
+import hakd.other.enumerations.FileType;
+
 public class File {
 
 	// data
-	private int		size;
-	private String	name;
-	private String	data;
-	private String	type;
+	private int			size;
+	private String		name;
+	private String		data;
+	private FileType	type;
 
-	public File(int size, String name, String data, String type) {
+	public File(int size, String name, String data, FileType type) {
 		this.size = size;
 		this.name = name;
 		this.data = data;
@@ -39,11 +41,11 @@ public class File {
 		this.data = data;
 	}
 
-	public String getType() {
+	public FileType getType() {
 		return type;
 	}
 
-	public void setType(String type) {
+	public void setType(FileType type) {
 		this.type = type;
 	}
 }

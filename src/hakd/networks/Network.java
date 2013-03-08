@@ -26,6 +26,7 @@ public class Network { // this only holds a set of devices and info, connecting 
 	private int					routerLimit;
 	private Stance				stance;
 	private NetworkType			type;
+	private Router				router;							// main router
 
 	// objects
 	private ArrayList<Device>	devices	= new ArrayList<Device>();
@@ -101,6 +102,7 @@ public class Network { // this only holds a set of devices and info, connecting 
 		for (int i = 0; i < routerLimit; i++) { // create servers on the network
 			devices.add(new Router(this));
 		}
+
 	}
 
 	// --------methods--------
@@ -232,5 +234,13 @@ public class Network { // this only holds a set of devices and info, connecting 
 
 	public void setType(NetworkType type) {
 		this.type = type;
+	}
+
+	public Router getRouter() {
+		return router;
+	}
+
+	public void setRouter(Router router) {
+		this.router = router;
 	}
 }

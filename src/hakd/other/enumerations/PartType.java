@@ -1,8 +1,8 @@
 package hakd.other.enumerations;
 
-public enum PartTypes {
+public enum PartType {
 	PART(), CPU(), GPU(), MEMORY(), STORAGE; // more to come
 
-	private PartTypes() {
+	private PartType() {
 	}
 }
