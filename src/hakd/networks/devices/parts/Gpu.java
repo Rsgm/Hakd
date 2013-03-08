@@ -2,11 +2,13 @@ package hakd.networks.devices.parts;
 
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
+import hakd.other.enumerations.PartType;
 
 public class Gpu extends Part {
 
 	public Gpu(int level, Network network, Device device) {
 		super(level, network, device);
+		setType(PartType.GPU);
 
 		switch (level) {
 			case 0:

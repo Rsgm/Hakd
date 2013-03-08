@@ -26,14 +26,14 @@ public class Part {
 		this.device = device;
 	}
 
-	public static Part[] findParts(ArrayList<Part> parts, PartType type) {
-		ArrayList<Part> returnParts = new ArrayList<Part>();
+	public static ArrayList<Storage> findParts(ArrayList<Part> parts, PartType type) {
+		ArrayList<Storage> returnParts = new ArrayList<Storage>();
 		for (Part p : parts) {
 			if (p.getType() == type) {
-				returnParts.add(p);
+				returnParts.add((Storage) p);
 			}
 		}
-		return (Part[]) returnParts.toArray();
+		return returnParts;
 	}
 
 	public Network getNetwork() {

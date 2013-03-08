@@ -4,6 +4,7 @@ import hakd.networks.Network;
 import hakd.networks.devices.Device;
 import hakd.other.File;
 import hakd.other.enumerations.FileType;
+import hakd.other.enumerations.PartType;
 
 import java.util.ArrayList;
 
@@ -20,6 +21,7 @@ public class Storage extends Part {
 
 	public Storage(int level, Network network, Device device) {
 		super(level, network, device);
+		setType(PartType.STORAGE);
 
 		switch (level) {
 			case 0:

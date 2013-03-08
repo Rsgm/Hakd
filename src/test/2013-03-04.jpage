@@ -8,4 +8,9 @@ Connection.Protocol.LAMBDA
 java.util.ArrayList<Port> p = new java.util.ArrayList<Port>();
 p.add(new Port(null, "portal 3", 101, Protocol.LAMBDA));
 p.add(new Port(null, "cod", 2020, Protocol.COD));
-Util.arrayContains(p, new Device(null), "portal 3, 101, Protocol.LAMBDA)
+Util.arrayContains(p, new Device(null), "portal 3, 101, Protocol.LAMBDA);
+
+
+
+Device d = new Device(null);
+Part.findParts(d.getParts(), PartType.STORAGE)

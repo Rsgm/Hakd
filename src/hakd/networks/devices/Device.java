@@ -12,6 +12,7 @@ import hakd.other.File;
 import hakd.other.Port;
 import hakd.other.enumerations.DeviceType;
 import hakd.other.enumerations.FileType;
+import hakd.other.enumerations.PartType;
 import hakd.other.enumerations.Protocol;
 
 import java.awt.Desktop;
@@ -66,7 +67,7 @@ public class Device implements Connectable {
 				cpuSockets = (int) (Math.random() * 3 + level);
 				gpuSlots = 1;
 				memorySlots = 1;
-				storageSlots = 1;
+				storageSlots = 6;
 				break;
 		}
 		for (int i = 0; i < cpuSockets; i++) {
@@ -81,6 +82,8 @@ public class Device implements Connectable {
 		for (int i = 0; i < storageSlots; i++) {
 			parts.add(new Storage(level, network, this));
 		}
+
+		masterStorage = Part.findParts(parts, PartType.STORAGE).get(0);
 
 	}
 

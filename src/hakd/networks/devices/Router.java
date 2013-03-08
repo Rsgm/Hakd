@@ -4,7 +4,7 @@ import hakd.networks.Network;
 import hakd.other.Port;
 import hakd.other.enumerations.Protocol;
 
-public class Router extends Device {
+public class Router extends Device { // this holds a port list that tells programs where to look for a server/port
 
 	public Router(Network network) {
 		super(network);

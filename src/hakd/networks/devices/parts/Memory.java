@@ -2,12 +2,14 @@ package hakd.networks.devices.parts;
 
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
+import hakd.other.enumerations.PartType;
 
 public class Memory extends Part {
 	private int	capacity;
 
 	public Memory(int level, Network network, Device device) {
 		super(level, network, device);
+		setType(PartType.MEMORY);
 
 		switch (level) {
 			case 0:
