@@ -57,7 +57,7 @@ public class Storage extends Part {
 		}
 	}
 
-	// removes the first file with the specified name from the specified directory
+	// removes the first file with the specified company from the specified directory
 	public void removeFile(FileType type, String name) {
 		switch (type) {
 			case OS:
@@ -90,7 +90,7 @@ public class Storage extends Part {
 		}
 	}
 
-	// removes the first file with the specified name from the specified directory
+	// removes the first file with the specified company from the specified directory
 	public File getFile(FileType type, String name) {
 		switch (type) {
 			case OS:

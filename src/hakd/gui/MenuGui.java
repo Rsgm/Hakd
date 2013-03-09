@@ -89,7 +89,7 @@ public class MenuGui {
 
 		if (input.equals("help")) { // TODO add more stuff to do outside of the game
 			GuiController.menuTerminal.setText(GuiController.menuTerminal.getText() + "\nCommands:\nhelp - shows this list\nquit - exits this game"
-					+ "\nstart [player name] - starts the game" + "\nnmap - scans the computers on the network for open ports and other stuff"
+					+ "\nstart [player company] - starts the game" + "\nnmap - scans the computers on the network for open ports and other stuff"
 					+ "\nsettings - opens settings window");
 		} else if (input.equals("quit")) {
 			Hakd.quitGame(null);

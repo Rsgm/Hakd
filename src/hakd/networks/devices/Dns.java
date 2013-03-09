@@ -29,7 +29,6 @@ public class Dns extends Device { // TODO make this an object not a static class
 				}
 			}
 		} while (taken == true); // better practice to do this rather than while(true); and break;
-		NetworkController.addPublicNetwork(findNetwork(ip));
 		return ip;
 	}
 

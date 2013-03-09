@@ -3,13 +3,17 @@ package hakd.internet;
 import hakd.networks.Network;
 import hakd.networks.ServiceProvider;
 import hakd.networks.devices.Dns;
+import hakd.other.enumerations.NetworkType;
+import hakd.other.enumerations.names.Owner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 
 public class NetworkController {
 	private static ArrayList<Network>			networks			= new ArrayList<Network>();
 	private static ArrayList<Dns>				publicDns			= new ArrayList<Dns>();
 	private static ArrayList<ServiceProvider>	serviceProviders	= new ArrayList<ServiceProvider>();
+	private static ArrayList<Owner>				owners				= (ArrayList<Owner>) Arrays.asList(Owner.values());
 
 	// returns the network at the given address
 	public static Network getNetwork(String address) {
@@ -33,19 +37,35 @@ public class NetworkController {
 		return null;
 	}
 
-	public static void addPublicNetwork(Network network) {
+	// add the network to all public DNSs
+	public static void addPublicNetwork(NetworkType type) {
+		Network n = addNetwork(type);
+
 		for (Dns d : publicDns) {
-			d.getHosts().add(network);
+			d.getHosts().add(n);
 		}
 	}
 
 	// removes references to a network from all public DNSs(there may not be any) and the network list
 	public static void removePublicNetwork(Network network) {
 		for (Dns d : publicDns) {
-			d.getHosts().add(network);
+			d.getHosts().remove(network);
 		}
 		networks.remove(network);
 		// TODO remove graphical data, or put that in a better spot to be more modular
+	}
+
+	// creates a network, needed because you can't add(this) in a constructor, strange
+	@SuppressWarnings("deprecation")
+	public static Network addNetwork(NetworkType type) {
+		Network n = new Network(type); // this is the only place to use this constructor
+		networks.add(n);
+		return n;
+	}
+
+	// removes a network
+	public static void removeNetwork(Network network) {
+		networks.remove(network);
 	}
 
 	public static ArrayList<Network> getNetworks() {

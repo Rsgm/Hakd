@@ -78,8 +78,7 @@ public class Commands {
 					break;
 				case "home":
 					PlayerController.setCurrentNetwork(PlayerController.getHomeNetwork());
-					PlayerController.setCurrentServer(PlayerController.getHomeNetwork().getServers().get(0));
-					PlayerController.updateCurrentIp();
+					PlayerController.setCurrentServer(PlayerController.getHomeNetwork();
 					break;
 				case "run": // runs a lua script program, can I do it without using the word "run"
 					break;

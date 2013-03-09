@@ -15,7 +15,7 @@ import java.util.ArrayList;
 
 public class Network { // this only holds a set of devices and info, connecting to this just forwards you to the router
 	// stats
-	private ServiceProvider		isp;								// address of region isp // for example infinity LTD.
+	private ServiceProvider		isp;								// the network's isp
 	private int					level;								// 0-7, 0 for player because you start with almost nothing
 	private int					speed;								// in Mb per second(1/1024*Gb), may want to change it to MBps
 	private String				ip;								// all network variables will be in IP format
@@ -37,15 +37,19 @@ public class Network { // this only holds a set of devices and info, connecting 
 	private int					yCoordinate;
 
 	// --------constructor--------
-	public Network(NetworkType type) { // make a network array in a regionTab class
+	@Deprecated
+	public Network(NetworkType type) { // this can't be used, you must use the add network or add public network methods in network controller
 		level = (int) (Math.random() * 8);
 		stance = Stance.NEUTRAL;
 		this.type = type;
 
+		if (type != NetworkType.ISP) {
+			isp = NetworkController.getServiceProviders().get(0); // TODO what does the isp connect to?
+		}
+
 		switch (type) { // I should really clean these up, meh, later
 			case PLAYER:// new player // only happens at the start of the game
 				region = Region.NA;
-				isp = NetworkController.getServiceProviders().get(0); // TODO random isp in region
 				ip = isp.getDns().assignIp(region);
 				level = 0;
 				serverLimit = 1;
@@ -54,7 +58,6 @@ public class Network { // this only holds a set of devices and info, connecting 
 				break;
 			case TEST:
 				region = Region.NA;
-				isp = NetworkController.getServiceProviders().get(0);
 				ip = isp.getDns().assignIp(region);
 				owner = "test";
 				serverLimit = 32; // max possible
@@ -63,24 +66,20 @@ public class Network { // this only holds a set of devices and info, connecting 
 				level = 7;
 				stance = Stance.NEUTRAL;
 				break;
-			case COMPANY: // company // random company name
+			case COMPANY: // company // random company
 				region = Region.COMPANIES;
-				isp = NetworkController.getServiceProviders().get(0);
 				ip = isp.getDns().assignIp(region);
 				serverLimit = (int) ((level + 1) * (Math.random() * 3 + 1)); // the absolute maximum without upgrading
 				dnsLimit = (int) (level / 3.5);
 				routerLimit = 1;
-				owner = "company"; // TODO choose random names, either from a file or an enum, so there will be no need to use io
+				owner = "company";
 				break;
-			case ISP: // company // random company name // company.assignName();
+			case ISP:
 				region = Region.COMPANIES;
-				isp = NetworkController.getServiceProviders().get(0); // TODO what does the isp connect to?
-				ip = isp.getDns().assignIp(region);
 				serverLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
 				level = (int) (Math.random() * 8);
 				dnsLimit = level / 3;
 				routerLimit = 1;
-				owner = "company";
 				break;
 		}
 

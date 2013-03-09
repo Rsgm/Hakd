@@ -14,6 +14,8 @@ import hakd.other.enumerations.DeviceType;
 import hakd.other.enumerations.FileType;
 import hakd.other.enumerations.PartType;
 import hakd.other.enumerations.Protocol;
+import hakd.other.enumerations.names.Brand;
+import hakd.other.enumerations.names.Model;
 
 import java.awt.Desktop;
 import java.io.IOException;
@@ -30,8 +32,8 @@ public class Device implements Connectable {
 	private File					logs;										// TODO make this a file instead connecting from and the action after
 // that
 
-	private String					brand;										// for example bell, or HQ
-	private String					model;
+	private Brand					brand;										// for example bell, or HQ
+	private Model					model;
 
 	// objects
 	private int						cpuSockets;								// easier than using a for loop to count the amount, just remember to
@@ -48,7 +50,7 @@ public class Device implements Connectable {
 	// --------constructor--------
 	public Device(Network network) { // have random smartphone connections and disconnections
 		this.network = network; // smartphones are like insects on a network, many types, random behavior, and there are lots of them
-		level = network.getLevel();
+		level = network.getLevel(); // TODO this doesn't want to access the parent network and get the level, it is in constructor
 
 		switch (level) {
 			case 0:
@@ -67,7 +69,7 @@ public class Device implements Connectable {
 				cpuSockets = (int) (Math.random() * 3 + level);
 				gpuSlots = 1;
 				memorySlots = 1;
-				storageSlots = 6;
+				storageSlots = 1;
 				break;
 		}
 		for (int i = 0; i < cpuSockets; i++) {
@@ -150,22 +152,6 @@ public class Device implements Connectable {
 
 	public void setLogs(File logs) {
 		this.logs = logs;
-	}
-
-	public String getBrand() {
-		return brand;
-	}
-
-	public void setBrand(String brand) {
-		this.brand = brand;
-	}
-
-	public String getModel() {
-		return model;
-	}
-
-	public void setModel(String model) {
-		this.model = model;
 	}
 
 	public int getCpuSockets() {
@@ -254,5 +240,21 @@ public class Device implements Connectable {
 
 	public void setType(DeviceType type) {
 		this.type = type;
+	}
+
+	public Brand getBrand() {
+		return brand;
+	}
+
+	public void setBrand(Brand brand) {
+		this.brand = brand;
+	}
+
+	public Model getModel() {
+		return model;
+	}
+
+	public void setModel(Model model) {
+		this.model = model;
 	}
 }

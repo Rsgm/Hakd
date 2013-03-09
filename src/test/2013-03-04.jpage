@@ -14,3 +14,12 @@ Util.arrayContains(p, new Device(null), "portal 3, 101, Protocol.LAMBDA);
 
 Device d = new Device(null);
 Part.findParts(d.getParts(), PartType.STORAGE)
+
+
+
+Isp.values()
+		
+		
+		
+GamePlay.generateGame();
+NetworkController.getNetworks()

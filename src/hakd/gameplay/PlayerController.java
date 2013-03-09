@@ -9,7 +9,7 @@ public class PlayerController {
 	private static int		money;			// in $ //add redundancy to money // triple redundancy with voting, maybe some
 // rudimentary encryption, or no redundancy with strong encryption
 	private static String	playerName;
-	private String			terminalText;
+	private static String	terminalText;
 
 	// networks
 	private static Network	homeNetwork;	// meant to be used as the players home base
@@ -57,11 +57,19 @@ public class PlayerController {
 		homeNetwork.setOwner(playerName);
 	}
 
-	public String getTerminalText() {
+	public static String getTerminalText() {
 		return terminalText;
 	}
 
-	public void setTerminalText(String terminalText) {
-		this.terminalText = terminalText;
+	public static void setTerminalText(String terminalText) {
+		PlayerController.terminalText = terminalText;
+	}
+
+	public static Device getCurrentServer() {
+		return currentServer;
+	}
+
+	public static void setCurrentServer(Device currentServer) {
+		PlayerController.currentServer = currentServer;
 	}
 }
