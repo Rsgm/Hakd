@@ -18,8 +18,9 @@ Part.findParts(d.getParts(), PartType.STORAGE)
 
 
 Isp.values()
-		
-		
-		
+Owner.COMPANY.company
+		
+
 GamePlay.generateGame();
-NetworkController.getNetworks()
+NetworkController.getPublicNetworks()
+NetworkController.getPublicDns()

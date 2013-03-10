@@ -2,12 +2,13 @@ package hakd.networks.devices;
 
 import hakd.networks.Network;
 import hakd.other.Port;
+import hakd.other.enumerations.DeviceType;
 import hakd.other.enumerations.Protocol;
 
 public class Router extends Device { // this holds a port list that tells programs where to look for a server/port
 
-	public Router(Network network) {
-		super(network);
+	public Router(Network network, int level) {
+		super(network, level, DeviceType.ROUTER);
 	}
 
 	@Override

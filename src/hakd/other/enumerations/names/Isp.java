@@ -6,7 +6,7 @@ public enum Isp {
 	ALPHA("Alpha"), BETA("Beta"), GAMMA("Gamma"), DELTA("Delta"), EPSILON("Epsilon"), ZETA("Zeta"), ETA("Eta"), THETA("Theta"), IOTA("Iota"), KAPPA(
 			"Kappa"), LAMBDA("Lambda"), MU("Mu"), NU("Nu"), XI("Xi"), OMNICRON("Omnicron"), PI("Pi"), RHO("Rho"), SIGMA("Sigma"), TAU("Tau"),
 	UPSILON("Upsilon"), PHI("Phi"), CHI("Chi"), PSI("Psi"), OMEGA("Omega");
-	String	company;
+	public String	company;
 
 	private Isp(String company) {
 		this.company = company;

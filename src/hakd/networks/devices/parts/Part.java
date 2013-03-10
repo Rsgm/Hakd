@@ -26,11 +26,12 @@ public class Part {
 		this.device = device;
 	}
 
-	public static ArrayList<Storage> findParts(ArrayList<Part> parts, PartType type) {
-		ArrayList<Storage> returnParts = new ArrayList<Storage>();
+	// finds all of the parts in the list of that type
+	public static ArrayList<Part> findParts(ArrayList<Part> parts, PartType type) {
+		ArrayList<Part> returnParts = new ArrayList<Part>();
 		for (Part p : parts) {
 			if (p.getType() == type) {
-				returnParts.add((Storage) p);
+				returnParts.add(p);
 			}
 		}
 		return returnParts;

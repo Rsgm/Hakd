@@ -7,13 +7,12 @@ import hakd.other.enumerations.NetworkType;
 import hakd.other.enumerations.names.Owner;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 
 public class NetworkController {
-	private static ArrayList<Network>			networks			= new ArrayList<Network>();
+	private static ArrayList<Network>			PublicNetworks		= new ArrayList<Network>();
 	private static ArrayList<Dns>				publicDns			= new ArrayList<Dns>();
 	private static ArrayList<ServiceProvider>	serviceProviders	= new ArrayList<ServiceProvider>();
-	private static ArrayList<Owner>				owners				= (ArrayList<Owner>) Arrays.asList(Owner.values());
+	private static ArrayList<Owner>				owners				= new ArrayList<Owner>();
 
 	// returns the network at the given address
 	public static Network getNetwork(String address) {
@@ -26,24 +25,32 @@ public class NetworkController {
 		return null;
 	}
 
+	// returns the network at the given address
+	public static Network getNetworkByType(NetworkType type) {
+		for (Network n : PublicNetworks) {
+			Network n = d.;
+			if (n != null) {
+				return n;
+			}
+		}
+		return null;}
+
 	// public dns ip request, gets the ip of a server at that address
 	public static String getIp(String address) {
 		for (Dns d : publicDns) {
 			String s = d.getIp(address);
-			if (s != null) {
-				return s;
+			if (s != null) { // why is this needed? removing it is probably not worth what ever it causes
+				return s; // oh, this is needed so it doesn't return if the first dns does not have it
 			}
 		}
 		return null;
 	}
 
 	// add the network to all public DNSs
-	public static void addPublicNetwork(NetworkType type) {
+	public static Network addPublicNetwork(NetworkType type) {
 		Network n = addNetwork(type);
-
-		for (Dns d : publicDns) {
-			d.getHosts().add(n);
-		}
+		n.getIsp().register(n, 5);
+		return n;
 	}
 
 	// removes references to a network from all public DNSs(there may not be any) and the network list
@@ -51,7 +58,7 @@ public class NetworkController {
 		for (Dns d : publicDns) {
 			d.getHosts().remove(network);
 		}
-		networks.remove(network);
+		PublicNetworks.remove(network);
 		// TODO remove graphical data, or put that in a better spot to be more modular
 	}
 
@@ -59,21 +66,13 @@ public class NetworkController {
 	@SuppressWarnings("deprecation")
 	public static Network addNetwork(NetworkType type) {
 		Network n = new Network(type); // this is the only place to use this constructor
-		networks.add(n);
+		PublicNetworks.add(n);
 		return n;
 	}
 
 	// removes a network
 	public static void removeNetwork(Network network) {
-		networks.remove(network);
-	}
-
-	public static ArrayList<Network> getNetworks() {
-		return networks;
-	}
-
-	public static void setNetworks(ArrayList<Network> networks) {
-		NetworkController.networks = networks;
+		PublicNetworks.remove(network);
 	}
 
 	public static ArrayList<ServiceProvider> getServiceProviders() {
@@ -90,5 +89,21 @@ public class NetworkController {
 
 	public static void setPublicDns(ArrayList<Dns> publicDns) {
 		NetworkController.publicDns = publicDns;
+	}
+
+	public static ArrayList<Owner> getOwners() {
+		return owners;
+	}
+
+	public static void setOwners(ArrayList<Owner> owners) {
+		NetworkController.owners = owners;
+	}
+
+	public static ArrayList<Network> getPublicNetworks() {
+		return PublicNetworks;
+	}
+
+	public static void setPublicNetworks(ArrayList<Network> publicNetworks) {
+		PublicNetworks = publicNetworks;
 	}
 }

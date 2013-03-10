@@ -44,21 +44,22 @@ public class Network { // this only holds a set of devices and info, connecting 
 		this.type = type;
 
 		if (type != NetworkType.ISP) {
-			isp = NetworkController.getServiceProviders().get(0); // TODO what does the isp connect to?
+			isp = NetworkController.getServiceProviders().get((int) (Math.random() * NetworkController.getServiceProviders().size()));
+			// TODO what does the isp connect to?
 		}
+
+		ip = "127.0.0.1";
 
 		switch (type) { // I should really clean these up, meh, later
 			case PLAYER:// new player // only happens at the start of the game
 				region = Region.NA;
-				ip = isp.getDns().assignIp(region);
 				level = 0;
 				serverLimit = 1;
 				routerLimit = 1;
 				stance = Stance.FRIENDLY;
 				break;
 			case TEST:
-				region = Region.NA;
-				ip = isp.getDns().assignIp(region);
+				region = Region.ASIA;
 				owner = "test";
 				serverLimit = 32; // max possible
 				dnsLimit = 2;
@@ -68,7 +69,6 @@ public class Network { // this only holds a set of devices and info, connecting 
 				break;
 			case COMPANY: // company // random company
 				region = Region.COMPANIES;
-				ip = isp.getDns().assignIp(region);
 				serverLimit = (int) ((level + 1) * (Math.random() * 3 + 1)); // the absolute maximum without upgrading
 				dnsLimit = (int) (level / 3.5);
 				routerLimit = 1;
@@ -78,8 +78,16 @@ public class Network { // this only holds a set of devices and info, connecting 
 				region = Region.COMPANIES;
 				serverLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
 				level = (int) (Math.random() * 8);
-				dnsLimit = level / 3;
+				dnsLimit = 3;
 				routerLimit = 1;
+				break;
+			default:
+				region = Region.EUROPE;
+				owner = "test";
+				serverLimit = 4; // max possible
+				dnsLimit = 1;
+				routerLimit = 1;
+				stance = Stance.NEUTRAL;
 				break;
 		}
 
@@ -87,19 +95,19 @@ public class Network { // this only holds a set of devices and info, connecting 
 		int s = (int) Math.round(serverLimit * (Math.random() * 0.35 + 0.65));
 
 		for (int i = 0; i < s; i++) { // create servers on the network
-			devices.add(new Server(this));
+			devices.add(new Server(this, level));
 		}
 
 		for (int i = 0; i < dnsLimit; i++) { // create DNSs on the network
-			if (type == NetworkType.ISP) {
-				devices.add(new Dns(true, isp));
+			if (type == NetworkType.ISP && i == 0) {
+				devices.add(new Dns(true, isp, level));
 			} else {
-				devices.add(new Dns(false, isp));
+				devices.add(new Dns(false, isp, level));
 			}
 		}
 
 		for (int i = 0; i < routerLimit; i++) { // create servers on the network
-			devices.add(new Router(this));
+			devices.add(new Router(this, level));
 		}
 
 	}

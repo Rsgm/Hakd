@@ -48,9 +48,10 @@ public class Device implements Connectable {
 	private ArrayList<Part>			parts		= new ArrayList<Part>();
 
 	// --------constructor--------
-	public Device(Network network) { // have random smartphone connections and disconnections
+	public Device(Network network, int level, DeviceType type) { // have random smartphone connections and disconnections
 		this.network = network; // smartphones are like insects on a network, many types, random behavior, and there are lots of them
-		level = network.getLevel(); // TODO this doesn't want to access the parent network and get the level, it is in constructor
+		this.level = level;
+		this.type = type;
 
 		switch (level) {
 			case 0:
@@ -85,7 +86,7 @@ public class Device implements Connectable {
 			parts.add(new Storage(level, network, this));
 		}
 
-		masterStorage = Part.findParts(parts, PartType.STORAGE).get(0);
+		masterStorage = (Storage) Part.findParts(parts, PartType.STORAGE).get(0);
 
 	}
 
@@ -143,6 +144,17 @@ public class Device implements Connectable {
 		 * Connecting with half life 3 through port 28190 using LAMBDA
 		 * half life 3:28190>LAMBDA
 		 * */
+	}
+
+	// finds all of the devices in the list of that type
+	public static ArrayList<Device> findDevices(ArrayList<Device> devices, DeviceType type) {
+		ArrayList<Device> returnDevices = new ArrayList<Device>();
+		for (Device d : devices) {
+			if (d.getType() == type) {
+				returnDevices.add(d);
+			}
+		}
+		return returnDevices;
 	}
 
 	// --------getters/setters--------

@@ -2,16 +2,16 @@ package hakd.networks.devices;
 
 import hakd.internet.NetworkController;
 import hakd.networks.Network;
+import hakd.other.enumerations.DeviceType;
 import hakd.other.enumerations.Region;
 
 import java.util.ArrayList;
 
-public class Dns extends Device { // TODO make this an object not a static class, and let DNSs communicate a bit.
-	ArrayList<Network>	hosts;
+public class Dns extends Device { // TODO let DNSs communicate a bit.
+	private ArrayList<Network>	hosts	= new ArrayList<Network>();
 
-	public Dns(Boolean publicDns, Network network) {
-		super(network);
-
+	public Dns(Boolean publicDns, Network network, int level) {
+		super(network, level, DeviceType.DNS);
 	}
 
 	// --------methods--------
@@ -34,7 +34,7 @@ public class Dns extends Device { // TODO make this an object not a static class
 
 	// used to create a realistic, random ip based on registered ipv4 IRL(or AFK if your from sweeden). used mostly with the assign ip method, but can
 	// be useful for other things
-	public String generateIp(Region region) {
+	public static String generateIp(Region region) {
 		switch (region) { //
 			default:
 				return (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "."
@@ -89,6 +89,7 @@ public class Dns extends Device { // TODO make this an object not a static class
 					// guaranteed to be random
 	}
 
+	// I only keep this for the algorithms it has
 	{ // old method
 // public static void addConnection(Network network, String address) {
 // Vector<Line> lines = GameGui.getLines();
