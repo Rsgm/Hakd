@@ -25,15 +25,16 @@ public class NetworkController {
 		return null;
 	}
 
-	// returns the network at the given address
-	public static Network getNetworkByType(NetworkType type) {
+	// returns the networks of the given type
+	public static ArrayList<Network> getNetworkByType(NetworkType type) {
+		ArrayList<Network> array = new ArrayList<Network>();
 		for (Network n : PublicNetworks) {
-			Network n = d.;
-			if (n != null) {
-				return n;
+			if (n.getType() == type) {
+				array.add(n);
 			}
 		}
-		return null;}
+		return array;
+	}
 
 	// public dns ip request, gets the ip of a server at that address
 	public static String getIp(String address) {
