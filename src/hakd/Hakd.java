@@ -1,6 +1,6 @@
 package hakd;
 
-import hakd.gui.GuiController;
+import hakd.gui.GuiDisplay;
 import hakd.websites.servlets.NetworkServlet;
 import hakd.websites.servlets.StoreServlet;
 
@@ -12,14 +12,17 @@ import org.apache.catalina.startup.Tomcat;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
+import org.lwjgl.opengl.Display;
 
 public final class Hakd {
 	public static boolean	running	= false;
 
 	public static void main(String[] args) {
-		startServer();
+// startServer();
 		// startLua(); // TODO set this to the lua method in programs
-		GuiController.run(args);// start the user interface, that also runs the game
+
+		GuiDisplay guiDisplay = new GuiDisplay();
+		guiDisplay.start();// start the user interface, that also runs the game
 	}
 
 	private static void startLua() { // I don't think this is needed, it is all handled in the programs class
@@ -35,6 +38,8 @@ public final class Hakd {
 	public static void quitGame(String reason) {
 		System.out.print("quitting");
 		running = false;
+		Display.destroy();
+
 		if (reason == null) {
 			System.exit(0);
 		}

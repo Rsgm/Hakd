@@ -1,4 +1,4 @@
-package hakd.gui;
+package hakd.gui_old;
 
 import hakd.internet.Dns_old;
 import hakd.network.Network;

@@ -1,6 +1,6 @@
 package hakd.gameplay;
 
-import hakd.gui.GuiController;
+import hakd.gui_old.GuiController;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
 
