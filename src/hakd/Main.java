@@ -1,6 +1,6 @@
 package hakd;
 
-import hakd.gui.GuiDisplay;
+import hakd.game.Hakd;
 import hakd.websites.servlets.NetworkServlet;
 import hakd.websites.servlets.StoreServlet;
 
@@ -14,15 +14,40 @@ import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
 import org.lwjgl.opengl.Display;
 
-public final class Hakd {
-	public static boolean	running	= false;
+import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
+
+public final class Main {
 
 	public static void main(String[] args) {
-// startServer();
+		// startServer();
 		// startLua(); // TODO set this to the lua method in programs
 
-		GuiDisplay guiDisplay = new GuiDisplay();
-		guiDisplay.start();// start the user interface, that also runs the game
+		new LwjglApplication(new Hakd(), "Hak'd", 800, 600, false);
+	}
+
+	private void loop() {
+		while (!Display.isCloseRequested()) { // render OpenGL here
+			if (Display.isActive()) {
+				// getInput();
+				// logic();
+				// render();
+				Display.sync(60); // default for now
+			} else {
+				try {
+					Thread.sleep(100);
+				} catch (InterruptedException e) {
+					e.printStackTrace();
+				}
+
+// logic();
+				// Only bother rendering if the window is visible
+				if (Display.isVisible() || Display.isDirty()) {
+// render();
+				}
+
+			}
+
+		}
 	}
 
 	private static void startLua() { // I don't think this is needed, it is all handled in the programs class
@@ -37,8 +62,6 @@ public final class Hakd {
 
 	public static void quitGame(String reason) {
 		System.out.print("quitting");
-		running = false;
-		Display.destroy();
 
 		if (reason == null) {
 			System.exit(0);
@@ -49,7 +72,8 @@ public final class Hakd {
 	}
 
 	private static void startServer() { // start tomcat and servlets
-		// TODO move this at some point to a controller class in the servlet folder so each game mode has its own, if needed. and so its not running
+		// TODO move this at some point to a controller class in the servlet folder so each game mode has its own, if needed. and so its not
+// running
 // during modes that don't need it
 		Tomcat tomcat = new Tomcat();
 		tomcat.setPort(80);

@@ -1,7 +1,7 @@
 package hakd.gui_old;
 
-import hakd.Hakd;
-import hakd.gameplay.PlayerController;
+import hakd.Main;
+import hakd.game.gameplay.Player;
 import hakd.network.Network;
 
 import java.util.ArrayList;
@@ -92,7 +92,7 @@ public class MenuGui {
 					+ "\nstart [player company] - starts the game" + "\nnmap - scans the computers on the network for open ports and other stuff"
 					+ "\nsettings - opens settings window");
 		} else if (input.equals("quit")) {
-			Hakd.quitGame(null);
+			Main.quitGame(null);
 		} else if (input.matches("^start\\s+.+")) {
 			// gameStartup(); // the loading screen // removed for slow loading while testing, will be much better as if it were booting an os
 			Scanner scanner = new Scanner(input);
@@ -101,11 +101,11 @@ public class MenuGui {
 			Network network = new Network(0);
 			Network.getNetworks().add(network);
 			network.populate();
-			PlayerController.setHomeNetwork(network);
-			PlayerController.setCurrentNetwork(network);
-			PlayerController.setCurrentServer(network.getServers().get(network.getServers().size() - 1));
-			PlayerController.setPlayerName(scanner.match().group(1));
-			PlayerController.updateCurrentIp(); // current server is set in the network class if it is the home network
+			Player.setHomeNetwork(network);
+			Player.setCurrentNetwork(network);
+			Player.setCurrentServer(network.getServers().get(network.getServers().size() - 1));
+			Player.setPlayerName(scanner.match().group(1));
+			Player.updateCurrentIp(); // current server is set in the network class if it is the home network
 
 			scanner.close();
 			GameGui.startGame();

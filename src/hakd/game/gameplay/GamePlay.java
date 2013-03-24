@@ -1,4 +1,4 @@
-package hakd.gameplay;
+package hakd.game.gameplay;
 
 import hakd.internet.NetworkController;
 import hakd.networks.ServiceProvider;

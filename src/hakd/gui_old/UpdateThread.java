@@ -1,6 +1,6 @@
 package hakd.gui_old;
 
-import hakd.Hakd;
+import hakd.Main;
 
 public class UpdateThread implements Runnable {
 
@@ -18,7 +18,7 @@ public class UpdateThread implements Runnable {
 				Thread.sleep(16);
 			} catch (InterruptedException e) {
 			}
-		} while (Hakd.running == true);
+		} while (Main.running == true);
 
 	}
 

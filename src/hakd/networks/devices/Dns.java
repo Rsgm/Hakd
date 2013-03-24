@@ -92,8 +92,8 @@ public class Dns extends Device { // TODO let DNSs communicate a bit.
 	// I only keep this for the algorithms it has
 	{ // old method
 // public static void addConnection(Network network, String address) {
-// Vector<Line> lines = GameGui.getLines();
-// int radius = GameGui.getRadius();
+// Vector<Line> lines = GameScreem.getLines();
+// int radius = GameScreem.getRadius();
 // double r, a, b, c, xTrig, yTrig, x1, y1, x2, y2; // triangle>ABC
 //
 // x1 = network.getxCoordinate();
@@ -143,7 +143,7 @@ public class Dns extends Device { // TODO let DNSs communicate a bit.
 // lines.add(line);
 // Connection.getConnection().add(new Connection(network, Network.getNetworks().get(findNetwork(address))));
 //
-// // GameGui.updateRegion();
+// // GameScreem.updateRegion();
 // return;
 // }
 	}

@@ -13,7 +13,7 @@ import hakd.other.enumerations.Stance;
 
 import java.util.ArrayList;
 
-public class Network { // this only holds a set of devices and info, connecting to this just forwards you to the router
+public class Network { // this only holds a set of devices and info, connecting to this just forwards you to the masterRouter
 	// stats
 	private ServiceProvider		isp;								// the network's isp
 	private int					level;								// 0-7, 0 for player because you start with almost nothing
@@ -26,15 +26,17 @@ public class Network { // this only holds a set of devices and info, connecting 
 	private int					routerLimit;
 	private Stance				stance;
 	private NetworkType			type;
-	private Router				router;							// main router
+	private Router				masterRouter;						// main router
+	private Server				masterServer;						// main server
 
 	// objects
 	private ArrayList<Device>	devices	= new ArrayList<Device>();
 
 	// gui
 	private Region				region;							// where the network is in the world
-	private int					xCoordinate;						// where the network is in the regionTab/map
-	private int					yCoordinate;
+	private int					x;									// where the network is in the regionTab/map
+	private int					y;
+	private int					z;
 
 	// --------constructor--------
 	@Deprecated
@@ -95,7 +97,12 @@ public class Network { // this only holds a set of devices and info, connecting 
 		int s = (int) Math.round(serverLimit * (Math.random() * 0.35 + 0.65));
 
 		for (int i = 0; i < s; i++) { // create servers on the network
-			devices.add(new Server(this, level));
+			Server server = new Server(this, level);
+			devices.add(server);
+
+			if (i == 0) {
+
+			}
 		}
 
 		for (int i = 0; i < dnsLimit; i++) { // create DNSs on the network
@@ -107,7 +114,12 @@ public class Network { // this only holds a set of devices and info, connecting 
 		}
 
 		for (int i = 0; i < routerLimit; i++) { // create servers on the network
-			devices.add(new Router(this, level));
+			Router r = new Router(this, level);
+			devices.add(r);
+
+			if (i == 0) {
+				masterRouter = r;
+			}
 		}
 
 	}
@@ -211,22 +223,6 @@ public class Network { // this only holds a set of devices and info, connecting 
 		this.region = region;
 	}
 
-	public int getxCoordinate() {
-		return xCoordinate;
-	}
-
-	public void setxCoordinate(int xCoordinate) {
-		this.xCoordinate = xCoordinate;
-	}
-
-	public int getyCoordinate() {
-		return yCoordinate;
-	}
-
-	public void setyCoordinate(int yCoordinate) {
-		this.yCoordinate = yCoordinate;
-	}
-
 	public int getRouterLimit() {
 		return routerLimit;
 	}
@@ -243,11 +239,43 @@ public class Network { // this only holds a set of devices and info, connecting 
 		this.type = type;
 	}
 
-	public Router getRouter() {
-		return router;
+	public Router getMasterRouter() {
+		return masterRouter;
 	}
 
-	public void setRouter(Router router) {
-		this.router = router;
+	public void setMasterRouter(Router router) {
+		this.masterRouter = router;
+	}
+
+	public Server getMasterServer() {
+		return masterServer;
+	}
+
+	public void setMasterServer(Server masterServer) {
+		this.masterServer = masterServer;
+	}
+
+	public int getX() {
+		return x;
+	}
+
+	public void setX(int x) {
+		this.x = x;
+	}
+
+	public int getY() {
+		return y;
+	}
+
+	public void setY(int y) {
+		this.y = y;
+	}
+
+	public int getZ() {
+		return z;
+	}
+
+	public void setZ(int z) {
+		this.z = z;
 	}
 }
