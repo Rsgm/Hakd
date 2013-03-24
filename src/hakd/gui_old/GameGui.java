@@ -1,7 +1,7 @@
 package hakd.gui_old;
 
-import hakd.Hakd;
-import hakd.gameplay.Commands;
+import hakd.Main;
+import hakd.game.gameplay.Commands;
 
 import java.util.ArrayList;
 import java.util.Vector;
@@ -225,7 +225,7 @@ public class GameGui {
 // game code
 		// new RunGame(); // all this is is a thread thaat does nothing right now, the game is being run by javafx
 
-		Hakd.running = true;
+		Main.running = true;
 		new UpdateThread();
 	}
 

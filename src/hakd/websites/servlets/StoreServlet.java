@@ -17,7 +17,7 @@ public class StoreServlet extends HttpServlet {
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		response.setContentType("text/html");
-		//response.sendRedirect("/files/Hakd/WebContent/ThePirateBay.html");
+		//response.sendRedirect("/files/Main/WebContent/ThePirateBay.html");
 		PrintWriter out = response.getWriter();
 //		out.print(s)
 		out.print("<html><head><title>" + "Hello World!" + "</title></head>");

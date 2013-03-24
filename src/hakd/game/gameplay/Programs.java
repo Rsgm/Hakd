@@ -1,4 +1,4 @@
-package hakd.gameplay;
+package hakd.game.gameplay;
 
 import java.io.File;
 import java.util.ArrayList;

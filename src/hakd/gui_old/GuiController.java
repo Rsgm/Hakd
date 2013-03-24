@@ -1,6 +1,6 @@
 package hakd.gui_old;
 
-import hakd.Hakd;
+import hakd.Main;
 
 import java.util.ArrayList;
 
@@ -110,7 +110,7 @@ public class GuiController extends Application {
 		gameStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
 			@Override
 			public void handle(WindowEvent arg0) {
-				Hakd.quitGame(null);
+				Main.quitGame(null);
 			}
 		});
 	}

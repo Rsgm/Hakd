@@ -1,7 +1,7 @@
-package hakd.gameplay;
+package hakd.game.gameplay;
 
-import hakd.Hakd;
-import hakd.gui.GuiController;
+import hakd.game.Hakd;
+import hakd.gui_old.GuiController;
 import hakd.internet.NetworkController;
 import hakd.networks.Network;
 import hakd.other.enumerations.NetworkType;
@@ -9,46 +9,19 @@ import hakd.other.enumerations.NetworkType;
 import java.util.ArrayList;
 import java.util.Scanner;
 
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
+public class Command {
+	String	input;
 
-public class Commands {
-	private static int					recall	= 0;						// holds the position of the ArrayList
-	private static ArrayList<String>	lines	= new ArrayList<String>();	// holds previously used commands for easy access
-
-	public static void inputHandler(KeyEvent input) {
-		if (input.getCode() == KeyCode.ENTER) {
-			lines.add(GuiController.terminalInput.getText());
-			GuiController.terminalDisplay.setText(GuiController.terminalDisplay.getText() + "\n" + GuiController.terminalInput.getText());
-			System.out.println(GuiController.terminalInput.getText());
-			commands(GuiController.terminalInput.getText());
-			GuiController.terminalInput.setText(GuiController.getIp());
-			recall = lines.size();
-		} else if (input.getCode() == KeyCode.DOWN && recall < lines.size() - 1) {
-			recall++;
-			GuiController.terminalInput.setText(lines.get(recall));
-			GuiController.terminalInput.end();
-		} else if (input.getCode() == KeyCode.UP && recall > 0) {
-			recall--;
-			GuiController.terminalInput.setText(lines.get(recall));
-			GuiController.terminalInput.end();
-		} else if (input.getCode() == KeyCode.ESCAPE) {
-			recall = lines.size();
-			GuiController.terminalInput.setText(GuiController.getIp());
-		} else {
-			return;
-		}
-		GuiController.terminalDisplay.end();
-		GuiController.terminalInput.end();
+	public Command(String input) {
+		this.input = input;
 	}
 
-	public static void commands(String input) { // picks the desired command
-		// TODO add scan(ports), cd(directory), cs(int server)/*change server*/, traceroute(address), clone
-		// server to server(maybe just hard drive to hard drive)
+	public void run() { // TODO use enumerations // picks the desired command
+		// TODO add scan(ports), cd(directory), cs(int server)/*change server*/, traceroute(address), clone server to server(maybe just hard drive to hard drive)
 		Scanner scanner = new Scanner(input);
 		ArrayList<String> args = new ArrayList<String>();
 
-		if (input.matches(GuiController.getIp() + ".+")) {
+		if (input.matches(">.+")) {
 			scanner.useDelimiter("\\s+");
 			scanner.skip(".+>");
 			for (int i = 0; i < input.length(); i++) {
