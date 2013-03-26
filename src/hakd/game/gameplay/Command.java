@@ -12,7 +12,7 @@ import java.util.Scanner;
 public class Command {
 	String	input;
 
-	public Command(String input) {
+	public Command(String input) { // this may need to tell if a player issued it, so it won't write to the display
 		this.input = input;
 	}
 

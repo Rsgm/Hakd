@@ -12,7 +12,6 @@ import org.apache.catalina.startup.Tomcat;
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.jse.JsePlatform;
-import org.lwjgl.opengl.Display;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
@@ -23,31 +22,6 @@ public final class Main {
 		// startLua(); // TODO set this to the lua method in programs
 
 		new LwjglApplication(new Hakd(), "Hak'd", 800, 600, false);
-	}
-
-	private void loop() {
-		while (!Display.isCloseRequested()) { // render OpenGL here
-			if (Display.isActive()) {
-				// getInput();
-				// logic();
-				// render();
-				Display.sync(60); // default for now
-			} else {
-				try {
-					Thread.sleep(100);
-				} catch (InterruptedException e) {
-					e.printStackTrace();
-				}
-
-// logic();
-				// Only bother rendering if the window is visible
-				if (Display.isVisible() || Display.isDirty()) {
-// render();
-				}
-
-			}
-
-		}
 	}
 
 	private static void startLua() { // I don't think this is needed, it is all handled in the programs class

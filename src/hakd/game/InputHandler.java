@@ -1,30 +1,33 @@
 package hakd.game;
 
 import hakd.game.gameplay.Command;
-import hakd.gui_old.GuiController;
 
 import java.util.ArrayList;
 import java.util.Vector;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 
 public class InputHandler implements InputProcessor {
-	private boolean					menu;
+	private final boolean			menu;
 
-	private String					text			= "";
+	private String					text	= "";
 	private int						cursor;
 
-	private int						line			= 0;						// holds the position of the history
-	private final ArrayList<String>	history			= new ArrayList<String>();	// holds previously used commands for easy access
+	private int						line	= 0;						// holds the position of the history
+	private final ArrayList<String>	history	= new ArrayList<String>();	// holds previously used commands for easy access
 
-	private Vector<Command>			commandQueue	= new Vector<Command>();	// holds commands made, that are ready to be run
+	public InputHandler(boolean isMenu) {
+		menu = isMenu;
+		Gdx.input.setInputProcessor(this);
+	}
 
 	@Override
 	public boolean keyDown(int keycode) {
 		if (keycode == Keys.ENTER) {
 			history.add(text);
-			GuiController.terminalDisplay.setText(GuiController.terminalDisplay.getText() + "\n" + GuiController.terminalInput.getText());
+			whatever.addText();
 
 			System.out.println(text); // print input
 			commandQueue.add(new Command(text)); // add command to queue for next game loop
@@ -54,7 +57,7 @@ public class InputHandler implements InputProcessor {
 		if (menu) {
 			text = "Boot>";
 		} else {
-// text = player.getIp() + whatever
+// TODO text = player.getIp() + whatever
 		}
 
 	}
@@ -71,38 +74,33 @@ public class InputHandler implements InputProcessor {
 	}
 
 	@Override
+	public boolean scrolled(int amount) {
+		// TODO
+		return false;
+	}
+
+	@Override
 	public boolean keyUp(int keycode) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
 	@Override
 	public boolean mouseMoved(int screenX, int screenY) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public boolean scrolled(int amount) {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
