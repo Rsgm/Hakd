@@ -19,6 +19,7 @@ import hakd.other.enumerations.names.Model;
 
 import java.awt.Desktop;
 import java.io.IOException;
+import java.net.URI;
 import java.util.ArrayList;
 
 public class Device implements Connectable {
@@ -99,18 +100,20 @@ public class Device implements Connectable {
 
 		if (Port.checkPortAnd(ports, program, port, protocol)) {
 			try {
+				Desktop d = Desktop.getDesktop();
+
 				switch (port) {
 					default: // 80, 443, others but just get directed to a 404 if not a website
-						Desktop.getDesktop().browse(java.net.URI.create("http://localhost:80/network/" + network.getIp()));
+						d.browse(URI.create("http://localhost:80/network/" + network.getIp()));
 					case 31337:
 						// grant complete(root?) access
 						// open ssh
 						break;
 				}
+				return true;
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
-			return true;
 		}
 		return false;
 	}
