@@ -5,8 +5,8 @@
 	<classpathentry kind="lib" path="lib/luaj-jse-3.0-alpha1.jar"/>
 	<classpathentry kind="lib" path="lib/tomcat-embed-core.jar"/>
 	<classpathentry kind="lib" path="lib/tomcat-embed-logging-juli.jar"/>
-	<classpathentry kind="lib" path="lib/libgdx/gdx-backend-lwjgl-natives.jar" sourcepath="lib/libgdx/gdx-backend-lwjgl-natives.jar"/>
-	<classpathentry kind="lib" path="lib/libgdx/gdx-backend-lwjgl.jar" sourcepath="lib/libgdx/gdx-backend-lwjgl.jar"/>
+	<classpathentry kind="lib" path="lib/libgdx/gdx-backend-lwjgl-natives.jar"/>
+	<classpathentry kind="lib" path="lib/libgdx/gdx-backend-lwjgl.jar" sourcepath="lib/libgdx/sources/gdx-backend-lwjgl-sources.jar"/>
 	<classpathentry kind="lib" path="lib/libgdx/gdx.jar" sourcepath="lib/libgdx/sources/gdx-sources.jar"/>
 	<classpathentry kind="lib" path="lib/libgdx/gdx-natives.jar"/>
 	<classpathentry kind="lib" path="lib/libgdx/gdx-freetype.jar" sourcepath="lib/libgdx/sources/gdx-freetype-sources.jar"/>
