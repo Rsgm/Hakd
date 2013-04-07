@@ -45,7 +45,7 @@ public class Network { // this only holds a set of devices and info, connecting 
 		stance = Stance.NEUTRAL;
 		this.type = type;
 
-		if (type != NetworkType.ISP) {
+		if (type != NetworkType.ISP && type != NetworkType.MENU) {
 			isp = NetworkController.getServiceProviders().get((int) (Math.random() * NetworkController.getServiceProviders().size()));
 			// TODO what does the isp connect to?
 		}
@@ -59,6 +59,14 @@ public class Network { // this only holds a set of devices and info, connecting 
 				serverLimit = 1;
 				routerLimit = 1;
 				stance = Stance.FRIENDLY;
+				break;
+			default:
+				region = Region.EUROPE;
+				owner = "test";
+				serverLimit = 4; // max possible
+				dnsLimit = 1;
+				routerLimit = 1;
+				stance = Stance.NEUTRAL;
 				break;
 			case TEST:
 				region = Region.ASIA;
@@ -83,14 +91,11 @@ public class Network { // this only holds a set of devices and info, connecting 
 				dnsLimit = 3;
 				routerLimit = 1;
 				break;
-			default:
-				region = Region.EUROPE;
-				owner = "test";
-				serverLimit = 4; // max possible
-				dnsLimit = 1;
-				routerLimit = 1;
-				stance = Stance.NEUTRAL;
+			case MENU:// new player // only happens at the start of the game
+				level = 0;
+				ip = "boot";
 				break;
+
 		}
 
 		// used to add randomness to the amount of servers to make given serverLimit

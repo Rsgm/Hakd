@@ -8,7 +8,12 @@ public enum Isp {
 	UPSILON("Upsilon"), PHI("Phi"), CHI("Chi"), PSI("Psi"), OMEGA("Omega");
 	public String	company;
 
-	private Isp(String company) {
+// public int price; // I think I can use gooey fiber(70, 99)
+// public int level;
+
+	private Isp(String company/*, int price in $, int level 0-00*/) {
 		this.company = company;
+// this.price = price;
+// this.level = level;
 	}
 }

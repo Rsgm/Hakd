@@ -1,37 +1,75 @@
 package hakd;
 
 import hakd.game.Hakd;
+import hakd.other.enumerations.Prefs;
 import hakd.websites.servlets.NetworkServlet;
 import hakd.websites.servlets.StoreServlet;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.util.ArrayList;
+import java.util.Scanner;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.lib.jse.JsePlatform;
 
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 public final class Main {
+	public static ArrayList<String>	prefs	= new ArrayList<>();
 
 	public static void main(String[] args) {
-		// startServer();
-		// startLua(); // TODO set this to the lua method in programs
+		loadPrefs();
+		// startServer(); // TODO test this with port forwarding
 
-		new LwjglApplication(new Hakd(), "Hak'd", 800, 600, false);
+		String w = prefs.get(Prefs.WIDTH.line);
+		String h = prefs.get(Prefs.HEIGHT.line);
+		new LwjglApplication(new Hakd(), "Hak'd", Integer.parseInt(w), Integer.parseInt(h), false);
 	}
 
-	private static void startLua() { // I don't think this is needed, it is all handled in the programs class
-		String script = "lua/hello.lua";
+	private static void loadPrefs() {
+		File f = new File("prefs.ini");
+		prefs.clear();
 
-		Globals globals = JsePlatform.standardGlobals();
+		try {
+			Scanner s = new Scanner(f);
+			while (s.hasNext(".+=.+")) {
+				s.skip(".+=");
+				prefs.add(s.nextLine());
+			}
+			s.close();
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 
-		LuaValue chunk = globals.loadFile(script);
+		if (prefs.size() != Prefs.total) { // checks if all the settings are there, if not create a new file with defualts
+			try {
+				if (!f.exists()) {
+					f.createNewFile();
+				}
 
-		chunk.call(LuaValue.valueOf(script));
+				BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
+				w.append("width=800");
+				w.newLine();
+				w.append("height=600");
+				w.newLine();
+				w.append("fullscreen=false");
+				w.newLine();
+				w.append("vsync=true");
+				w.close();
+			} catch (FileNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+
+			loadPrefs(); // check it again
+		}
 	}
 
 	public static void quitGame(String reason) {

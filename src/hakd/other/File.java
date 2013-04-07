@@ -2,7 +2,7 @@ package hakd.other;
 
 import hakd.other.enumerations.FileType;
 
-public class File {
+public class File { // TODO file hashes!
 
 	// data
 	private int			size;
