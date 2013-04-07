@@ -1,28 +1,29 @@
 package hakd.game.gameplay;
 
-import hakd.gui_old.GuiController;
+import hakd.gui.Terminal;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
 
 public class Player {
 	// player stats
-	private int		money;			// in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or no
+	private int			money;			// in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or
+// no
 // redundancy with strong encryption
-	private String	name;
-	private Network	home;			// meant to be used as the players home base
-	private Network	currentNetwork;
-	private Device	currentServer;
+	private String		name;
+	private Network		home;			// meant to be used as the players home base
+	private Network		currentNetwork;
+	private Device		currentServer;
+
+	private Terminal	terminal;
 
 	// --------methods--------
-	public Player(String name, Network home) {
+	public Player(String name, Network home, Terminal terminal) {
 		this.name = name;
 		this.home = home;
 		this.currentNetwork = home;
 		this.currentServer = home.getMasterServer();
-	}
+		this.terminal = terminal;
 
-	public void updateTerminalText() {
-		GuiController.setIp(currentNetwork.getIp() + "/" + currentServer.getServerId() + ">"); // how should you distinguish between servers?
 	}
 
 	public int getMoney() {
@@ -63,6 +64,22 @@ public class Player {
 
 	public void setCurrentServer(Device currentServer) {
 		this.currentServer = currentServer;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public Terminal getTerminal() {
+		return terminal;
+	}
+
+	public void setTerminal(Terminal terminal) {
+		this.terminal = terminal;
 	}
 
 	// --------getters/setters--------

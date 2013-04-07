@@ -30,3 +30,19 @@ NetworkController.getPublicDns()
 String text = "012345";
 text = text.substring(0, 4) + "x" + text.substring(4, text.length());
 text
+
+
+
+
+
+
+Network n = new Network(NetworkType.MENU);
+n
+
+
+
+String t = "this is a test\nas is this";
+Scanner s = new Scanner(t);
+s.useDelimiter("\n");
+s.next();
+s.next()
