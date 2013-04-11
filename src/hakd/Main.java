@@ -21,7 +21,7 @@ import org.apache.catalina.startup.Tomcat;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 public final class Main {
-	public static ArrayList<String>	prefs	= new ArrayList<>();
+	public static ArrayList<String>	prefs	= new ArrayList<String>();
 
 	public static void main(String[] args) {
 		loadPrefs();

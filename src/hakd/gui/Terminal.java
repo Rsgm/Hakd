@@ -15,6 +15,8 @@ import hakd.other.enumerations.NetworkType;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import org.luaj.vm2.Varargs;
+
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
@@ -22,12 +24,12 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 public class Terminal {
 	private boolean					menu;
 	private TerminalInput			input;
-	private int						lineSpacing	= 16;					// this is declared and has a getter/setter but never used...
+	private int						lineSpacing	= 16;						// this is declared and has a getter/setter but never used...
 	private Player					player;
 	private MenuScreen				mScreen;
 	private GameScreen				gScreen;
 
-	private final ArrayList<String>	text		= new ArrayList<>();
+	private final ArrayList<String>	text		= new ArrayList<String>();
 
 	@SuppressWarnings("deprecation")
 	public Terminal(boolean isMenu, HakdScreen screen) {
@@ -58,6 +60,17 @@ public class Terminal {
 			text.add(s.next());
 		}
 		s.close();
+	}
+
+	public void addText(Varargs v) {
+		for (int i = 1; i < v.narg() + 1; i++) { // starts at 1, not 0
+// String s = v.arg(i).tojstring();
+// if (s.matches("[(,)")) {
+// s.replaceAll("[(,)]", "");
+// }
+
+			addText(v.arg(i).tojstring());
+		}
 	}
 
 	public void render(BitmapFont font, SpriteBatch batch, float time) {
