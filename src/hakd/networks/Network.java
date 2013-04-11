@@ -93,7 +93,7 @@ public class Network { // this only holds a set of devices and info, connecting 
 				break;
 			case MENU:// new player // only happens at the start of the game
 				level = 0;
-				ip = "boot";
+				ip = "Boot";
 				break;
 
 		}

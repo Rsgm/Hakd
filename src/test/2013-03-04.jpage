@@ -46,3 +46,26 @@ Scanner s = new Scanner(t);
 s.useDelimiter("\n");
 s.next();
 s.next()
+
+
+String s = "Lua\\Default\\help.lua";
+s.matches("\\S*" + "help" + "\\.lua")
+
+
+
+String s = "\"1 2 3 4\" test";
+s.matches("\".*\".*")
+
+
+Scanner scanner = new Scanner("hello \"1 2 3 4\" test");
+scanner.useDelimiter("[\\s+\"]");
+scanner.next();
+scanner.next();
+scanner.next();
+scanner.next();
+
+	if (scanner.hasNext("\"")) {
+		return true;
+	} else if (scanner.hasNext()) {
+		return false;
+	}

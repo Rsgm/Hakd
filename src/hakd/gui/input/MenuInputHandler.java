@@ -20,7 +20,7 @@ public class MenuInputHandler extends TerminalInput {
 
 			System.out.println(text); // print input
 			Command c = new Command(text, terminal.getPlayer());
-			c.run();
+// c.run();
 
 			line = history.size();
 			ClearInput(); // reset the terminal text
@@ -54,7 +54,7 @@ public class MenuInputHandler extends TerminalInput {
 
 	@Override
 	public boolean keyTyped(char character) {
-		if ((character + "").matches("[\\w ]")) { // only matches \w or spaces
+		if ((character + "").matches("[\\w \\.\",]")) { // only matches \w, single-quotes, periods, commas, or spaces. it may need others
 			text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
 			cursor++;
 		} else if (character == Keys.ENTER) {
