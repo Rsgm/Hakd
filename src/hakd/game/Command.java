@@ -1,10 +1,12 @@
-package hakd.game.gameplay;
+package hakd.game;
 
+import hakd.game.gameplay.Player;
 import hakd.gui.Terminal;
 
 import java.io.File;
 import java.util.ArrayList;
 import java.util.Scanner;
+
 import org.luaj.vm2.Globals;
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.Varargs;
@@ -46,87 +48,35 @@ public class Command {
 				if (input.matches(player.getCurrentNetwork().getIp() + ">.+")) {
 					scanner.skip(".+>");
 					scanner.useDelimiter("\\s+");
-					
-				    while(scanner.hasNext()) {
-				        //Get the current token
-				        String next = scanner.next();
-				        //Are we inside quotes
-				        if(inQuotes) {
-				            //If so, add this string to the end of the last value
-				            int offset = args.size()-1;
-				            args.set(offset, args.get(offset) + " " + next);
-				            //If it ends in a quotation then we exit quotes
-				            if(next.endsWith("\"")) {
-				                inQuotes = false;
-				            }
-				        } else {
-				            //Add the string to the values
-				            args.add(next);
-				            //Are we moving into quotes?
-				            if(next.startsWith("\"") && scanner.hasNext("\\S*\"")) {
-				                inQuotes = true;
-				            }
-				        }
-				    }
-					
 
-//					scanner.skip(".+>");
-//					scanner.useDelimiter("\\s+");
-//
-//					for (int i = 0; i < input.length(); i++) {
-//						if (scanner.hasNext()) {
-//							args.add(scanner.next());
-//						} else {
-//							break;
-//						}
-//					}
-//
-//					// adds up the amount of quotes total
-//					int quoteCount = 0;
-//					for (String token : args) {
-//						if (token.matches("^\".*")) {
-//							quoteCount++;
-//						} else if (token.matches(".*\"$") && quoteCount % 2 == 1) {
-//							quoteCount++;
-//						}
-//					}
-//
-//					// fixes the strange argument outputs when using odd number of quotes
-//					if (quoteCount % 2 != 0) {// I don't know this may be more of a feature than a bug(code injection)
-//						return;
-//					} // TODO, doesnt fix ["test" "test"], it returns as one arg, just re-write at some point
-//
-//					ArrayList<String> tempArray = new ArrayList<String>(); // used for the loop
-//					tempArray.addAll(args);
-//
-//					// this has strange problems with strange text for example [hello test" "test], so TODO match input to "[\\w+\\s+[\".*\"]]+", idk
-//					for (String token : tempArray) {
-//						// tests for a quote at the beginning and that there is at least two quotes left
-//						if (token.matches("^\".*") && quoteCount >= 2) {
-//							int index = args.indexOf(token);
-//							String s = token; // I could not think of a good name for this
-//
-//							// for every token without a quote add it to the sting at tokenIndex in args, if it has a quote, do the same but break
-//							while (!args.get(index).matches(".*\"$")) {
-//								if (index + 2 >= args.size()) {
-//									break;
-//								}
-//								s += " " + args.remove(index + 1);
-//								args.remove(index);
-//							}
-//							args.remove(token); // fixes the bug if there is but one space, because break is called before it can remove anything
-//							s += " " + args.remove(index);
-//							args.add(index, s);
-//							quoteCount -= 2;
-//						}
-//					}
-					System.out.println(args.toString());
+					while (scanner.hasNext()) {
+						// Get the current token
+						String next = scanner.next();
+						// Are we inside quotes
+						if (inQuotes) {
+							// If so, add this string to the end of the last value
+							int offset = args.size() - 1;
+							args.set(offset, args.get(offset) + " " + next);
+							// If it ends in a quotation then we exit quotes
+							if (next.endsWith("\"")) {
+								inQuotes = false;
+							}
+						} else {
+							// Add the string to the values
+							args.add(next);
+							// Are we moving into quotes?
+							if (next.startsWith("\"") && scanner.hasNext("\\S*\"")) {
+								inQuotes = true;
+							}
+						}
+					}
 
-// if (terminal.isMenu()) {
-// args.set(0, "menu-" + args.get(0)); // TODO what to do?
-// }
+					if (terminal.isMenu()) {
+						args.set(0, "menu-" + args.get(0)); // TODO what to do?
+					}
 
 					runLua(args);
+					System.out.println(args.toString());
 				}
 				scanner.close();
 			}

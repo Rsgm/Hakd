@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 
 public class GamePlay {
+
 	public static void generateGame() {
 		NetworkController.getOwners().addAll(Arrays.asList(Owner.values()));
 		// brands and models don't need this because you can have two of the same brand

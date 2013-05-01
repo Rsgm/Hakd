@@ -1,6 +1,6 @@
 package hakd.gui.input;
 
-import hakd.game.gameplay.Command;
+import hakd.game.Command;
 import hakd.gui.Terminal;
 
 import com.badlogic.gdx.Gdx;
@@ -19,8 +19,7 @@ public class MenuInputHandler extends TerminalInput {
 			terminal.addText(text);
 
 			System.out.println(text); // print input
-			Command c = new Command(text, terminal.getPlayer());
-// c.run();
+			new Command(text, terminal.getPlayer());
 
 			line = history.size();
 			ClearInput(); // reset the terminal text
