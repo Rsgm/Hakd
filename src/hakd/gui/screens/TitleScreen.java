@@ -43,7 +43,7 @@ public class TitleScreen extends HakdScreen {
 		creditFont = generator.generateFont(14);
 		generator.dispose();
 
-		keyClick = Gdx.audio.newSound(Gdx.files.internal("src/hakd/gui/resources/sounds/keyClick.ogg"));
+		keyClick = Gdx.audio.newSound(Gdx.files.internal("src/hakd/gui/resources/sounds/KeyClick.ogg"));
 
 		font.setColor(0f, 0f, 0f, 0f);
 		creditFont.setColor(0.0f, 1f, 0.0f, 0.18f);
@@ -57,6 +57,8 @@ public class TitleScreen extends HakdScreen {
 		title.setPosition(width / 2f - title.getWidth() / 2, height / 1.6f);
 
 		Gdx.input.setInputProcessor(new TitleInput(game));
+
+		game.setScreen(new GameScreen(game, "rsgm")); // TODO temporary until I get lua working for the start menu to work
 	}
 
 	@Override

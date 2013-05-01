@@ -1,7 +1,6 @@
 package hakd.gui;
 
 import hakd.game.gameplay.Player;
-import hakd.game.gameplay.Programs;
 import hakd.gui.input.GameInputHandler;
 import hakd.gui.input.MenuInputHandler;
 import hakd.gui.input.TerminalInput;
@@ -44,18 +43,16 @@ public class Terminal {
 			input = new GameInputHandler(this);
 			this.gScreen = (GameScreen) screen;
 		}
-
-		Programs.setTerminal(this);
 	}
 
-	public void addText(String t) {
-		if (t.matches("\\n")) {
+	public void addText(String t) { // TODO support both \r and \n, if this does not work
+		if (t.matches("\\n") || t.matches("\\r")) {
 			text.add(t);
 			return;
 		}
 
 		Scanner s = new Scanner(t);
-		s.useDelimiter("\n");
+		s.useDelimiter("[\n\r]");
 		while (s.hasNext()) {
 			text.add(s.next());
 		}

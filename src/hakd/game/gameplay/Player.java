@@ -6,8 +6,7 @@ import hakd.networks.devices.Device;
 
 public class Player {
 	// player stats
-	private int			money;			// in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or
-// no
+	private int			money;			// in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or no
 // redundancy with strong encryption
 	private String		name;
 	private Network		home;			// meant to be used as the players home base
@@ -26,6 +25,8 @@ public class Player {
 
 	}
 
+	// --------getters/setters--------
+
 	public int getMoney() {
 		return money;
 	}
@@ -34,20 +35,12 @@ public class Player {
 		this.money = money;
 	}
 
-	public String getPlayerName() {
-		return name;
-	}
-
-	public void setPlayerName(String playerName) {
-		this.name = playerName; // TODO Maybe add homenetwork.setowner back?
-	}
-
 	public Network getHome() {
 		return home;
 	}
 
-	public void setHome(Network homeNetwork) {
-		this.home = homeNetwork;
+	public void setHome(Network home) {
+		this.home = home;
 	}
 
 	public Network getCurrentNetwork() {
@@ -66,14 +59,6 @@ public class Player {
 		this.currentServer = currentServer;
 	}
 
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
 	public Terminal getTerminal() {
 		return terminal;
 	}
@@ -82,6 +67,7 @@ public class Player {
 		this.terminal = terminal;
 	}
 
-	// --------getters/setters--------
-
+	public String getName() {
+		return name;
+	}
 }
