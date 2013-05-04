@@ -21,11 +21,14 @@ public class Network { // this only holds a set of devices and info, connecting 
 	private String				ip;								// all network variables will be in IP format
 	private String				address;
 	private String				owner;								// owner, company, player
+
 	private int					serverLimit;						// amount of server objects to begin with and the limit
 	private int					dnsLimit;							// same as serverLimit but for DNSs
 	private int					routerLimit;
+
 	private Stance				stance;
 	private NetworkType			type;
+
 	private Router				masterRouter;						// main router
 	private Server				masterServer;						// main server
 
@@ -33,10 +36,13 @@ public class Network { // this only holds a set of devices and info, connecting 
 	private ArrayList<Device>	devices	= new ArrayList<Device>();
 
 	// gui
-	private Region				region;							// where the network is in the world
+	private Region				region;							// where the network is in the world, it helps find an ip
 	private int					x;									// where the network is in the regionTab/map
 	private int					y;
 	private int					z;
+
+// private graphic? icon? sprite? image? texture? !!!3d model!!!
+// TODO have a static class, or file, hold all of the models with the points and textures
 
 	// --------constructor--------
 	@Deprecated
@@ -45,7 +51,7 @@ public class Network { // this only holds a set of devices and info, connecting 
 		stance = Stance.NEUTRAL;
 		this.type = type;
 
-		if (type != NetworkType.ISP && type != NetworkType.MENU) {
+		if (type != NetworkType.ISP) {
 			isp = NetworkController.getServiceProviders().get((int) (Math.random() * NetworkController.getServiceProviders().size()));
 			// TODO what does the isp connect to?
 		}
@@ -91,11 +97,6 @@ public class Network { // this only holds a set of devices and info, connecting 
 				dnsLimit = 3;
 				routerLimit = 1;
 				break;
-			case MENU:// new player // only happens at the start of the game
-				level = 0;
-				ip = "Boot";
-				break;
-
 		}
 
 		// used to add randomness to the amount of servers to make given serverLimit
@@ -136,6 +137,38 @@ public class Network { // this only holds a set of devices and info, connecting 
 				return d.Connect(client, program, port, protocol);
 			}
 		}
+		return false;
+	}
+
+	// removes a device from the network
+	public void removeDevice(Device d) {
+		devices.remove(d);
+
+		// TODO add a call to remove d from the room
+	}
+
+	// adds a device if the limit has not been reached
+	public boolean addDevice(Device device) {
+		DeviceType dType = device.getType();
+
+		int total = 0;
+		for (Device d : devices) {
+			if (d.getType() == dType) {
+				total++;
+			}
+		}
+
+		if (total > dnsLimit && dType == DeviceType.DNS) {
+			devices.add(device);
+			return true;
+		} else if (total > routerLimit && dType == DeviceType.ROUTER) {
+			devices.add(device);
+			return true;
+		} else if (total > serverLimit && dType == DeviceType.SERVER) {
+			devices.add(device);
+			return true;
+		}
+
 		return false;
 	}
 

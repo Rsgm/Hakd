@@ -1,6 +1,6 @@
 package hakd.gui.input;
 
-import hakd.gui.Terminal;
+import hakd.gui.windows.Terminal;
 
 import com.badlogic.gdx.Input.Keys;
 

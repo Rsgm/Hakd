@@ -62,8 +62,7 @@ public final class Main {
 				w.newLine();
 				w.append("vsync=true");
 				w.close();
-			} catch (FileNotFoundException e) {
-				e.printStackTrace();
+
 			} catch (IOException e) {
 				e.printStackTrace();
 			}

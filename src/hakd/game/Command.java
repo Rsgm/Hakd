@@ -1,7 +1,7 @@
 package hakd.game;
 
 import hakd.game.gameplay.Player;
-import hakd.gui.Terminal;
+import hakd.gui.windows.Terminal;
 
 import java.io.File;
 import java.util.ArrayList;

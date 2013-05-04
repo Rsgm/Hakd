@@ -58,7 +58,7 @@ public class TitleScreen extends HakdScreen {
 
 		Gdx.input.setInputProcessor(new TitleInput(game));
 
-		game.setScreen(new GameScreen(game, "rsgm")); // TODO temporary until I get lua working for the start menu to work
+		game.setScreen(new GameScreen(game, "Shadow")); // TODO temporary until I get lua working for the start menu to work
 	}
 
 	@Override
