@@ -4,43 +4,50 @@ filter: Linear,Linear
 repeat: none
 test
   rotate: false
-  xy: 262, 0
+  xy: 264, 2
   size: 60, 40
   orig: 60, 40
   offset: 0, 0
   index: -1
 draw
   rotate: false
-  xy: 0, 0
+  xy: 2, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 loading
   rotate: false
-  xy: 66, 0
+  xy: 68, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 loadingbackground
   rotate: false
-  xy: 164, 0
+  xy: 166, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 title
   rotate: false
-  xy: 0, 98
+  xy: 2, 100
   size: 800, 210
   orig: 800, 210
   offset: 0, 0
   index: -1
-test3
+test
   rotate: false
-  xy: 324, 0
+  xy: 326, 2
   size: 64, 64
   orig: 64, 64
+  offset: 0, 0
+  index: 3
+untitled
+  rotate: false
+  xy: 804, 100
+  size: 4, 1
+  orig: 4, 1
   offset: 0, 0
   index: -1

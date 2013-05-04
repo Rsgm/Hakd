@@ -19,3 +19,4 @@ public class Router extends Device { // this holds a port list that tells progra
 		return false;
 	}
 }
+// I don't want to change the name, but this is really a modem. Though it could be a router under a boarder definition.

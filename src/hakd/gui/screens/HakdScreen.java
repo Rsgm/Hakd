@@ -16,8 +16,9 @@ public class HakdScreen implements Screen {
 	TextureAtlas	textures			= new TextureAtlas("src/hakd/gui/resources/textures.txt");
 
 	Color			fontColor			= new Color(1.0f, 1.0f, 1.0f, 1.0f);
-	Color			consoleFontColor	= new Color(0.0f, 0.7f, 0.0f, 1.0f);						// or read from, and write to, a preference or
-// .ini file
+	Color			consoleFontColor	= new Color(0.0f, 0.7f, 0.0f, 1.0f);
+
+	// or read from, and write to, a preference or .ini file
 
 	public HakdScreen(Game game) {
 		this.game = game;

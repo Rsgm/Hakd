@@ -1,7 +1,7 @@
 package hakd.gui.input;
 
 import hakd.game.Command;
-import hakd.gui.Terminal;
+import hakd.gui.windows.Terminal;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;

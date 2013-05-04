@@ -1,6 +1,6 @@
 package hakd.game.gameplay;
 
-import hakd.gui.Terminal;
+import hakd.gui.windows.Terminal;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
 
@@ -13,7 +13,10 @@ public class Player {
 	private Network		currentNetwork;
 	private Device		currentServer;
 
-	private Terminal	terminal;
+	private int			x;
+	private int			y;
+
+	private Terminal	terminal;		// TODO replace this with "private window" that will hold the current window being looked at
 
 	// --------methods--------
 	public Player(String name, Network home, Terminal terminal) {

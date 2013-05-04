@@ -1,20 +1,15 @@
 package hakd.gui.input;
 
-import hakd.gui.Terminal;
-
-import java.util.ArrayList;
+import hakd.gui.windows.Terminal;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 
 public class TerminalInput implements InputProcessor {
-	String				text;
-	int					cursor;
+	String		text;
+	int			cursor;
 
-	int					line	= 0;						// holds the position of the history
-	ArrayList<String>	history	= new ArrayList<String>();	// holds previously used commands for easy access
-
-	Terminal			terminal;
+	Terminal	terminal;
 
 	public TerminalInput(Terminal terminal) {
 		this.terminal = terminal;
