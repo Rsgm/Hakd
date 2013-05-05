@@ -1,11 +1,10 @@
 package hakd.game;
 
-import hakd.Main;
 import hakd.gui.screens.TitleScreen;
-import hakd.other.enumerations.Prefs;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 
 public class Hakd extends Game {
 	private int		width;
@@ -16,10 +15,12 @@ public class Hakd extends Game {
 
 	@Override
 	public void create() {
+		Preferences prefs = Gdx.app.getPreferences("prefs");
+
 		width = Gdx.graphics.getWidth();
 		height = Gdx.graphics.getHeight();
-		fullscreen = Main.prefs.get(Prefs.FULLSCREEN.line).equals("true");
-		vsync = Main.prefs.get(Prefs.VSYNC.line).equals("true");
+		fullscreen = prefs.getBoolean("fullscreen");
+		vsync = prefs.getBoolean("vsync");
 
 		Gdx.graphics.setDisplayMode(width, height, fullscreen);
 		Gdx.graphics.setVSync(vsync); // because no one needs to render 4000 frames per second, but then again it keeps the room warm

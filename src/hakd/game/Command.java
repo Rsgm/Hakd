@@ -1,7 +1,7 @@
 package hakd.game;
 
-import hakd.game.gameplay.Player;
 import hakd.gui.windows.Terminal;
+import hakd.networks.devices.Device;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -17,17 +17,17 @@ import com.badlogic.gdx.utils.Timer.Task;
 
 public class Command {
 	private final String			input;
-	private final Player			player;
+	private final Device			device;
 	private final Terminal			terminal;
 
 	// lua
 	private final ArrayList<String>	scriptPaths	= new ArrayList<String>();
 	private static Globals			globals		= JsePlatform.standardGlobals();
 
-	public Command(String input, Player player) { // this may need to tell if a player issued it, so it won't write to the display
+	public Command(String input, Device device) { // this may need to tell if a player issued it, so it won't write to the display
 		this.input = input;
-		this.player = player;
-		this.terminal = player.getTerminal();
+		this.device = device;
+		this.terminal = device.getTerminal();
 
 		reloadScripts();
 		run();
@@ -45,7 +45,7 @@ public class Command {
 				ArrayList<String> args = new ArrayList<String>();
 				boolean inQuotes = false; // credit to redditor BritPack for this, thank you
 
-				if (input.matches(player.getCurrentNetwork().getIp() + ">.+")) {
+				if (input.matches(device.getNetwork().getIp() + ">.+")) {
 					scanner.skip(".+>");
 					scanner.useDelimiter("\\s+");
 

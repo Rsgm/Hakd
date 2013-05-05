@@ -1,5 +1,6 @@
 package hakd.networks.devices;
 
+import hakd.gui.windows.Terminal;
 import hakd.internet.Connectable;
 import hakd.internet.Connection;
 import hakd.networks.Network;
@@ -45,11 +46,15 @@ public class Device implements Connectable {
 	private Storage					masterStorage;								// TODO where the os resides
 	private DeviceType				type;
 
+	private Terminal				terminal;
+
 	// objects
 	private ArrayList<Part>			parts		= new ArrayList<Part>();
 
 	// --------constructor--------
 	public Device(Network network, int level, DeviceType type) { // have random smartphone connections and disconnections
+		terminal = new Terminal(false, this);
+
 		this.network = network; // smartphones are like insects on a network, many types, random behavior, and there are lots of them
 		this.level = level;
 		this.type = type;
@@ -88,7 +93,6 @@ public class Device implements Connectable {
 		}
 
 		masterStorage = (Storage) Part.findParts(parts, PartType.STORAGE).get(0);
-
 	}
 
 	// --------methods--------
@@ -271,5 +275,9 @@ public class Device implements Connectable {
 
 	public void setModel(Model model) {
 		this.model = model;
+	}
+
+	public Terminal getTerminal() {
+		return terminal;
 	}
 }
