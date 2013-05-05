@@ -12,44 +12,37 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Matrix4;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
 
 public class GameScreen extends HakdScreen {
-	private Terminal	terminal;
-	private Player		player;						// TODO Sometime make this an array and have other people in
+	private Terminal			terminal;
+	private Player				player;													// TODO Sometime make this an array and have other people
+// in
 // the game with different skills and personalities private int arraylist<npc> npcs = new arraylist<npc>();
 
-	private Room		room;
+	private Room				room;
 
-	OrthographicCamera	cam;
-	final Sprite[][]	sprites	= new Sprite[10][10];
-	final Matrix4		matrix	= new Matrix4();
+	OrthographicCamera			cam;
+
+	private TiledMap			map;
+	OrthogonalTiledMapRenderer	renderer	= new OrthogonalTiledMapRenderer(map, 1 / 16f);
+
+// IsometricTiledMapRenderer renderer = new IsometricTiledMapRenderer(map);
 
 	public GameScreen(Game game, String name) {
 		super(game);
 
-		cam = new OrthographicCamera(10, 10 * (height / (float) width));
-		cam.position.set(5, 5, 10);
-		cam.direction.set(-1, -1, -1);
-		cam.near = 1;
-		cam.far = 100;
-		matrix.setToRotation(new Vector3(1, 0, 0), 90);
+		map = new TmxMapLoader().load("untitled.tmx");
 
-		for (int z = 0; z < 10; z++) {
-			for (int x = 0; x < 10; x++) {
-				sprites[x][z] = new Sprite(textures.findRegion("loading"));
-				sprites[x][z].setPosition(x, z);
-				sprites[x][z].setSize(1, 1);
-			}
-		}
+		renderer.setView(cam);
+		cam.setToOrtho(false, 30, 20);
 
 		batch = new SpriteBatch();
 
 		GamePlay.generateGame();
-
 		Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
 		player = new Player(name, n, terminal);
 		room = new Room(n);

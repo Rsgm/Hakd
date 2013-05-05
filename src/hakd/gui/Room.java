@@ -21,9 +21,9 @@ public class Room {
 	ArrayList<Router>			routerSlots	= new ArrayList<Router>();
 	ArrayList<Server>			serverSlots	= new ArrayList<Server>();
 
-	// ideas, not final and can be removed
-// private Floor floor; // floor texture
-// private Wall wall; // wall texture
+	// graphics
+	private int					floor;									// floor texture
+	private int					wall;									// wall texture
 
 	public Room(Network n) {
 		network = n;
