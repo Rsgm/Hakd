@@ -1,74 +1,56 @@
 package hakd;
 
 import hakd.game.Hakd;
-import hakd.other.enumerations.Prefs;
 import hakd.websites.servlets.NetworkServlet;
 import hakd.websites.servlets.StoreServlet;
 
-import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Scanner;
 
 import org.apache.catalina.Context;
 import org.apache.catalina.LifecycleException;
 import org.apache.catalina.startup.Tomcat;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 public final class Main {
-	public static ArrayList<String>	prefs	= new ArrayList<String>();
+	private static Preferences	prefs;	;
+	private static Preferences	save1;	// save this for later
 
 	public static void main(String[] args) {
-		loadPrefs();
+
 		// startServer(); // TODO test this with port forwarding
 
-		String w = prefs.get(Prefs.WIDTH.line);
-		String h = prefs.get(Prefs.HEIGHT.line);
-		new LwjglApplication(new Hakd(), "Hak'd", Integer.parseInt(w), Integer.parseInt(h), false);
+		new LwjglApplication(new Hakd(), "Hak'd", 80, 60, false);
+
+		prefs = Gdx.app.getPreferences("hakd-prefs");
+
+		if (!prefs.getBoolean("played-before")) {
+			newPrefs();
+		}
+
+		int w = prefs.getInteger("width");
+		int h = prefs.getInteger("height");
+		boolean f = prefs.getBoolean("fullscreen");
+
+		Gdx.graphics.setDisplayMode(w, h, f);
+
 	}
 
-	private static void loadPrefs() {
-		File f = new File("prefs.ini");
-		prefs.clear();
+	private static void newPrefs() {
+		/* the directory for these can't be changes,
+		 * on linux it is /home/[user name]/.prefs/,
+		 * on windows it is users/[user name]/.prefs/,
+		 * I have not tested mac yet	*/
+		prefs.putBoolean("played-before", true);
+		prefs.putInteger("width", 800);
+		prefs.putInteger("height", 600);
+		prefs.putBoolean("fullscreen", false);
+		prefs.putBoolean("vsync", false);
+		prefs.putBoolean("sound", true);
 
-		try {
-			Scanner s = new Scanner(f);
-			while (s.hasNext(".+=.+")) {
-				s.skip(".+=");
-				prefs.add(s.nextLine());
-			}
-			s.close();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		}
-
-		if (prefs.size() != Prefs.total) { // checks if all the settings are there, if not create a new file with defualts
-			try {
-				if (!f.exists()) {
-					f.createNewFile();
-				}
-
-				BufferedWriter w = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(f)));
-				w.append("width=800");
-				w.newLine();
-				w.append("height=600");
-				w.newLine();
-				w.append("fullscreen=false");
-				w.newLine();
-				w.append("vsync=true");
-				w.close();
-
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-
-			loadPrefs(); // check it again
-		}
+		prefs.flush(); // unfortunately this makes this game non-portable, kind of
 	}
 
 	public static void quitGame(String reason) {

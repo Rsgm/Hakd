@@ -1,7 +1,7 @@
 package hakd.gui.windows;
 
-import hakd.gui.input.TerminalInput;
-import hakd.gui.screens.HakdScreen;
+import hakd.gui.input.MenuInput;
+import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -10,30 +10,29 @@ import org.luaj.vm2.Varargs;
 
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
-public class Terminal implements Window { // TODO extend window class
+public class Terminal { // TODO extend window class
 	private boolean					menu;
-	private TerminalInput			input;
+	Device							device;
+	private MenuInput			input;
 	private int						lineSpacing	= 16;						// this is declared and has a getter/setter but never used...
 
-	int								line		= 0;						// holds the position of the history
 	ArrayList<String>				history		= new ArrayList<String>();	// holds previously used commands for easy access
 
 	private final ArrayList<String>	text		= new ArrayList<String>();
 
-	@SuppressWarnings("deprecation")
-	public Terminal(boolean isMenu, HakdScreen screen) {
+	public Terminal(boolean isMenu, Device d) {
 		menu = isMenu;
 
 		if (menu) {
 
 		} else {
-			
+			device = d;
+		}
+
 	}
 
-	public void addText(String t) { // TODO support both \r and \n, if this does not work
+	public void addText(String t) { // support both \r and \n, if this does not work
 		if (t.matches("\\n") || t.matches("\\r")) {
 			text.add(t);
 			return;
@@ -77,7 +76,7 @@ public class Terminal implements Window { // TODO extend window class
 		return menu;
 	}
 
-	public TerminalInput getInput() {
+	public MenuInput getInput() {
 		return input;
 	}
 
@@ -93,11 +92,19 @@ public class Terminal implements Window { // TODO extend window class
 		this.menu = menu;
 	}
 
-	public void setInput(TerminalInput input) {
+	public void setInput(MenuInput input) {
 		this.input = input;
 	}
 
 	public void setLineSpacing(int lineSpacing) {
 		this.lineSpacing = lineSpacing;
+	}
+
+	public Device getDevice() {
+		return device;
+	}
+
+	public void setDevice(Device device) {
+		this.device = device;
 	}
 }

@@ -22,8 +22,8 @@ public class Room {
 	ArrayList<Server>			serverSlots	= new ArrayList<Server>();
 
 	// ideas, not final and can be removed
-	private Floor				floor;									// floor texture
-	private Wall				wall;									// wall texture
+// private Floor floor; // floor texture
+// private Wall wall; // wall texture
 
 	public Room(Network n) {
 		network = n;
@@ -83,6 +83,7 @@ public class Room {
 }
 
 /* Just some place to put my ideas:
+ * This may be getting away from the old school look that I first wanted, I will try to keep the menu the same though
  *
  * I have decided to add more to the idea I have in my head. Instead of looking at a computer screen, you will see an
  *
