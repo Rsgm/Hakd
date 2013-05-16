@@ -47,7 +47,7 @@ public class MenuScreen extends HakdScreen { // terminal directory: BOOT>_
 
 	@Override
 	public void render(float delta) { // TODO use a view port type thing that scrolls through an off-screen terminal
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+		super.render(delta);
 		time += delta;
 
 		batch.begin();

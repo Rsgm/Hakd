@@ -22,7 +22,7 @@ public final class Main {
 
 		// startServer(); // TODO test this with port forwarding
 
-		new LwjglApplication(new Hakd(), "Hak'd", 80, 60, false);
+		new LwjglApplication(new Hakd(), "Hak'd", 800, 600, false);
 
 		prefs = Gdx.app.getPreferences("hakd-prefs");
 
