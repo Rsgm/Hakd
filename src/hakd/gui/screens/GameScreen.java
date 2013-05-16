@@ -1,51 +1,49 @@
 package hakd.gui.screens;
 
-import hakd.game.gameplay.GamePlay;
 import hakd.game.gameplay.Player;
 import hakd.gui.Room;
-import hakd.gui.windows.Terminal;
-import hakd.internet.NetworkController;
-import hakd.networks.Network;
-import hakd.other.enumerations.NetworkType;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
+import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
-import com.badlogic.gdx.maps.tiled.renderers.OrthogonalTiledMapRenderer;
+import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 public class GameScreen extends HakdScreen {
-	private Terminal			terminal;
-	private Player				player;													// TODO Sometime make this an array and have other people
-// in
-// the game with different skills and personalities private int arraylist<npc> npcs = new arraylist<npc>();
+	private Player						player;			// TODO Sometime make this an array and have other people
+// in the game with different skills and personalities private int arraylist<npc> npcs = new arraylist<npc>();
 
-	private Room				room;
+	private Room						room;
 
-	OrthographicCamera			cam;
+	private OrthographicCamera			cam;
 
-	private TiledMap			map;
-	OrthogonalTiledMapRenderer	renderer	= new OrthogonalTiledMapRenderer(map, 1 / 16f);
+	private TiledMap					map;				// TODO move this to the room class
+	private IsometricTiledMapRenderer	renderer;			// it says this is experimental, but it was an old article
 
-// IsometricTiledMapRenderer renderer = new IsometricTiledMapRenderer(map);
+	private final float					tileSize	= 91;	// I have no idea if this is height width, or being isometric, diagonal
 
 	public GameScreen(Game game, String name) {
 		super(game);
 
-		map = new TmxMapLoader().load("untitled.tmx");
+		map = new TmxMapLoader().load("src/hakd/gui/resources/maps/untitled.tmx");
+		cam = new OrthographicCamera();
+		renderer = new IsometricTiledMapRenderer(map, 1 / tileSize); // can only use the map specified in the constructor
+
+		TiledMapTileLayer layer0 = (TiledMapTileLayer) map.getLayers().get(0);
+
+		cam.setToOrtho(false, layer0.getWidth(), layer0.getHeight());
+		cam.update();
 
 		renderer.setView(cam);
-		cam.setToOrtho(false, 30, 20);
 
 		batch = new SpriteBatch();
 
-		GamePlay.generateGame();
-		Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
-		player = new Player(name, n, terminal);
-		room = new Room(n);
+// GamePlay.generateGame();
+// Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
+// player = new Player(name, n, terminal);
+// room = new Room(n);
 	}
 
 	@Override
@@ -58,25 +56,25 @@ public class GameScreen extends HakdScreen {
 	public void render(float delta) {
 		super.render(delta);
 
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
+		cam.position.x = 5;
+		cam.position.y = 1;
 		cam.update();
 
-		batch.setProjectionMatrix(cam.combined);
-		batch.setTransformMatrix(matrix);
+// System.out.println(cam.position.x + "	" + cam.position.y);
+
+		renderer.setView(cam);
+		renderer.render();
+
 		batch.begin();
-		for (int z = 0; z < 10; z++) {
-			for (int x = 0; x < 10; x++) {
-				sprites[x][z].draw(batch);
-			}
-		}
+		batch.draw(textures.findRegion("loading"), 0, 0); // this is always set to 0,0 so it will not move
 		batch.end();
+
+// cam.translate(-.01f, -.01f);
 	}
 
-	public Terminal getTerminal() {
-		return terminal;
-	}
-
-	public void setTerminal(Terminal terminal) {
-		this.terminal = terminal;
+	@Override
+	public void dispose() {
+		super.dispose();
+		map.dispose();
 	}
 }
