@@ -2,8 +2,10 @@ package hakd.gui.screens;
 
 import hakd.game.gameplay.Player;
 import hakd.gui.Room;
+import hakd.gui.input.GameInput;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -30,15 +32,16 @@ public class GameScreen extends HakdScreen {
 		map = new TmxMapLoader().load("src/hakd/gui/resources/maps/untitled.tmx");
 		cam = new OrthographicCamera();
 		renderer = new IsometricTiledMapRenderer(map, 1 / tileSize); // can only use the map specified in the constructor
-
 		TiledMapTileLayer layer0 = (TiledMapTileLayer) map.getLayers().get(0);
 
 		cam.setToOrtho(false, layer0.getWidth(), layer0.getHeight());
 		cam.update();
-
 		renderer.setView(cam);
 
 		batch = new SpriteBatch();
+
+		cam.position.x = 5;
+		cam.position.y = 1;
 
 // GamePlay.generateGame();
 // Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
@@ -50,14 +53,14 @@ public class GameScreen extends HakdScreen {
 	public void show() {
 		super.show();
 
+		Gdx.input.setInputProcessor(new GameInput(game, cam)); // I guess this has to be set in the show method
+
 	}
 
 	@Override
 	public void render(float delta) {
 		super.render(delta);
 
-		cam.position.x = 5;
-		cam.position.y = 1;
 		cam.update();
 
 // System.out.println(cam.position.x + "	" + cam.position.y);

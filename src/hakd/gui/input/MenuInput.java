@@ -25,8 +25,6 @@ public class MenuInput implements InputProcessor {
 		this.terminal = terminal;
 		this.history = history;
 
-		Gdx.input.setInputProcessor(this);
-
 		ClearInput();
 		cursor = text.length();
 

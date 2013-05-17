@@ -3,7 +3,6 @@ package hakd.gui.input;
 import hakd.gui.screens.MenuScreen;
 
 import com.badlogic.gdx.Game;
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 
@@ -11,8 +10,6 @@ public class TitleInput implements InputProcessor {
 	private final Game	game;
 
 	public TitleInput(Game game) {
-		Gdx.input.setInputProcessor(this);
-
 		this.game = game;
 	}
 
