@@ -42,13 +42,12 @@ public class TitleScreen extends HakdScreen {
 		creditFont = generator.generateFont(14);
 		generator.dispose();
 
-		keyClick = Gdx.audio.newSound(Gdx.files.internal("src/hakd/gui/resources/sounds/KeyClick.ogg"));
-
 		font.setColor(0f, 0f, 0f, 0f);
 		creditFont.setColor(0.0f, 1f, 0.0f, 0.18f);
 		random = (int) (Math.random() * 8 + 8); // just your standard pass lengths
 		randomTime = (float) (Math.random() * 1 + .3); // used for the loading circle timeout
 
+		keyClick = Gdx.audio.newSound(Gdx.files.internal("src/hakd/gui/resources/sounds/KeyClick.ogg"));
 		loadingsSprite = new Sprite(textures.findRegion("loading"));
 
 		title = new Sprite(textures.findRegion("title"));
