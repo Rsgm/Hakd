@@ -4,6 +4,7 @@ import hakd.gui.input.MenuInput;
 import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.luaj.vm2.Varargs;
@@ -12,14 +13,14 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 
 public class Terminal { // TODO extend window class
-	private boolean					menu;
-	Device							device;
+	private boolean				menu;
+	Device						device;
 	private MenuInput			input;
-	private int						lineSpacing	= 16;						// this is declared and has a getter/setter but never used...
+	private int					lineSpacing	= 16;						// this is declared and has a getter/setter but never used...
 
-	ArrayList<String>				history		= new ArrayList<String>();	// holds previously used commands for easy access
+	List<String>				history		= new ArrayList<String>();	// holds previously used commands for easy access
 
-	private final ArrayList<String>	text		= new ArrayList<String>();
+	private final List<String>	text		= new ArrayList<String>();
 
 	public Terminal(boolean isMenu, Device d) {
 		menu = isMenu;
@@ -84,7 +85,7 @@ public class Terminal { // TODO extend window class
 		return lineSpacing;
 	}
 
-	public ArrayList<String> getText() {
+	public List<String> getText() {
 		return text;
 	}
 

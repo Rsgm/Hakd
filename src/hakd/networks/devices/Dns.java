@@ -6,9 +6,10 @@ import hakd.other.enumerations.DeviceType;
 import hakd.other.enumerations.Region;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Dns extends Device { // TODO let DNSs communicate a bit.
-	private ArrayList<Network>	hosts	= new ArrayList<Network>();
+	private List<Network>	hosts	= new ArrayList<Network>();
 
 	public Dns(Boolean publicDns, Network network, int level) {
 		super(network, level, DeviceType.DNS);
@@ -149,11 +150,11 @@ public class Dns extends Device { // TODO let DNSs communicate a bit.
 	}
 
 	// --------getters/setters--------
-	public ArrayList<Network> getHosts() {
+	public List<Network> getHosts() {
 		return hosts;
 	}
 
-	public void setHosts(ArrayList<Network> hosts) {
+	public void setHosts(List<Network> hosts) {
 		this.hosts = hosts;
 	}
 }

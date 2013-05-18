@@ -12,34 +12,35 @@ import hakd.other.enumerations.Region;
 import hakd.other.enumerations.Stance;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Network { // this only holds a set of devices and info, connecting to this just forwards you to the masterRouter
 	// stats
-	private ServiceProvider		isp;								// the network's isp
-	private int					level;								// 0-7, 0 for player because you start with almost nothing
-	private int					speed;								// in Mb per second(1/1024*Gb), may want to change it to MBps
-	private String				ip;								// all network variables will be in IP format
-	private String				address;
-	private String				owner;								// owner, company, player
+	private ServiceProvider	isp;								// the network's isp
+	private int				level;								// 0-7, 0 for player because you start with almost nothing
+	private int				speed;								// in Mb per second(1/1024*Gb), may want to change it to MBps
+	private String			ip;								// all network variables will be in IP format
+	private String			address;
+	private String			owner;								// owner, company, player
 
-	private int					serverLimit;						// amount of server objects to begin with and the limit
-	private int					dnsLimit;							// same as serverLimit but for DNSs
-	private int					routerLimit;
+	private int				serverLimit;						// amount of server objects to begin with and the limit
+	private int				dnsLimit;							// same as serverLimit but for DNSs
+	private int				routerLimit;
 
-	private Stance				stance;
-	private NetworkType			type;
+	private Stance			stance;
+	private NetworkType		type;
 
-	private Router				masterRouter;						// main router
-	private Server				masterServer;						// main server
+	private Router			masterRouter;						// main router
+	private Server			masterServer;						// main server
 
 	// objects
-	private ArrayList<Device>	devices	= new ArrayList<Device>();
+	private List<Device>	devices	= new ArrayList<Device>();
 
 	// gui
-	private Region				region;							// where the network is in the world, it helps find an ip
-	private int					x;									// where the network is in the regionTab/map
-	private int					y;
-	private int					z;
+	private Region			region;							// where the network is in the world, it helps find an ip
+	private int				x;									// where the network is in the regionTab/map
+	private int				y;
+	private int				z;
 
 // private graphic? icon? sprite? image? texture? !!!3d model!!!
 // TODO have a static class, or file, hold all of the models with the points and textures
@@ -245,11 +246,11 @@ public class Network { // this only holds a set of devices and info, connecting 
 		this.stance = stance;
 	}
 
-	public ArrayList<Device> getDevices() {
+	public List<Device> getDevices() {
 		return devices;
 	}
 
-	public void setDevices(ArrayList<Device> devices) {
+	public void setDevices(List<Device> devices) {
 		this.devices = devices;
 	}
 

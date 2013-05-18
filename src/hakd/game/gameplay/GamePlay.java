@@ -8,6 +8,7 @@ import hakd.other.enumerations.names.Owner;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 public class GamePlay {
 
@@ -22,7 +23,7 @@ public class GamePlay {
 	// creates the game ISPs
 	private static void generateIsps() {
 		int amount = (int) (Math.random() * 6 + 6);
-		ArrayList<Isp> names = new ArrayList<Isp>(Arrays.asList(Isp.values().clone()));
+		List<Isp> names = new ArrayList<Isp>(Arrays.asList(Isp.values().clone()));
 
 		for (int i = 0; i < amount; i++) {
 			int random = (int) (Math.random() * names.size());

@@ -5,6 +5,7 @@ import hakd.networks.devices.Device;
 import hakd.other.enumerations.PartType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Part {
 
@@ -27,8 +28,8 @@ public class Part {
 	}
 
 	// finds all of the parts in the list of that type
-	public static ArrayList<Part> findParts(ArrayList<Part> parts, PartType type) {
-		ArrayList<Part> returnParts = new ArrayList<Part>();
+	public static List<Part> findParts(ArrayList<Part> parts, PartType type) {
+		List<Part> returnParts = new ArrayList<Part>();
 		for (Part p : parts) {
 			if (p.getType() == type) {
 				returnParts.add(p);

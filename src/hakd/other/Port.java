@@ -4,6 +4,7 @@ import hakd.networks.devices.Device;
 import hakd.other.enumerations.Protocol;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Port {
 	private Device		device;
@@ -21,7 +22,7 @@ public class Port {
 	// --------methods--------
 
 	// searches an array for a given port parameter
-	public static boolean checkPortOr(ArrayList<Port> array, Device device, String program, int port, Protocol protocol) {
+	public static boolean checkPortOr(List<Port> array, Device device, String program, int port, Protocol protocol) {
 		for (Port p : array) { // this will work as long as none of the ports in the array have null parameters
 			if (p.getDevice() == device || p.getProgram().equals(program) || p.getPort() == port || p.getProtocol() == protocol) {
 				return true;
@@ -31,7 +32,7 @@ public class Port {
 	}
 
 	// searches an array for a given program binding
-	public static boolean checkPortAnd(ArrayList<Port> array, String program, int port, Protocol protocol) {
+	public static boolean checkPortAnd(List<Port> array, String program, int port, Protocol protocol) {
 		for (Port p : array) { // this will work as long as none of the ports in the array have null parameters
 			if (p.getProgram().equals(program) && p.getPort() == port && p.getProtocol() == protocol) {
 				return true;
