@@ -26,9 +26,9 @@ public final class Main {
 
 		prefs = Gdx.app.getPreferences("hakd-prefs");
 
-		if (!prefs.getBoolean("played-before")) {
-			newPrefs();
-		}
+// if (!prefs.getBoolean("played-before")) {
+		newPrefs();
+// }
 
 		int w = prefs.getInteger("width");
 		int h = prefs.getInteger("height");
@@ -44,8 +44,8 @@ public final class Main {
 		 * on windows it is users/[user name]/.prefs/,
 		 * I have not tested mac yet	*/
 		prefs.putBoolean("played-before", true);
-		prefs.putInteger("width", 800);
-		prefs.putInteger("height", 600);
+		prefs.putInteger("width", 1000);
+		prefs.putInteger("height", 800);
 		prefs.putBoolean("fullscreen", false);
 		prefs.putBoolean("vsync", false);
 		prefs.putBoolean("sound", true);

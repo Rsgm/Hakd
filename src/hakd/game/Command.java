@@ -5,6 +5,7 @@ import hakd.networks.devices.Device;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.luaj.vm2.Globals;
@@ -16,13 +17,13 @@ import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
 public class Command {
-	private final String			input;
-	private final Device			device;
-	private final Terminal			terminal;
+	private final String		input;
+	private final Device		device;
+	private final Terminal		terminal;
 
 	// lua
-	private final ArrayList<String>	scriptPaths	= new ArrayList<String>();
-	private static Globals			globals		= JsePlatform.standardGlobals();
+	private final List<String>	scriptPaths	= new ArrayList<String>();
+	private static Globals		globals		= JsePlatform.standardGlobals();
 
 	public Command(String input, Device device) { // this may need to tell if a player issued it, so it won't write to the display
 		this.input = input;
@@ -42,7 +43,7 @@ public class Command {
 // drive to hard drive)
 
 				Scanner scanner = new Scanner(input);
-				ArrayList<String> args = new ArrayList<String>();
+				List<String> args = new ArrayList<String>();
 				boolean inQuotes = false; // credit to redditor BritPack for this, thank you
 
 				if (input.matches(device.getNetwork().getIp() + ">.+")) {
@@ -84,7 +85,7 @@ public class Command {
 	}
 
 	// runs the corresponding lua function/file/program
-	public boolean runLua(ArrayList<String> args) { // look up coroutines for large programs
+	public boolean runLua(List<String> args) { // look up coroutines for large programs
 		LuaValue[] vararray = new LuaValue[args.size() - 1];
 
 		for (int i = 0; i < args.size() - 1; i++) {
@@ -109,9 +110,9 @@ public class Command {
 		scriptPaths.addAll(listFilesForFolder(new File("lua\\")));
 	}
 
-	private ArrayList<String> listFilesForFolder(File folder) {
+	private List<String> listFilesForFolder(File folder) {
 		String parents = folder.getPath();
-		ArrayList<String> urls = new ArrayList<String>();
+		List<String> urls = new ArrayList<String>();
 
 		for (File fileEntry : folder.listFiles()) {
 			if (fileEntry.isDirectory()) {

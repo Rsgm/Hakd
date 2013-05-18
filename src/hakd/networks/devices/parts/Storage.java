@@ -7,16 +7,17 @@ import hakd.other.enumerations.FileType;
 import hakd.other.enumerations.PartType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class Storage extends Part {
-	private boolean			ssd;										// doubles the speed
-	private int				capacity;									// in GB
+	private boolean		ssd;										// doubles the speed
+	private int			capacity;									// in GB
 
 	// storage ArrayLists
-	private ArrayList<File>	osFiles			= new ArrayList<File>();	// operating system files, !FUN!
-	private ArrayList<File>	userFiles		= new ArrayList<File>();	// random files people save
-	private ArrayList<File>	programFiles	= new ArrayList<File>();	// (lua)programs able to run, is this copywritten, will Microsoft sue?
-	private ArrayList<File>	logFiles		= new ArrayList<File>();	// these log arrays have infinite storage, thanks to a new leap in quantum
+	private List<File>	osFiles			= new ArrayList<File>();	// operating system files, !FUN!
+	private List<File>	userFiles		= new ArrayList<File>();	// random files people save
+	private List<File>	programFiles	= new ArrayList<File>();	// (lua)programs able to run, is this copywritten, will Microsoft sue?
+	private List<File>	logFiles		= new ArrayList<File>();	// these log arrays have infinite storage, thanks to a new leap in quantum
 // physics
 
 	public Storage(int level, Network network, Device device) {
@@ -140,35 +141,35 @@ public class Storage extends Part {
 		this.capacity = capacity;
 	}
 
-	public ArrayList<File> getOsFiles() {
+	public List<File> getOsFiles() {
 		return osFiles;
 	}
 
-	public void setOsFiles(ArrayList<File> osFiles) {
+	public void setOsFiles(List<File> osFiles) {
 		this.osFiles = osFiles;
 	}
 
-	public ArrayList<File> getUserFiles() {
+	public List<File> getUserFiles() {
 		return userFiles;
 	}
 
-	public void setUserFiles(ArrayList<File> userFiles) {
+	public void setUserFiles(List<File> userFiles) {
 		this.userFiles = userFiles;
 	}
 
-	public ArrayList<File> getProgramFiles() {
+	public List<File> getProgramFiles() {
 		return programFiles;
 	}
 
-	public void setProgramFiles(ArrayList<File> programFiles) {
+	public void setProgramFiles(List<File> programFiles) {
 		this.programFiles = programFiles;
 	}
 
-	public ArrayList<File> getLogFiles() {
+	public List<File> getLogFiles() {
 		return logFiles;
 	}
 
-	public void setLogFiles(ArrayList<File> logFiles) {
+	public void setLogFiles(List<File> logFiles) {
 		this.logFiles = logFiles;
 	}
 }

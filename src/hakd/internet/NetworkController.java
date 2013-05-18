@@ -7,12 +7,13 @@ import hakd.other.enumerations.NetworkType;
 import hakd.other.enumerations.names.Owner;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public class NetworkController {
-	private static ArrayList<Network>			PublicNetworks		= new ArrayList<Network>();
-	private static ArrayList<Dns>				publicDns			= new ArrayList<Dns>();
-	private static ArrayList<ServiceProvider>	serviceProviders	= new ArrayList<ServiceProvider>();
-	private static ArrayList<Owner>				owners				= new ArrayList<Owner>();
+	private static List<Network>			PublicNetworks		= new ArrayList<Network>();
+	private static List<Dns>				publicDns			= new ArrayList<Dns>();
+	private static List<ServiceProvider>	serviceProviders	= new ArrayList<ServiceProvider>();
+	private static List<Owner>				owners				= new ArrayList<Owner>();
 
 	// returns the network at the given address
 	public static Network getNetwork(String address) {
@@ -26,8 +27,8 @@ public class NetworkController {
 	}
 
 	// returns the networks of the given type
-	public static ArrayList<Network> getNetworkByType(NetworkType type) {
-		ArrayList<Network> array = new ArrayList<Network>();
+	public static List<Network> getNetworkByType(NetworkType type) {
+		List<Network> array = new ArrayList<Network>();
 		for (Network n : PublicNetworks) {
 			if (n.getType() == type) {
 				array.add(n);
@@ -76,35 +77,35 @@ public class NetworkController {
 		PublicNetworks.remove(network);
 	}
 
-	public static ArrayList<ServiceProvider> getServiceProviders() {
+	public static List<ServiceProvider> getServiceProviders() {
 		return serviceProviders;
 	}
 
-	public static void setServiceProviders(ArrayList<ServiceProvider> serviceProviders) {
+	public static void setServiceProviders(List<ServiceProvider> serviceProviders) {
 		NetworkController.serviceProviders = serviceProviders;
 	}
 
-	public static ArrayList<Dns> getPublicDns() {
+	public static List<Dns> getPublicDns() {
 		return publicDns;
 	}
 
-	public static void setPublicDns(ArrayList<Dns> publicDns) {
+	public static void setPublicDns(List<Dns> publicDns) {
 		NetworkController.publicDns = publicDns;
 	}
 
-	public static ArrayList<Owner> getOwners() {
+	public static List<Owner> getOwners() {
 		return owners;
 	}
 
-	public static void setOwners(ArrayList<Owner> owners) {
+	public static void setOwners(List<Owner> owners) {
 		NetworkController.owners = owners;
 	}
 
-	public static ArrayList<Network> getPublicNetworks() {
+	public static List<Network> getPublicNetworks() {
 		return PublicNetworks;
 	}
 
-	public static void setPublicNetworks(ArrayList<Network> publicNetworks) {
+	public static void setPublicNetworks(List<Network> publicNetworks) {
 		PublicNetworks = publicNetworks;
 	}
 }

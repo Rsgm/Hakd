@@ -8,6 +8,7 @@ import hakd.networks.devices.Server;
 import hakd.other.enumerations.DeviceType;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -16,18 +17,18 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 public class Room {
-	private Network				network;
-	private ArrayList<Device>	devices;
+	private Network			network;
+	private List<Device>	devices;
 
-	private int					dnsLimit;
-	private int					routerLimit;
-	private int					serverLimit;
+	private int				dnsLimit;
+	private int				routerLimit;
+	private int				serverLimit;
 
-	private ArrayList<Dns>		dnsSlots	= new ArrayList<Dns>();
-	private ArrayList<Router>	routerSlots	= new ArrayList<Router>();
-	private ArrayList<Server>	serverSlots	= new ArrayList<Server>();
+	private List<Dns>		dnsSlots	= new ArrayList<Dns>();
+	private List<Router>	routerSlots	= new ArrayList<Router>();
+	private List<Server>	serverSlots	= new ArrayList<Server>();
 
-	private TiledMap			map;
+	private TiledMap		map;
 
 	public Room(Network n) {
 		network = n;

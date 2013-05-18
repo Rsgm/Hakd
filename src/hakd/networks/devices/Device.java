@@ -22,34 +22,35 @@ import java.awt.Desktop;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.List;
 
 public class Device implements Connectable {
 
 	// stats
-	private Network					network;
-	private int						level;
+	private Network				network;
+	private int					level;
 	// private int webserver = 0; // 0 = 404, if port 80 is open
-	private ArrayList<Port>			ports		= new ArrayList<Port>();		// port, program / if its closed just delete it
-	private ArrayList<Connection>	connections	= new ArrayList<Connection>();
-	private File					logs;										// TODO make this a file instead connecting from and the action after
+	private List<Port>			ports		= new ArrayList<Port>();		// port, program / if its closed just delete it
+	private List<Connection>	connections	= new ArrayList<Connection>();
+	private File				logs;										// TODO make this a file instead connecting from and the action after
 // that
 
-	private Brand					brand;										// for example bell, or HQ
-	private Model					model;
+	private Brand				brand;										// for example bell, or HQ
+	private Model				model;
 
 	// objects
-	private int						cpuSockets;								// easier than using a for loop to count the amount, just remember to
+	private int					cpuSockets;								// easier than using a for loop to count the amount, just remember to
 // change this port
-	private int						memorySlots;								// maybe have a maximum part number, so you can specialize a server
-	private int						storageSlots;
-	private int						gpuSlots;
-	private Storage					masterStorage;								// TODO where the os resides
-	private DeviceType				type;
+	private int					memorySlots;								// maybe have a maximum part number, so you can specialize a server
+	private int					storageSlots;
+	private int					gpuSlots;
+	private Storage				masterStorage;								// TODO where the os resides
+	private DeviceType			type;
 
-	private Terminal				terminal;
+	private Terminal			terminal;
 
 	// objects
-	private ArrayList<Part>			parts		= new ArrayList<Part>();
+	private List<Part>			parts		= new ArrayList<Part>();
 
 	// --------constructor--------
 	public Device(Network network, int level, DeviceType type) { // have random smartphone connections and disconnections
@@ -154,8 +155,8 @@ public class Device implements Connectable {
 	}
 
 	// finds all of the devices in the list of that type
-	public static ArrayList<Device> findDevices(ArrayList<Device> devices, DeviceType type) {
-		ArrayList<Device> returnDevices = new ArrayList<Device>();
+	public static List<Device> findDevices(List<Device> devices, DeviceType type) {
+		List<Device> returnDevices = new ArrayList<Device>();
 		for (Device d : devices) {
 			if (d.getType() == type) {
 				returnDevices.add(d);
@@ -213,11 +214,11 @@ public class Device implements Connectable {
 		return level;
 	}
 
-	public ArrayList<Port> getPorts() {
+	public List<Port> getPorts() {
 		return ports;
 	}
 
-	public ArrayList<Part> getParts() {
+	public List<Part> getParts() {
 		return parts;
 	}
 
@@ -237,19 +238,19 @@ public class Device implements Connectable {
 		this.level = level;
 	}
 
-	public void setPorts(ArrayList<Port> ports) {
+	public void setPorts(List<Port> ports) {
 		this.ports = ports;
 	}
 
-	public void setParts(ArrayList<Part> parts) {
+	public void setParts(List<Part> parts) {
 		this.parts = parts;
 	}
 
-	public ArrayList<Connection> getConnections() {
+	public List<Connection> getConnections() {
 		return connections;
 	}
 
-	public void setConnections(ArrayList<Connection> connections) {
+	public void setConnections(List<Connection> connections) {
 		this.connections = connections;
 	}
 

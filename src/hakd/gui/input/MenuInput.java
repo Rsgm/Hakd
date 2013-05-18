@@ -3,7 +3,7 @@ package hakd.gui.input;
 import hakd.game.Command;
 import hakd.gui.windows.Terminal;
 
-import java.util.ArrayList;
+import java.util.List;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -16,12 +16,12 @@ public class MenuInput implements InputProcessor {
 
 	Terminal					terminal;
 
-	ArrayList<String>			history;
+	List<String>				history;
 	int							line	= 0;	// holds the position of the history
 
 	private OrthographicCamera	cam;
 
-	public MenuInput(Terminal terminal, ArrayList<String> history, OrthographicCamera cam) {
+	public MenuInput(Terminal terminal, List<String> history, OrthographicCamera cam) {
 		this.terminal = terminal;
 		this.history = history;
 

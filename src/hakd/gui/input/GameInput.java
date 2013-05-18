@@ -1,11 +1,13 @@
 package hakd.gui.input;
 
+import hakd.game.Hakd;
+
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
 public class GameInput implements InputProcessor {
-	private final Game			game;
+	private final Hakd			game;
 
 	private OrthographicCamera	cam;
 
@@ -13,7 +15,7 @@ public class GameInput implements InputProcessor {
 	private int					lastMouseY;
 
 	public GameInput(Game game, OrthographicCamera cam) {
-		this.game = game;
+		this.game = (Hakd) game;
 		this.cam = cam;
 	}
 
@@ -47,8 +49,8 @@ public class GameInput implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		float deltaX = (lastMouseX - screenX) / 80f * cam.zoom; // I am not sure why 80 and 60 map to a 1:1 ratio to the pixels
-		float deltaY = (screenY - lastMouseY) / 60f * cam.zoom; // but 90 and 90 did not work, I also tried 90 and 45
+		float deltaX = (lastMouseX - screenX) / (game.getWidth() / 10f) * cam.zoom;
+		float deltaY = (screenY - lastMouseY) / (game.getHeight() / 10f) * cam.zoom;
 		// I am also surprised that the *cam.zoom worked without flaw when I tried it
 
 		System.out.println(deltaX + "	" + deltaY + "	" + cam.position.x + "	" + cam.position.y);
