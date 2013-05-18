@@ -3,7 +3,6 @@ package hakd.other;
 import hakd.networks.devices.Device;
 import hakd.other.enumerations.Protocol;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class Port {
@@ -42,7 +41,7 @@ public class Port {
 	}
 
 	// given a device or port number, this will return the port it is on
-	public static Port getPort(ArrayList<Port> array, Device device, int port) {
+	public static Port getPort(List<Port> array, Device device, int port) {
 		for (Port p : array) {
 			if (p.getDevice() == device || p.getPort() == port) {
 				return p;

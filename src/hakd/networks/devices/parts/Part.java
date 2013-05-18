@@ -28,7 +28,7 @@ public class Part {
 	}
 
 	// finds all of the parts in the list of that type
-	public static List<Part> findParts(ArrayList<Part> parts, PartType type) {
+	public static List<Part> findParts(List<Part> parts, PartType type) {
 		List<Part> returnParts = new ArrayList<Part>();
 		for (Part p : parts) {
 			if (p.getType() == type) {
