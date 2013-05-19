@@ -2,51 +2,58 @@ textures.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
+player0
+  rotate: false
+  xy: 256, 0
+  size: 22, 35
+  orig: 22, 35
+  offset: 0, 0
+  index: -1
 test
   rotate: false
-  xy: 264, 2
+  xy: 278, 0
   size: 60, 40
   orig: 60, 40
   offset: 0, 0
   index: -1
 draw
   rotate: false
-  xy: 2, 2
+  xy: 0, 0
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 loading
   rotate: false
-  xy: 68, 2
+  xy: 64, 0
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 loadingbackground
   rotate: false
-  xy: 166, 2
+  xy: 160, 0
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 title
   rotate: false
-  xy: 2, 100
+  xy: 0, 96
   size: 800, 210
   orig: 800, 210
   offset: 0, 0
   index: -1
-test
+test3
   rotate: false
-  xy: 326, 2
+  xy: 338, 0
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
-  index: 3
+  index: -1
 untitled
   rotate: false
-  xy: 804, 100
+  xy: 800, 96
   size: 4, 1
   orig: 4, 1
   offset: 0, 0

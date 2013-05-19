@@ -1,6 +1,7 @@
 package hakd.gui.input;
 
 import hakd.game.Hakd;
+import hakd.game.gameplay.Player;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.InputProcessor;
@@ -11,16 +12,20 @@ public class GameInput implements InputProcessor {
 
 	private OrthographicCamera	cam;
 
+	private Player				player;
+
 	private int					lastMouseX;
 	private int					lastMouseY;
 
-	public GameInput(Game game, OrthographicCamera cam) {
+	public GameInput(Game game, OrthographicCamera cam, Player player) {
 		this.game = (Hakd) game;
 		this.cam = cam;
+		this.player = player;
 	}
 
 	@Override
-	public boolean keyDown(int keycode) {
+	public boolean keyDown(int keycode) { // space or enter to interact with an object
+		// TODO Auto-generated method stub
 		return false;
 	}
 
@@ -71,11 +76,11 @@ public class GameInput implements InputProcessor {
 
 	@Override
 	public boolean scrolled(int amount) {
-		if (cam.zoom >= 0.12 || amount < 0) {
-			cam.zoom += -amount / 10f;
-		}// else if(cam.zoom<){
+		if ((cam.zoom > 0.25 || amount > 0) && (cam.zoom < 5 || amount < 0)) {
+			cam.zoom += amount / 20f;
+		}
 
-		// }
+		cam.zoom = Math.round(cam.zoom * 100) / 100f; // round the zoom to the hundredths place
 		System.out.println(cam.zoom);
 		return true;
 	}
