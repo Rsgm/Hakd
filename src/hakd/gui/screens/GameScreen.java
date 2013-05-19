@@ -6,7 +6,9 @@ import hakd.gui.input.GameInput;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
@@ -45,7 +47,11 @@ public class GameScreen extends HakdScreen {
 
 // GamePlay.generateGame();
 // Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
-// player = new Player(name, n, terminal);
+
+		Sprite sprite = new Sprite(textures.findRegion("player0"));
+		sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
+		player = new Player(name, null, sprite);
+
 // room = new Room(n);
 	}
 
@@ -53,7 +59,7 @@ public class GameScreen extends HakdScreen {
 	public void show() {
 		super.show();
 
-		Gdx.input.setInputProcessor(new GameInput(game, cam)); // I guess this has to be set in the show method
+		Gdx.input.setInputProcessor(new GameInput(game, cam, player)); // I guess this has to be set in the show method
 
 	}
 
@@ -61,23 +67,39 @@ public class GameScreen extends HakdScreen {
 	public void render(float delta) {
 		super.render(delta);
 
+		updateMovement();
+		// update display
+		// update game
+		// update other, I don't know
+
 		cam.update();
-
-// System.out.println(cam.position.x + "	" + cam.position.y);
-
 		renderer.setView(cam);
 		renderer.render();
+
+		renderer.getSpriteBatch().begin();
+		player.getSprite().draw(renderer.getSpriteBatch());
+		renderer.getSpriteBatch().end();
 
 		batch.begin();
 		batch.draw(textures.findRegion("loading"), 0, 0); // this is always set to 0,0 so it will not move
 		batch.end();
-
-// cam.translate(-.01f, -.01f);
 	}
 
 	@Override
 	public void dispose() {
 		super.dispose();
 		map.dispose();
+	}
+
+	private void updateMovement() {
+		if (Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.UP)) {
+			player.move(1 / 46f, 1 / 91f);
+		} else if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.LEFT)) {
+			player.move(-1 / 46f, 1 / 91f);
+		} else if (Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.DOWN)) {
+			player.move(-1 / 46f, -1 / 91f);
+		} else if (Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.RIGHT)) {
+			player.move(1 / 46f, -1 / 91f);
+		}
 	}
 }
