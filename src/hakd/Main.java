@@ -58,16 +58,14 @@ public final class Main {
 
 		if (reason == null) {
 			System.exit(0);
-		}
-		if (reason != null) {
+		} else {
 			System.exit(1);
 		}
 	}
 
 	private static void startServer() { // start tomcat and servlets
 		// TODO move this at some point to a controller class in the servlet folder so each game mode has its own, if needed. and so its not
-// running
-// during modes that don't need it
+// running during modes that don't need it // Game modes? I think I decided not to do that
 		Tomcat tomcat = new Tomcat();
 		tomcat.setPort(80);
 		Context context = tomcat.addContext("/", new File(".").getAbsolutePath());

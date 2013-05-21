@@ -3,6 +3,7 @@ package hakd.gui.screens;
 import hakd.game.gameplay.Player;
 import hakd.gui.Room;
 import hakd.gui.input.GameInput;
+import hakd.networks.Network;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -11,32 +12,34 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 public class GameScreen extends HakdScreen {
-	private Player						player;			// TODO Sometime make this an array and have other people
-// in the game with different skills and personalities private int arraylist<npc> npcs = new arraylist<npc>();
-
+	private Player						player;			// TODO Sometime make this an array and have other people in the game with different
+// skills and
+// personalities private int arraylist<npc> npcs = new arraylist<npc>();
 	private Room						room;
 
 	private OrthographicCamera			cam;
-
-	private TiledMap					map;				// TODO move this to the room class
 	private IsometricTiledMapRenderer	renderer;			// it says this is experimental, but it was an old article
 
-	private final float					tileSize	= 91;	// I have no idea if this is height width, or being isometric, diagonal
+	private final int					tileSize	= 91;
 
 	public GameScreen(Game game, String name) {
 		super(game);
 
-		map = new TmxMapLoader().load("src/hakd/gui/resources/maps/untitled.tmx");
-		cam = new OrthographicCamera();
-		renderer = new IsometricTiledMapRenderer(map, 1 / tileSize); // can only use the map specified in the constructor
-		TiledMapTileLayer layer0 = (TiledMapTileLayer) map.getLayers().get(0);
+// GamePlay.generateGame();
+		Network n = null;// NetworkController.addPublicNetwork(NetworkType.PLAYER);
 
-		cam.setToOrtho(false, layer0.getWidth(), layer0.getHeight());
+		player = new Player(name, n, textures);
+		room = new Room(player, this);
+
+		Sprite sprite = player.getSprite();
+		sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
+
+		cam = new OrthographicCamera();
+
+		cam.setToOrtho(false, room.getBackground().getWidth(), room.getBackground().getHeight());
 		cam.update();
 		renderer.setView(cam);
 
@@ -45,14 +48,6 @@ public class GameScreen extends HakdScreen {
 		cam.position.x = 5;
 		cam.position.y = 1;
 
-// GamePlay.generateGame();
-// Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
-
-		Sprite sprite = new Sprite(textures.findRegion("player0"));
-		sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
-		player = new Player(name, null, sprite);
-
-// room = new Room(n);
 	}
 
 	@Override
@@ -88,11 +83,12 @@ public class GameScreen extends HakdScreen {
 	@Override
 	public void dispose() {
 		super.dispose();
-		map.dispose();
+		room.dispose();
 	}
 
 	private void updateMovement() {
-		if (Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.UP)) {
+		if ((Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.UP))) {
+
 			player.move(1 / 46f, 1 / 91f);
 		} else if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.LEFT)) {
 			player.move(-1 / 46f, 1 / 91f);
@@ -101,5 +97,45 @@ public class GameScreen extends HakdScreen {
 		} else if (Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.RIGHT)) {
 			player.move(1 / 46f, -1 / 91f);
 		}
+	}
+
+	public void changeMap(TiledMap map) { // TODO make a transition effect
+		renderer = new IsometricTiledMapRenderer(map, 1 / 91f); // TODO change this to 64 once I get the graphics
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
+	}
+
+	public Room getRoom() {
+		return room;
+	}
+
+	public void setRoom(Room room) {
+		this.room = room;
+	}
+
+	public OrthographicCamera getCam() {
+		return cam;
+	}
+
+	public void setCam(OrthographicCamera cam) {
+		this.cam = cam;
+	}
+
+	public IsometricTiledMapRenderer getRenderer() {
+		return renderer;
+	}
+
+	public void setRenderer(IsometricTiledMapRenderer renderer) {
+		this.renderer = renderer;
+	}
+
+	public int getTileSize() {
+		return tileSize;
 	}
 }
