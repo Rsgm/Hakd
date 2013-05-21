@@ -5,6 +5,7 @@ import hakd.networks.Network;
 import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class Player {
 	// player stats
@@ -20,7 +21,7 @@ public class Player {
 	private Window	openWindow;
 
 	// --------methods--------
-	public Player(String name, Network home, Sprite sprite) {
+	public Player(String name, Network home, TextureAtlas textures) {
 		this.name = name;
 		this.home = home;
 		this.currentNetwork = home;
@@ -29,7 +30,7 @@ public class Player {
 			this.currentServer = home.getMasterServer();
 		}
 
-		this.sprite = sprite;
+		sprite = new Sprite(textures.findRegion("player0"));
 	}
 
 	public void move(float deltaX, float deltaY) {
