@@ -88,7 +88,7 @@ public class Room {
 		c.setTile(new TiledMapTileSet().getTile(1));
 
 		t.setCell(0, 0, c); // have the layer or map have an attribute of "slot0" up to the max slots with its coordinates
-		t.getObjects().get("slot1").getProperties().get(key);
+		t.getObjects().get("slot1").getProperties().get("key");
 	}
 
 	public void dispose() {

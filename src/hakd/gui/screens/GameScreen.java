@@ -31,7 +31,7 @@ public class GameScreen extends HakdScreen {
 // GamePlay.generateGame();
 		Network n = null;// NetworkController.addPublicNetwork(NetworkType.PLAYER);
 
-		player = new Player(name, n, textures);
+		player = new Player(name, n, textures, this);
 		room = new Room(player, this);
 
 		Sprite sprite = player.getSprite();
