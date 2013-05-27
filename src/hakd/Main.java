@@ -23,7 +23,6 @@ public final class Main {
 		// startServer(); // TODO test this with port forwarding
 
 		new LwjglApplication(new Hakd(), "Hak'd", 800, 600, false);
-
 		prefs = Gdx.app.getPreferences("hakd-prefs");
 
 // if (!prefs.getBoolean("played-before")) {
@@ -35,7 +34,6 @@ public final class Main {
 		boolean f = prefs.getBoolean("fullscreen");
 
 		Gdx.graphics.setDisplayMode(w, h, f);
-
 	}
 
 	private static void newPrefs() {
@@ -44,8 +42,8 @@ public final class Main {
 		 * on windows it is users/[user name]/.prefs/,
 		 * I have not tested mac yet	*/
 		prefs.putBoolean("played-before", true);
-		prefs.putInteger("width", 1000);
-		prefs.putInteger("height", 800);
+		prefs.putInteger("width", 800);
+		prefs.putInteger("height", 600);
 		prefs.putBoolean("fullscreen", false);
 		prefs.putBoolean("vsync", false);
 		prefs.putBoolean("sound", true);

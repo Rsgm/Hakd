@@ -87,20 +87,32 @@ public class GameScreen extends HakdScreen {
 	}
 
 	private void updateMovement() {
+		float x = 0;
+		float y = 0;
 		if ((Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.UP))) {
-
-			player.move(1 / 46f, 1 / 91f);
-		} else if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.LEFT)) {
-			player.move(-1 / 46f, 1 / 91f);
-		} else if (Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.DOWN)) {
-			player.move(-1 / 46f, -1 / 91f);
-		} else if (Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.RIGHT)) {
-			player.move(1 / 46f, -1 / 91f);
+			x += 1;
+			y += 1;
 		}
+		if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.LEFT)) {
+			x += -1;
+			y += 1;
+		}
+		if (Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.DOWN)) {
+			x += -1;
+			y += -1;
+		}
+		if (Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.RIGHT)) {
+			x += 1;
+			y += -1;
+		}
+		if (x < -1 || x > 1) {
+			x /= 2; // x does not equal 2
+		}
+		player.move(2 * x / tileSize, y / tileSize); // it moves twice as fast horizontally relative to the map than it does vertically
 	}
 
 	public void changeMap(TiledMap map) { // TODO make a transition effect
-		renderer = new IsometricTiledMapRenderer(map, 1 / 91f); // TODO change this to 64 once I get the graphics
+		renderer = new IsometricTiledMapRenderer(map, 1 / tileSize); // TODO change this to 64 once I get the graphics
 	}
 
 	public Player getPlayer() {

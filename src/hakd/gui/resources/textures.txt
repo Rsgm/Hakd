@@ -5,13 +5,13 @@ repeat: none
 player0
   rotate: false
   xy: 256, 0
-  size: 22, 35
-  orig: 22, 35
+  size: 16, 32
+  orig: 16, 32
   offset: 0, 0
   index: -1
 test
   rotate: false
-  xy: 278, 0
+  xy: 304, 0
   size: 60, 40
   orig: 60, 40
   offset: 0, 0
@@ -44,9 +44,16 @@ title
   orig: 800, 210
   offset: 0, 0
   index: -1
+spaceBarIcon
+  rotate: false
+  xy: 272, 0
+  size: 32, 32
+  orig: 32, 32
+  offset: 0, 0
+  index: -1
 test3
   rotate: false
-  xy: 338, 0
+  xy: 364, 0
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
