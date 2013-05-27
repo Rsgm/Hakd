@@ -30,7 +30,7 @@ public class Room {
 
 	private TiledMap			map;
 
-	private TiledMapTileLayer	background;
+	private TiledMapTileLayer	floor;
 	private MapLayer			objectLayer;
 
 	private GameScreen			gameScreen;
@@ -52,10 +52,11 @@ public class Room {
 //
 // buildRoom();
 
-		map = new TmxMapLoader().load("src/hakd/gui/resources/maps/untitled.tmx");
+		map = new TmxMapLoader().load("src/hakd/gui/resources/maps/untitled64.tmx");
 
-		background = (TiledMapTileLayer) map.getLayers().get("background");
-		objectLayer = map.getLayers().get("objects");
+		floor = (TiledMapTileLayer) map.getLayers().get("floor");
+		objectLayer = map.getLayers().get("object");
+		// other tile layer
 
 		gameScreen.changeMap(map);
 	}
@@ -87,7 +88,7 @@ public class Room {
 		c.setTile(new TiledMapTileSet().getTile(1));
 
 		t.setCell(0, 0, c); // have the layer or map have an attribute of "slot0" up to the max slots with its coordinates
-
+		t.getObjects().get("slot1").getProperties().get(key);
 	}
 
 	public void dispose() {
@@ -123,7 +124,7 @@ public class Room {
 	}
 
 	public TiledMapTileLayer getBackground() {
-		return background;
+		return floor;
 	}
 
 	public MapLayer getObjectLayer() {
@@ -167,7 +168,7 @@ public class Room {
 	}
 
 	public void setBackground(TiledMapTileLayer background) {
-		this.background = background;
+		this.floor = background;
 	}
 
 	public void setObjectLayer(MapLayer objectLayer) {
@@ -188,7 +189,7 @@ public class Room {
  * I will also need graphics and 3d models on top of the 3d projection models for the internet map.
  * 
  * TODO have different virtual screens(TODO-inception make this an implementation or extending class) that return orthocameras
- * or something, matricies maybe?
+ * or something, matrices maybe?
  * 
  * 
  * To get a new room, you first buy the room. Next you remove the old room, then update the network limits. Finally
