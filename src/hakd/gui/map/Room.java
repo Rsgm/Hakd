@@ -107,7 +107,7 @@ public class Room {
 				String s = (String) o[0];
 				if (s.matches("ss.*")) {
 					s = s.replace("ss", "");
-// device = serverSlots[Integer.parseInt(s)];
+					// device = serverSlots[Integer.parseInt(s)];
 				} else if (s.matches("rs.*")) {
 					s = s.replace("rs", "");
 					device = routerSlots[Integer.parseInt(s)];

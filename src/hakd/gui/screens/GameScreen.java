@@ -48,9 +48,8 @@ public class GameScreen extends HakdScreen {
 
 		batch = new SpriteBatch();
 
-		cam.position.x = 5;
-		cam.position.y = 1;
-
+		cam.position.x = room.getFloor().getWidth() / 2;
+		cam.position.y = 0;
 	}
 
 	@Override
@@ -133,7 +132,7 @@ public class GameScreen extends HakdScreen {
 			x /= 2; // x does not equal 2
 		}
 
-		player.move(1 * x / tileSize / 1.0f, .5f * y / tileSize / 1.0f); // it moves twice as fast horizontally relative to the map than it does
+		player.move(1.5f * x / tileSize / 1.0f, y / tileSize / 1.5f); // it moves twice as fast horizontally relative to the map than it does
 // vertically
 	}
 

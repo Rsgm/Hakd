@@ -45,11 +45,12 @@ public class Player {
 		sprite.setX(sprite.getX() + deltaX);
 		sprite.setY(sprite.getY() + deltaY);
 
-		int[] coords = Util.orthoToIso(sprite.getX() - (sprite.getWidth()), sprite.getY(), screen.getRoom().getFloor().getWidth());
+		int[] coords = Util.orthoToIso(sprite.getX() - (sprite.getWidth()), sprite.getY(), screen.getRoom().getFloor().getHeight());
 		isoX = coords[0];
 		isoY = coords[1];
 
 		System.out.println(isoX + "	" + isoY);
+// System.out.println(sprite.getX() + "	" + sprite.getY());
 	}
 
 	// --------getters/setters--------
