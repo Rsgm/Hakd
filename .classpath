@@ -15,5 +15,6 @@
 	<classpathentry kind="lib" path="lib/libgdx/gdx-freetype-natives.jar"/>
 	<classpathentry kind="lib" path="lib/luaj-jse-3.0-alpha2.jar" sourcepath="lib/luaj-sources-3.0-alpha2.jar"/>
 	<classpathentry kind="lib" path="lib/libgdx/gdx-natives.jar"/>
+	<classpathentry kind="lib" path="lib/gag.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

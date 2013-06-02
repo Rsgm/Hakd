@@ -1,8 +1,9 @@
 package hakd.gui.screens;
 
 import hakd.game.gameplay.Player;
-import hakd.gui.Room;
 import hakd.gui.input.GameInput;
+import hakd.gui.map.Room;
+import hakd.gui.windows.Window;
 import hakd.networks.Network;
 
 import com.badlogic.gdx.Game;
@@ -23,7 +24,9 @@ public class GameScreen extends HakdScreen {
 	private OrthographicCamera			cam;
 	private IsometricTiledMapRenderer	renderer;			// it says this is experimental, but it was an old article
 
-	private final int					tileSize	= 91;
+	private final float					tileSize	= 64;
+
+	private Window						openWindow;
 
 	public GameScreen(Game game, String name) {
 		super(game);
@@ -39,7 +42,7 @@ public class GameScreen extends HakdScreen {
 
 		cam = new OrthographicCamera();
 
-		cam.setToOrtho(false, room.getBackground().getWidth(), room.getBackground().getHeight());
+		cam.setToOrtho(false, room.getFloor().getWidth(), room.getFloor().getHeight());
 		cam.update();
 		renderer.setView(cam);
 
@@ -53,31 +56,51 @@ public class GameScreen extends HakdScreen {
 	@Override
 	public void show() {
 		super.show();
-
-		Gdx.input.setInputProcessor(new GameInput(game, cam, player)); // I guess this has to be set in the show method
-
+		Gdx.input.setInputProcessor(new GameInput(game, cam, player, this)); // I guess this has to be set in the show method
 	}
 
 	@Override
 	public void render(float delta) {
 		super.render(delta);
 
+		cam.update();
+		renderer.setView(cam);
+
+		int[] start = { 0 };
+		int[] end = { 1 };
+
+		renderer.render();
+		SpriteBatch rBatch = renderer.getSpriteBatch();
+
+		rBatch.begin();
 		updateMovement();
-		// update display
+
+		player.getSprite().draw(rBatch);
+		checkPosition(rBatch);
+
+		// update display()
+		// Window.getDisplay();
+
 		// update game
 		// update other, I don't know
 
-		cam.update();
-		renderer.setView(cam);
-		renderer.render();
+		rBatch.end();
 
-		renderer.getSpriteBatch().begin();
-		player.getSprite().draw(renderer.getSpriteBatch());
-		renderer.getSpriteBatch().end();
+// renderer.render(end);
+	}
 
-		batch.begin();
-		batch.draw(textures.findRegion("loading"), 0, 0); // this is always set to 0,0 so it will not move
-		batch.end();
+	private void checkPosition(SpriteBatch batch) {
+		int x = player.getIsoX();
+		int y = player.getIsoY();
+
+		if (room.getDeviceAtTile(x - 1, y) || room.getDeviceAtTile(x, y - 1)) {
+			Sprite s = new Sprite(textures.findRegion("spaceBarIcon"));
+			s.setPosition(player.getSprite().getX(), player.getSprite().getY() + 32 / tileSize);
+			s.setSize(16 / tileSize, 16 / tileSize);
+
+			s.draw(batch);
+// System.out.println("true");
+		}
 	}
 
 	@Override
@@ -105,14 +128,17 @@ public class GameScreen extends HakdScreen {
 			x += 1;
 			y += -1;
 		}
+
 		if (x < -1 || x > 1) {
 			x /= 2; // x does not equal 2
 		}
-		player.move(2 * x / tileSize, y / tileSize); // it moves twice as fast horizontally relative to the map than it does vertically
+
+		player.move(1 * x / tileSize / 1.0f, .5f * y / tileSize / 1.0f); // it moves twice as fast horizontally relative to the map than it does
+// vertically
 	}
 
 	public void changeMap(TiledMap map) { // TODO make a transition effect
-		renderer = new IsometricTiledMapRenderer(map, 1 / tileSize); // TODO change this to 64 once I get the graphics
+		renderer = new IsometricTiledMapRenderer(map, 1 / tileSize); // this has to be float, otherwise it will round
 	}
 
 	public Player getPlayer() {
@@ -147,7 +173,7 @@ public class GameScreen extends HakdScreen {
 		this.renderer = renderer;
 	}
 
-	public int getTileSize() {
+	public float getTileSize() {
 		return tileSize;
 	}
 }
