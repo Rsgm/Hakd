@@ -8,6 +8,8 @@ import hakd.other.enumerations.Region;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.google.gag.annotation.remark.Hack;
+
 public class Dns extends Device { // TODO let DNSs communicate a bit.
 	private List<Network>	hosts	= new ArrayList<Network>();
 
@@ -16,6 +18,7 @@ public class Dns extends Device { // TODO let DNSs communicate a bit.
 	}
 
 	// --------methods--------
+	@Hack
 	public String assignIp(Region region) { // assigns an ip to an object that requests one, also checks it and adds it to the dns list
 		String ip;
 		boolean taken;

@@ -2,6 +2,7 @@ package hakd.gui.input;
 
 import hakd.game.Hakd;
 import hakd.game.gameplay.Player;
+import hakd.gui.screens.GameScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.InputProcessor;
@@ -13,14 +14,16 @@ public class GameInput implements InputProcessor {
 	private OrthographicCamera	cam;
 
 	private Player				player;
+	private GameScreen			screen;
 
 	private int					lastMouseX;
 	private int					lastMouseY;
 
-	public GameInput(Game game, OrthographicCamera cam, Player player) {
+	public GameInput(Game game, OrthographicCamera cam, Player player, GameScreen screen) {
 		this.game = (Hakd) game;
 		this.cam = cam;
 		this.player = player;
+		this.screen = screen;
 	}
 
 	@Override
@@ -54,8 +57,11 @@ public class GameInput implements InputProcessor {
 
 	@Override
 	public boolean touchDragged(int screenX, int screenY, int pointer) {
-		float deltaX = (lastMouseX - screenX) / (game.getWidth() / 10f) * cam.zoom;
-		float deltaY = (screenY - lastMouseY) / (game.getHeight() / 10f) * cam.zoom;
+		float height = screen.getRoom().getFloor().getHeight();
+		float width = screen.getRoom().getFloor().getWidth();
+
+		float deltaX = (lastMouseX - screenX) / (game.getWidth() / height) * cam.zoom;
+		float deltaY = (screenY - lastMouseY) / (game.getHeight() / width) * cam.zoom;
 		// I am also surprised that the *cam.zoom worked without flaw when I tried it
 
 		System.out.println(deltaX + "	" + deltaY + "	" + cam.position.x + "	" + cam.position.y);

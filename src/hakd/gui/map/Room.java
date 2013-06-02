@@ -1,4 +1,4 @@
-package hakd.gui;
+package hakd.gui.map;
 
 import hakd.game.gameplay.Player;
 import hakd.gui.screens.GameScreen;
@@ -7,7 +7,6 @@ import hakd.networks.devices.Device;
 import hakd.networks.devices.Dns;
 import hakd.networks.devices.Router;
 import hakd.networks.devices.Server;
-import hakd.other.enumerations.DeviceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,8 +14,6 @@ import java.util.List;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
-import com.badlogic.gdx.maps.tiled.TiledMapTileLayer.Cell;
-import com.badlogic.gdx.maps.tiled.TiledMapTileSet;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
 public class Room {
@@ -29,36 +26,42 @@ public class Room {
 	private Server[]			serverSlots;
 
 	private TiledMap			map;
+	private Object[][]			mapObjects;
 
 	private TiledMapTileLayer	floor;
-	private MapLayer			objectLayer;
+	private MapLayer			objectLayer;	// if it matters, maybe rename this to wall/boundary layer
+	private TiledMapTileLayer	otherLayer;	// Intractable tiles
 
 	private GameScreen			gameScreen;
 
 	public Room(Player player, GameScreen gameScreen) { // TODO this is just blocked until I can finish with the map rendering and stuff
-		// I guess what I am really waiting for is a slot tile to be made, that way I can try to populate a room with a network
-
-// network = player.getHome();
-//
-// devices = network.getDevices();
-//
-// routerSlots = new Router[network.getRouterLimit()];
-// dnsSlots = new Dns[network.getServerLimit()];
-// serverSlots = new Server[network.getServerLimit()];
-//
 // map = new TmxMapLoader().load("src/hakd/gui/resources/maps/room" + network.getlevel() + ".tmx");
-//
-// assignDevices();
-//
-// buildRoom();
-
 		map = new TmxMapLoader().load("src/hakd/gui/resources/maps/untitled64.tmx");
 
 		floor = (TiledMapTileLayer) map.getLayers().get("floor");
-		objectLayer = map.getLayers().get("object");
-		// other tile layer
+		objectLayer = map.getLayers().get("objects");
+		otherLayer = (TiledMapTileLayer) map.getLayers().get("other");
+
+// network = player.getHome();
+// devices = network.getDevices();
+//
+		int servers = Integer.parseInt((String) map.getProperties().get("servers"));
+		int dnss = Integer.parseInt((String) map.getProperties().get("dnss"));
+		int routers = Integer.parseInt((String) map.getProperties().get("routers"));
+
+		routerSlots = new Router[routers];
+		dnsSlots = new Dns[dnss];
+		serverSlots = new Server[servers];
+//
+// network.setServerLimit(servers);
+// network.setDnsLimit(dnss);
+// network.setRouterLimit(routers);
+//
+		assignDevices();
+		buildRoom();
 
 		gameScreen.changeMap(map);
+
 	}
 
 	private void assignDevices() { // TODO make something to check for too many servers, maybe before you buy a room
@@ -66,33 +69,68 @@ public class Room {
 		ArrayList<Server> servers = new ArrayList<Server>();
 		ArrayList<Router> routers = new ArrayList<Router>();
 
-		for (Device d : devices) {
-			if (d.getType() == DeviceType.DNS) {
-				dnss.add((Dns) d);
-			} else if (d.getType() == DeviceType.ROUTER) {
-				routers.add((Router) d);
-			} else if (d.getType() == DeviceType.SERVER) {
-				servers.add((Server) d);
-			}
-		}
+// for (Device d : devices) {
+// if (d.getType() == DeviceType.DNS) {
+// dnss.add((Dns) d);
+// } else if (d.getType() == DeviceType.ROUTER) {
+// routers.add((Router) d);
+// } else if (d.getType() == DeviceType.SERVER) {
+// servers.add((Server) d);
+// }
+// }
 
-		dnsSlots = (Dns[]) dnss.toArray();
-		serverSlots = (Server[]) servers.toArray();
-		routerSlots = (Router[]) routers.toArray();
+		dnsSlots = dnss.toArray(new Dns[dnss.size()]);
+		serverSlots = servers.toArray(new Server[servers.size()]);
+		routerSlots = routers.toArray(new Router[routers.size()]);
 	}
 
 	private void buildRoom() {
-		TiledMapTileLayer t = (TiledMapTileLayer) map.getLayers().get(0);
+		mapObjects = new Object[objectLayer.getObjects().getCount()][3];
 
-		Cell c = new Cell(); // cells hold tile atributes
-		c.setTile(new TiledMapTileSet().getTile(1));
+		int i = 0;
+		for (com.badlogic.gdx.maps.MapObject o : objectLayer.getObjects()) {
+			mapObjects[i][0] = o.getName();
 
-		t.setCell(0, 0, c); // have the layer or map have an attribute of "slot0" up to the max slots with its coordinates
-		t.getObjects().get("slot1").getProperties().get("key");
+			if (o.getName().matches("[rds]s.*")) {
+				mapObjects[i][1] = Integer.parseInt((String) o.getProperties().get("x"));
+				mapObjects[i][2] = Integer.parseInt((String) o.getProperties().get("y"));
+			}
+			i++;
+		}
+	}
+
+	public/*Device*/boolean getDeviceAtTile(Object x, Object y) {
+		Device device = null;
+
+		for (Object[] o : mapObjects) {
+			if (o[1] == x && o[2] == y) {
+				String s = (String) o[0];
+				if (s.matches("ss.*")) {
+					s = s.replace("ss", "");
+// device = serverSlots[Integer.parseInt(s)];
+				} else if (s.matches("rs.*")) {
+					s = s.replace("rs", "");
+					device = routerSlots[Integer.parseInt(s)];
+				} else if (s.matches("ds.*")) {
+					s = s.replace("ds", "");
+					device = dnsSlots[Integer.parseInt(s)];
+				}
+				return true;// break;
+			}
+		}
+		return false;
 	}
 
 	public void dispose() {
 		map.dispose();
+	}
+
+	public Player getPlayer() {
+		return player;
+	}
+
+	public void setPlayer(Player player) {
+		this.player = player;
 	}
 
 	public Network getNetwork() {
@@ -103,32 +141,12 @@ public class Room {
 		this.network = network;
 	}
 
-	public TiledMap getMap() {
-		return map;
-	}
-
-	public void setMap(TiledMap map) {
-		this.map = map;
-	}
-
 	public List<Device> getDevices() {
 		return devices;
 	}
 
 	public void setDevices(List<Device> devices) {
 		this.devices = devices;
-	}
-
-	public Player getPlayer() {
-		return player;
-	}
-
-	public TiledMapTileLayer getBackground() {
-		return floor;
-	}
-
-	public MapLayer getObjectLayer() {
-		return objectLayer;
 	}
 
 	public Router[] getRouterSlots() {
@@ -155,6 +173,30 @@ public class Room {
 		this.serverSlots = serverSlots;
 	}
 
+	public TiledMap getMap() {
+		return map;
+	}
+
+	public void setMap(TiledMap map) {
+		this.map = map;
+	}
+
+	public TiledMapTileLayer getFloor() {
+		return floor;
+	}
+
+	public void setFloor(TiledMapTileLayer floor) {
+		this.floor = floor;
+	}
+
+	public MapLayer getObjectLayer() {
+		return objectLayer;
+	}
+
+	public void setObjectLayer(MapLayer objectLayer) {
+		this.objectLayer = objectLayer;
+	}
+
 	public GameScreen getGameScreen() {
 		return gameScreen;
 	}
@@ -163,16 +205,20 @@ public class Room {
 		this.gameScreen = gameScreen;
 	}
 
-	public void setPlayer(Player player) {
-		this.player = player;
+	public Object[][] getMapObjects() {
+		return mapObjects;
 	}
 
-	public void setBackground(TiledMapTileLayer background) {
-		this.floor = background;
+	public void setMapObjects(Object[][] mapObjects) {
+		this.mapObjects = mapObjects;
 	}
 
-	public void setObjectLayer(MapLayer objectLayer) {
-		this.objectLayer = objectLayer;
+	public TiledMapTileLayer getOtherLayer() {
+		return otherLayer;
+	}
+
+	public void setOtherLayer(TiledMapTileLayer otherLayer) {
+		this.otherLayer = otherLayer;
 	}
 }
 

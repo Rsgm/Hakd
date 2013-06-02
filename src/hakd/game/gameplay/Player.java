@@ -4,6 +4,7 @@ import hakd.gui.screens.GameScreen;
 import hakd.gui.windows.Window;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
+import hakd.other.Util;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -44,29 +45,11 @@ public class Player {
 		sprite.setX(sprite.getX() + deltaX);
 		sprite.setY(sprite.getY() + deltaY);
 
-		orthoCoords(sprite.getX(), sprite.getY());
-	}
+		int[] coords = Util.orthoToIso(sprite.getX() - (sprite.getWidth()), sprite.getY(), screen.getRoom().getFloor().getWidth());
+		isoX = coords[0];
+		isoY = coords[1];
 
-	// converts float x/y orthogonal screen coordinates into int x/y isometric map coordinates
-	private void orthoCoords(float x, float y) { // I have a page full of math written out for this algorithm
-		float firstA = -0.5f * x + y; // checks every frame, so use float not double
-		float secondA = 0.5f * x + y;
-
-		float firstIntersectX;
-		float firstIntersectY;
-
-		float secondIntersectX;
-		float secondIntersectY; // TODO this is a little off, but it works for now
-
-		firstIntersectY = -y + firstA + 0.25f; // I could explain all of these numbers, or you could just trust they work
-		firstIntersectX = (firstIntersectY - firstA) * 2;
-
-		secondIntersectY = secondA - y + 0.25f;
-		secondIntersectX = (secondA - secondIntersectY) * 2;
-
-		int width = screen.getRoom().getBackground().getWidth();
-		isoX = (int) (0.9f * Math.sqrt((firstIntersectX - x) * (firstIntersectX - x) + (firstIntersectY - y) * (firstIntersectY - y)));
-		isoY = (int) (width - 0.9f * Math.sqrt((secondIntersectX - x) * (secondIntersectX - x) + (secondIntersectY - y) * (secondIntersectY - y)));
+		System.out.println(isoX + "	" + isoY);
 	}
 
 	// --------getters/setters--------
