@@ -49,7 +49,7 @@ public class Player {
 		isoX = coords[0];
 		isoY = coords[1];
 
-		System.out.println(isoX + "	" + isoY);
+// System.out.println(isoX + "	" + isoY);
 // System.out.println(sprite.getX() + "	" + sprite.getY());
 	}
 

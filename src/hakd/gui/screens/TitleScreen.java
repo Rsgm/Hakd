@@ -5,6 +5,7 @@ import hakd.gui.input.TitleInput;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.audio.Sound;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
@@ -13,21 +14,24 @@ public class TitleScreen extends HakdScreen {
 	private BitmapFont		font;
 	private BitmapFont		creditFont;
 
-	private String			login			= "";
-	private final String	userName		= "username' OR 'x'='x";
-	private String			pass			= "";
+	private String			login				= "";
+	private final String	userName			= "username' OR 'x'='x";
+	private String			pass				= "";
 
-	private float			time			= 0f;
-	private int				counter			= 0;						// used to check where in the
+	private float			time				= 0f;
+	private int				counter				= 0;									// used to check where in the
 	private int				random;
 	private float			randomTime;
-	private double			alpha			= 0;
-	private int				loginProgress	= 0;
+	private double			alpha				= 0;
+	private int				loginProgress		= 0;
 
 	private Sprite			loadingsSprite;
 	private Sprite			title;
 
-	private Sound			keyClick;									// PLACEHOLDER get a better click sound, lower volume and a bit more depth
+	private Sound			keyClick;													// PLACEHOLDER get a better click sound, lower volume and a
+// bit more depth
+
+	private Color			consoleFontColor	= new Color(0.0f, 0.7f, 0.0f, 1.0f);
 
 	public TitleScreen(Game game) { // simple title
 		super(game);
