@@ -9,15 +9,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class HakdScreen implements Screen {
-	int				width				= Gdx.graphics.getWidth();
-	int				height				= Gdx.graphics.getHeight();
+	int				width		= Gdx.graphics.getWidth();
+	int				height		= Gdx.graphics.getHeight();
 
 	Game			game;
-	SpriteBatch		batch				= new SpriteBatch();
-	TextureAtlas	textures			= new TextureAtlas("src/hakd/gui/resources/textures.txt");
+	SpriteBatch		batch		= new SpriteBatch();
+	TextureAtlas	textures	= new TextureAtlas("src/hakd/gui/resources/textures.txt");
 
-	Color			fontColor			= new Color(1.0f, 1.0f, 1.0f, 1.0f);
-	Color			consoleFontColor	= new Color(0.0f, 0.7f, 0.0f, 1.0f);
+	Color			fontColor	= new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// or read from, and write to, a preference or .ini file
 
@@ -64,6 +63,6 @@ public class HakdScreen implements Screen {
 	@Override
 	public void dispose() {
 		Gdx.input.setInputProcessor(null);
-
+		batch.dispose();
 	}
 }

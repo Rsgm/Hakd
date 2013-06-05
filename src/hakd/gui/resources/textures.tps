@@ -155,6 +155,9 @@
             <filename>graphics/test3.png</filename>
             <filename>graphics/title.png</filename>
             <filename>graphics/untitled.png</filename>
+            <filename>graphics/windowBorder.png</filename>
+            <filename>graphics/windowDisplay.png</filename>
+            <filename>graphics/close.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

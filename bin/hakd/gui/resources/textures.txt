@@ -1,38 +1,59 @@
 textures.png
 format: RGBA8888
-filter: Linear,Linear
+filter: Nearest,Nearest
 repeat: none
 player0
   rotate: false
-  xy: 264, 2
+  xy: 284, 2
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: -1
+windowDisplay
+  rotate: false
+  xy: 945, 100
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1
 test
   rotate: false
-  xy: 316, 2
+  xy: 336, 2
   size: 60, 40
   orig: 60, 40
   offset: 0, 0
   index: -1
 draw
   rotate: false
-  xy: 2, 2
+  xy: 22, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 loading
   rotate: false
-  xy: 68, 2
+  xy: 88, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
+close
+  rotate: false
+  xy: 2, 2
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+windowBorder
+  rotate: false
+  xy: 810, 100
+  size: 133, 100
+  orig: 133, 100
+  offset: 0, 0
+  index: -1
 loadingbackground
   rotate: false
-  xy: 166, 2
+  xy: 186, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
@@ -46,14 +67,14 @@ title
   index: -1
 spaceBarIcon
   rotate: false
-  xy: 282, 2
+  xy: 302, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 test3
   rotate: false
-  xy: 378, 2
+  xy: 398, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0

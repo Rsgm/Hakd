@@ -25,10 +25,11 @@ public class Command {
 	private final List<String>	scriptPaths	= new ArrayList<String>();
 	private static Globals		globals		= JsePlatform.standardGlobals();
 
-	public Command(String input, Device device) { // this may need to tell if a player issued it, so it won't write to the display
+	public Command(String input, Terminal terminal/*Device device*/) { // this may need to tell if a player issued it, so it won't write to the
+// display
 		this.input = input;
-		this.device = device;
-		this.terminal = device.getTerminal();
+		this.device = null/*device*/;
+		this.terminal = terminal;/*device.getTerminal();*/
 
 		reloadScripts();
 		run();
@@ -46,7 +47,7 @@ public class Command {
 				List<String> args = new ArrayList<String>();
 				boolean inQuotes = false; // credit to redditor BritPack for this, thank you
 
-				if (input.matches(device.getNetwork().getIp() + ">.+")) {
+				if (input.matches("Boot>.+"/*device.getNetwork().getIp() + ">.+"*/)) {
 					scanner.skip(".+>");
 					scanner.useDelimiter("\\s+");
 
@@ -107,7 +108,7 @@ public class Command {
 	// reloads the path list for the lua files so you can add stuff during runtime if needed // TODO have an option to disable this
 	public void reloadScripts() { // this is run on a seperate thread with the script, maybe it isn't that intensive
 		scriptPaths.clear();
-		scriptPaths.addAll(listFilesForFolder(new File("lua\\")));
+		scriptPaths.addAll(listFilesForFolder(new File("lua/")));
 	}
 
 	private List<String> listFilesForFolder(File folder) {

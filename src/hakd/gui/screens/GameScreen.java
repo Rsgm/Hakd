@@ -3,6 +3,7 @@ package hakd.gui.screens;
 import hakd.game.gameplay.Player;
 import hakd.gui.input.GameInput;
 import hakd.gui.map.Room;
+import hakd.gui.windows.Terminal;
 import hakd.gui.windows.Window;
 import hakd.networks.Network;
 
@@ -26,7 +27,7 @@ public class GameScreen extends HakdScreen {
 
 	private final float					tileSize	= 64;
 
-	private Window						openWindow;
+	private Window						openWindow	= null;
 
 	public GameScreen(Game game, String name) {
 		super(game);
@@ -61,6 +62,7 @@ public class GameScreen extends HakdScreen {
 	@Override
 	public void render(float delta) {
 		super.render(delta);
+		SpriteBatch rBatch = renderer.getSpriteBatch();
 
 		cam.update();
 		renderer.setView(cam);
@@ -69,36 +71,47 @@ public class GameScreen extends HakdScreen {
 		int[] end = { 1 };
 
 		renderer.render();
-		SpriteBatch rBatch = renderer.getSpriteBatch();
 
 		rBatch.begin();
-		updateMovement();
+		if (openWindow == null) {
+			updateMovement();
+			checkPosition(rBatch);
+		}
 
-		player.getSprite().draw(rBatch);
-		checkPosition(rBatch);
-
-		// update display()
-		// Window.getDisplay();
-
+		// update display();
 		// update game
 		// update other, I don't know
 
+		player.getSprite().draw(rBatch);
 		rBatch.end();
 
-// renderer.render(end);
+		if (openWindow != null) {
+			openWindow.render(cam, batch, delta);
+		}
 	}
 
 	private void checkPosition(SpriteBatch batch) {
 		int x = player.getIsoX();
 		int y = player.getIsoY();
 
-		if (room.getDeviceAtTile(x - 1, y) || room.getDeviceAtTile(x, y - 1)) {
+		/*Device*/boolean d = room.getDeviceAtTile(x - 1, y);
+
+		if (!d/*==null*/) {
+			d = room.getDeviceAtTile(x, y - 1);
+		}
+
+		if (d/*!=null*/) {
 			Sprite s = new Sprite(textures.findRegion("spaceBarIcon"));
 			s.setPosition(player.getSprite().getX(), player.getSprite().getY() + 32 / tileSize);
 			s.setSize(16 / tileSize, 16 / tileSize);
 
 			s.draw(batch);
-// System.out.println("true");
+
+			if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
+
+				openWindow = /*d.getTerminal();*/new Terminal(true, null);
+				openWindow.open(textures);
+			}
 		}
 	}
 
