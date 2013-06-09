@@ -5,6 +5,7 @@ import hakd.game.gameplay.Player;
 import hakd.gui.screens.GameScreen;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
@@ -28,8 +29,12 @@ public class GameInput implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) { // space or enter to interact with an object
-		// TODO Auto-generated method stub
-		return false;
+		if (keycode == Keys.TAB && !GameScreen.MAP_OPEN) {
+			GameScreen.MAP_OPEN = true;
+		} else if (keycode == Keys.TAB && GameScreen.MAP_OPEN) {
+			GameScreen.MAP_OPEN = false;
+		}
+		return true;
 	}
 
 	@Override

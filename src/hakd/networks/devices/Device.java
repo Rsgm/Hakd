@@ -13,6 +13,7 @@ import hakd.other.File;
 import hakd.other.Port;
 import hakd.other.enumerations.DeviceType;
 import hakd.other.enumerations.FileType;
+import hakd.other.enumerations.NetworkType;
 import hakd.other.enumerations.PartType;
 import hakd.other.enumerations.Protocol;
 import hakd.other.enumerations.names.Brand;
@@ -54,7 +55,9 @@ public class Device implements Connectable {
 
 	// --------constructor--------
 	public Device(Network network, int level, DeviceType type) { // have random smartphone connections and disconnections
-		terminal = new Terminal(false, this);
+		if (network.getType() == NetworkType.PLAYER) {
+			terminal = new Terminal(false, this, null);
+		}
 
 		this.network = network; // smartphones are like insects on a network, many types, random behavior, and there are lots of them
 		this.level = level;

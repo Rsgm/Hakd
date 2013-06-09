@@ -8,11 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-import org.luaj.vm2.Globals;
-import org.luaj.vm2.LuaValue;
-import org.luaj.vm2.Varargs;
-import org.luaj.vm2.lib.jse.JsePlatform;
-
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
@@ -21,7 +16,7 @@ public class Command {
 	private final Device		device;
 	private final Terminal		terminal;
 
-	// lua
+	// lua, replace with python stuff
 	private final List<String>	scriptPaths	= new ArrayList<String>();
 	private static Globals		globals		= JsePlatform.standardGlobals();
 

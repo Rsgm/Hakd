@@ -146,17 +146,15 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>graphics/draw.png</filename>
             <filename>graphics/loading.png</filename>
             <filename>graphics/loadingbackground.png</filename>
             <filename>graphics/player0.png</filename>
             <filename>graphics/spaceBarIcon.png</filename>
-            <filename>graphics/test.png</filename>
-            <filename>graphics/test3.png</filename>
             <filename>graphics/title.png</filename>
             <filename>graphics/untitled.png</filename>
             <filename>graphics/windowBorder.png</filename>
             <filename>graphics/windowDisplay.png</filename>
+            <filename>graphics/close.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -1,4 +1,4 @@
-package hakd.gui.map;
+package hakd.gui;
 
 import hakd.game.gameplay.Player;
 import hakd.gui.screens.GameScreen;
@@ -29,8 +29,9 @@ public class Room {
 	private Object[][]			mapObjects;
 
 	private TiledMapTileLayer	floor;
-	private MapLayer			objectLayer;	// if it matters, maybe rename this to wall/boundary layer
-	private TiledMapTileLayer	otherLayer;	// Intractable tiles
+	private TiledMapTileLayer	wall;
+	private MapLayer			bounds;		// if it matters, maybe rename this to wall/boundary layer
+	private TiledMapTileLayer	objetcts;		// Intractable tiles
 
 	private GameScreen			gameScreen;
 
@@ -39,8 +40,9 @@ public class Room {
 		map = new TmxMapLoader().load("src/hakd/gui/resources/maps/untitled64.tmx");
 
 		floor = (TiledMapTileLayer) map.getLayers().get("floor");
-		objectLayer = map.getLayers().get("objects");
-		otherLayer = (TiledMapTileLayer) map.getLayers().get("other");
+		floor = (TiledMapTileLayer) map.getLayers().get("wall");
+		bounds = map.getLayers().get("bounds");
+		objetcts = (TiledMapTileLayer) map.getLayers().get("objects");
 
 // network = player.getHome();
 // devices = network.getDevices();
@@ -85,10 +87,10 @@ public class Room {
 	}
 
 	private void buildRoom() {
-		mapObjects = new Object[objectLayer.getObjects().getCount()][3];
+		mapObjects = new Object[bounds.getObjects().getCount()][3];
 
 		int i = 0;
-		for (com.badlogic.gdx.maps.MapObject o : objectLayer.getObjects()) {
+		for (com.badlogic.gdx.maps.MapObject o : bounds.getObjects()) {
 			mapObjects[i][0] = o.getName();
 
 			if (o.getName().matches("[rds]s.*")) {
@@ -189,14 +191,6 @@ public class Room {
 		this.floor = floor;
 	}
 
-	public MapLayer getObjectLayer() {
-		return objectLayer;
-	}
-
-	public void setObjectLayer(MapLayer objectLayer) {
-		this.objectLayer = objectLayer;
-	}
-
 	public GameScreen getGameScreen() {
 		return gameScreen;
 	}
@@ -213,12 +207,28 @@ public class Room {
 		this.mapObjects = mapObjects;
 	}
 
-	public TiledMapTileLayer getOtherLayer() {
-		return otherLayer;
+	public TiledMapTileLayer getWall() {
+		return wall;
 	}
 
-	public void setOtherLayer(TiledMapTileLayer otherLayer) {
-		this.otherLayer = otherLayer;
+	public void setWall(TiledMapTileLayer wall) {
+		this.wall = wall;
+	}
+
+	public MapLayer getBounds() {
+		return bounds;
+	}
+
+	public void setBounds(MapLayer bounds) {
+		this.bounds = bounds;
+	}
+
+	public TiledMapTileLayer getObjetcts() {
+		return objetcts;
+	}
+
+	public void setObjetcts(TiledMapTileLayer objetcts) {
+		this.objetcts = objetcts;
 	}
 }
 

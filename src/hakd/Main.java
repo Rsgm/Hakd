@@ -1,14 +1,6 @@
 package hakd;
 
 import hakd.game.Hakd;
-import hakd.websites.servlets.NetworkServlet;
-import hakd.websites.servlets.StoreServlet;
-
-import java.io.File;
-
-import org.apache.catalina.Context;
-import org.apache.catalina.LifecycleException;
-import org.apache.catalina.startup.Tomcat;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
@@ -19,9 +11,6 @@ public final class Main {
 	private static Preferences	save1;	// save this for later
 
 	public static void main(String[] args) {
-
-		// startServer(); // TODO test this with port forwarding
-
 		new LwjglApplication(new Hakd(), "Hak'd", 800, 600, false);
 		prefs = Gdx.app.getPreferences("hakd-prefs");
 
@@ -45,7 +34,7 @@ public final class Main {
 		prefs.putInteger("width", 800);
 		prefs.putInteger("height", 600);
 		prefs.putBoolean("fullscreen", false);
-		prefs.putBoolean("vsync", false);
+		prefs.putBoolean("vsync", true);
 		prefs.putBoolean("sound", true);
 
 		prefs.flush(); // unfortunately this makes this game non-portable, kind of
@@ -58,28 +47,6 @@ public final class Main {
 			System.exit(0);
 		} else {
 			System.exit(1);
-		}
-	}
-
-	private static void startServer() { // start tomcat and servlets
-		// TODO move this at some point to a controller class in the servlet folder so each game mode has its own, if needed. and so its not
-// running during modes that don't need it // Game modes? I think I decided not to do that
-		Tomcat tomcat = new Tomcat();
-		tomcat.setPort(80);
-		Context context = tomcat.addContext("/", new File(".").getAbsolutePath());
-
-		StoreServlet store = new StoreServlet();
-		Tomcat.addServlet(context, "store", store);
-		context.addServletMapping("/store/*", "store");
-
-		NetworkServlet network = new NetworkServlet();
-		Tomcat.addServlet(context, "network", network);
-		context.addServletMapping("/network/*", "network");
-
-		try {
-			tomcat.start();
-		} catch (LifecycleException e) {
-			e.printStackTrace();
 		}
 	}
 }

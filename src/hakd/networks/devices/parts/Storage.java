@@ -16,9 +16,8 @@ public class Storage extends Part {
 	// storage ArrayLists
 	private List<File>	osFiles			= new ArrayList<File>();	// operating system files, !FUN!
 	private List<File>	userFiles		= new ArrayList<File>();	// random files people save
-	private List<File>	programFiles	= new ArrayList<File>();	// (lua)programs able to run, is this copywritten, will Microsoft sue?
-	private List<File>	logFiles		= new ArrayList<File>();	// these log arrays have infinite storage, thanks to a new leap in quantum
-// physics
+	private List<File>	programFiles	= new ArrayList<File>();	// (python)programs able to run, is this copywritten, will Microsoft sue?
+	private List<File>	logFiles		= new ArrayList<File>();	// these log arrays have infinite storage, thanks to a new leap in quantum physics
 
 	public Storage(int level, Network network, Device device) {
 		super(level, network, device);

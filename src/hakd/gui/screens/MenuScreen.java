@@ -4,6 +4,7 @@ import hakd.gui.windows.Terminal;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
@@ -11,14 +12,14 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 public class MenuScreen extends HakdScreen { // terminal directory: BOOT>_
-	private Terminal			terminal;
-	private BitmapFont			consoleFont;
+	private Terminal	terminal;
+	private BitmapFont	consoleFont;
+	private Color		consoleFontColor	= new Color(0.0f, 0.7f, 0.0f, 1.0f);
 
-	private final GL10			gl		= Gdx.graphics.getGL10();
-	private OrthographicCamera	cam;
-	private float				time;
+	private final GL10	gl					= Gdx.graphics.getGL10();
+	private float		time;
 
-	private boolean				typed	= false;
+	private boolean		typed				= false;
 
 // TODO make two methods to add text to the screen, one that types the test letter by letter, and one that adds it to the display
 
@@ -28,7 +29,7 @@ public class MenuScreen extends HakdScreen { // terminal directory: BOOT>_
 
 	@Override
 	public void show() {
-		terminal = new Terminal(true, null);
+		terminal = new Terminal(true, null, this);
 
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("src/hakd/gui/resources/fonts/whitrabt.ttf"));
 		consoleFont = generator.generateFont(16);
@@ -51,7 +52,7 @@ public class MenuScreen extends HakdScreen { // terminal directory: BOOT>_
 		time += delta;
 
 		batch.begin();
-		terminal.render(consoleFont, batch, time);
+		terminal.render(cam, batch, time);
 
 		batch.end();
 
@@ -86,10 +87,12 @@ public class MenuScreen extends HakdScreen { // terminal directory: BOOT>_
 		this.consoleFont = font;
 	}
 
+	@Override
 	public OrthographicCamera getCam() {
 		return cam;
 	}
 
+	@Override
 	public void setCam(OrthographicCamera cam) {
 		this.cam = cam;
 	}

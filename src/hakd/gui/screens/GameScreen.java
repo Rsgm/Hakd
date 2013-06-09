@@ -1,33 +1,34 @@
 package hakd.gui.screens;
 
 import hakd.game.gameplay.Player;
+import hakd.gui.Room;
 import hakd.gui.input.GameInput;
-import hakd.gui.map.Room;
+import hakd.gui.windows.Map;
 import hakd.gui.windows.Terminal;
 import hakd.gui.windows.Window;
 import hakd.networks.Network;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
-import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 public class GameScreen extends HakdScreen {
-	private Player						player;			// TODO Sometime make this an array and have other people in the game with different
+	private Player						player;				// TODO Sometime make this an array and have other people in the game with different
 // skills and
 // personalities private int arraylist<npc> npcs = new arraylist<npc>();
 	private Room						room;
-
-	private OrthographicCamera			cam;
-	private IsometricTiledMapRenderer	renderer;			// it says this is experimental, but it was an old article
+	private IsometricTiledMapRenderer	renderer;				// it says this is experimental, but it was an old article
 
 	private final float					tileSize	= 64;
 
-	private Window						openWindow	= null;
+	public static Window				OPEN_WINDOW	= null;
+	private Map							map;
+	public static boolean				MAP_OPEN	= false;
 
 	public GameScreen(Game game, String name) {
 		super(game);
@@ -41,13 +42,10 @@ public class GameScreen extends HakdScreen {
 		Sprite sprite = player.getSprite();
 		sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
 
-		cam = new OrthographicCamera();
-
 		cam.setToOrtho(false, room.getFloor().getWidth(), room.getFloor().getHeight());
 		cam.update();
-		renderer.setView(cam);
 
-		batch = new SpriteBatch();
+		renderer.setView(cam);
 
 		cam.position.x = room.getFloor().getWidth() / 2;
 		cam.position.y = 0;
@@ -64,16 +62,11 @@ public class GameScreen extends HakdScreen {
 		super.render(delta);
 		SpriteBatch rBatch = renderer.getSpriteBatch();
 
-		cam.update();
 		renderer.setView(cam);
-
-		int[] start = { 0 };
-		int[] end = { 1 };
-
 		renderer.render();
 
 		rBatch.begin();
-		if (openWindow == null) {
+		if (OPEN_WINDOW == null) {
 			updateMovement();
 			checkPosition(rBatch);
 		}
@@ -85,8 +78,13 @@ public class GameScreen extends HakdScreen {
 		player.getSprite().draw(rBatch);
 		rBatch.end();
 
-		if (openWindow != null) {
-			openWindow.render(cam, batch, delta);
+		if (OPEN_WINDOW != null) {
+			OPEN_WINDOW.render(cam, batch, delta);
+		}
+
+		if (MAP_OPEN) {
+// map.render(cam, batch, delta);
+			System.out.println("map");
 		}
 	}
 
@@ -107,10 +105,10 @@ public class GameScreen extends HakdScreen {
 
 			s.draw(batch);
 
-			if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
+			if (Gdx.input.isKeyPressed(Keys.SPACE) && OPEN_WINDOW == null) {
 
-				openWindow = /*d.getTerminal();*/new Terminal(true, null);
-				openWindow.open(textures);
+				OPEN_WINDOW = /*d.getTerminal();*/new Terminal(true, null, this);
+				OPEN_WINDOW.open(textures);
 			}
 		}
 	}
@@ -122,21 +120,23 @@ public class GameScreen extends HakdScreen {
 	}
 
 	private void updateMovement() {
+		Input i = Gdx.input;
+
 		float x = 0;
 		float y = 0;
-		if ((Gdx.input.isKeyPressed(Keys.W) || Gdx.input.isKeyPressed(Keys.UP))) {
+		if ((i.isKeyPressed(Keys.W) || i.isKeyPressed(Keys.UP))) {
 			x += 1;
 			y += 1;
 		}
-		if (Gdx.input.isKeyPressed(Keys.A) || Gdx.input.isKeyPressed(Keys.LEFT)) {
+		if (i.isKeyPressed(Keys.A) || i.isKeyPressed(Keys.LEFT)) {
 			x += -1;
 			y += 1;
 		}
-		if (Gdx.input.isKeyPressed(Keys.S) || Gdx.input.isKeyPressed(Keys.DOWN)) {
+		if (i.isKeyPressed(Keys.S) || i.isKeyPressed(Keys.DOWN)) {
 			x += -1;
 			y += -1;
 		}
-		if (Gdx.input.isKeyPressed(Keys.D) || Gdx.input.isKeyPressed(Keys.RIGHT)) {
+		if (i.isKeyPressed(Keys.D) || i.isKeyPressed(Keys.RIGHT)) {
 			x += 1;
 			y += -1;
 		}
@@ -167,14 +167,6 @@ public class GameScreen extends HakdScreen {
 
 	public void setRoom(Room room) {
 		this.room = room;
-	}
-
-	public OrthographicCamera getCam() {
-		return cam;
-	}
-
-	public void setCam(OrthographicCamera cam) {
-		this.cam = cam;
 	}
 
 	public IsometricTiledMapRenderer getRenderer() {

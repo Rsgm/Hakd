@@ -8,69 +8,65 @@ import java.util.List;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 
 public class MenuInput implements InputProcessor {
-	String						text;
-	int							cursor;
+	private Terminal		terminal;
 
-	Terminal					terminal;
+	private List<String>	history;
 
-	List<String>				history;
-	int							line	= 0;	// holds the position of the history
-
-	private OrthographicCamera	cam;
-
-	public MenuInput(Terminal terminal, List<String> history, OrthographicCamera cam) {
+	public MenuInput(Terminal terminal) {
 		this.terminal = terminal;
-		this.history = history;
+		this.history = terminal.getHistory();
 
-		ClearInput();
-		cursor = text.length();
-
-		this.cam = cam;
-	}
-
-	void ClearInput() {
-		text = terminal.getDevice().getNetwork().getIp() + ">";
-		cursor = text.length();
+		terminal.ClearInput();
 	}
 
 	@Override
 	public boolean keyDown(int keycode) {
+
 		if (keycode == Keys.ENTER) {
-			history.add(text);
-			terminal.addText(text);
+			history.add(terminal.getCurrentText());
+			terminal.addText(terminal.getCurrentText());
 
-			System.out.println(text); // print input
-			new Command(text, terminal.getDevice());
+			System.out.println(terminal.getCurrentText()); // print input
+			new Command(terminal.getCurrentText(), terminal/*device*/);
 
-			line = history.size();
-			ClearInput(); // reset the terminal text
-		} else if (keycode == Keys.DOWN && line < history.size() - 1) {
-			line++;
-			text = history.get(line);
-			cursor = text.length();
-		} else if (keycode == Keys.UP && line > 0) {
-			line--;
-			text = history.get(line);
-			cursor = text.length();
-		} else if (keycode == Keys.LEFT && cursor > 0 && text.charAt(cursor - 1) != ">".charAt(0)) {
-			cursor--;
-		} else if (keycode == Keys.RIGHT && cursor < text.length()) {
-			cursor++;
+			terminal.setLine(history.size());
+			terminal.ClearInput(); // reset the terminal text
+			terminal.setCursorTime(0);
+		} else if (keycode == Keys.DOWN && terminal.getLine() < history.size() - 1) {
+			terminal.setLine(terminal.getLine() + 1);
+			terminal.setCurrentText(history.get(terminal.getLine()));
+			terminal.setCursor(terminal.getCurrentText().length());
+			terminal.setCursorTime(0);
+		} else if (keycode == Keys.UP && terminal.getLine() > 0) {
+			terminal.setLine(terminal.getLine() - 1);
+			terminal.setCurrentText(history.get(terminal.getLine()));
+			terminal.setCursor(terminal.getCurrentText().length());
+			terminal.setCursorTime(0);
+		} else if (keycode == Keys.LEFT && terminal.getCursor() > 0 && terminal.getCurrentText().charAt(terminal.getCursor() - 2) != ">".charAt(0)) {
+			terminal.setCursor(terminal.getCursor() - 1);
+			terminal.setCursorTime(0);
+		} else if (keycode == Keys.RIGHT && terminal.getCursor() < terminal.getCurrentText().length()) {
+			terminal.setCursor(terminal.getCursor() + 1);
+			terminal.setCursorTime(0);
 		} else if (keycode == Keys.ESCAPE) {
-			line = history.size();
-			ClearInput();
-		} else if (keycode == Keys.BACKSPACE && text.charAt(cursor - 1) != ">".charAt(0)) {
-			text = text.substring(0, cursor - 1) + text.substring(cursor, text.length());
-			cursor--;
-		} else if (keycode == Keys.FORWARD_DEL && cursor < text.length()) {
-			text = text.substring(0, cursor) + text.substring(cursor + 1, text.length());
+			terminal.close();
+		} else if (keycode == Keys.BACKSPACE && terminal.getCurrentText().charAt(terminal.getCursor() - 1) != ">".charAt(0)) {
+			terminal.setCurrentText(terminal.getCurrentText().substring(0, terminal.getCursor() - 1)
+					+ terminal.getCurrentText().substring(terminal.getCursor(), terminal.getCurrentText().length()));
+			terminal.setCursor(terminal.getCursor() - 1);
+			terminal.setCursorTime(0);
+		} else if (keycode == Keys.FORWARD_DEL && terminal.getCursor() < terminal.getCurrentText().length()) {
+			terminal.setCurrentText(terminal.getCurrentText().substring(0, terminal.getCursor())
+					+ terminal.getCurrentText().substring(terminal.getCursor() + 1, terminal.getCurrentText().length()));
 		} else if (keycode == Keys.HOME) {
-			cursor = text.indexOf(">") + 1;
+			terminal.setCursor(terminal.getCurrentText().indexOf(">") + 1);
+			terminal.setCursorTime(0);
 		} else if (keycode == Keys.END) {
-			cursor = text.length();
+			terminal.setCursor(terminal.getCurrentText().length());
+			terminal.setCursorTime(0);
 		}
 		return true;
 	}
@@ -84,8 +80,9 @@ public class MenuInput implements InputProcessor {
 	@Override
 	public boolean keyTyped(char character) {
 		if ((character + "").matches("[\\w \\.\",]")) { // only matches \w, single-quotes, periods, commas, or spaces. it may need others
-			text = text.substring(0, cursor) + character + text.substring(cursor, text.length());
-			cursor++;
+			terminal.setCurrentText(terminal.getCurrentText().substring(0, terminal.getCursor()) + character
+					+ terminal.getCurrentText().substring(terminal.getCursor(), terminal.getCurrentText().length()));
+			terminal.setCursor(terminal.getCursor() + 1);
 		}
 
 		return true; // no reason not to return true
@@ -93,7 +90,16 @@ public class MenuInput implements InputProcessor {
 
 	@Override
 	public boolean touchDown(int screenX, int screenY, int pointer, int button) {
-		// TODO Auto-generated method stub
+		Sprite close = terminal.getClose();
+
+		float xNear = close.getX();
+		float xFar = xNear + close.getWidth();
+		float yNear = Gdx.graphics.getHeight() - close.getY();
+		float yFar = Gdx.graphics.getHeight() - close.getY() - close.getHeight();
+
+		if (screenX >= xNear && screenX <= xFar && screenY <= yNear && screenY >= yFar) {
+			terminal.close();
+		}
 		return false;
 	}
 
@@ -116,29 +122,15 @@ public class MenuInput implements InputProcessor {
 	}
 
 	@Override
-	public boolean scrolled(int amount) { // works now
-		if ((cam.position.y >= Gdx.graphics.getHeight() / 2 + 10 || amount == -1)
-				&& (cam.position.y <= -Gdx.graphics.getHeight() / 2 + 18 + 16 * terminal.getText().size() || amount == 1)) {
-			cam.translate(0, -amount * 10);
-			System.out.println(amount);
+	public boolean scrolled(int amount) { // TODO change these values
+		int height = Gdx.graphics.getHeight();
+		System.out.println(amount + "	" + height + "	" + terminal.getScroll());
+
+		if ((terminal.getScroll() >= height / 2 + 10 || amount == -1)
+				&& (terminal.getScroll() <= (-height) / 2 + 18 + 16 * terminal.getText().size() || amount == 1)) {
+			terminal.setScroll(terminal.getScroll() + amount * 10);
+			// maybe move the text originY up/down based on the scroll
 		}
 		return true;
 	}
-
-	public String getText() {
-		return text;
-	}
-
-	public void setText(String text) {
-		this.text = text;
-	}
-
-	public int getCursor() {
-		return cursor;
-	}
-
-	public void setCursor(int cursor) {
-		this.cursor = cursor;
-	}
-
 }
