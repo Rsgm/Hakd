@@ -4,11 +4,7 @@ import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
-public class PopUp implements Window {
-
-	public PopUp() {
-		// TODO Auto-generated constructor stub
-	}
+public class Map implements Window {
 
 	@Override
 	public void render(Camera cam, SpriteBatch batch, float delta) {
@@ -17,13 +13,13 @@ public class PopUp implements Window {
 	}
 
 	@Override
-	public void close() {
+	public void open(TextureAtlas textures) {
 		// TODO Auto-generated method stub
 
 	}
 
 	@Override
-	public void open(TextureAtlas textures) {
+	public void close() {
 		// TODO Auto-generated method stub
 
 	}
