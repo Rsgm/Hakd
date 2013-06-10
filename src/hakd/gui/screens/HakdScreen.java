@@ -11,28 +11,25 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 
 public class HakdScreen implements Screen {
-	int					width			= Gdx.graphics.getWidth();
-	int					height			= Gdx.graphics.getHeight();
+	int					width		= Gdx.graphics.getWidth();
+	int					height		= Gdx.graphics.getHeight();
 
 	Game				game;
 
 	OrthographicCamera	cam;
-	SpriteBatch			batch			= new SpriteBatch();
-	TextureAtlas		textures		= new TextureAtlas("src/hakd/gui/resources/textures.txt");
+	SpriteBatch			batch		= new SpriteBatch();
+	TextureAtlas		textures	= new TextureAtlas("src/hakd/gui/resources/textures.txt");
 
 	Rectangle			viewport;
-	static final int	VIRTUAL_WIDTH	= 800;
-	static final int	VIRTUAL_HEIGHT	= 600;
-	static final float	ASPECT_RATIO	= (float) VIRTUAL_WIDTH / (float) VIRTUAL_HEIGHT;
 
-	Color				fontColor		= new Color(1.0f, 1.0f, 1.0f, 1.0f);
+	Color				fontColor	= new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// or read from, and write to, a preference or .ini file
 
 	public HakdScreen(Game game) {
 		this.game = game;
 
-		cam = new OrthographicCamera(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+		cam = new OrthographicCamera(1, 1);
 
 		batch = new SpriteBatch();
 	}
@@ -51,32 +48,12 @@ public class HakdScreen implements Screen {
 	}
 
 	@Override
-	public void resize(int width, int height) { // credit to soy_yuma of blog.acamara.es, though a bit modified
-		// calculate new viewport
-		float aspectRatio = (float) width / (float) height;
-		float scale = 1f;
-
-		if (aspectRatio > ASPECT_RATIO) {
-			scale = (float) height / (float) VIRTUAL_HEIGHT;
-		} else if (aspectRatio < ASPECT_RATIO) {
-			scale = (float) width / (float) VIRTUAL_WIDTH;
-		} else {
-			scale = (float) width / (float) VIRTUAL_WIDTH;
-		}
-
-		float w;
-		float h;
+	public void resize(int width, int height) {
 		if (width >= height) {
-			w = VIRTUAL_WIDTH * scale;
-			h = VIRTUAL_WIDTH * scale;
+			viewport = new Rectangle(0, -width / 3, width, width);
 		} else {
-			w = VIRTUAL_HEIGHT * scale;
-			h = VIRTUAL_HEIGHT * scale;
+			viewport = new Rectangle(-height / 3, 0, height, height);
 		}
-
-		System.out.println(w + "	" + h);
-
-		viewport = new Rectangle(0/*crop.x*/, 0/*crop.y*/, w, h);
 	}
 
 	@Override
