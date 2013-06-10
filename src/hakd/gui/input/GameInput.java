@@ -67,7 +67,6 @@ public class GameInput implements InputProcessor {
 
 		float deltaX = (lastMouseX - screenX) / (game.getWidth() / height) * cam.zoom;
 		float deltaY = (screenY - lastMouseY) / (game.getHeight() / width) * cam.zoom;
-		// I am also surprised that the *cam.zoom worked without flaw when I tried it
 
 		System.out.println(deltaX + "	" + deltaY + "	" + cam.position.x + "	" + cam.position.y);
 
