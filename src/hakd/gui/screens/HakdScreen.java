@@ -9,27 +9,32 @@ import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.utils.Scaling;
 
 public class HakdScreen implements Screen {
-	int					width		= Gdx.graphics.getWidth();
-	int					height		= Gdx.graphics.getHeight();
+	int					width			= Gdx.graphics.getWidth();
+	int					height			= Gdx.graphics.getHeight();
 
 	Game				game;
 
 	OrthographicCamera	cam;
-	SpriteBatch			batch		= new SpriteBatch();
-	TextureAtlas		textures	= new TextureAtlas("src/hakd/gui/resources/textures.txt");
+	SpriteBatch			batch			= new SpriteBatch();
+	TextureAtlas		textures		= new TextureAtlas("hakd/gui/resources/textures.txt");
 
 	Rectangle			viewport;
 
-	Color				fontColor	= new Color(1.0f, 1.0f, 1.0f, 1.0f);
-
+	Color				fontColor		= new Color(1.0f, 1.0f, 1.0f, 1.0f);
 	// or read from, and write to, a preference or .ini file
+
+	static final int	VIRTUAL_WIDTH	= 25;
+	static final int	VIRTUAL_HEIGHT	= 21;
+	static final float	ASPECT_RATIO	= (float) VIRTUAL_WIDTH / (float) VIRTUAL_HEIGHT;
 
 	public HakdScreen(Game game) {
 		this.game = game;
 
-		cam = new OrthographicCamera(1, 1);
+		cam = new OrthographicCamera(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
 
 		batch = new SpriteBatch();
 	}
@@ -47,13 +52,21 @@ public class HakdScreen implements Screen {
 		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
-	public void resize(int width, int height) {
-		if (width >= height) {
-			viewport = new Rectangle(0, -width / 3, width, width);
-		} else {
-			viewport = new Rectangle(-height / 3, 0, height, height);
-		}
+	public void resize(int width, int height) { // some how this actually works, I spent way too long on this
+		Vector2 newVirtualRes = new Vector2(0f, 0f);
+		Vector2 crop = new Vector2(width, height);
+
+		newVirtualRes.set(Scaling.fill.apply(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, width, height));
+
+		crop.sub(newVirtualRes);
+		crop.mul(.5f); // not sure why this is deprecated
+
+		viewport = new Rectangle(crop.x, crop.y, newVirtualRes.x, newVirtualRes.y);
+
+		this.width = width;
+		this.height = height;
 	}
 
 	@Override

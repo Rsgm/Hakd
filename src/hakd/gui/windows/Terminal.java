@@ -50,7 +50,7 @@ public class Terminal implements Window { // this may need a quit method to free
 	public Terminal(boolean isMenu, Device d, HakdScreen screen) {
 		menu = isMenu;
 
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("src/hakd/gui/resources/fonts/whitrabt.ttf"));
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("hakd/gui/resources/fonts/whitrabt.ttf"));
 		font = generator.generateFont(16);
 		generator.dispose();
 
@@ -91,30 +91,30 @@ public class Terminal implements Window { // this may need a quit method to free
 
 	@Override
 	public void open(TextureAtlas textures) {
-		int width;
-		int height;
+		int width = screen.getWidth();
+		int height = screen.getHeight();
+
+		int w;
+		int h;
 
 // if (menu) {
-// height = Gdx.graphics.getHeight();
-// width = Gdx.graphics.getWidth();
+// h = height;
+// w = width;
 // } else {
-		width = (int) (Gdx.graphics.getWidth() * .8);
-		height = (int) (Gdx.graphics.getHeight() * .8);
+		w = (int) (width * .8);
+		h = (int) (height * .8);
 // }
 
-		x = (Gdx.graphics.getWidth() - width) / 2;
-		y = (Gdx.graphics.getHeight() - height) / 2;
-
-// System.out.println(width + "	" + height);
-// System.out.println(x + "	" + y);
+		x = (width - w) / 2;
+		y = (height - h) / 2;
 
 		border = new Sprite(textures.findRegion("windowBorder"));
-		border.setBounds(x, y, width, height);
+		border.setBounds(x, y, w, h);
 		display = new Sprite(textures.findRegion("windowDisplay")); // this, being one pixel, saved you about 2KB of memory, you're welcome
-		display.setBounds(x + 20, y + 20, width - 40, height - 40);
+		display.setBounds(x + 20, y + 20, w - 40, h - 40);
 
 		close = new Sprite(textures.findRegion("close"));
-		close.setPosition(Gdx.graphics.getWidth() - x - 20, Gdx.graphics.getHeight() - y - 20);
+		close.setPosition(width - x - 20, height - y - 20);
 
 		cursorTime = 0;
 		inputTime = 0;

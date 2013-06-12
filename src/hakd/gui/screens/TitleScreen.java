@@ -41,7 +41,7 @@ public class TitleScreen extends HakdScreen {
 	public void show() {
 // game.setScreen(new MenuScreen(game)); // uncomment to skip title
 
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("src/hakd/gui/resources/fonts/whitrabt.ttf"));
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("hakd/gui/resources/fonts/whitrabt.ttf"));
 		font = generator.generateFont(16);
 		creditFont = generator.generateFont(14);
 		generator.dispose();
@@ -51,7 +51,7 @@ public class TitleScreen extends HakdScreen {
 		random = (int) (Math.random() * 8 + 8); // just your standard pass lengths
 		randomTime = (float) (Math.random() * 1 + .3); // used for the loading circle timeout
 
-		keyClick = Gdx.audio.newSound(Gdx.files.internal("src/hakd/gui/resources/sounds/KeyClick.ogg"));
+		keyClick = Gdx.audio.newSound(Gdx.files.internal("hakd/gui/resources/sounds/KeyClick.ogg"));
 		loadingsSprite = new Sprite(textures.findRegion("loading"));
 
 		title = new Sprite(textures.findRegion("title"));

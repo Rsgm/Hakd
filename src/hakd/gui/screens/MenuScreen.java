@@ -31,7 +31,7 @@ public class MenuScreen extends HakdScreen { // terminal directory: BOOT>_
 	public void show() {
 		terminal = new Terminal(true, null, this);
 
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("src/hakd/gui/resources/fonts/whitrabt.ttf"));
+		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("hakd/gui/resources/fonts/whitrabt.ttf"));
 		consoleFont = generator.generateFont(16);
 		generator.dispose();
 

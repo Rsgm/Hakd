@@ -34,7 +34,7 @@ public final class Main {
 		prefs.putInteger("width", 800);
 		prefs.putInteger("height", 600);
 		prefs.putBoolean("fullscreen", false);
-		prefs.putBoolean("vsync", true);
+		prefs.putBoolean("vsync", false);
 		prefs.putBoolean("sound", true);
 
 		prefs.flush(); // unfortunately this makes this game non-portable, kind of
