@@ -19,9 +19,6 @@ import hakd.other.enumerations.Protocol;
 import hakd.other.enumerations.names.Brand;
 import hakd.other.enumerations.names.Model;
 
-import java.awt.Desktop;
-import java.io.IOException;
-import java.net.URI;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -56,7 +53,7 @@ public class Device implements Connectable {
 	// --------constructor--------
 	public Device(Network network, int level, DeviceType type) { // have random smartphone connections and disconnections
 		if (network.getType() == NetworkType.PLAYER) {
-			terminal = new Terminal(false, this, null);
+			terminal = new Terminal(false, this);
 		}
 
 		this.network = network; // smartphones are like insects on a network, many types, random behavior, and there are lots of them
@@ -107,21 +104,17 @@ public class Device implements Connectable {
 		connections.add(c);
 
 		if (Port.checkPortAnd(ports, program, port, protocol)) {
-			try {
-				Desktop d = Desktop.getDesktop();
+// Desktop d = Desktop.getDesktop();
 
-				switch (port) {
-					default: // 80, 443, others but just get directed to a 404 if not a website
-						d.browse(URI.create("http://localhost:80/network/" + network.getIp()));
-					case 31337:
-						// grant complete(root?) access
-						// open ssh
-						break;
-				}
-				return true;
-			} catch (IOException e) {
-				e.printStackTrace();
+			switch (port) {
+				default: // 80, 443, others but just get directed to a 404 if not a website
+// d.browse(URI.create("http://localhost:80/network/" + network.getIp())); // I am not doing the html store any more
+				case 31337:
+					// grant complete(root?) access
+					// open ssh
+					break;
 			}
+			return true;
 		}
 		return false;
 	}

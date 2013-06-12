@@ -1,12 +1,15 @@
 package hakd.gui.screens;
 
+import hakd.game.gameplay.GamePlay;
 import hakd.game.gameplay.Player;
 import hakd.gui.Room;
 import hakd.gui.input.GameInput;
 import hakd.gui.windows.Map;
-import hakd.gui.windows.Terminal;
 import hakd.gui.windows.Window;
+import hakd.internet.NetworkController;
 import hakd.networks.Network;
+import hakd.networks.devices.Device;
+import hakd.other.enumerations.NetworkType;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -33,8 +36,8 @@ public class GameScreen extends HakdScreen {
 	public GameScreen(Game game, String name) {
 		super(game);
 
-// GamePlay.generateGame();
-		Network n = null;// NetworkController.addPublicNetwork(NetworkType.PLAYER);
+		GamePlay.generateGame();
+		Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
 
 		player = new Player(name, n, textures, this);
 		room = new Room(player, this);
@@ -92,13 +95,13 @@ public class GameScreen extends HakdScreen {
 		int x = player.getIsoX();
 		int y = player.getIsoY();
 
-		/*Device*/boolean d = room.getDeviceAtTile(x - 1, y);
+		Device d = room.getDeviceAtTile(x - 1, y);
 
-		if (!d/*==null*/) {
+		if (d == null) {
 			d = room.getDeviceAtTile(x, y - 1);
 		}
 
-		if (d/*!=null*/) {
+		if (d != null) {
 			Sprite s = new Sprite(textures.findRegion("spaceBarIcon"));
 			s.setPosition(player.getSprite().getX(), player.getSprite().getY() + 32 / tileSize);
 			s.setSize(16 / tileSize, 16 / tileSize);
@@ -107,8 +110,8 @@ public class GameScreen extends HakdScreen {
 
 			if (Gdx.input.isKeyPressed(Keys.SPACE) && OPEN_WINDOW == null) {
 
-				OPEN_WINDOW = /*d.getTerminal();*/new Terminal(true, null, this);
-				OPEN_WINDOW.open(textures);
+				OPEN_WINDOW = d.getTerminal();
+				OPEN_WINDOW.open(textures, this);
 			}
 		}
 	}
@@ -145,12 +148,11 @@ public class GameScreen extends HakdScreen {
 			x /= 2; // x does not equal 2
 		}
 
-		player.move(1.5f * x / tileSize / 1.0f, y / tileSize / 1.5f); // it moves twice as fast horizontally relative to the map than it does
-// vertically
+		player.move(1.5f * x / tileSize / 1.0f, y / tileSize / 1.5f);
 	}
 
 	public void changeMap(TiledMap map) { // TODO make a transition effect
-		renderer = new IsometricTiledMapRenderer(map, 1 / tileSize); // this has to be float, otherwise it will round
+		renderer = new IsometricTiledMapRenderer(map, 1 / tileSize); // tilesize has to be float, otherwise it will round
 	}
 
 	public Player getPlayer() {

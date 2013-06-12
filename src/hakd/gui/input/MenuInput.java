@@ -30,7 +30,7 @@ public class MenuInput implements InputProcessor {
 			terminal.addText(terminal.getCurrentText());
 
 			System.out.println(terminal.getCurrentText()); // print input
-			new Command(terminal.getCurrentText(), terminal/*device*/);
+			new Command(terminal.getCurrentText(), terminal.getDevice());
 
 			terminal.setLine(history.size());
 			terminal.ClearInput(); // reset the terminal text

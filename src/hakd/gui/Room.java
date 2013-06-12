@@ -7,6 +7,7 @@ import hakd.networks.devices.Device;
 import hakd.networks.devices.Dns;
 import hakd.networks.devices.Router;
 import hakd.networks.devices.Server;
+import hakd.other.enumerations.DeviceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -36,16 +37,16 @@ public class Room {
 	private GameScreen			gameScreen;
 
 	public Room(Player player, GameScreen gameScreen) {
-		map = new TmxMapLoader().load("hakd/gui/resources/maps/room0" + /*network.getLevel()+*/".tmx");
+		network = player.getHome();
+		devices = network.getDevices();
+
+		map = new TmxMapLoader().load("hakd/gui/resources/maps/room" + network.getLevel() + ".tmx");
 
 		floor = (TiledMapTileLayer) map.getLayers().get("floor");
 		floor = (TiledMapTileLayer) map.getLayers().get("wall");
 		bounds = map.getLayers().get("bounds");
 		objetcts = (TiledMapTileLayer) map.getLayers().get("objects");
 
-// network = player.getHome();
-// devices = network.getDevices();
-//
 		int servers = Integer.parseInt((String) map.getProperties().get("servers"));
 		int dnss = Integer.parseInt((String) map.getProperties().get("dnss"));
 		int routers = Integer.parseInt((String) map.getProperties().get("routers"));
@@ -54,10 +55,10 @@ public class Room {
 		dnsSlots = new Dns[dnss];
 		serverSlots = new Server[servers];
 //
-// network.setServerLimit(servers);
-// network.setDnsLimit(dnss);
-// network.setRouterLimit(routers);
-//
+		network.setServerLimit(servers);
+		network.setDnsLimit(dnss);
+		network.setRouterLimit(routers);
+
 		assignDevices();
 		buildRoom();
 
@@ -70,15 +71,15 @@ public class Room {
 		ArrayList<Server> servers = new ArrayList<Server>();
 		ArrayList<Router> routers = new ArrayList<Router>();
 
-// for (Device d : devices) {
-// if (d.getType() == DeviceType.DNS) {
-// dnss.add((Dns) d);
-// } else if (d.getType() == DeviceType.ROUTER) {
-// routers.add((Router) d);
-// } else if (d.getType() == DeviceType.SERVER) {
-// servers.add((Server) d);
-// }
-// }
+		for (Device d : devices) {
+			if (d.getType() == DeviceType.DNS) {
+				dnss.add((Dns) d);
+			} else if (d.getType() == DeviceType.ROUTER) {
+				routers.add((Router) d);
+			} else if (d.getType() == DeviceType.SERVER) {
+				servers.add((Server) d);
+			}
+		}
 
 		dnsSlots = dnss.toArray(new Dns[dnss.size()]);
 		serverSlots = servers.toArray(new Server[servers.size()]);
@@ -100,7 +101,7 @@ public class Room {
 		}
 	}
 
-	public/*Device*/boolean getDeviceAtTile(Object x, Object y) {
+	public Device getDeviceAtTile(Object x, Object y) {
 		Device device = null;
 
 		for (Object[] o : mapObjects) {
@@ -108,7 +109,7 @@ public class Room {
 				String s = (String) o[0];
 				if (s.matches("ss.*")) {
 					s = s.replace("ss", "");
-					// device = serverSlots[Integer.parseInt(s)];
+					device = serverSlots[Integer.parseInt(s)];
 				} else if (s.matches("rs.*")) {
 					s = s.replace("rs", "");
 					device = routerSlots[Integer.parseInt(s)];
@@ -116,10 +117,10 @@ public class Room {
 					s = s.replace("ds", "");
 					device = dnsSlots[Integer.parseInt(s)];
 				}
-				return true;// break;
+				break;
 			}
 		}
-		return false;
+		return device;
 	}
 
 	public void dispose() {
@@ -243,7 +244,7 @@ public class Room {
  * That means I will need a placement system for servers, like slots in the room.
  * I will also need graphics and 3d models on top of the 3d projection models for the internet map.
  * 
- * TODO have different virtual screens(TODO-inception make this an implementation or extending class) that return orthocameras
+ * TODO have different virtual screens(todoception make this an implementation or extending class) that return orthocameras
  * or something, matrices maybe?
  * 
  * 

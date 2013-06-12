@@ -1,5 +1,7 @@
 package hakd.gui.windows;
 
+import hakd.gui.screens.HakdScreen;
+
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
@@ -8,7 +10,7 @@ public interface Window { // these are little windows that pop up when you inter
 
 	public void render(Camera cam, SpriteBatch batch, float delta); // what to render and what to return?
 
-	public void open(TextureAtlas textures);
+	public void open(TextureAtlas textures, HakdScreen screen);
 
 	public void close();
 }

@@ -64,13 +64,13 @@ public class Network { // this only holds a set of devices and info, connecting 
 				region = Region.NA;
 				level = 0;
 				serverLimit = 1;
-				routerLimit = 1;
+				routerLimit = 0;
 				stance = Stance.FRIENDLY;
 				break;
 			default:
 				region = Region.EUROPE;
 				owner = "test";
-				serverLimit = 4; // max possible
+				serverLimit = 4;
 				dnsLimit = 1;
 				routerLimit = 1;
 				stance = Stance.NEUTRAL;
@@ -78,7 +78,7 @@ public class Network { // this only holds a set of devices and info, connecting 
 			case TEST:
 				region = Region.ASIA;
 				owner = "test";
-				serverLimit = 32; // max possible
+				serverLimit = 32;
 				dnsLimit = 2;
 				routerLimit = 1; // for now just one
 				level = 7;
@@ -114,9 +114,9 @@ public class Network { // this only holds a set of devices and info, connecting 
 
 		for (int i = 0; i < dnsLimit; i++) { // create DNSs on the network
 			if (type == NetworkType.ISP && i == 0) {
-				devices.add(new Dns(true, isp, level));
+				devices.add(new Dns(true, this, level));
 			} else {
-				devices.add(new Dns(false, isp, level));
+				devices.add(new Dns(false, this, level));
 			}
 		}
 

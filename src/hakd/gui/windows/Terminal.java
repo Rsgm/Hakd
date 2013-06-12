@@ -4,7 +4,6 @@ import hakd.gui.input.GameInput;
 import hakd.gui.input.TerminalInput;
 import hakd.gui.screens.GameScreen;
 import hakd.gui.screens.HakdScreen;
-import hakd.gui.screens.MenuScreen;
 import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
@@ -44,10 +43,9 @@ public class Terminal implements Window { // this may need a quit method to free
 	private float				cursorTime	= 0;
 	private float				inputTime	= 0;
 
-	private GameScreen			screen;
-	private MenuScreen			menuScreen;
+	private HakdScreen			screen;
 
-	public Terminal(boolean isMenu, Device d, HakdScreen screen) {
+	public Terminal(boolean isMenu, Device d) {
 		menu = isMenu;
 
 		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("hakd/gui/resources/fonts/whitrabt.ttf"));
@@ -56,12 +54,9 @@ public class Terminal implements Window { // this may need a quit method to free
 
 		font.setColor(fontColor);
 
-// if (menu) { // it may not be the best to let this class handle both the menu and the game terminal
-// menuscreen=(menuscreen)screen;
-// } else {
-		device = d;
-		this.screen = (GameScreen) screen;
-// }
+		if (!menu) { // it may not be the best to let this class handle both the menu and the game terminal
+			device = d;
+		}
 
 	}
 
@@ -90,22 +85,24 @@ public class Terminal implements Window { // this may need a quit method to free
 	}
 
 	@Override
-	public void open(TextureAtlas textures) {
+	public void open(TextureAtlas textures, HakdScreen screen) {
+		this.screen = screen;
+
 		int width = screen.getWidth();
 		int height = screen.getHeight();
 
 		int w;
 		int h;
 
-// if (menu) {
-// h = height;
-// w = width;
-// } else {
-		w = (int) (width * .8);
-		h = (int) (height * .8);
-// }
+		if (menu) {
+			h = height;
+			w = width;
+		} else {
+			w = (int) (width * .8);
+			h = (int) (height * .8);
+		}
 
-		x = (width - w) / 2;
+		x = (width - w) / 2; // 0/2 for the menu
 		y = (height - h) / 2;
 
 		border = new Sprite(textures.findRegion("windowBorder"));
@@ -150,15 +147,15 @@ public class Terminal implements Window { // this may need a quit method to free
 
 	@Override
 	public void close() {
-// if (!menu) {
-		GameScreen.OPEN_WINDOW = null;
-
-		Gdx.input.setInputProcessor(new GameInput(screen.getGame(), screen.getCam(), screen.getPlayer(), screen));
-// }
+		if (!menu) {
+			GameScreen gS = (GameScreen) screen;
+			GameScreen.OPEN_WINDOW = null;
+			Gdx.input.setInputProcessor(new GameInput(gS.getGame(), gS.getCam(), gS.getPlayer(), gS));
+		}
 	}
 
 	public void ClearInput() {
-		currentText = "Boot>";/*terminal.getDevice().getNetwork().getIp() + ">";*/
+		currentText = device.getNetwork().getIp() + ">";
 		cursor = currentText.length();
 	}
 
