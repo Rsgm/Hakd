@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" orientation="isometric" width="12" height="12" tilewidth="64" tileheight="32">
+ <properties>
+  <property name="dnss" value="0"/>
+  <property name="routers" value="0"/>
+  <property name="servers" value="16"/>
+ </properties>
+ <tileset firstgid="1" name="floor tile" tilewidth="64" tileheight="32">
+  <image source="../tilesets/floor tile.png" width="64" height="32"/>
+ </tileset>
+ <tileset firstgid="2" name="walls" tilewidth="64" tileheight="64">
+  <image source="../tilesets/walls.png" width="512" height="64"/>
+ </tileset>
+ <tileset firstgid="10" name="computerlevels" tilewidth="64" tileheight="64">
+  <image source="../tilesets/computerlevels.png" width="512" height="64"/>
+ </tileset>
+ <tileset firstgid="18" name="floors" tilewidth="64" tileheight="32">
+  <image source="../tilesets/floors.png" width="512" height="32"/>
+ </tileset>
+ <layer name="floor" width="12" height="12">
+  <data encoding="base64">
+   EgAAABIAAAASAAAAEgAAABIAAAASAAAAEgAAABQAAAASAAAAEgAAABIAAAASAAAAEgAAABIAAAASAAAAFAAAABIAAAASAAAAEgAAABQAAAASAAAAEgAAABIAAAASAAAAEgAAABQAAAAUAAAAFAAAABQAAAAUAAAAFAAAABQAAAATAAAAEwAAABMAAAASAAAAEgAAABIAAAASAAAAFAAAABIAAAASAAAAFAAAABIAAAASAAAAEgAAABIAAAAUAAAAEgAAABQAAAAUAAAAFAAAABIAAAASAAAAFAAAABQAAAAVAAAAFQAAABUAAAAUAAAAEgAAABIAAAASAAAAEgAAABIAAAASAAAAFAAAABIAAAASAAAAEgAAABIAAAASAAAAEgAAABIAAAASAAAAEgAAABIAAAASAAAAFAAAABIAAAASAAAAEgAAABIAAAAUAAAAEwAAABIAAAAVAAAAEgAAABQAAAASAAAAFAAAABQAAAAVAAAAFQAAABUAAAAUAAAAEwAAABQAAAAUAAAAFAAAABQAAAASAAAAFAAAABIAAAASAAAAEgAAABIAAAASAAAAEwAAABIAAAAVAAAAEgAAABQAAAAUAAAAFAAAABIAAAASAAAAEgAAABIAAAASAAAAEwAAABQAAAAUAAAAFAAAABQAAAASAAAAEgAAABIAAAASAAAAEgAAABIAAAASAAAAEwAAABIAAAAVAAAAEgAAABQAAAASAAAAEgAAABIAAAASAAAAEgAAABIAAAASAAAA
+  </data>
+ </layer>
+ <layer name="wall" width="12" height="12">
+  <data encoding="base64">
+   AgAAAAMAAAADAAAABgAAAAMAAAADAAAAAwAAAAQAAAACAAAACAAAAAMAAAAGAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAMAAAAGAAAACAAAAAMAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABwAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  </data>
+ </layer>
+ <layer name="objects" width="12" height="12">
+  <data encoding="base64">
+   AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAAAACgAAAAoAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAKAAAACgAAAAoAAAAAAAAAAAAAAAoAAAAAAAAACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAAAAAAAAACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAoAAAAAAAAACgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA
+  </data>
+ </layer>
+ <objectgroup name="bounds" width="12" height="12" visible="0" opacity="0.99">
+  <object name="border" x="0" y="0" width="384" height="384"/>
+  <object name="ss000" x="256" y="192" width="32" height="32">
+   <properties>
+    <property name="x" value="8"/>
+    <property name="y" value="6"/>
+   </properties>
+  </object>
+  <object name="ss001" x="288" y="192" width="32" height="32">
+   <properties>
+    <property name="x" value="9"/>
+    <property name="y" value="6"/>
+   </properties>
+  </object>
+  <object name="ss002" x="320" y="192" width="32" height="32">
+   <properties>
+    <property name="x" value="10"/>
+    <property name="y" value="6"/>
+   </properties>
+  </object>
+  <object name="ss003" x="256" y="96" width="32" height="32">
+   <properties>
+    <property name="x" value="8"/>
+    <property name="y" value="3"/>
+   </properties>
+  </object>
+  <object name="ss004" x="288" y="96" width="32" height="32">
+   <properties>
+    <property name="x" value="9"/>
+    <property name="y" value="3"/>
+   </properties>
+  </object>
+  <object name="ss005" x="320" y="96" width="32" height="32">
+   <properties>
+    <property name="x" value="10"/>
+    <property name="y" value="3"/>
+   </properties>
+  </object>
+  <object name="ss006" x="64" y="96" width="32" height="32">
+   <properties>
+    <property name="x" value="2"/>
+    <property name="y" value="3"/>
+   </properties>
+  </object>
+  <object name="ss007" x="32" y="96" width="32" height="32">
+   <properties>
+    <property name="x" value="1"/>
+    <property name="y" value="3"/>
+   </properties>
+  </object>
+  <object name="ss008" x="64" y="32" width="32" height="32">
+   <properties>
+    <property name="x" value="2"/>
+    <property name="y" value="1"/>
+   </properties>
+  </object>
+  <object name="ss009" x="32" y="32" width="32" height="32">
+   <properties>
+    <property name="x" value="1"/>
+    <property name="y" value="1"/>
+   </properties>
+  </object>
+  <object name="ss010" x="96" y="224" width="32" height="32">
+   <properties>
+    <property name="x" value="3"/>
+    <property name="y" value="7"/>
+   </properties>
+  </object>
+  <object name="ss011" x="96" y="288" width="32" height="32">
+   <properties>
+    <property name="x" value="3"/>
+    <property name="y" value="9"/>
+   </properties>
+  </object>
+  <object name="ss012" x="96" y="352" width="32" height="32">
+   <properties>
+    <property name="x" value="3"/>
+    <property name="y" value="11"/>
+   </properties>
+  </object>
+  <object name="ss013" x="32" y="224" width="32" height="32">
+   <properties>
+    <property name="x" value="1"/>
+    <property name="y" value="7"/>
+   </properties>
+  </object>
+  <object name="ss014" x="32" y="288" width="32" height="32">
+   <properties>
+    <property name="x" value="1"/>
+    <property name="y" value="9"/>
+   </properties>
+  </object>
+  <object name="ss015" x="32" y="352" width="32" height="32">
+   <properties>
+    <property name="x" value="1"/>
+    <property name="y" value="11"/>
+   </properties>
+  </object>
+  <object name="wall" x="160" y="256">
+   <polyline points="0,0 0,-32 -160,-32"/>
+  </object>
+  <object name="wall" x="224" y="32">
+   <polyline points="0,0 0,-32"/>
+  </object>
+  <object name="wall" x="256" y="32">
+   <polyline points="0,0 0,-32"/>
+  </object>
+ </objectgroup>
+</map>

@@ -35,9 +35,8 @@ public class Room {
 
 	private GameScreen			gameScreen;
 
-	public Room(Player player, GameScreen gameScreen) { // TODO this is just blocked until I can finish with the map rendering and stuff
-// map = new TmxMapLoader().load("hakd/gui/resources/maps/room" + network.getlevel() + ".tmx");
-		map = new TmxMapLoader().load("hakd/gui/resources/maps/untitled64.tmx");
+	public Room(Player player, GameScreen gameScreen) {
+		map = new TmxMapLoader().load("hakd/gui/resources/maps/room0" + /*network.getLevel()+*/".tmx");
 
 		floor = (TiledMapTileLayer) map.getLayers().get("floor");
 		floor = (TiledMapTileLayer) map.getLayers().get("wall");
