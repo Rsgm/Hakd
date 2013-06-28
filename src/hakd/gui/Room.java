@@ -37,7 +37,7 @@ public class Room {
 	private GameScreen			gameScreen;
 
 	public Room(Player player, GameScreen gameScreen) {
-		network = player.getHome();
+		network = player.getNetwork();
 		devices = network.getDevices();
 
 		map = new TmxMapLoader().load("hakd/gui/resources/maps/room" + network.getLevel() + ".tmx");

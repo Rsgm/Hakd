@@ -1,4 +1,4 @@
-package hakd.game.functions;
+package hakd.game.python;
 
 import org.luaj.vm2.LuaValue;
 import org.luaj.vm2.lib.OneArgFunction;

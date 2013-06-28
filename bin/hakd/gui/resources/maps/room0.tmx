@@ -35,7 +35,7 @@
    AAAAAAAAAAAKAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABsAAAAAAAAAAAAAAAAAAAAAAAAAGgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==
   </data>
  </layer>
- <objectgroup name="bounds" width="5" height="5" visible="0" opacity="0.99">
+ <objectgroup name="bounds" width="5" height="5" opacity="0.99">
   <object name="ss000" x="64" y="0" width="32" height="32">
    <properties>
     <property name="x" value="2"/>

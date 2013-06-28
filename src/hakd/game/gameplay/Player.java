@@ -3,7 +3,6 @@ package hakd.game.gameplay;
 import hakd.gui.screens.GameScreen;
 import hakd.gui.windows.Window;
 import hakd.networks.Network;
-import hakd.networks.devices.Device;
 import hakd.other.Util;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
@@ -11,12 +10,10 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 
 public class Player {
 	// player stats
-	private int			money;			// in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or no
+	private int			money;		// in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or no
 // redundancy with strong encryption
 	private String		name;
-	private Network		home;			// meant to be used as the players home base
-	private Network		currentNetwork;
-	private Device		currentServer;
+	private Network		network;		// meant to be used as the players network base
 
 	private GameScreen	screen;
 
@@ -29,14 +26,9 @@ public class Player {
 	// --------methods--------
 	public Player(String name, Network home, TextureAtlas textures, GameScreen screen) {
 		this.name = name;
-		this.home = home;
-		this.currentNetwork = home;
+		this.network = home;
 
 		this.screen = screen;
-
-		if (home != null) {
-			this.currentServer = home.getMasterServer();
-		}
 
 		sprite = new Sprite(textures.findRegion("player0"));
 	}
@@ -62,28 +54,12 @@ public class Player {
 		this.money = money;
 	}
 
-	public Network getHome() {
-		return home;
+	public Network getNetwork() {
+		return network;
 	}
 
-	public void setHome(Network home) {
-		this.home = home;
-	}
-
-	public Network getCurrentNetwork() {
-		return currentNetwork;
-	}
-
-	public void setCurrentNetwork(Network currentNetwork) {
-		this.currentNetwork = currentNetwork;
-	}
-
-	public Device getCurrentServer() {
-		return currentServer;
-	}
-
-	public void setCurrentServer(Device currentServer) {
-		this.currentServer = currentServer;
+	public void setNetwork(Network network) {
+		this.network = network;
 	}
 
 	public String getName() {

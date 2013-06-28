@@ -86,7 +86,7 @@ public class GameScreen extends HakdScreen {
 		}
 
 		if (MAP_OPEN) {
-// map.render(cam, batch, delta);
+			map.render(cam, batch, delta);
 			System.out.println("map");
 		}
 	}

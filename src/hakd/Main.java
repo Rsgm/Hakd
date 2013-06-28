@@ -7,7 +7,7 @@ import com.badlogic.gdx.Preferences;
 import com.badlogic.gdx.backends.lwjgl.LwjglApplication;
 
 public final class Main {
-	private static Preferences	prefs;	;
+	private static Preferences	prefs;
 	private static Preferences	save1;	// save this for later
 
 	public static void main(String[] args) {

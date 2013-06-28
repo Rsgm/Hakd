@@ -42,7 +42,7 @@ public class Network { // this only holds a set of devices and info, connecting 
 	private int				y;
 	private int				z;
 
-// private graphic? icon? sprite? image? texture? !!!3d model!!!
+// private graphic? icon? sprite? image? texture? 3d model.
 // TODO have a static class, or file, hold all of the models with the points and textures
 
 	// --------constructor--------
@@ -51,13 +51,6 @@ public class Network { // this only holds a set of devices and info, connecting 
 		level = (int) (Math.random() * 8);
 		stance = Stance.NEUTRAL;
 		this.type = type;
-
-		if (type != NetworkType.ISP) {
-			isp = NetworkController.getServiceProviders().get((int) (Math.random() * NetworkController.getServiceProviders().size()));
-			// TODO what does the isp connect to?
-		}
-
-		ip = "127.0.0.1";
 
 		switch (type) { // I should really clean these up, meh, later
 			case PLAYER:// new player // only happens at the start of the game
@@ -98,6 +91,12 @@ public class Network { // this only holds a set of devices and info, connecting 
 				dnsLimit = 3;
 				routerLimit = 1;
 				break;
+		}
+
+		if (type != NetworkType.ISP) {
+			isp = NetworkController.getServiceProviders().get((int) (Math.random() * NetworkController.getServiceProviders().size()));
+			ip = isp.register(this, 1);
+			// TODO what does the isp connect to? it already gets an ip
 		}
 
 		// used to add randomness to the amount of servers to make given serverLimit

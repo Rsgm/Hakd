@@ -28,7 +28,7 @@ public class Dns extends Device { // TODO let DNSs communicate a bit.
 			taken = false;
 
 			for (Network n : hosts) {
-				if (n.getIp().equals(ip)) {
+				if (n.getIp() != null && n.getIp().equals(ip)) {
 					taken = true;
 				}
 			}
@@ -39,7 +39,7 @@ public class Dns extends Device { // TODO let DNSs communicate a bit.
 	// used to create a realistic, random ip based on registered ipv4 IRL(or AFK if your from sweeden). used mostly with the assign ip method, but can
 	// be useful for other things
 	public static String generateIp(Region region) {
-		switch (region) { //
+		switch (region) {
 			default:
 				return (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "." + (int) (Math.random() * 256) + "."
 						+ (int) (Math.random() * 256);
