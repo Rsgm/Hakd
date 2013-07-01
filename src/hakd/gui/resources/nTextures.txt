@@ -1,0 +1,32 @@
+nTextures.png
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+player0
+  rotate: false
+  xy: 5, 2
+  size: 16, 32
+  orig: 16, 32
+  offset: 0, 0
+  index: -1
+windowBorder
+  rotate: false
+  xy: 29, 2
+  size: 133, 100
+  orig: 133, 100
+  offset: 0, 0
+  index: -1
+untitled
+  rotate: false
+  xy: 23, 2
+  size: 4, 1
+  orig: 4, 1
+  offset: 0, 0
+  index: -1
+black
+  rotate: false
+  xy: 2, 2
+  size: 1, 1
+  orig: 1, 1
+  offset: 0, 0
+  index: -1

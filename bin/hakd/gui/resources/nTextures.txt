@@ -1,45 +1,31 @@
-textures.png
+nTextures.png
 format: RGBA8888
-filter: Nearest,Nearest
+filter: Linear,Linear
 repeat: none
 player0
   rotate: false
-  xy: 284, 2
+  xy: 221, 2
   size: 16, 32
   orig: 16, 32
   offset: 0, 0
   index: -1
 windowDisplay
   rotate: false
-  xy: 945, 100
-  size: 1, 1
-  orig: 1, 1
-  offset: 0, 0
-  index: -1
-test
-  rotate: false
-  xy: 336, 2
-  size: 60, 40
-  orig: 60, 40
-  offset: 0, 0
-  index: -1
-draw
-  rotate: false
-  xy: 22, 2
-  size: 64, 64
-  orig: 64, 64
+  xy: 2, 2
+  size: -1, -1
+  orig: -1, -1
   offset: 0, 0
   index: -1
 loading
   rotate: false
-  xy: 88, 2
+  xy: 25, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 close
   rotate: false
-  xy: 2, 2
+  xy: 5, 2
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
@@ -53,7 +39,7 @@ windowBorder
   index: -1
 loadingbackground
   rotate: false
-  xy: 186, 2
+  xy: 123, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
@@ -67,16 +53,9 @@ title
   index: -1
 spaceBarIcon
   rotate: false
-  xy: 302, 2
+  xy: 239, 2
   size: 32, 32
   orig: 32, 32
-  offset: 0, 0
-  index: -1
-test3
-  rotate: false
-  xy: 398, 2
-  size: 64, 64
-  orig: 64, 64
   offset: 0, 0
   index: -1
 untitled
@@ -84,5 +63,12 @@ untitled
   xy: 804, 100
   size: 4, 1
   orig: 4, 1
+  offset: 0, 0
+  index: -1
+black
+  rotate: false
+  xy: 2, 2
+  size: 1, 1
+  orig: 1, 1
   offset: 0, 0
   index: -1

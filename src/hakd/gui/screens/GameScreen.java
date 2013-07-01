@@ -4,8 +4,7 @@ import hakd.game.gameplay.GamePlay;
 import hakd.game.gameplay.Player;
 import hakd.gui.Room;
 import hakd.gui.input.GameInput;
-import hakd.gui.windows.Map;
-import hakd.gui.windows.Window;
+import hakd.gui.windows.Settings;
 import hakd.internet.NetworkController;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
@@ -21,165 +20,168 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
 public class GameScreen extends HakdScreen {
-	private Player						player;				// TODO Sometime make this an array and have other people in the game with different
-// skills and
-// personalities private int arraylist<npc> npcs = new arraylist<npc>();
-	private Room						room;
-	private IsometricTiledMapRenderer	renderer;				// it says this is experimental, but it was an old article
+    private Player player;
+    // TODO Sometime make this an array and have other people in the game with
+    // different skills and
+    // personalities private int arraylist<npc> npcs = new arraylist<npc>();
 
-	private final float					tileSize	= 64;
+    private Room room;
+    private IsometricTiledMapRenderer renderer; // it says this is experimental,
+						// but it was an old article
+    private final float tileSize = 64;
 
-	public static Window				OPEN_WINDOW	= null;
-	private Map							map;
-	public static boolean				MAP_OPEN	= false;
+    public static Settings/* window */OPEN_WINDOW = null;
 
-	public GameScreen(Game game, String name) {
-		super(game);
+    public GameScreen(Game game, String name) {
+	super(game);
 
-		GamePlay.generateGame();
-		Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
+	GamePlay.generateGame();
+	Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
 
-		player = new Player(name, n, textures, this);
-		room = new Room(player, this);
+	player = new Player(name, n, nearestTextures, this);
+	room = new Room(player, this);
 
-		Sprite sprite = player.getSprite();
-		sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
+	Sprite sprite = player.getSprite();
+	sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight()
+		/ tileSize);
 
-		cam.setToOrtho(false, room.getFloor().getWidth(), room.getFloor().getHeight());
-		cam.update();
+	cam.setToOrtho(false, room.getFloor().getWidth(), room.getFloor()
+		.getHeight());
+	cam.update();
 
-		renderer.setView(cam);
+	renderer.setView(cam);
 
-		cam.position.x = room.getFloor().getWidth() / 2;
-		cam.position.y = 0;
+	cam.position.x = room.getFloor().getWidth() / 2;
+	cam.position.y = 0;
+    }
+
+    @Override
+    public void show() {
+	super.show();
+	Gdx.input.setInputProcessor(new GameInput(game, cam, player, this));
+	// I guess this has to be set in the show method
+    }
+
+    @Override
+    public void render(float delta) {
+	super.render(delta);
+	SpriteBatch rBatch = renderer.getSpriteBatch();
+	renderer.setView(cam);
+	renderer.render();
+
+	rBatch.begin();
+	if (OPEN_WINDOW == null) {
+	    updateMovement();
+	    checkPosition(rBatch);
 	}
 
-	@Override
-	public void show() {
-		super.show();
-		Gdx.input.setInputProcessor(new GameInput(game, cam, player, this)); // I guess this has to be set in the show method
+	// update display();
+	// update game
+	// update other, I don't know
+
+	player.getSprite().draw(rBatch);
+	rBatch.end();
+
+	if (OPEN_WINDOW != null) {
+	    OPEN_WINDOW.render(cam, batch, delta);
+	}
+    }
+
+    private void checkPosition(SpriteBatch batch) {
+	int x = player.getIsoX();
+	int y = player.getIsoY();
+
+	Device d = room.getDeviceAtTile(x - 1, y);
+
+	if (d == null) {
+	    d = room.getDeviceAtTile(x, y - 1);
 	}
 
-	@Override
-	public void render(float delta) {
-		super.render(delta);
-		SpriteBatch rBatch = renderer.getSpriteBatch();
+	if (d != null) {
+	    Sprite s = new Sprite(nearestTextures.findRegion("spaceBarIcon"));
+	    s.setPosition(player.getSprite().getX(), player.getSprite().getY()
+		    + 32 / tileSize);
+	    s.setSize(16 / tileSize, 16 / tileSize);
 
-		renderer.setView(cam);
-		renderer.render();
+	    s.draw(batch);
 
-		rBatch.begin();
-		if (OPEN_WINDOW == null) {
-			updateMovement();
-			checkPosition(rBatch);
-		}
+	    if (Gdx.input.isKeyPressed(Keys.SPACE) && OPEN_WINDOW == null) {
+		OPEN_WINDOW = new Settings(this);// d.getTerminal();
+		OPEN_WINDOW.open(nearestTextures, this);
+	    }
+	}
+    }
 
-		// update display();
-		// update game
-		// update other, I don't know
+    @Override
+    public void dispose() {
+	super.dispose();
+	room.dispose();
+    }
 
-		player.getSprite().draw(rBatch);
-		rBatch.end();
+    private void updateMovement() {
+	Input i = Gdx.input;
 
-		if (OPEN_WINDOW != null) {
-			OPEN_WINDOW.render(cam, batch, delta);
-		}
-
-		if (MAP_OPEN) {
-			map.render(cam, batch, delta);
-			System.out.println("map");
-		}
+	float x = 0;
+	float y = 0;
+	if ((i.isKeyPressed(Keys.W) || i.isKeyPressed(Keys.UP))) {
+	    x += 1;
+	    y += 1;
+	}
+	if (i.isKeyPressed(Keys.A) || i.isKeyPressed(Keys.LEFT)) {
+	    x += -1;
+	    y += 1;
+	}
+	if (i.isKeyPressed(Keys.S) || i.isKeyPressed(Keys.DOWN)) {
+	    x += -1;
+	    y += -1;
+	}
+	if (i.isKeyPressed(Keys.D) || i.isKeyPressed(Keys.RIGHT)) {
+	    x += 1;
+	    y += -1;
 	}
 
-	private void checkPosition(SpriteBatch batch) {
-		int x = player.getIsoX();
-		int y = player.getIsoY();
-
-		Device d = room.getDeviceAtTile(x - 1, y);
-
-		if (d == null) {
-			d = room.getDeviceAtTile(x, y - 1);
-		}
-
-		if (d != null) {
-			Sprite s = new Sprite(textures.findRegion("spaceBarIcon"));
-			s.setPosition(player.getSprite().getX(), player.getSprite().getY() + 32 / tileSize);
-			s.setSize(16 / tileSize, 16 / tileSize);
-
-			s.draw(batch);
-
-			if (Gdx.input.isKeyPressed(Keys.SPACE) && OPEN_WINDOW == null) {
-
-				OPEN_WINDOW = d.getTerminal();
-				OPEN_WINDOW.open(textures, this);
-			}
-		}
+	if (x < -1 || x > 1) {
+	    x /= 2; // x does not equal 2
 	}
 
-	@Override
-	public void dispose() {
-		super.dispose();
-		room.dispose();
-	}
+	player.move(1.5f * x / tileSize / 1.0f, y / tileSize / 1.5f);
+    }
 
-	private void updateMovement() {
-		Input i = Gdx.input;
+    public void changeMap(TiledMap map) { // TODO make a transition effect
+	renderer = new IsometricTiledMapRenderer(map, 1 / tileSize); // tilesize
+								     // has to
+								     // be
+								     // float,
+								     // otherwise
+								     // it will
+								     // round
+    }
 
-		float x = 0;
-		float y = 0;
-		if ((i.isKeyPressed(Keys.W) || i.isKeyPressed(Keys.UP))) {
-			x += 1;
-			y += 1;
-		}
-		if (i.isKeyPressed(Keys.A) || i.isKeyPressed(Keys.LEFT)) {
-			x += -1;
-			y += 1;
-		}
-		if (i.isKeyPressed(Keys.S) || i.isKeyPressed(Keys.DOWN)) {
-			x += -1;
-			y += -1;
-		}
-		if (i.isKeyPressed(Keys.D) || i.isKeyPressed(Keys.RIGHT)) {
-			x += 1;
-			y += -1;
-		}
+    public Player getPlayer() {
+	return player;
+    }
 
-		if (x < -1 || x > 1) {
-			x /= 2; // x does not equal 2
-		}
+    public void setPlayer(Player player) {
+	this.player = player;
+    }
 
-		player.move(1.5f * x / tileSize / 1.0f, y / tileSize / 1.5f);
-	}
+    public Room getRoom() {
+	return room;
+    }
 
-	public void changeMap(TiledMap map) { // TODO make a transition effect
-		renderer = new IsometricTiledMapRenderer(map, 1 / tileSize); // tilesize has to be float, otherwise it will round
-	}
+    public void setRoom(Room room) {
+	this.room = room;
+    }
 
-	public Player getPlayer() {
-		return player;
-	}
+    public IsometricTiledMapRenderer getRenderer() {
+	return renderer;
+    }
 
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
+    public void setRenderer(IsometricTiledMapRenderer renderer) {
+	this.renderer = renderer;
+    }
 
-	public Room getRoom() {
-		return room;
-	}
-
-	public void setRoom(Room room) {
-		this.room = room;
-	}
-
-	public IsometricTiledMapRenderer getRenderer() {
-		return renderer;
-	}
-
-	public void setRenderer(IsometricTiledMapRenderer renderer) {
-		this.renderer = renderer;
-	}
-
-	public float getTileSize() {
-		return tileSize;
-	}
+    public float getTileSize() {
+	return tileSize;
+    }
 }

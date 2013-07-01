@@ -6,151 +6,136 @@ import com.badlogic.gdx.Screen;
 import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
-import com.badlogic.gdx.math.Vector2;
-import com.badlogic.gdx.utils.Scaling;
 
 public class HakdScreen implements Screen {
-	int					width			= Gdx.graphics.getWidth();
-	int					height			= Gdx.graphics.getHeight();
+    int width = Gdx.graphics.getWidth();
+    int height = Gdx.graphics.getHeight();
 
-	Game				game;
+    Game game;
 
-	OrthographicCamera	cam;
-	SpriteBatch			batch			= new SpriteBatch();
-	TextureAtlas		textures		= new TextureAtlas("hakd/gui/resources/textures.txt");
+    OrthographicCamera cam;
+    SpriteBatch batch = new SpriteBatch();
+    TextureAtlas nearestTextures = new TextureAtlas(
+	    "hakd/gui/resources/nTextures.txt");
+    TextureAtlas linearTextures = new TextureAtlas(
+	    "hakd/gui/resources/lTextures.txt");
 
-	Rectangle			viewport;
+    Rectangle viewport;
 
-	Color				fontColor		= new Color(1.0f, 1.0f, 1.0f, 1.0f);
-	// or read from, and write to, a preference or .ini file
+    Color fontColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
 
-	static final int	VIRTUAL_WIDTH	= 25;
-	static final int	VIRTUAL_HEIGHT	= 21;
-	static final float	ASPECT_RATIO	= (float) VIRTUAL_WIDTH / (float) VIRTUAL_HEIGHT;
+    // or read from, and write to, a preference or .ini file
 
-	public HakdScreen(Game game) {
-		this.game = game;
+    public HakdScreen(Game game) {
+	this.game = game;
 
-		cam = new OrthographicCamera(VIRTUAL_WIDTH, VIRTUAL_HEIGHT);
+	cam = new OrthographicCamera();
+	batch = new SpriteBatch();
 
-		batch = new SpriteBatch();
-	}
+	// I used black because it is a texture that will not change
+	nearestTextures.findRegion("black").getTexture()
+		.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+    }
 
-	@Override
-	public void render(float delta) {
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);// update camera
-		cam.update();
-		cam.apply(Gdx.gl10);
+    @Override
+    public void render(float delta) {
+	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);// update
+									    // camera
+	cam.update();
+	cam.apply(Gdx.gl10);
+    }
 
-		// set viewport
-		Gdx.gl.glViewport((int) viewport.x, (int) viewport.y, (int) viewport.width, (int) viewport.height);
+    @Override
+    public void resize(int width, int height) {
+	// TODO Auto-generated method stub
+    }
 
-		// clear previous frame
-		Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT);
-	}
+    @Override
+    public void show() {
+	// TODO Auto-generated method stub
 
-	@SuppressWarnings("deprecation")
-	@Override
-	public void resize(int width, int height) { // some how this actually works, I spent way too long on this
-		Vector2 newVirtualRes = new Vector2(0f, 0f);
-		Vector2 crop = new Vector2(width, height);
+    }
 
-		newVirtualRes.set(Scaling.fill.apply(VIRTUAL_WIDTH, VIRTUAL_HEIGHT, width, height));
+    @Override
+    public void hide() {
+	dispose();
+    }
 
-		crop.sub(newVirtualRes);
-		crop.mul(.5f); // not sure why this is deprecated
+    @Override
+    public void pause() {
+	// TODO Auto-generated method stub
 
-		viewport = new Rectangle(crop.x, crop.y, newVirtualRes.x, newVirtualRes.y);
+    }
 
-		this.width = width;
-		this.height = height;
-	}
+    @Override
+    public void resume() {
+	// TODO Auto-generated method stub
 
-	@Override
-	public void show() {
-		// TODO Auto-generated method stub
+    }
 
-	}
+    @Override
+    public void dispose() {
+	Gdx.input.setInputProcessor(null);
+	batch.dispose();
+    }
 
-	@Override
-	public void hide() {
-		dispose();
-	}
+    public int getWidth() {
+	return width;
+    }
 
-	@Override
-	public void pause() {
-		// TODO Auto-generated method stub
+    public void setWidth(int width) {
+	this.width = width;
+    }
 
-	}
+    public int getHeight() {
+	return height;
+    }
 
-	@Override
-	public void resume() {
-		// TODO Auto-generated method stub
+    public void setHeight(int height) {
+	this.height = height;
+    }
 
-	}
+    public Game getGame() {
+	return game;
+    }
 
-	@Override
-	public void dispose() {
-		Gdx.input.setInputProcessor(null);
-		batch.dispose();
-	}
+    public void setGame(Game game) {
+	this.game = game;
+    }
 
-	public int getWidth() {
-		return width;
-	}
+    public SpriteBatch getBatch() {
+	return batch;
+    }
 
-	public void setWidth(int width) {
-		this.width = width;
-	}
+    public void setBatch(SpriteBatch batch) {
+	this.batch = batch;
+    }
 
-	public int getHeight() {
-		return height;
-	}
+    public TextureAtlas getTextures() {
+	return nearestTextures;
+    }
 
-	public void setHeight(int height) {
-		this.height = height;
-	}
+    public void setTextures(TextureAtlas textures) {
+	this.nearestTextures = textures;
+    }
 
-	public Game getGame() {
-		return game;
-	}
+    public Color getFontColor() {
+	return fontColor;
+    }
 
-	public void setGame(Game game) {
-		this.game = game;
-	}
+    public void setFontColor(Color fontColor) {
+	this.fontColor = fontColor;
+    }
 
-	public SpriteBatch getBatch() {
-		return batch;
-	}
+    public OrthographicCamera getCam() {
+	return cam;
+    }
 
-	public void setBatch(SpriteBatch batch) {
-		this.batch = batch;
-	}
-
-	public TextureAtlas getTextures() {
-		return textures;
-	}
-
-	public void setTextures(TextureAtlas textures) {
-		this.textures = textures;
-	}
-
-	public Color getFontColor() {
-		return fontColor;
-	}
-
-	public void setFontColor(Color fontColor) {
-		this.fontColor = fontColor;
-	}
-
-	public OrthographicCamera getCam() {
-		return cam;
-	}
-
-	public void setCam(OrthographicCamera cam) {
-		this.cam = cam;
-	}
+    public void setCam(OrthographicCamera cam) {
+	this.cam = cam;
+    }
 }

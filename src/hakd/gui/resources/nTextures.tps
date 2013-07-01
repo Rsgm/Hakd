@@ -146,15 +146,10 @@
         </struct>
         <key>fileList</key>
         <array>
-            <filename>graphics/loading.png</filename>
-            <filename>graphics/loadingbackground.png</filename>
             <filename>graphics/player0.png</filename>
-            <filename>graphics/spaceBarIcon.png</filename>
-            <filename>graphics/title.png</filename>
             <filename>graphics/untitled.png</filename>
             <filename>graphics/windowBorder.png</filename>
-            <filename>graphics/close.png</filename>
-            <filename>../../../../../../../../../../media/truecrypt1/code/java/Hakd/src/hakd/gui/resources/graphics/black.png</filename>
+            <filename>graphics/black.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

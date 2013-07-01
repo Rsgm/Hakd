@@ -1,6 +1,7 @@
 package hakd.networks.devices;
 
 import hakd.gui.windows.Terminal;
+import hakd.gui.windows.Window;
 import hakd.internet.Connectable;
 import hakd.internet.Connection;
 import hakd.networks.Network;
@@ -24,257 +25,290 @@ import java.util.List;
 
 public class Device implements Connectable {
 
-	// stats
-	private Network				network;
-	private int					level;
-	// private int webserver = 0; // 0 = 404, if port 80 is open
-	private List<Port>			ports		= new ArrayList<Port>();		// port, program / if its closed just delete it
-	private List<Connection>	connections	= new ArrayList<Connection>();
-	private File				logs;										// TODO make this a file instead connecting from and the action after
-// that
+    // stats
+    private Network network;
+    private int level;
+    // private int webserver = 0; // 0 = 404, if port 80 is open
+    private List<Port> ports = new ArrayList<Port>(); // port, program / if its
+						      // closed just delete it
+    private List<Connection> connections = new ArrayList<Connection>();
+    private File logs; // TODO make this a file instead connecting from and the
+		       // action after
+    // that
 
-	private Brand				brand;										// for example bell, or HQ
-	private Model				model;
+    private Brand brand; // for example bell, or HQ
+    private Model model;
 
-	// objects
-	private int					cpuSockets;								// easier than using a for loop to count the amount, just remember to
-// change this port
-	private int					memorySlots;								// maybe have a maximum part number, so you can specialize a server
-	private int					storageSlots;
-	private int					gpuSlots;
-	private Storage				masterStorage;								// TODO where the os resides
-	private DeviceType			type;
+    // objects
+    private int cpuSockets; // easier than using a for loop to count the amount,
+			    // just remember to
+    // change this port
+    private int memorySlots; // maybe have a maximum part number, so you can
+			     // specialize a server
+    private int storageSlots;
+    private int gpuSlots;
+    private Storage masterStorage; // TODO where the os resides
+    private DeviceType type;
 
-	private Terminal			terminal;
+    // server gui
+    private Window window;
+    private Terminal terminal;
 
-	// objects
-	private List<Part>			parts		= new ArrayList<Part>();
+    // objects
+    private List<Part> parts = new ArrayList<Part>();
 
-	// --------constructor--------
-	public Device(Network network, int level, DeviceType type) { // have random smartphone connections and disconnections
-		if (network.getType() == NetworkType.PLAYER) {
-			terminal = new Terminal(false, this);
-		}
-
-		this.network = network; // smartphones are like insects on a network, many types, random behavior, and there are lots of them
-		this.level = level;
-		this.type = type;
-
-		switch (level) {
-			case 0:
-				cpuSockets = (int) (Math.random() * 2 + 1);
-				gpuSlots = 1; // TODO server part generation code
-				memorySlots = 1;
-				storageSlots = 1;
-				break;
-			case 7:
-				cpuSockets = (int) (Math.random() * 2 + 7);
-				gpuSlots = 1;
-				memorySlots = 1;
-				storageSlots = 1;
-				break;
-			default:
-				cpuSockets = (int) (Math.random() * 3 + level);
-				gpuSlots = 1;
-				memorySlots = 1;
-				storageSlots = 1;
-				break;
-		}
-		for (int i = 0; i < cpuSockets; i++) {
-			parts.add(new Cpu(level, network, this));
-		}
-		for (int i = 0; i < gpuSlots; i++) {
-			parts.add(new Gpu(level, network, this));
-		}
-		for (int i = 0; i < memorySlots; i++) {
-			parts.add(new Memory(level, network, this));
-		}
-		for (int i = 0; i < storageSlots; i++) {
-			parts.add(new Storage(level, network, this));
-		}
-
-		masterStorage = (Storage) Part.findParts(parts, PartType.STORAGE).get(0);
+    // --------constructor--------
+    public Device(Network network, int level, DeviceType type) { // have random
+								 // smartphone
+								 // connections
+								 // and
+								 // disconnections
+	if (network.getType() == NetworkType.PLAYER) {
+	    terminal = new Terminal(false, this);
 	}
 
-	// --------methods--------
+	this.network = network; // smartphones are like insects on a network,
+				// many types, random behavior, and there are
+				// lots of them
+	this.level = level;
+	this.type = type;
 
-	@Override
-	public boolean Connect(Device client, String program, int port, Protocol protocol) { // TODO this
-		Connection c = new Connection(this, client, Protocol.getProtocol(port));
-		connections.add(c);
-
-		if (Port.checkPortAnd(ports, program, port, protocol)) {
-// Desktop d = Desktop.getDesktop();
-
-			switch (port) {
-				default: // 80, 443, others but just get directed to a 404 if not a website
-// d.browse(URI.create("http://localhost:80/network/" + network.getIp())); // I am not doing the html store any more
-				case 31337:
-					// grant complete(root?) access
-					// open ssh
-					break;
-			}
-			return true;
-		}
-		return false;
+	switch (level) {
+	case 0:
+	    cpuSockets = (int) (Math.random() * 2 + 1);
+	    gpuSlots = 1; // TODO server part generation code
+	    memorySlots = 1;
+	    storageSlots = 1;
+	    break;
+	case 7:
+	    cpuSockets = (int) (Math.random() * 2 + 7);
+	    gpuSlots = 1;
+	    memorySlots = 1;
+	    storageSlots = 1;
+	    break;
+	default:
+	    cpuSockets = (int) (Math.random() * 3 + level);
+	    gpuSlots = 1;
+	    memorySlots = 1;
+	    storageSlots = 1;
+	    break;
+	}
+	for (int i = 0; i < cpuSockets; i++) {
+	    parts.add(new Cpu(level, network, this));
+	}
+	for (int i = 0; i < gpuSlots; i++) {
+	    parts.add(new Gpu(level, network, this));
+	}
+	for (int i = 0; i < memorySlots; i++) {
+	    parts.add(new Memory(level, network, this));
+	}
+	for (int i = 0; i < storageSlots; i++) {
+	    parts.add(new Storage(level, network, this));
 	}
 
-	@Override
-	public boolean Disconnect(Device device, String program, int port) {
-		// TODO this
-		return false;
-	}
+	masterStorage = (Storage) Part.findParts(parts, PartType.STORAGE)
+		.get(0);
+    }
 
-	@Override
-	public boolean addPorts(Device device, String program, int port, Protocol protocol) {
-		if (Port.checkPortOr(ports, null, null, port, null) == false) {
-			ports.add(new Port(null, program, port, protocol));
-			return true;
-		}
-		return false;
-	}
+    // --------methods--------
 
-	@Override
-	public boolean removePort(int port) { // this may be a memory leak where devices can't remove the ports they bind when they are removed
-		return ports.remove(Port.getPort(ports, null, port));
-	}
+    @Override
+    public boolean Connect(Device client, String program, int port,
+	    Protocol protocol) { // TODO this
+	Connection c = new Connection(this, client, Protocol.getProtocol(port));
+	connections.add(c);
 
-	@Override
-	public void log(Device client, String program, int port, Protocol protocol) {
-		masterStorage.addFile(new File(0, "Log - " + client.getNetwork().getIp() + ".log", "Connecting with " + program + " through port" + port
-				+ " using " + protocol + "\n" + program + ":" + port + ">" + protocol, FileType.LOG));
-		/* ---Example---
-		 * Log - 243.15.66.24
-		 * Connecting with half life 3 through port 28190 using LAMBDA
-		 * half life 3:28190>LAMBDA
-		 * */
-	}
+	if (Port.checkPortAnd(ports, program, port, protocol)) {
+	    // Desktop d = Desktop.getDesktop();
 
-	// finds all of the devices in the list of that type
-	public static List<Device> findDevices(List<Device> devices, DeviceType type) {
-		List<Device> returnDevices = new ArrayList<Device>();
-		for (Device d : devices) {
-			if (d.getType() == type) {
-				returnDevices.add(d);
-			}
-		}
-		return returnDevices;
+	    switch (port) {
+	    default: // 80, 443, others but just get directed to a 404 if not a
+		     // website
+		     // d.browse(URI.create("http://localhost:80/network/" +
+		     // network.getIp())); // I am not doing the html store any
+		     // more
+	    case 31337:
+		// grant complete(root?) access
+		// open ssh
+		break;
+	    }
+	    return true;
 	}
+	return false;
+    }
 
-	// --------getters/setters--------
-	public File getLogs() {
-		return logs;
-	}
+    @Override
+    public boolean Disconnect(Device device, String program, int port) {
+	// TODO this
+	return false;
+    }
 
-	public void setLogs(File logs) {
-		this.logs = logs;
+    @Override
+    public boolean addPorts(Device device, String program, int port,
+	    Protocol protocol) {
+	if (Port.checkPortOr(ports, null, null, port, null) == false) {
+	    ports.add(new Port(null, program, port, protocol));
+	    return true;
 	}
+	return false;
+    }
 
-	public int getCpuSockets() {
-		return cpuSockets;
-	}
+    @Override
+    public boolean removePort(int port) { // this may be a memory leak where
+					  // devices can't remove the ports they
+					  // bind when they are removed
+	return ports.remove(Port.getPort(ports, null, port));
+    }
 
-	public void setCpuSockets(int cpuSockets) {
-		this.cpuSockets = cpuSockets;
-	}
+    @Override
+    public void log(Device client, String program, int port, Protocol protocol) {
+	masterStorage.addFile(new File(0, "Log - "
+		+ client.getNetwork().getIp() + ".log", "Connecting with "
+		+ program + " through port" + port + " using " + protocol
+		+ "\n" + program + ":" + port + ">" + protocol, FileType.LOG));
+	/*
+	 * ---Example--- Log - 243.15.66.24 Connecting with half life 3 through
+	 * port 28190 using LAMBDA half life 3:28190>LAMBDA
+	 */
+    }
 
-	public int getMemorySlots() {
-		return memorySlots;
+    // finds all of the devices in the list of that type
+    public static List<Device> findDevices(List<Device> devices, DeviceType type) {
+	List<Device> returnDevices = new ArrayList<Device>();
+	for (Device d : devices) {
+	    if (d.getType() == type) {
+		returnDevices.add(d);
+	    }
 	}
+	return returnDevices;
+    }
 
-	public void setMemorySlots(int memorySlots) {
-		this.memorySlots = memorySlots;
-	}
+    // --------getters/setters--------
+    public File getLogs() {
+	return logs;
+    }
 
-	public int getStorageSlots() {
-		return storageSlots;
-	}
+    public void setLogs(File logs) {
+	this.logs = logs;
+    }
 
-	public void setStorageSlots(int storageSlots) {
-		this.storageSlots = storageSlots;
-	}
+    public int getCpuSockets() {
+	return cpuSockets;
+    }
 
-	public int getGpuSlots() {
-		return gpuSlots;
-	}
+    public void setCpuSockets(int cpuSockets) {
+	this.cpuSockets = cpuSockets;
+    }
 
-	public void setGpuSlots(int gpuSlots) {
-		this.gpuSlots = gpuSlots;
-	}
+    public int getMemorySlots() {
+	return memorySlots;
+    }
 
-	public Network getNetwork() {
-		return network;
-	}
+    public void setMemorySlots(int memorySlots) {
+	this.memorySlots = memorySlots;
+    }
 
-	public int getLevel() {
-		return level;
-	}
+    public int getStorageSlots() {
+	return storageSlots;
+    }
 
-	public List<Port> getPorts() {
-		return ports;
-	}
+    public void setStorageSlots(int storageSlots) {
+	this.storageSlots = storageSlots;
+    }
 
-	public List<Part> getParts() {
-		return parts;
-	}
+    public int getGpuSlots() {
+	return gpuSlots;
+    }
 
-	public Storage getMasterStorage() {
-		return masterStorage;
-	}
+    public void setGpuSlots(int gpuSlots) {
+	this.gpuSlots = gpuSlots;
+    }
 
-	public void setMasterStorage(Storage masterStorage) {
-		this.masterStorage = masterStorage;
-	}
+    public Network getNetwork() {
+	return network;
+    }
 
-	public void setNetwork(Network network) {
-		this.network = network;
-	}
+    public int getLevel() {
+	return level;
+    }
 
-	public void setLevel(int level) {
-		this.level = level;
-	}
+    public List<Port> getPorts() {
+	return ports;
+    }
 
-	public void setPorts(List<Port> ports) {
-		this.ports = ports;
-	}
+    public List<Part> getParts() {
+	return parts;
+    }
 
-	public void setParts(List<Part> parts) {
-		this.parts = parts;
-	}
+    public Storage getMasterStorage() {
+	return masterStorage;
+    }
 
-	public List<Connection> getConnections() {
-		return connections;
-	}
+    public void setMasterStorage(Storage masterStorage) {
+	this.masterStorage = masterStorage;
+    }
 
-	public void setConnections(List<Connection> connections) {
-		this.connections = connections;
-	}
+    public void setNetwork(Network network) {
+	this.network = network;
+    }
 
-	public DeviceType getType() {
-		return type;
-	}
+    public void setLevel(int level) {
+	this.level = level;
+    }
 
-	public void setType(DeviceType type) {
-		this.type = type;
-	}
+    public void setPorts(List<Port> ports) {
+	this.ports = ports;
+    }
 
-	public Brand getBrand() {
-		return brand;
-	}
+    public void setParts(List<Part> parts) {
+	this.parts = parts;
+    }
 
-	public void setBrand(Brand brand) {
-		this.brand = brand;
-	}
+    public List<Connection> getConnections() {
+	return connections;
+    }
 
-	public Model getModel() {
-		return model;
-	}
+    public void setConnections(List<Connection> connections) {
+	this.connections = connections;
+    }
 
-	public void setModel(Model model) {
-		this.model = model;
-	}
+    public DeviceType getType() {
+	return type;
+    }
 
-	public Terminal getTerminal() {
-		return terminal;
-	}
+    public void setType(DeviceType type) {
+	this.type = type;
+    }
+
+    public Brand getBrand() {
+	return brand;
+    }
+
+    public void setBrand(Brand brand) {
+	this.brand = brand;
+    }
+
+    public Model getModel() {
+	return model;
+    }
+
+    public void setModel(Model model) {
+	this.model = model;
+    }
+
+    public Terminal getTerminal() {
+	return terminal;
+    }
+
+    public Window getWindow() {
+	return window;
+    }
+
+    public void setWindow(Window window) {
+	this.window = window;
+    }
+
+    public void setTerminal(Terminal terminal) {
+	this.terminal = terminal;
+    }
 }
