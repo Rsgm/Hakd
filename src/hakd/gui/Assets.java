@@ -6,10 +6,13 @@ import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
 public class Assets {
     public static TextureAtlas nearestTextures;
     public static TextureAtlas linearTextures;
+
+    public static Skin skin;
 
     public static BitmapFont font;
     public static BitmapFont consoleFont;
@@ -24,6 +27,8 @@ public class Assets {
 	// I used black because it is a texture that will not change
 	nearestTextures.findRegion("black").getTexture()
 		.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+
+	skin = new Skin(Assets.nearestTextures);
 
 	FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
 		Gdx.files.internal("hakd/gui/resources/fonts/whitrabt.ttf"));

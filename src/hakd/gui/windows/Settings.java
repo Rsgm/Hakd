@@ -8,10 +8,10 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
-import com.badlogic.gdx.scenes.scene2d.ui.TextButton.TextButtonStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Settings { // temp scene 2d test window
@@ -19,27 +19,46 @@ public class Settings { // temp scene 2d test window
 
     Stage stage;
 
-    public Settings(HakdScreen screen) {
+    TextField display;
+    TextField input;
+
+    public Settings(HakdScreen screen) { // this has gotten pretty messy, lets
+					 // move it to separate classes, I think
+					 // I am through with testing
 	this.screen = screen;
 
 	stage = new Stage();
 	Table t = new Table();
 	t.setFillParent(true);
 	stage.addActor(t);
-	Skin s = new Skin(Assets.nearestTextures);
-	t.add();
 
-	TextButtonStyle style = new TextButtonStyle();
-	style.down = new TextureRegionDrawable(
-		Assets.linearTextures.findRegion("loadingbackground"));
-	style.font = Assets.consoleFont;
+	t.setBackground(new TextureRegionDrawable(Assets.nearestTextures
+		.findRegion("black")));
+	t.setBounds(Gdx.graphics.getWidth() / 10,
+		Gdx.graphics.getHeight() / 10, Gdx.graphics.getWidth()
+			- Gdx.graphics.getWidth() * 2 / 10,
+		Gdx.graphics.getHeight() - Gdx.graphics.getHeight() * 2 / 10);
 
-	TextButton button1 = new TextButton("Button 1", style);
-	t.add(button1);
+	TextFieldStyle displayStyle = new TextFieldStyle();
+	displayStyle.background = new TextureRegionDrawable(
+		Assets.nearestTextures.findRegion("black"));
+	displayStyle.font = Assets.consoleFont;
+	displayStyle.fontColor = Assets.consoleFontColor;
 
-	TextButton button2 = new TextButton("Button 2", style);
-	t.add(button2);
+	TextFieldStyle inputStyle = new TextFieldStyle();
+	inputStyle.background = new TextureRegionDrawable(
+		Assets.nearestTextures.findRegion("black"));
+	inputStyle.font = Assets.consoleFont;
+	inputStyle.fontColor = Assets.consoleFontColor;
 
+	display = new TextField("", displayStyle);
+	input = new TextField("", inputStyle);
+
+	ScrollPane s = new ScrollPane(display);
+
+	t.add(s).prefHeight(600f).prefWidth(400f);
+	t.row();
+	t.add(input);
     }
 
     public void render(OrthographicCamera cam, SpriteBatch batch, float delta) {
