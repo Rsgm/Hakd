@@ -5,6 +5,7 @@ import hakd.game.gameplay.Player;
 import hakd.gui.screens.GameScreen;
 
 import com.badlogic.gdx.Game;
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
@@ -61,10 +62,10 @@ public class GameInput implements InputProcessor {
 	float height = screen.getRoom().getFloor().getHeight();
 	float width = screen.getRoom().getFloor().getWidth();
 
-	float deltaX = (lastMouseX - screenX) / (game.getWidth() / height)
-		* cam.zoom;
-	float deltaY = (screenY - lastMouseY) / (game.getHeight() / width)
-		* cam.zoom;
+	float deltaX = (lastMouseX - screenX)
+		/ (Gdx.graphics.getHeight() / height) * cam.zoom;
+	float deltaY = (screenY - lastMouseY)
+		/ (Gdx.graphics.getHeight() / width) * cam.zoom;
 
 	System.out.println(deltaX + "	" + deltaY + "	" + cam.position.x + "	"
 		+ cam.position.y);

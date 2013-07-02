@@ -3,12 +3,9 @@ package hakd.gui.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
-import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Texture.TextureFilter;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Rectangle;
 
 public class HakdScreen implements Screen {
@@ -19,26 +16,14 @@ public class HakdScreen implements Screen {
 
     OrthographicCamera cam;
     SpriteBatch batch = new SpriteBatch();
-    TextureAtlas nearestTextures = new TextureAtlas(
-	    "hakd/gui/resources/nTextures.txt");
-    TextureAtlas linearTextures = new TextureAtlas(
-	    "hakd/gui/resources/lTextures.txt");
 
     Rectangle viewport;
-
-    Color fontColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-
-    // or read from, and write to, a preference or .ini file
 
     public HakdScreen(Game game) {
 	this.game = game;
 
 	cam = new OrthographicCamera();
 	batch = new SpriteBatch();
-
-	// I used black because it is a texture that will not change
-	nearestTextures.findRegion("black").getTexture()
-		.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
     }
 
     @Override
@@ -113,22 +98,6 @@ public class HakdScreen implements Screen {
 
     public void setBatch(SpriteBatch batch) {
 	this.batch = batch;
-    }
-
-    public TextureAtlas getTextures() {
-	return nearestTextures;
-    }
-
-    public void setTextures(TextureAtlas textures) {
-	this.nearestTextures = textures;
-    }
-
-    public Color getFontColor() {
-	return fontColor;
-    }
-
-    public void setFontColor(Color fontColor) {
-	this.fontColor = fontColor;
     }
 
     public OrthographicCamera getCam() {

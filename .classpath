@@ -4,7 +4,7 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/libgdx/gdx-backend-lwjgl-natives.jar"/>
 	<classpathentry kind="lib" path="lib/libgdx/gdx-backend-lwjgl.jar" sourcepath="lib/libgdx/sources/gdx-backend-lwjgl-sources.jar"/>
-	<classpathentry kind="lib" path="lib/libgdx/gdx.jar" sourcepath="lib/libgdx/sources/gdx-sources.jar">
+	<classpathentry kind="lib" path="lib/libgdx/gdx.jar" sourcepath="lib/libgdx/gdx-sources.jar">
 		<attributes>
 			<attribute name="javadoc_location" value="http://libgdx.l33tlabs.org/docs/api/"/>
 		</attributes>
@@ -12,6 +12,5 @@
 	<classpathentry kind="lib" path="lib/libgdx/gdx-freetype.jar" sourcepath="lib/libgdx/sources/gdx-freetype-sources.jar"/>
 	<classpathentry kind="lib" path="lib/libgdx/gdx-freetype-natives.jar"/>
 	<classpathentry kind="lib" path="lib/libgdx/gdx-natives.jar"/>
-	<classpathentry kind="lib" path="lib/gag.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

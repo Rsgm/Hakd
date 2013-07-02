@@ -1,5 +1,6 @@
 package hakd.gui.windows;
 
+import hakd.gui.Assets;
 import hakd.gui.input.TerminalInput;
 import hakd.gui.screens.HakdScreen;
 import hakd.networks.devices.Device;
@@ -10,12 +11,9 @@ import java.util.Scanner;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 public class Terminal extends Window { // this may need a quit method to free
 				       // and save resources
@@ -30,24 +28,13 @@ public class Terminal extends Window { // this may need a quit method to free
     private String currentText;
     private int cursor;
     private int line = 0; // holds the position of the history
-    private final Color fontColor = new Color(0.0f, 0.7f, 0.0f, 1.0f);
-    private final BitmapFont font;
 
     private int scroll;
-    private boolean inputUsed;
     private float cursorTime = 0;
-    private float inputTime = 0;
 
     public Terminal(boolean isMenu, Device d) {
 	super();
 	menu = isMenu;
-
-	FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
-		Gdx.files.internal("hakd/gui/resources/fonts/whitrabt.ttf"));
-	font = generator.generateFont(16);
-	generator.dispose();
-
-	font.setColor(fontColor);
 
 	if (!menu) { // it may not be the best to let this class handle both the
 		     // menu and the game terminal
@@ -94,7 +81,6 @@ public class Terminal extends Window { // this may need a quit method to free
 	close.setPosition(width - x - 20, height - y - 20);
 
 	cursorTime = 0;
-	inputTime = 0;
 
 	input = new TerminalInput(this);
 	Gdx.input.setInputProcessor(input);
@@ -108,8 +94,8 @@ public class Terminal extends Window { // this may need a quit method to free
 
 	batch.begin();
 	for (int i = 0; i < text.size(); i++) {
-	    font.draw(batch, text.get(i), x + 24,
-		    y + 35 + scroll + 16 * (text.size() - i));
+	    Assets.consoleFont.draw(batch, text.get(i), x + 24, y + 35 + scroll
+		    + 16 * (text.size() - i));
 	}
 	String s;
 
@@ -120,9 +106,11 @@ public class Terminal extends Window { // this may need a quit method to free
 	    s = currentText;
 	}
 
-	font.draw(batch, s, x + 24, y + 35 + scroll); // TODO make this start at
-						      // the corner of the
-						      // window
+	Assets.consoleFont.draw(batch, s, x + 24, y + 35 + scroll); // TODO make
+								    // this
+								    // start at
+	// the corner of the
+	// window
 	batch.end();
     }
 

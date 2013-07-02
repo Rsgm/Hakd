@@ -12,100 +12,105 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
 public class MenuScreen extends HakdScreen { // terminal directory: BOOT>_
-	private Terminal	terminal;
-	private BitmapFont	consoleFont;
-	private Color		consoleFontColor	= new Color(0.0f, 0.7f, 0.0f, 1.0f);
+    private Terminal terminal;
+    private BitmapFont consoleFont;
+    private final Color consoleFontColor = new Color(0.0f, 0.7f, 0.0f, 1.0f);
 
-	private final GL10	gl					= Gdx.graphics.getGL10();
-	private float		time;
+    private final GL10 gl = Gdx.graphics.getGL10();
+    private float time;
 
-	private boolean		typed				= false;
+    private boolean typed = false;
 
-// TODO make two methods to add text to the screen, one that types the test letter by letter, and one that adds it to the display
+    // TODO make two methods to add text to the screen, one that types the test
+    // letter by letter, and one that adds it to the display
 
-	public MenuScreen(Game game) { // terminal screen
-		super(game);
-	}
+    public MenuScreen(Game game) { // terminal screen
+	super(game);
+    }
 
-	@Override
-	public void show() {
-		terminal = new Terminal(true, null, this);
+    @Override
+    public void show() {
+	terminal = new Terminal(false, null);
 
-		FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("hakd/gui/resources/fonts/whitrabt.ttf"));
-		consoleFont = generator.generateFont(16);
-		generator.dispose();
+	FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
+		Gdx.files.internal("hakd/gui/resources/fonts/whitrabt.ttf"));
+	consoleFont = generator.generateFont(16);
+	generator.dispose();
 
-		consoleFont.setColor(consoleFontColor);
+	consoleFont.setColor(consoleFontColor);
 
-		batch = new SpriteBatch();
-		cam = new OrthographicCamera(width, height); // this may need to check isMenu
-		cam.setToOrtho(false, width, height);
-		batch.getProjectionMatrix().setToOrtho2D(0f, 0f, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.update();
-		cam.apply(gl);
+	batch = new SpriteBatch();
+	cam = new OrthographicCamera(width, height); // this may need to check
+						     // isMenu
+	cam.setToOrtho(false, width, height);
+	batch.getProjectionMatrix().setToOrtho2D(0f, 0f,
+		Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
+	cam.update();
+	cam.apply(gl);
 
-	}
+    }
 
-	@Override
-	public void render(float delta) { // TODO use a view port type thing that scrolls through an off-screen terminal
-		super.render(delta);
-		time += delta;
+    @Override
+    public void render(float delta) { // TODO use a view port type thing that
+				      // scrolls through an off-screen terminal
+	super.render(delta);
+	time += delta;
 
-		batch.begin();
-		terminal.render(cam, batch, time);
+	batch.begin();
+	terminal.render(cam, batch, time);
 
-		batch.end();
+	batch.end();
 
-		batch.setProjectionMatrix(cam.combined);
-		cam.update();
-		cam.apply(gl);
-	}
+	batch.setProjectionMatrix(cam.combined);
+	cam.update();
+	cam.apply(gl);
+    }
 
-	@Override
-	public void dispose() {
-		super.dispose();
-	}
+    @Override
+    public void dispose() {
+	super.dispose();
+    }
 
-	@Override
-	public void resize(int width, int height) {
-		batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
-	}
+    @Override
+    public void resize(int width, int height) {
+	batch.getProjectionMatrix().setToOrtho2D(0, 0, width, height);
+    }
 
-	public Terminal getTerminal() {
-		return terminal;
-	}
+    public Terminal getTerminal() {
+	return terminal;
+    }
 
-	public void setTerminal(Terminal terminal) {
-		this.terminal = terminal;
-	}
+    public void setTerminal(Terminal terminal) {
+	this.terminal = terminal;
+    }
 
-	public BitmapFont getConsoleFont() {
-		return consoleFont;
-	}
+    public BitmapFont getConsoleFont() {
+	return consoleFont;
+    }
 
-	public void setConsoleFont(BitmapFont font) {
-		this.consoleFont = font;
-	}
+    public void setConsoleFont(BitmapFont font) {
+	this.consoleFont = font;
+    }
 
-	@Override
-	public OrthographicCamera getCam() {
-		return cam;
-	}
+    @Override
+    public OrthographicCamera getCam() {
+	return cam;
+    }
 
-	@Override
-	public void setCam(OrthographicCamera cam) {
-		this.cam = cam;
-	}
+    @Override
+    public void setCam(OrthographicCamera cam) {
+	this.cam = cam;
+    }
 
-	public GL10 getGl() {
-		return gl;
-	}
+    public GL10 getGl() {
+	return gl;
+    }
 
-	public boolean isTyped() {
-		return typed;
-	}
+    public boolean isTyped() {
+	return typed;
+    }
 
-	public void setTyped(boolean typed) {
-		this.typed = typed;
-	}
+    public void setTyped(boolean typed) {
+	this.typed = typed;
+    }
 }

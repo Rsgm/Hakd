@@ -22,7 +22,7 @@
         <key>dataFormat</key>
         <string>libgdx</string>
         <key>textureFileName</key>
-        <filename>nTextures.png</filename>
+        <filename>lTextures.png</filename>
         <key>flipPVR</key>
         <false/>
         <key>ditherType</key>
@@ -99,7 +99,7 @@
             <key>packageName</key>
             <string>Texture</string>
             <key>javaFileName</key>
-            <filename>textures.java</filename>
+            <filename>../../../../../../../../../home/ryan/R-drive/code/java/Hakd/src/hakd/gui/resources/textures.java</filename>
             <key>wrap</key>
             <struct type="AndEngineWrap">
                 <key>s</key>
@@ -111,7 +111,7 @@
             <enum type="AndEngine::MagFilter">MagLinear</enum>
         </struct>
         <key>dataFileName</key>
-        <filename>nTextures.txt</filename>
+        <filename>lTextures.txt</filename>
         <key>mainExtension</key>
         <string></string>
         <key>forceIdenticalLayout</key>
@@ -146,15 +146,12 @@
         </struct>
         <key>fileList</key>
         <array>
+            <filename>graphics/close.png</filename>
             <filename>graphics/loading.png</filename>
             <filename>graphics/loadingbackground.png</filename>
-            <filename>graphics/player0.png</filename>
             <filename>graphics/spaceBarIcon.png</filename>
+            <filename>graphics/terminal.png</filename>
             <filename>graphics/title.png</filename>
-            <filename>graphics/untitled.png</filename>
-            <filename>graphics/windowBorder.png</filename>
-            <filename>graphics/close.png</filename>
-            <filename>../../../../../../../../../../media/truecrypt1/code/java/Hakd/src/hakd/gui/resources/graphics/black.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

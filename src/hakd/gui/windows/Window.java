@@ -67,7 +67,7 @@ public class Window { // these are little windows that pop up when you interact
 
     public void close() {
 	GameScreen gS = (GameScreen) screen;
-	GameScreen.OPEN_WINDOW = null;
+	GameScreen.openWindow = null;
 	Gdx.input.setInputProcessor(new GameInput(gS.getGame(), gS.getCam(), gS
 		.getPlayer(), gS));
     }

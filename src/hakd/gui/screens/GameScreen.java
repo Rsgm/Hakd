@@ -2,6 +2,7 @@ package hakd.gui.screens;
 
 import hakd.game.gameplay.GamePlay;
 import hakd.game.gameplay.Player;
+import hakd.gui.Assets;
 import hakd.gui.Room;
 import hakd.gui.input.GameInput;
 import hakd.gui.windows.Settings;
@@ -22,15 +23,15 @@ import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 public class GameScreen extends HakdScreen {
     private Player player;
     // TODO Sometime make this an array and have other people in the game with
-    // different skills and
-    // personalities private int arraylist<npc> npcs = new arraylist<npc>();
+    // different skills and personalities
+    // private int arraylist<npc> npcs = new arraylist<npc>(); maybe
 
     private Room room;
     private IsometricTiledMapRenderer renderer; // it says this is experimental,
 						// but it was an old article
     private final float tileSize = 64;
 
-    public static Settings/* window */OPEN_WINDOW = null;
+    public static Settings/* Window */openWindow = null;
 
     public GameScreen(Game game, String name) {
 	super(game);
@@ -38,7 +39,7 @@ public class GameScreen extends HakdScreen {
 	GamePlay.generateGame();
 	Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
 
-	player = new Player(name, n, nearestTextures, this);
+	player = new Player(name, n, this);
 	room = new Room(player, this);
 
 	Sprite sprite = player.getSprite();
@@ -70,7 +71,7 @@ public class GameScreen extends HakdScreen {
 	renderer.render();
 
 	rBatch.begin();
-	if (OPEN_WINDOW == null) {
+	if (openWindow == null) {
 	    updateMovement();
 	    checkPosition(rBatch);
 	}
@@ -82,8 +83,8 @@ public class GameScreen extends HakdScreen {
 	player.getSprite().draw(rBatch);
 	rBatch.end();
 
-	if (OPEN_WINDOW != null) {
-	    OPEN_WINDOW.render(cam, batch, delta);
+	if (openWindow != null) {
+	    openWindow.render(cam, batch, delta);
 	}
     }
 
@@ -98,16 +99,17 @@ public class GameScreen extends HakdScreen {
 	}
 
 	if (d != null) {
-	    Sprite s = new Sprite(nearestTextures.findRegion("spaceBarIcon"));
+	    Sprite s = new Sprite(
+		    Assets.linearTextures.findRegion("spaceBarIcon"));
 	    s.setPosition(player.getSprite().getX(), player.getSprite().getY()
 		    + 32 / tileSize);
 	    s.setSize(16 / tileSize, 16 / tileSize);
 
 	    s.draw(batch);
 
-	    if (Gdx.input.isKeyPressed(Keys.SPACE) && OPEN_WINDOW == null) {
-		OPEN_WINDOW = new Settings(this);// d.getTerminal();
-		OPEN_WINDOW.open(nearestTextures, this);
+	    if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
+		openWindow = new Settings(this);// d.getTerminal();
+		openWindow.open(this);
 	    }
 	}
     }
@@ -148,13 +150,8 @@ public class GameScreen extends HakdScreen {
     }
 
     public void changeMap(TiledMap map) { // TODO make a transition effect
-	renderer = new IsometricTiledMapRenderer(map, 1 / tileSize); // tilesize
-								     // has to
-								     // be
-								     // float,
-								     // otherwise
-								     // it will
-								     // round
+	renderer = new IsometricTiledMapRenderer(map, 1 / tileSize);
+	// tilesize has to be float, otherwise it will round
     }
 
     public Player getPlayer() {
