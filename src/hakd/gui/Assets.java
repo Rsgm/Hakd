@@ -44,5 +44,8 @@ public class Assets {
 
 	font.setColor(fontColor);
 	consoleFont.setColor(consoleFontColor);
+
+	skin.getFont("console-font").getRegion().getTexture()
+		.setFilter(TextureFilter.Linear, TextureFilter.Linear);
     }
 }

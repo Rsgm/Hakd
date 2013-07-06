@@ -64,7 +64,7 @@ public class Device implements Connectable {
 								 // and
 								 // disconnections
 	if (network.getType() == NetworkType.PLAYER) {
-	    terminal = new Terminal(false, this);
+	    terminal = new Terminal();
 	}
 
 	this.network = network; // smartphones are like insects on a network,

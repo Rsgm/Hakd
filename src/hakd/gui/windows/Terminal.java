@@ -56,6 +56,7 @@ public class Terminal {
 		    history.add(input.getText());
 		    // new Command(input.getText(), terminal.getDevice());
 
+		    line++;
 		    input.setText("");
 		} else if (keycode == Keys.ESCAPE) {
 		    close();
@@ -65,9 +66,11 @@ public class Terminal {
 		} else if (keycode == Keys.DOWN && line < history.size() - 1) {
 		    line++;
 		    input.setText(history.get(line));
+		    input.setCursorPosition(input.getText().length());
 		} else if (keycode == Keys.UP && line > 0) {
 		    line--;
 		    input.setText(history.get(line));
+		    input.setCursorPosition(input.getText().length());
 		}
 		return true;
 	    }
