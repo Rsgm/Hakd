@@ -148,8 +148,9 @@
         <array>
             <filename>graphics/player0.png</filename>
             <filename>graphics/untitled.png</filename>
-            <filename>graphics/windowBorder.png</filename>
             <filename>graphics/black.png</filename>
+            <filename>graphics/grey.png</filename>
+            <filename>graphics/white.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

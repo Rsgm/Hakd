@@ -5,7 +5,7 @@ import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
 import hakd.gui.Room;
 import hakd.gui.input.GameInput;
-import hakd.gui.windows.Settings;
+import hakd.gui.windows.Window;
 import hakd.internet.NetworkController;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
@@ -31,7 +31,7 @@ public class GameScreen extends HakdScreen {
 						// but it was an old article
     private final float tileSize = 64;
 
-    public static Settings/* Window */openWindow = null;
+    public static Window/* Window */openWindow = null;
 
     public GameScreen(Game game, String name) {
 	super(game);
@@ -84,7 +84,7 @@ public class GameScreen extends HakdScreen {
 	rBatch.end();
 
 	if (openWindow != null) {
-	    openWindow.render(cam, batch, delta);
+	    openWindow.render();
 	}
     }
 
@@ -108,7 +108,7 @@ public class GameScreen extends HakdScreen {
 	    s.draw(batch);
 
 	    if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
-		openWindow = new Settings(this);// d.getTerminal();
+		openWindow = new Window(this);// d.getTerminal();
 		openWindow.open(this);
 	    }
 	}

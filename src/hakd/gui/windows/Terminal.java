@@ -1,210 +1,88 @@
 package hakd.gui.windows;
 
 import hakd.gui.Assets;
-import hakd.gui.input.TerminalInput;
-import hakd.gui.screens.HakdScreen;
 import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Camera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
+import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
+import com.badlogic.gdx.scenes.scene2d.utils.Align;
 
-public class Terminal extends Window { // this may need a quit method to free
-				       // and save resources
-    private boolean menu;
-    private Device device;
-    private TerminalInput input;
+public class Terminal {
+    private final Table table;
 
-    private List<String> history = new ArrayList<String>(); // holds previously
-							    // used commands for
-							    // easy access
-    private final List<String> text = new ArrayList<String>();
-    private String currentText;
-    private int cursor;
+    private final TextField input;
+    private final Label display;
+    private final ScrollPane scroll;
+
+    private final List<String> history; // command history
     private int line = 0; // holds the position of the history
+    private Device device;
 
-    private int scroll;
-    private float cursorTime = 0;
+    public Terminal(/* Device d */) {
+	Skin skin = Assets.skin;
+	history = new ArrayList<String>();
 
-    public Terminal(boolean isMenu, Device d) {
-	super();
-	menu = isMenu;
+	table = new com.badlogic.gdx.scenes.scene2d.ui.Window("Terminal",
+		Assets.skin);
+	table.setSize(Gdx.graphics.getWidth() * .9f,
+		Gdx.graphics.getHeight() * .9f);
 
-	if (!menu) { // it may not be the best to let this class handle both the
-		     // menu and the game terminal
-	    device = d;
-	}
+	input = new TextField("", skin.get("console", TextFieldStyle.class));
+	display = new Label("", skin.get("console", LabelStyle.class));
+	scroll = new ScrollPane(display, skin);
 
+	display.setWrap(false);
+	display.setAlignment(12, Align.left);
+	// scroll.setTouchable(Touchable.disabled);
+
+	input.addListener(new InputListener() {
+	    @Override
+	    public boolean keyDown(InputEvent event, int keycode) {
+		if (keycode == Keys.ENTER) {
+		    System.out.println(input.getText());
+		    display.setText(display.getText() + "\n" + input.getText());
+		    history.add(input.getText());
+		    // new Command(input.getText(), terminal.getDevice());
+
+		    input.setText("");
+		} else if (keycode == Keys.ESCAPE) {
+		    close();
+		} else if (keycode == Keys.C
+			&& (keycode == Keys.CONTROL_LEFT || keycode == Keys.CONTROL_RIGHT)) {
+		    input.setText("");
+		} else if (keycode == Keys.DOWN && line < history.size() - 1) {
+		    line++;
+		    input.setText(history.get(line));
+		} else if (keycode == Keys.UP && line > 0) {
+		    line--;
+		    input.setText(history.get(line));
+		}
+		return true;
+	    }
+	});
+
+	table.add(scroll).expand().fill();
+	table.row();
+	table.add(input).left().fillX();
     }
 
-    public void addText(String t) { // support both \r and \n, if this does not
-				    // work
-	if (t.matches("\\n") || t.matches("\\r")) {
-	    text.add(t);
-	    return;
-	}
-
-	Scanner s = new Scanner(t);
-	s.useDelimiter("[\n\r]");
-	while (s.hasNext()) {
-	    text.add(s.next());
-	}
-	s.close();
+    public Table open() {
+	return table;
     }
 
-    public void addText(String[] text) {
-	for (String s : text) { // starts at 1, not 0
-	    // String s = v.arg(i).tojstring(); // jsut an idea to sanitize
-	    // inputs,
-	    // although where is the fun in that?
-	    // if (s.matches("[(,)")) {
-	    // s.replaceAll("[(,)]", "");
-	    // }
-	    addText(s);
-	}
-    }
-
-    @Override
-    public void open(TextureAtlas textures, HakdScreen screen) {
-	super.open(textures, screen);
-
-	int width = screen.getWidth();
-	int height = screen.getHeight();
-
-	close = new Sprite(textures.findRegion("close"));
-	close.setPosition(width - x - 20, height - y - 20);
-
-	cursorTime = 0;
-
-	input = new TerminalInput(this);
-	Gdx.input.setInputProcessor(input);
-    }
-
-    @Override
-    public void render(Camera cam, SpriteBatch batch, float delta) {
-	super.render(cam, batch, delta);
-
-	cursorTime += delta;
-
-	batch.begin();
-	for (int i = 0; i < text.size(); i++) {
-	    Assets.consoleFont.draw(batch, text.get(i), x + 24, y + 35 + scroll
-		    + 16 * (text.size() - i));
-	}
-	String s;
-
-	if (cursorTime % 1.4 < .7) {
-	    s = currentText.substring(0, cursor - 1) + "|"/* "█" */
-		    + currentText.substring(cursor, currentText.length());
-	} else {
-	    s = currentText;
-	}
-
-	Assets.consoleFont.draw(batch, s, x + 24, y + 35 + scroll); // TODO make
-								    // this
-								    // start at
-	// the corner of the
-	// window
-	batch.end();
-    }
-
-    @Override
     public void close() {
-	super.close();
-    }
 
-    public void ClearInput() {
-	currentText = device.getNetwork().getIp() + ">";
-	cursor = currentText.length();
-    }
-
-    public boolean isMenu() {
-	return menu;
-    }
-
-    public TerminalInput getInput() {
-	return input;
-    }
-
-    public List<String> getText() {
-	return text;
-    }
-
-    public void setMenu(boolean menu) {
-	this.menu = menu;
-    }
-
-    public void setInput(TerminalInput input) {
-	this.input = input;
-    }
-
-    public Device getDevice() {
-	return device;
-    }
-
-    public void setDevice(Device device) {
-	this.device = device;
-    }
-
-    public List<String> getHistory() {
-	return history;
-    }
-
-    public void setHistory(List<String> history) {
-	this.history = history;
-    }
-
-    public int getScroll() {
-	return scroll;
-    }
-
-    public void setScroll(int scroll) {
-	this.scroll = scroll;
-    }
-
-    public String getCurrentText() {
-	return currentText;
-    }
-
-    public void setCurrentText(String currentText) {
-	this.currentText = currentText;
-    }
-
-    public int getCursor() {
-	return cursor;
-    }
-
-    public void setCursor(int cursor) {
-	this.cursor = cursor;
-    }
-
-    public int getLine() {
-	return line;
-    }
-
-    public void setLine(int line) {
-	this.line = line;
-    }
-
-    public Sprite getClose() {
-	return close;
-    }
-
-    public void setClose(Sprite close) {
-	this.close = close;
-    }
-
-    public float getCursorTime() {
-	return cursorTime;
-    }
-
-    public void setCursorTime(float cursorTime) {
-	this.cursorTime = cursorTime;
     }
 }

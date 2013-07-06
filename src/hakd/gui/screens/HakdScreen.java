@@ -28,8 +28,8 @@ public class HakdScreen implements Screen {
 
     @Override
     public void render(float delta) {
-	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);// update
-									    // camera
+	Gdx.gl.glClear(GL10.GL_COLOR_BUFFER_BIT | GL10.GL_DEPTH_BUFFER_BIT);
+
 	cam.update();
 	cam.apply(Gdx.gl10);
     }

@@ -21,14 +21,17 @@ public class Assets {
 
     public static void load() {
 
-	nearestTextures = new TextureAtlas("hakd/gui/resources/nTextures.txt");
-	linearTextures = new TextureAtlas("hakd/gui/resources/lTextures.txt");
+	nearestTextures = new TextureAtlas(
+		Gdx.files.internal("hakd/gui/resources/nTextures.txt"));
+	linearTextures = new TextureAtlas(
+		Gdx.files.internal("hakd/gui/resources/lTextures.txt"));
 
 	// I used black because it is a texture that will not change
 	nearestTextures.findRegion("black").getTexture()
 		.setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
 
-	skin = new Skin(Assets.nearestTextures);
+	skin = new Skin(
+		Gdx.files.internal("hakd/gui/resources/skins/uiskin.json"));
 
 	FreeTypeFontGenerator generator = new FreeTypeFontGenerator(
 		Gdx.files.internal("hakd/gui/resources/fonts/whitrabt.ttf"));
