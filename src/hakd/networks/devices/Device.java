@@ -1,6 +1,5 @@
 package hakd.networks.devices;
 
-import hakd.gui.windows.Terminal;
 import hakd.gui.windows.Window;
 import hakd.internet.Connectable;
 import hakd.internet.Connection;
@@ -40,6 +39,7 @@ public class Device implements Connectable {
     private Model model;
 
     // objects
+    private List<Part> parts = new ArrayList<Part>();
     private int cpuSockets; // easier than using a for loop to count the amount,
 			    // just remember to
     // change this port
@@ -52,22 +52,20 @@ public class Device implements Connectable {
 
     // server gui
     private Window window;
-    private Terminal terminal;
-
-    // objects
-    private List<Part> parts = new ArrayList<Part>();
 
     // --------constructor--------
-    public Device(Network network, int level, DeviceType type) { // have random
+    public Device(Network network, int level, DeviceType type) { // idea: have
+								 // random
 								 // smartphone
 								 // connections
 								 // and
 								 // disconnections
 	if (network.getType() == NetworkType.PLAYER) {
-	    terminal = new Terminal();
+	    window = new Window(this);
 	}
 
-	this.network = network; // smartphones are like insects on a network,
+	this.network = network; // idea: smartphones are like insects on a
+				// network,
 				// many types, random behavior, and there are
 				// lots of them
 	this.level = level;
@@ -296,19 +294,11 @@ public class Device implements Connectable {
 	this.model = model;
     }
 
-    public Terminal getTerminal() {
-	return terminal;
-    }
-
     public Window getWindow() {
 	return window;
     }
 
     public void setWindow(Window window) {
 	this.window = window;
-    }
-
-    public void setTerminal(Terminal terminal) {
-	this.terminal = terminal;
     }
 }

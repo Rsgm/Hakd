@@ -47,5 +47,7 @@ public class Assets {
 
 	skin.getFont("console-font").getRegion().getTexture()
 		.setFilter(TextureFilter.Linear, TextureFilter.Linear);
+	skin.getAtlas().findRegion("default").getTexture()
+		.setFilter(TextureFilter.Linear, TextureFilter.Linear);
     }
 }

@@ -1,17 +1,15 @@
 package hakd.gui.windows;
 
 import hakd.gui.screens.GameScreen;
-import hakd.gui.screens.HakdScreen;
+import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 
-public class Window { // temp scene 2d test window
-    private final HakdScreen screen;
-
+public class Window {
     private final Stage stage;
-    private final Stack group;
+    private final Stack canvas;
 
     private final Terminal terminal;
     private final Desktop desktop;
@@ -19,21 +17,22 @@ public class Window { // temp scene 2d test window
     private final Login login;
     private final Web web;
 
-    public Window(HakdScreen screen) {
-	this.screen = screen;
+    private final Device device;
+    private GameScreen screen;
+
+    public Window(Device d) {
 	stage = new Stage();
+	device = d;
 
-	group = new Stack();
-	stage.addActor(group);
-	group.setFillParent(true);
+	canvas = new Stack();
+	stage.addActor(canvas);
+	canvas.setFillParent(true);
 
-	terminal = new Terminal();
+	terminal = new Terminal(device, this);
 	desktop = new Desktop();
 	map = new Map();
 	login = new Login();
 	web = new Web();
-
-	group.add(terminal.open());
     }
 
     public void render() {
@@ -44,10 +43,49 @@ public class Window { // temp scene 2d test window
     public void open(GameScreen screen) {
 	Gdx.input.setInputProcessor(stage);
 	stage.setViewport(500, 400, false);
+
+	this.screen = screen;
+	screen.setOpenWindow(this);
+
+	terminal/* desktop */.open(); // default screen when you open the
+				      // server, I may change it to a login or
+				      // startup page
     }
 
     public void close() {
-	// TODO Auto-generated method stub
+	stage.clear();
+	screen.setOpenWindow(null);
+    }
 
+    public Stage getStage() {
+	return stage;
+    }
+
+    public Stack getCanvas() {
+	return canvas;
+    }
+
+    public Terminal getTerminal() {
+	return terminal;
+    }
+
+    public Desktop getDesktop() {
+	return desktop;
+    }
+
+    public Map getMap() {
+	return map;
+    }
+
+    public Login getLogin() {
+	return login;
+    }
+
+    public Web getWeb() {
+	return web;
+    }
+
+    public Device getDevice() {
+	return device;
     }
 }

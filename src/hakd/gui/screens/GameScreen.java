@@ -27,11 +27,11 @@ public class GameScreen extends HakdScreen {
     // private int arraylist<npc> npcs = new arraylist<npc>(); maybe
 
     private Room room;
+    private final float tileSize = 64;
     private IsometricTiledMapRenderer renderer; // it says this is experimental,
 						// but it was an old article
-    private final float tileSize = 64;
 
-    public static Window/* Window */openWindow = null;
+    private Window openWindow = null;
 
     public GameScreen(Game game, String name) {
 	super(game);
@@ -108,8 +108,7 @@ public class GameScreen extends HakdScreen {
 	    s.draw(batch);
 
 	    if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
-		openWindow = new Window(this);// d.getTerminal();
-		openWindow.open(this);
+		d.getWindow().open(this);
 	    }
 	}
     }
@@ -180,5 +179,13 @@ public class GameScreen extends HakdScreen {
 
     public float getTileSize() {
 	return tileSize;
+    }
+
+    public Window getOpenWindow() {
+	return openWindow;
+    }
+
+    public void setOpenWindow(Window openWindow) {
+	this.openWindow = openWindow;
     }
 }
