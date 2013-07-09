@@ -39,8 +39,7 @@ public class Terminal {
 	Skin skin = Assets.skin;
 	history = new ArrayList<String>();
 
-	table = new com.badlogic.gdx.scenes.scene2d.ui.Window("Terminal",
-		Assets.skin);
+	table = new com.badlogic.gdx.scenes.scene2d.ui.Window("Terminal", skin);
 	// table.setSize(Gdx.graphics.getWidth() * .9f,
 	// Gdx.graphics.getHeight() * .9f);
 
@@ -94,6 +93,6 @@ public class Terminal {
     }
 
     public void close() {
-
+	window.getCanvas().removeActor(table);
     }
 }

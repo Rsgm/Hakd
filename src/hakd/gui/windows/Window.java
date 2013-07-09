@@ -29,7 +29,7 @@ public class Window {
 	canvas.setFillParent(true);
 
 	terminal = new Terminal(device, this);
-	desktop = new Desktop();
+	desktop = new Desktop(device, this);
 	map = new Map();
 	login = new Login();
 	web = new Web();
@@ -47,9 +47,9 @@ public class Window {
 	this.screen = screen;
 	screen.setOpenWindow(this);
 
-	terminal/* desktop */.open(); // default screen when you open the
-				      // server, I may change it to a login or
-				      // startup page
+	desktop.open(); // default screen when you open the
+			// server, I may change it to a login or
+			// startup screen
     }
 
     public void close() {

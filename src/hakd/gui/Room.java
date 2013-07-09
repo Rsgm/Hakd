@@ -67,7 +67,6 @@ public class Room {
 	buildRoom();
 
 	gameScreen.changeMap(map);
-
     }
 
     private void assignDevices() { // TODO make something to check for too many

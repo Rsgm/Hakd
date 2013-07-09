@@ -1,49 +1,111 @@
 package hakd.gui.windows;
 
 import hakd.gui.Assets;
+import hakd.networks.devices.Device;
 
-import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import java.util.ArrayList;
+
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Group;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField;
-import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Desktop {
-    Table table = new Table();
+    private final Window window;
 
-    TextField display;
-    TextField input;
+    private final Table table;
+    private final Group desktop;
+    private final Table menuBar;
 
-    public Desktop() {
-	table = new Table();
-	table.setFillParent(false);
+    private final Device device;
 
-	table.setBackground(new TextureRegionDrawable(Assets.nearestTextures
-		.findRegion("black")));
+    private final ArrayList<Button> desktopApps;
 
-	TextFieldStyle displayStyle = new TextFieldStyle();
-	displayStyle.background = new TextureRegionDrawable(
-		Assets.nearestTextures.findRegion("black"));
-	displayStyle.font = Assets.consoleFont;
-	displayStyle.fontColor = Assets.consoleFontColor;
+    public Desktop(Device d, Window w) {
+	device = d;
+	window = w;
 
-	TextFieldStyle inputStyle = new TextFieldStyle();
-	inputStyle.background = new TextureRegionDrawable(
-		Assets.nearestTextures.findRegion("black"));
-	inputStyle.font = Assets.consoleFont;
-	inputStyle.fontColor = Assets.consoleFontColor;
+	Skin skin = Assets.skin;
 
-	display = new TextField("", displayStyle);
-	input = new TextField("", inputStyle);
+	table = new com.badlogic.gdx.scenes.scene2d.ui.Window("Terminal", skin);
+	desktop = new Group();
+	menuBar = new Table(skin);
+	desktopApps = new ArrayList<Button>();
+	defaultApps();
 
-	ScrollPane s = new ScrollPane(display);
-
-	table.add(s).prefHeight(600f).prefWidth(400f);
+	table.add(desktop).expand().fill();
 	table.row();
-	table.add(input);
+	table.add(menuBar).expandX().height(20).fill();
     }
 
-    public Table open() {
+    public void open() {
+	window.getCanvas().add(table);
+    }
+
+    public void close() {
+	window.getCanvas().removeActor(table);
+    }
+
+    private void defaultApps() {
+	Skin skin = Assets.skin;
+
+	final Button terminal = new Button(skin);
+	terminal.addListener(new InputListener() {
+	    @Override
+	    public boolean touchDown(InputEvent event, float x, float y,
+		    int pointer, int button) {
+		return true;
+	    }
+
+	    @Override
+	    public void touchUp(InputEvent event, float x, float y,
+		    int pointer, int button) {
+		super.touchUp(event, x, y, pointer, button);
+		System.out.println("click");
+	    }
+
+	    @Override
+	    public void touchDragged(InputEvent event, float x, float y,
+		    int pointer) {
+		super.touchDragged(event, x, y, pointer);
+		terminal.setPosition(Gdx.input.getX() * .78f - 5 - table.getX()
+			- terminal.getWidth() / 2, Gdx.graphics.getHeight()
+			- Gdx.input.getY() * .835f - 100 - table.getY()
+			- terminal.getHeight() / 2);
+		System.out.println(Gdx.input.getX() + "	" + Gdx.input.getY());
+	    }
+	});
+	terminal.setSize(20, 20);
+	terminal.setPosition(20, 20);
+	desktopApps.add(terminal);
+	desktop.addActor(terminal);
+
+    }
+
+    public Window getWindow() {
+	return window;
+    }
+
+    public Table getTable() {
 	return table;
+    }
+
+    public Group getDesktop() {
+	return desktop;
+    }
+
+    public Table getMenuBar() {
+	return menuBar;
+    }
+
+    public Device getDevice() {
+	return device;
+    }
+
+    public ArrayList<Button> getDesktopApps() {
+	return desktopApps;
     }
 }
