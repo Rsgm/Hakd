@@ -38,6 +38,10 @@ public class Device implements Connectable {
     private Brand brand; // for example bell, or HQ
     private Model model;
 
+    private int totalMemory; // in MB
+    private int totalStorage; // in ???
+    private int totalCores;
+
     // objects
     private List<Part> parts = new ArrayList<Part>();
     private int cpuSockets; // easier than using a for loop to count the amount,
@@ -60,14 +64,12 @@ public class Device implements Connectable {
 								 // connections
 								 // and
 								 // disconnections
-	if (network.getType() == NetworkType.PLAYER) {
-	    window = new Window(this);
-	}
 
 	this.network = network; // idea: smartphones are like insects on a
 				// network,
 				// many types, random behavior, and there are
 				// lots of them
+
 	this.level = level;
 	this.type = type;
 
@@ -92,20 +94,31 @@ public class Device implements Connectable {
 	    break;
 	}
 	for (int i = 0; i < cpuSockets; i++) {
-	    parts.add(new Cpu(level, network, this));
+	    Cpu cpu = new Cpu(level, network, this);
+	    parts.add(cpu);
+	    totalCores += cpu.getCores();
 	}
 	for (int i = 0; i < gpuSlots; i++) {
-	    parts.add(new Gpu(level, network, this));
+	    Gpu gpu = new Gpu(level, network, this);
+	    parts.add(gpu);
 	}
 	for (int i = 0; i < memorySlots; i++) {
-	    parts.add(new Memory(level, network, this));
+	    Memory memory = new Memory(level, network, this);
+	    parts.add(memory);
+	    totalMemory = +memory.getCapacity();
 	}
 	for (int i = 0; i < storageSlots; i++) {
-	    parts.add(new Storage(level, network, this));
+	    Storage storage = new Storage(level, network, this);
+	    parts.add(storage);
+	    totalStorage = storage.getCapacity();
 	}
 
 	masterStorage = (Storage) Part.findParts(parts, PartType.STORAGE)
 		.get(0);
+
+	if (network.getType() == NetworkType.PLAYER) {
+	    window = new Window(this);
+	}
     }
 
     // --------methods--------
@@ -300,5 +313,29 @@ public class Device implements Connectable {
 
     public void setWindow(Window window) {
 	this.window = window;
+    }
+
+    public int getTotalMemory() {
+	return totalMemory;
+    }
+
+    public void setTotalMemory(int totalMemory) {
+	this.totalMemory = totalMemory;
+    }
+
+    public int getTotalStorage() {
+	return totalStorage;
+    }
+
+    public void setTotalStorage(int totalStorage) {
+	this.totalStorage = totalStorage;
+    }
+
+    public int getTotalCores() {
+	return totalCores;
+    }
+
+    public void setTotalCores(int totalCores) {
+	this.totalCores = totalCores;
     }
 }

@@ -4,12 +4,12 @@ import hakd.gui.screens.GameScreen;
 import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Stack;
 
 public class Window {
     private final Stage stage;
-    private final Stack canvas;
+    private final Group canvas;
 
     private final Terminal terminal;
     private final Desktop desktop;
@@ -24,9 +24,9 @@ public class Window {
 	stage = new Stage();
 	device = d;
 
-	canvas = new Stack();
+	canvas = new Group();
 	stage.addActor(canvas);
-	canvas.setFillParent(true);
+	canvas.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 	terminal = new Terminal(device, this);
 	desktop = new Desktop(device, this);
@@ -37,12 +37,14 @@ public class Window {
 
     public void render() {
 	stage.act(Gdx.graphics.getDeltaTime());
+	desktop.getTable().toBack();
 	stage.draw();
     }
 
     public void open(GameScreen screen) {
 	Gdx.input.setInputProcessor(stage);
-	stage.setViewport(500, 400, false);
+	stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
+		false);
 
 	this.screen = screen;
 	screen.setOpenWindow(this);
@@ -61,7 +63,7 @@ public class Window {
 	return stage;
     }
 
-    public Stack getCanvas() {
+    public Group getCanvas() {
 	return canvas;
     }
 

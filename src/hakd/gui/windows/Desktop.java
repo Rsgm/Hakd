@@ -9,20 +9,24 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.Touchable;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Desktop {
     private final Window window;
 
     private final Table table;
     private final Group desktop;
-    private final Table menuBar;
 
     private final Device device;
 
     private final ArrayList<Button> desktopApps;
+
+    private boolean dragged = true;
 
     public Desktop(Device d, Window w) {
 	device = d;
@@ -30,19 +34,19 @@ public class Desktop {
 
 	Skin skin = Assets.skin;
 
-	table = new com.badlogic.gdx.scenes.scene2d.ui.Window("Terminal", skin);
+	table = new com.badlogic.gdx.scenes.scene2d.ui.Window("Desktop", skin);
 	desktop = new Group();
-	menuBar = new Table(skin);
 	desktopApps = new ArrayList<Button>();
-	defaultApps();
+	table.setFillParent(true);
 
+	table.setTouchable(Touchable.childrenOnly); // creepy
+
+	defaultApps();
 	table.add(desktop).expand().fill();
-	table.row();
-	table.add(menuBar).expandX().height(20).fill();
     }
 
     public void open() {
-	window.getCanvas().add(table);
+	window.getCanvas().addActor(table);
     }
 
     public void close() {
@@ -50,9 +54,8 @@ public class Desktop {
     }
 
     private void defaultApps() {
-	Skin skin = Assets.skin;
-
-	final Button terminal = new Button(skin);
+	final ImageButton terminal = new ImageButton(new TextureRegionDrawable(
+		Assets.linearTextures.findRegion("console")));
 	terminal.addListener(new InputListener() {
 	    @Override
 	    public boolean touchDown(InputEvent event, float x, float y,
@@ -64,25 +67,29 @@ public class Desktop {
 	    public void touchUp(InputEvent event, float x, float y,
 		    int pointer, int button) {
 		super.touchUp(event, x, y, pointer, button);
-		System.out.println("click");
+		if (!dragged) {
+		    window.getTerminal().open();
+		} else {
+		    dragged = false;
+		}
 	    }
 
 	    @Override
 	    public void touchDragged(InputEvent event, float x, float y,
 		    int pointer) {
 		super.touchDragged(event, x, y, pointer);
-		terminal.setPosition(Gdx.input.getX() * .78f - 5 - table.getX()
-			- terminal.getWidth() / 2, Gdx.graphics.getHeight()
-			- Gdx.input.getY() * .835f - 100 - table.getY()
-			- terminal.getHeight() / 2);
-		System.out.println(Gdx.input.getX() + "	" + Gdx.input.getY());
+		terminal.setPosition(
+			(int) ((Gdx.input.getX() + 5 - table.getX() - terminal
+				.getWidth() / 2) / 20) * 20,
+			(int) ((Gdx.graphics.getHeight() - Gdx.input.getY() - 0
+				+ 5 - table.getY() - terminal.getHeight() / 2) / 20) * 20);
+		dragged = true;
 	    }
 	});
-	terminal.setSize(20, 20);
+	terminal.setSize(30, 30);
 	terminal.setPosition(20, 20);
 	desktopApps.add(terminal);
 	desktop.addActor(terminal);
-
     }
 
     public Window getWindow() {
@@ -95,10 +102,6 @@ public class Desktop {
 
     public Group getDesktop() {
 	return desktop;
-    }
-
-    public Table getMenuBar() {
-	return menuBar;
     }
 
     public Device getDevice() {

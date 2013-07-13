@@ -1,1 +1,0 @@
-print('Commands:" + "\nquit - stops the game\nadd - adds a server\ntest - outputs the current amount of networks in the dns\nhome - sets the current network and server to the homene twork and server 0\ndebug [address] - adds variables of the network at that address to the debug tab')

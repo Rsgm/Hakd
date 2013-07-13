@@ -2,44 +2,65 @@ lTextures.png
 format: RGBA8888
 filter: Linear,Linear
 repeat: none
-loading
-  rotate: false
-  xy: 22, 2
-  size: 96, 96
-  orig: 96, 96
-  offset: 0, 0
-  index: -1
-close
+closeDown
   rotate: false
   xy: 2, 2
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
-loadingbackground
+loading
   rotate: false
-  xy: 120, 2
+  xy: 241, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
-terminal
+console
   rotate: false
-  xy: 252, 2
-  size: 465, 403
-  orig: 465, 403
+  xy: 62, 2
+  size: 84, 84
+  orig: 84, 84
+  offset: 0, 0
+  index: -1
+list
+  rotate: false
+  xy: 148, 2
+  size: 91, 67
+  orig: 91, 67
+  offset: 0, 0
+  index: -1
+closeOver
+  rotate: false
+  xy: 22, 2
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+closeUp
+  rotate: false
+  xy: 42, 2
+  size: 18, 18
+  orig: 18, 18
+  offset: 0, 0
+  index: -1
+loadingbackground
+  rotate: false
+  xy: 339, 2
+  size: 96, 96
+  orig: 96, 96
   offset: 0, 0
   index: -1
 title
   rotate: false
-  xy: 2, 407
+  xy: 2, 100
   size: 800, 210
   orig: 800, 210
   offset: 0, 0
   index: -1
 spaceBarIcon
   rotate: false
-  xy: 218, 2
+  xy: 437, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
