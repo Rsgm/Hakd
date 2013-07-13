@@ -6,10 +6,7 @@ import hakd.gui.Assets;
 import hakd.gui.Room;
 import hakd.gui.input.GameInput;
 import hakd.gui.windows.Window;
-import hakd.internet.NetworkController;
-import hakd.networks.Network;
 import hakd.networks.devices.Device;
-import hakd.other.enumerations.NetworkType;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -37,9 +34,9 @@ public class GameScreen extends HakdScreen {
 	super(game);
 
 	GamePlay.generateGame();
-	Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
+	// Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
 
-	player = new Player(name, n, this);
+	player = new Player(name, null, this);
 	room = new Room(player, this);
 
 	Sprite sprite = player.getSprite();

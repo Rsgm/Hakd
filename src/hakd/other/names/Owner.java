@@ -1,4 +1,4 @@
-package hakd.other.enumerations.names;
+package hakd.other.names;
 
 public enum Owner {
 	COMPANY("Company"), TEST("Test"); // these will be replaced with better ones

@@ -2,95 +2,103 @@ package hakd.networks.devices.parts;
 
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
-import hakd.other.enumerations.PartType;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Part {
 
-	// stats
-	private Network		network;
-	private Device		device;
-	private PartType	type;
+    // stats
+    private Network network;
+    private Device device;
+    private PartType type;
 
-	private int			level;
-	private int			speed;		// either MHz or MB/s(megabyte/s, not megabit/s) depending on the part // cpu also has core modifier speed = speed
-// (1.8*cores)
+    private int level;
+    private int speed; // either MHz or MB/s(megabyte/s, not megabit/s)
+		       // depending on the part // cpu also has core modifier
+		       // speed = speed
+    // (1.8*cores)
 
-	private String		brand;
-	private String		model;
+    private String brand;
+    private String model;
 
-	public Part(int level, Network network, Device device) {
-		this.level = level;
-		this.network = network;
-		this.device = device;
+    public Part(int level, Network network, Device device) {
+	this.level = level;
+	this.network = network;
+	this.device = device;
+    }
+
+    // finds all of the parts in the list of that type
+    public static List<Part> findParts(List<Part> parts, PartType type) {
+	List<Part> returnParts = new ArrayList<Part>();
+	for (Part p : parts) {
+	    if (p.getType() == type) {
+		returnParts.add(p);
+	    }
 	}
+	return returnParts;
+    }
 
-	// finds all of the parts in the list of that type
-	public static List<Part> findParts(List<Part> parts, PartType type) {
-		List<Part> returnParts = new ArrayList<Part>();
-		for (Part p : parts) {
-			if (p.getType() == type) {
-				returnParts.add(p);
-			}
-		}
-		return returnParts;
-	}
+    public enum PartType {
+	PART(), CPU(), GPU(), MEMORY(), STORAGE; // more to come
 
-	public Network getNetwork() {
-		return network;
+	private PartType() {
 	}
+    }
 
-	public void setNetwork(Network network) {
-		this.network = network;
-	}
+    public Network getNetwork() {
+	return network;
+    }
 
-	public Device getDevice() {
-		return device;
-	}
+    public void setNetwork(Network network) {
+	this.network = network;
+    }
 
-	public void setDevice(Device device) {
-		this.device = device;
-	}
+    public Device getDevice() {
+	return device;
+    }
 
-	public int getLevel() {
-		return level;
-	}
+    public void setDevice(Device device) {
+	this.device = device;
+    }
 
-	public void setLevel(int level) {
-		this.level = level;
-	}
+    public int getLevel() {
+	return level;
+    }
 
-	public int getSpeed() {
-		return speed;
-	}
+    public void setLevel(int level) {
+	this.level = level;
+    }
 
-	public void setSpeed(int speed) {
-		this.speed = speed;
-	}
+    public int getSpeed() {
+	return speed;
+    }
 
-	public String getBrand() {
-		return brand;
-	}
+    public void setSpeed(int speed) {
+	this.speed = speed;
+    }
 
-	public void setBrand(String brand) {
-		this.brand = brand;
-	}
+    public String getBrand() {
+	return brand;
+    }
 
-	public String getModel() {
-		return model;
-	}
+    public void setBrand(String brand) {
+	this.brand = brand;
+    }
 
-	public void setModel(String model) {
-		this.model = model;
-	}
+    public String getModel() {
+	return model;
+    }
 
-	public PartType getType() {
-		return type;
-	}
+    public void setModel(String model) {
+	this.model = model;
+    }
 
-	public void setType(PartType type) {
-		this.type = type;
-	}
+    public PartType getType() {
+	return type;
+    }
+
+    public void setType(PartType type) {
+	this.type = type;
+    }
 }

@@ -1,4 +1,4 @@
-package hakd.other.enumerations.names;
+package hakd.other.names;
 
 public enum Brand {
 	INTELLIGENCE("Intelligence");

@@ -2,8 +2,6 @@ package hakd.networks.devices;
 
 import hakd.internet.NetworkController;
 import hakd.networks.Network;
-import hakd.other.enumerations.DeviceType;
-import hakd.other.enumerations.Region;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -16,9 +14,10 @@ public class Dns extends Device { // TODO let DNSs communicate a bit.
     }
 
     // --------methods--------
-    public String assignIp(Region region) { // assigns an ip to an object that
-					    // requests one, also checks it and
-					    // adds it to the dns list
+    public String assignIp(Network.Region region) { // assigns an ip to an
+						    // object that
+	// requests one, also checks it and
+	// adds it to the dns list
 	String ip;
 	boolean taken;
 
@@ -39,7 +38,7 @@ public class Dns extends Device { // TODO let DNSs communicate a bit.
     // used to create a realistic, random ip based on registered ipv4 IRL(or AFK
     // if your from sweeden). used mostly with the assign ip method, but can
     // be useful for other things
-    public static String generateIp(Region region) {
+    public static String generateIp(Network.Region region) {
 	switch (region) {
 	default:
 	    return (int) (Math.random() * 256) + "."
@@ -107,63 +106,65 @@ public class Dns extends Device { // TODO let DNSs communicate a bit.
 
     // I only keep this for the algorithms it has
     { // old method
-    // public static void addConnection(Network network, String address) {
-    // Vector<Line> lines = GameScreem.getLines();
-    // int radius = GameScreem.getRadius();
-    // double r, a, b, c, xTrig, yTrig, x1, y1, x2, y2; // triangle>ABC
-    //
-    // x1 = network.getxCoordinate();
-    // y1 = network.getyCoordinate();
-    // x2 = Network.getNetworks().get(findNetwork(address)).getxCoordinate();
-    // y2 = Network.getNetworks().get(findNetwork(address)).getyCoordinate();
-    // r = radius;
-    //
-    // a = 1; // line BC, point C is only (x2,y2+1)
-    // b = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 + 1 - y1) * (y2 + 1 - y1)); //
-    // line CA
-    // c = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)); // line AB
-    //
-    // Line line = new Line();
-    // if (x2 - x1 != 0) {
-    // xTrig = r * Math.sin(Math.acos((a * a - b * b + c * c) / (2 * a * c)));
-    // yTrig = r * Math.cos(Math.acos((a * a - b * b + c * c) / (2 * a * c)));
-    // if (x2 - x1 > 0) {
-    // line.setStartX(x1 + xTrig);
-    // line.setStartY(y1 - yTrig);
-    // line.setEndX(x2 - xTrig);
-    // line.setEndY(y2 + yTrig);
-    // } else if (x2 - x1 < 0) {
-    // line.setStartX(x1 - xTrig);
-    // line.setStartY(y1 - yTrig);
-    // line.setEndX(x2 + xTrig);
-    // line.setEndY(y2 + yTrig);
-    // }
-    // } else {
-    // if (y2 - y1 > 0) {
-    // line.setEndX(x2);
-    // line.setEndY(y2 + r);
-    // } else if (y2 - y1 < 0) {
-    // line.setEndX(x2);
-    // line.setEndY(y2 - r);
-    // } else {
-    // return;
-    // }
-    // return;
-    // }
-    // if (Double.isNaN(yTrig) || Double.isNaN(xTrig)) {
-    // return;
-    // }
-    //
-    // line.setFill(Paint.valueOf("black"));
-    // line.setStrokeWidth(1.15);
-    // line.setOpacity(0.3);
-    // lines.add(line);
-    // Connection.getConnection().add(new Connection(network,
-    // Network.getNetworks().get(findNetwork(address))));
-    //
-    // // GameScreem.updateRegion();
-    // return;
-    // }
+      // public static void addConnection(Network network, String address) {
+      // Vector<Line> lines = GameScreem.getLines();
+      // int radius = GameScreem.getRadius();
+      // double r, a, b, c, xTrig, yTrig, x1, y1, x2, y2; // triangle>ABC
+      //
+      // x1 = network.getxCoordinate();
+      // y1 = network.getyCoordinate();
+      // x2 = Network.getNetworks().get(findNetwork(address)).getxCoordinate();
+      // y2 = Network.getNetworks().get(findNetwork(address)).getyCoordinate();
+      // r = radius;
+      //
+      // a = 1; // line BC, point C is only (x2,y2+1)
+      // b = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 + 1 - y1) * (y2 + 1 - y1));
+      // //
+      // line CA
+      // c = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)); // line
+      // AB
+      //
+      // Line line = new Line();
+      // if (x2 - x1 != 0) {
+      // xTrig = r * Math.sin(Math.acos((a * a - b * b + c * c) / (2 * a * c)));
+      // yTrig = r * Math.cos(Math.acos((a * a - b * b + c * c) / (2 * a * c)));
+      // if (x2 - x1 > 0) {
+      // line.setStartX(x1 + xTrig);
+      // line.setStartY(y1 - yTrig);
+      // line.setEndX(x2 - xTrig);
+      // line.setEndY(y2 + yTrig);
+      // } else if (x2 - x1 < 0) {
+      // line.setStartX(x1 - xTrig);
+      // line.setStartY(y1 - yTrig);
+      // line.setEndX(x2 + xTrig);
+      // line.setEndY(y2 + yTrig);
+      // }
+      // } else {
+      // if (y2 - y1 > 0) {
+      // line.setEndX(x2);
+      // line.setEndY(y2 + r);
+      // } else if (y2 - y1 < 0) {
+      // line.setEndX(x2);
+      // line.setEndY(y2 - r);
+      // } else {
+      // return;
+      // }
+      // return;
+      // }
+      // if (Double.isNaN(yTrig) || Double.isNaN(xTrig)) {
+      // return;
+      // }
+      //
+      // line.setFill(Paint.valueOf("black"));
+      // line.setStrokeWidth(1.15);
+      // line.setOpacity(0.3);
+      // lines.add(line);
+      // Connection.getConnection().add(new Connection(network,
+      // Network.getNetworks().get(findNetwork(address))));
+      //
+      // // GameScreem.updateRegion();
+      // return;
+      // }
     }
 
     // --------getters/setters--------

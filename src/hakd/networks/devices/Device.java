@@ -3,21 +3,21 @@ package hakd.networks.devices;
 import hakd.gui.windows.Window;
 import hakd.internet.Connectable;
 import hakd.internet.Connection;
+import hakd.internet.NetworkController;
+import hakd.internet.NetworkController.Protocol;
+import hakd.internet.Port;
 import hakd.networks.Network;
+import hakd.networks.Network.NetworkType;
 import hakd.networks.devices.parts.Cpu;
 import hakd.networks.devices.parts.Gpu;
 import hakd.networks.devices.parts.Memory;
 import hakd.networks.devices.parts.Part;
+import hakd.networks.devices.parts.Part.PartType;
 import hakd.networks.devices.parts.Storage;
 import hakd.other.File;
-import hakd.other.Port;
-import hakd.other.enumerations.DeviceType;
-import hakd.other.enumerations.FileType;
-import hakd.other.enumerations.NetworkType;
-import hakd.other.enumerations.PartType;
-import hakd.other.enumerations.Protocol;
-import hakd.other.enumerations.names.Brand;
-import hakd.other.enumerations.names.Model;
+import hakd.other.File.FileType;
+import hakd.other.names.Brand;
+import hakd.other.names.Model;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -125,7 +125,7 @@ public class Device implements Connectable {
 
     @Override
     public boolean Connect(Device client, String program, int port,
-	    Protocol protocol) { // TODO this
+	    NetworkController.Protocol protocol) { // TODO this
 	Connection c = new Connection(this, client, Protocol.getProtocol(port));
 	connections.add(c);
 
@@ -192,6 +192,14 @@ public class Device implements Connectable {
 	    }
 	}
 	return returnDevices;
+    }
+
+    public enum DeviceType {
+	DEVICE(), DNS(), ROUTER(), SERVER(); // more to come
+
+	private DeviceType() {
+	}
+
     }
 
     // --------getters/setters--------

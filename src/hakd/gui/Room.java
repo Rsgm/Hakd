@@ -4,10 +4,10 @@ import hakd.game.gameplay.Player;
 import hakd.gui.screens.GameScreen;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
+import hakd.networks.devices.Device.DeviceType;
 import hakd.networks.devices.Dns;
 import hakd.networks.devices.Router;
 import hakd.networks.devices.Server;
-import hakd.other.enumerations.DeviceType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,7 +39,7 @@ public class Room {
 
     public Room(Player player, GameScreen gameScreen) {
 	network = player.getNetwork();
-	devices = network.getDevices();
+	// devices = network.getDevices();
 
 	map = new TmxMapLoader().load("hakd/gui/resources/maps/room"
 		+ network.getLevel() + ".tmx");

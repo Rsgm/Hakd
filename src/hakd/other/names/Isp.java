@@ -1,4 +1,4 @@
-package hakd.other.enumerations.names;
+package hakd.other.names;
 
 public enum Isp {
 	// these are just some names I came up with, they are in no way referencing real companies, infinity LTD.

@@ -15,7 +15,8 @@ public class Hakd extends Game {
     private boolean vsync;
 
     private static Preferences prefs;
-    private static Preferences save1; // save this for later
+
+    // private static Preferences save1; // save this for later
 
     @Override
     public void create() {
