@@ -1,6 +1,6 @@
 Hakd
 ====
-Hakd is game about hacking, with a realistic, simulated, and procedurally generated internet.
+Hakd is semi rogue-like game about hacking, with a realistic, simulated, and procedurally generated internet.
 
 about
 =====
