@@ -9,22 +9,22 @@ import java.util.List;
 public class Part {
 
     // stats
-    private Network network;
-    private Device device;
-    private PartType type;
+    Network network;
+    Device device;
+    PartType type;
 
-    private int level;
-    private int speed; // either MHz or MB/s(megabyte/s, not megabit/s)
+    int level;
+    int speed; // either MHz or MB/s(megabyte/s, not megabit/s)
 		       // depending on the part // cpu also has core modifier
 		       // speed = speed
     // (1.8*cores)
 
-    private String brand;
-    private String model;
+    String brand;
+    String model;
 
-    public Part(int level, Network network, Device device) {
+    public Part(int level, Device device) {
 	this.level = level;
-	this.network = network;
+	this.network = device.getNetwork();
 	this.device = device;
     }
 

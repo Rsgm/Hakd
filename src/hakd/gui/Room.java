@@ -37,12 +37,13 @@ public class Room {
 
     private GameScreen gameScreen;
 
-    public Room(Player player, GameScreen gameScreen) {
+    public Room(Player player, GameScreen gameScreen, RoomMap roomMap) {
+	this.player = player;
 	network = player.getNetwork();
-	// devices = network.getDevices();
+	devices = network.getDevices();
 
-	map = new TmxMapLoader().load("hakd/gui/resources/maps/room"
-		+ network.getLevel() + ".tmx");
+	map = new TmxMapLoader().load("hakd/gui/resources/maps/"
+		+ roomMap.toString() + ".tmx");
 
 	floor = (TiledMapTileLayer) map.getLayers().get("floor");
 	floor = (TiledMapTileLayer) map.getLayers().get("wall");
@@ -127,6 +128,13 @@ public class Room {
 	    }
 	}
 	return device;
+    }
+
+    public enum RoomMap {
+	room1(), room2(), room3(), room4(), room5(), room6();
+
+	private RoomMap() {
+	}
     }
 
     public void dispose() {

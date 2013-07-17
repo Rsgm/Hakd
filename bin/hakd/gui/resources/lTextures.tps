@@ -152,9 +152,8 @@
             <filename>graphics/title.png</filename>
             <filename>graphics/console.png</filename>
             <filename>graphics/list.png</filename>
-            <filename>graphics/closeDown.png</filename>
-            <filename>graphics/closeOver.png</filename>
-            <filename>graphics/closeUp.png</filename>
+            <filename>graphics/wallpaper.png</filename>
+            <filename>graphics/close.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

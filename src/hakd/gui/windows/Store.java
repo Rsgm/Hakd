@@ -1,6 +1,5 @@
 package hakd.gui.windows;
 
-
-public class Editor {
+public class Store {
 
 }

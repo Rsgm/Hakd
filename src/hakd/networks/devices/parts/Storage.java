@@ -1,6 +1,5 @@
 package hakd.networks.devices.parts;
 
-import hakd.networks.Network;
 import hakd.networks.devices.Device;
 import hakd.other.File;
 import hakd.other.File.FileType;
@@ -29,17 +28,17 @@ public class Storage extends Part {
 							 // new leap in quantum
 							 // physics
 
-    public Storage(int level, Network network, Device device) {
-	super(level, network, device);
+    public Storage(int level, Device device) {
+	super(level, device);
 	setType(PartType.STORAGE);
 
 	switch (level) {
 	case 0:
-	    setSpeed((level + 1) * 30 + (int) (Math.random() * 30));
+	    speed = (level + 1) * 30 + (int) (Math.random() * 30);
 	    capacity = (int) Math.pow(2, (level + 4)
 		    + (int) (Math.random() * 3 - 1));
 	default:
-	    setSpeed((level + 1) * 30 + ((int) (Math.random() * 60 - 30)));
+	    speed = (level + 1) * 30 + ((int) (Math.random() * 60 - 30));
 	    capacity = (int) Math.pow(2, (level + 4)
 		    + (int) (Math.random() * 3 + 1) - 2); // start at 16 GB at
 							  // level 1 and make
@@ -47,11 +46,19 @@ public class Storage extends Part {
 	    // up 15 GB
 	    if (1 == (int) ((Math.random() * 30) + 1)) {
 		ssd = true;
-		setSpeed(getSpeed() * 2);
+		speed *= 2;
 		capacity /= 2;
 	    }
 	}
 
+    }
+
+    public Storage(Device device, int level, int a, int b, boolean c) {
+	super(level, device);
+
+	speed = a;
+	capacity = b;
+	ssd = c;
     }
 
     // adds a file to the end of one of the arraylists

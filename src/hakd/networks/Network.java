@@ -59,13 +59,13 @@ public class Network { // this only holds a set of devices and info, connecting
 	switch (type) { // I should really clean these up, meh, later
 	case PLAYER:// new player // only happens at the start of the game
 	    region = Region.NA;
-	    level = 0;
-	    serverLimit = 0;
+	    level = -1;
+	    serverLimit = 1;
 	    routerLimit = 0;
 	    stance = Stance.FRIENDLY;
 	    break;
 	default:
-	    region = Region.EUROPE;
+	    region = Region.NA;
 	    owner = "test";
 	    serverLimit = 4;
 	    dnsLimit = 1;
@@ -97,7 +97,7 @@ public class Network { // this only holds a set of devices and info, connecting
 	    break;
 	}
 
-	if (type != NetworkType.ISP && type != NetworkType.PLAYER) {
+	if (type != NetworkType.ISP) {
 	    isp = NetworkController.getServiceProviders().get(
 		    (int) (Math.random() * NetworkController
 			    .getServiceProviders().size()));

@@ -7,7 +7,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-public class Window {
+public class ServerWindow implements WindowStage {
     private final Stage stage;
     private final Group canvas;
 
@@ -20,7 +20,7 @@ public class Window {
     private final Device device;
     private GameScreen screen;
 
-    public Window(Device d) {
+    public ServerWindow(Device d) {
 	stage = new Stage();
 	device = d;
 
@@ -35,25 +35,25 @@ public class Window {
 	web = new Web();
     }
 
+    @Override
     public void render() {
 	stage.act(Gdx.graphics.getDeltaTime());
 	desktop.getTable().toBack();
 	stage.draw();
     }
 
-    public void open(GameScreen screen) {
+    @Override
+    public void open() {
 	Gdx.input.setInputProcessor(stage);
 	stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 		false);
-
-	this.screen = screen;
-	screen.setOpenWindow(this);
 
 	desktop.open(); // default screen when you open the
 			// server, I may change it to a login or
 			// startup screen
     }
 
+    @Override
     public void close() {
 	stage.clear();
 	screen.setOpenWindow(null);
@@ -89,5 +89,13 @@ public class Window {
 
     public Device getDevice() {
 	return device;
+    }
+
+    public GameScreen getScreen() {
+	return screen;
+    }
+
+    public void setScreen(GameScreen screen) {
+	this.screen = screen;
     }
 }

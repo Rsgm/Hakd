@@ -1,6 +1,6 @@
 package hakd.networks.devices;
 
-import hakd.gui.windows.Window;
+import hakd.gui.windows.ServerWindow;
 import hakd.internet.Connectable;
 import hakd.internet.Connection;
 import hakd.internet.NetworkController;
@@ -28,8 +28,10 @@ public class Device implements Connectable {
     private Network network;
     private int level;
     // private int webserver = 0; // 0 = 404, if port 80 is open
-    private List<Port> ports = new ArrayList<Port>(); // port, program / if its
-						      // closed just delete it
+    private List<Port> ports = new ArrayList<Port>(); // port, program /
+						      // if its
+						      // closed just
+						      // delete it
     private List<Connection> connections = new ArrayList<Connection>();
     private File logs; // TODO make this a file instead connecting from and the
 		       // action after
@@ -40,7 +42,6 @@ public class Device implements Connectable {
 
     private int totalMemory; // in MB
     private int totalStorage; // in ???
-    private int totalCores;
 
     // objects
     private List<Part> parts = new ArrayList<Part>();
@@ -55,7 +56,7 @@ public class Device implements Connectable {
     private DeviceType type;
 
     // server gui
-    private Window window;
+    private ServerWindow window;
 
     // --------constructor--------
     public Device(Network network, int level, DeviceType type) { // idea: have
@@ -74,6 +75,12 @@ public class Device implements Connectable {
 	this.type = type;
 
 	switch (level) {
+	case -1:
+	    cpuSockets = 0;
+	    gpuSlots = 0;
+	    memorySlots = 0;
+	    storageSlots = 0;
+	    break;
 	case 0:
 	    cpuSockets = (int) (Math.random() * 2 + 1);
 	    gpuSlots = 1; // TODO server part generation code
@@ -94,30 +101,68 @@ public class Device implements Connectable {
 	    break;
 	}
 	for (int i = 0; i < cpuSockets; i++) {
-	    Cpu cpu = new Cpu(level, network, this);
+	    Cpu cpu = new Cpu(level, this);
 	    parts.add(cpu);
-	    totalCores += cpu.getCores();
 	}
 	for (int i = 0; i < gpuSlots; i++) {
-	    Gpu gpu = new Gpu(level, network, this);
+	    Gpu gpu = new Gpu(level, this);
 	    parts.add(gpu);
 	}
 	for (int i = 0; i < memorySlots; i++) {
-	    Memory memory = new Memory(level, network, this);
+	    Memory memory = new Memory(level, this);
 	    parts.add(memory);
-	    totalMemory = +memory.getCapacity();
+	    totalMemory += memory.getCapacity();
 	}
 	for (int i = 0; i < storageSlots; i++) {
-	    Storage storage = new Storage(level, network, this);
+	    Storage storage = new Storage(level, this);
 	    parts.add(storage);
-	    totalStorage = storage.getCapacity();
+	    totalStorage += storage.getCapacity();
 	}
 
-	masterStorage = (Storage) Part.findParts(parts, PartType.STORAGE)
-		.get(0);
+	if (storageSlots > 0) {
+	    masterStorage = (Storage) Part.findParts(parts, PartType.STORAGE)
+		    .get(0);
+	}
 
 	if (network.getType() == NetworkType.PLAYER) {
-	    window = new Window(this);
+	    window = new ServerWindow(this);
+	}
+    }
+
+    public Device(Network network, int level, int cpuSockets, int gpuSlots,
+	    int memorySlots, int storageSlots) {
+	this.level = level;
+	this.cpuSockets = cpuSockets;
+	this.gpuSlots = gpuSlots;
+	this.memorySlots = memorySlots;
+	this.storageSlots = storageSlots;
+
+	for (int i = 0; i < cpuSockets; i++) {
+	    Cpu cpu = new Cpu(level, this);
+	    parts.add(cpu);
+	}
+	for (int i = 0; i < gpuSlots; i++) {
+	    Gpu gpu = new Gpu(level, this);
+	    parts.add(gpu);
+	}
+	for (int i = 0; i < memorySlots; i++) {
+	    Memory memory = new Memory(level, this);
+	    parts.add(memory);
+	    totalMemory += memory.getCapacity();
+	}
+	for (int i = 0; i < storageSlots; i++) {
+	    Storage storage = new Storage(level, this);
+	    parts.add(storage);
+	    totalStorage += storage.getCapacity();
+	}
+
+	if (storageSlots > 0) {
+	    masterStorage = (Storage) Part.findParts(parts, PartType.STORAGE)
+		    .get(0);
+	}
+
+	if (network.getType() == NetworkType.PLAYER) {
+	    window = new ServerWindow(this);
 	}
     }
 
@@ -192,6 +237,84 @@ public class Device implements Connectable {
 	    }
 	}
 	return returnDevices;
+    }
+
+    public void addPart(PartType partType, int level, int a, int b, boolean c) {
+	switch (partType) {
+	case CPU:
+	    if (cpuSockets <= Part.findParts(parts, PartType.CPU).size()) {
+		break;
+	    }
+
+	    Cpu cpu = new Cpu(this, level, a, b);
+	    parts.add(cpu);
+	    break;
+	case GPU:
+	    if (cpuSockets <= Part.findParts(parts, PartType.GPU).size()) {
+		break;
+	    }
+
+	    Gpu gpu = new Gpu(this, level, a, b);
+	    parts.add(gpu);
+	    break;
+	case MEMORY:
+	    if (cpuSockets <= Part.findParts(parts, PartType.MEMORY).size()) {
+		break;
+	    }
+
+	    Memory memory = new Memory(this, level, a, b);
+	    parts.add(memory);
+	    totalMemory += memory.getCapacity();
+	    break;
+	default: // storage
+	    if (cpuSockets <= Part.findParts(parts, PartType.STORAGE).size()) {
+		break;
+	    }
+
+	    Storage storage = new Storage(this, level, a, b, c);
+	    parts.add(storage);
+	    totalStorage += storage.getCapacity();
+	    break;
+	}
+    }
+
+    public void addPart(PartType partType, Part p) {
+	switch (partType) {
+	case CPU:
+	    if (cpuSockets <= Part.findParts(parts, PartType.CPU).size()) {
+		break;
+	    }
+
+	    Cpu cpu = (Cpu) p;
+	    parts.add(cpu);
+	    break;
+	case GPU:
+	    if (cpuSockets <= Part.findParts(parts, PartType.GPU).size()) {
+		break;
+	    }
+
+	    Gpu gpu = (Gpu) p;
+	    parts.add(gpu);
+	    break;
+	case MEMORY:
+	    if (cpuSockets <= Part.findParts(parts, PartType.MEMORY).size()) {
+		break;
+	    }
+
+	    Memory memory = (Memory) p;
+	    parts.add(memory);
+	    totalMemory += memory.getCapacity();
+	    break;
+	default: // storage
+	    if (cpuSockets <= Part.findParts(parts, PartType.STORAGE).size()) {
+		break;
+	    }
+
+	    Storage storage = (Storage) p;
+	    parts.add(storage);
+	    totalStorage += storage.getCapacity();
+	    break;
+	}
     }
 
     public enum DeviceType {
@@ -315,11 +438,11 @@ public class Device implements Connectable {
 	this.model = model;
     }
 
-    public Window getWindow() {
+    public ServerWindow getWindow() {
 	return window;
     }
 
-    public void setWindow(Window window) {
+    public void setWindow(ServerWindow window) {
 	this.window = window;
     }
 
@@ -337,13 +460,5 @@ public class Device implements Connectable {
 
     public void setTotalStorage(int totalStorage) {
 	this.totalStorage = totalStorage;
-    }
-
-    public int getTotalCores() {
-	return totalCores;
-    }
-
-    public void setTotalCores(int totalCores) {
-	this.totalCores = totalCores;
     }
 }

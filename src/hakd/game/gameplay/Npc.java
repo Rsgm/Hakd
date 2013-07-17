@@ -3,6 +3,7 @@ package hakd.game.gameplay;
 import hakd.networks.Network;
 
 public class Npc {
+    // hackers
 
     private int money;
     private String name;

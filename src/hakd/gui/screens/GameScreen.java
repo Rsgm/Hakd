@@ -4,8 +4,13 @@ import hakd.game.gameplay.GamePlay;
 import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
 import hakd.gui.Room;
+import hakd.gui.Room.RoomMap;
 import hakd.gui.input.GameInput;
-import hakd.gui.windows.Window;
+import hakd.gui.windows.NewServer;
+import hakd.gui.windows.WindowStage;
+import hakd.internet.NetworkController;
+import hakd.networks.Network;
+import hakd.networks.Network.NetworkType;
 import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.Game;
@@ -28,16 +33,16 @@ public class GameScreen extends HakdScreen {
     private IsometricTiledMapRenderer renderer; // it says this is experimental,
 						// but it was an old article
 
-    private Window openWindow = null;
+    private WindowStage openWindow = null;
 
     public GameScreen(Game game, String name) {
 	super(game);
 
 	GamePlay.generateGame();
-	// Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
+	Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
 
-	player = new Player(name, null, this);
-	room = new Room(player, this);
+	player = new Player(name, n, this);
+	room = new Room(player, this, RoomMap.room1);
 
 	Sprite sprite = player.getSprite();
 	sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight()
@@ -105,7 +110,16 @@ public class GameScreen extends HakdScreen {
 	    s.draw(batch);
 
 	    if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
-		d.getWindow().open(this);
+
+		if (d.getCpuSockets() == 0) {
+		    openWindow = new NewServer(d);
+		    openWindow.setScreen(this);
+		    openWindow.open();
+		} else {
+		    d.getWindow().setScreen(this);
+		    openWindow = d.getWindow();
+		    d.getWindow().open();
+		}
 	    }
 	}
     }
@@ -147,6 +161,7 @@ public class GameScreen extends HakdScreen {
 
     public void changeMap(TiledMap map) { // TODO make a transition effect
 	renderer = new IsometricTiledMapRenderer(map, 1 / tileSize);
+	// TODO try removing 1/tilesize and making the cam 800 by 600
 	// tilesize has to be float, otherwise it will round
     }
 
@@ -178,11 +193,11 @@ public class GameScreen extends HakdScreen {
 	return tileSize;
     }
 
-    public Window getOpenWindow() {
+    public WindowStage getOpenWindow() {
 	return openWindow;
     }
 
-    public void setOpenWindow(Window openWindow) {
+    public void setOpenWindow(WindowStage openWindow) {
 	this.openWindow = openWindow;
     }
 }

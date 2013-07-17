@@ -6,6 +6,7 @@ import hakd.networks.devices.Device;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
@@ -17,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Desktop {
-    private final Window window;
+    private final ServerWindow window;
 
     private final Table table;
     private final Group desktop;
@@ -28,7 +29,7 @@ public class Desktop {
 
     private boolean dragged = true;
 
-    public Desktop(Device d, Window w) {
+    public Desktop(Device d, ServerWindow w) {
 	device = d;
 	window = w;
 
@@ -40,6 +41,9 @@ public class Desktop {
 	table.setFillParent(true);
 
 	table.setTouchable(Touchable.childrenOnly); // creepy
+	table.setBackground(new TextureRegionDrawable(Assets.linearTextures
+		.findRegion("wallpaper")));
+	table.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 
 	defaultApps();
 	table.add(desktop).expand().fill();
@@ -60,6 +64,7 @@ public class Desktop {
 	    @Override
 	    public boolean touchDown(InputEvent event, float x, float y,
 		    int pointer, int button) {
+		terminal.setColor(1f, 1f, 1f, 0.8f);
 		return true;
 	    }
 
@@ -72,12 +77,14 @@ public class Desktop {
 		} else {
 		    dragged = false;
 		}
+		terminal.setColor(Color.WHITE);
 	    }
 
 	    @Override
 	    public void touchDragged(InputEvent event, float x, float y,
 		    int pointer) {
 		super.touchDragged(event, x, y, pointer);
+		terminal.setColor(1f, 1f, 1f, 0.4f);
 		terminal.setPosition(
 			(int) ((Gdx.input.getX() + 5 - table.getX() - terminal
 				.getWidth() / 2) / 20) * 20,
@@ -92,7 +99,7 @@ public class Desktop {
 	desktop.addActor(terminal);
     }
 
-    public Window getWindow() {
+    public ServerWindow getWindow() {
 	return window;
     }
 

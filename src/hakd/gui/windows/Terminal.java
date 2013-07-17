@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Terminal {
-    private final Window window;
+    private final ServerWindow window;
 
     private final Table table;
 
@@ -37,7 +37,7 @@ public class Terminal {
 
     private final ImageButton close;
 
-    public Terminal(Device d, Window w) {
+    public Terminal(Device d, ServerWindow w) {
 	device = d;
 	window = w;
 
@@ -49,7 +49,7 @@ public class Terminal {
 		.getHeight() * .9f);
 
 	close = new ImageButton(new TextureRegionDrawable(
-		Assets.linearTextures.findRegion("closeUp")));
+		Assets.linearTextures.findRegion("close")));
 	close.setPosition(table.getWidth() - close.getWidth(),
 		table.getHeight() - close.getHeight() - 20);
 
@@ -67,8 +67,7 @@ public class Terminal {
 	display.setText("Terminal [Version 0." + ((int) Math.random() * 100)
 		/ 10 + "]" + "\nroot @ " + device.getNetwork().getIp() + "/"
 		+ deviceIndex + "\nMemory: " + device.getTotalMemory()
-		+ "MB\nStorage: " + device.getTotalStorage()
-		+ "GB\nCPU Cores: " + device.getTotalCores());
+		+ "MB\nStorage: " + device.getTotalStorage() + "GB");
 
 	table.addListener(new InputListener() {
 	    @Override
@@ -166,6 +165,11 @@ public class Terminal {
 
     public void close() {
 	window.getCanvas().removeActor(table);
+    }
+
+    public void addText(String s) {
+	display.setText(display.getText() + "\n\t" + s);
+	scroll.setScrollY(display.getHeight());
     }
 
     public Label getDisplay() {

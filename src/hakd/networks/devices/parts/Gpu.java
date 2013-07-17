@@ -1,21 +1,26 @@
 package hakd.networks.devices.parts;
 
-import hakd.networks.Network;
 import hakd.networks.devices.Device;
 
 public class Gpu extends Part {
 
-    public Gpu(int level, Network network, Device device) {
-	super(level, network, device);
-	setType(PartType.GPU);
+    public Gpu(int level, Device device) {
+	super(level, device);
+	type = PartType.GPU;
 
 	switch (level) {
 	case 0:
-	    setSpeed((int) (Math.random() * 200 + 100));
+	    speed = (int) (Math.random() * 200 + 100);
 	    break;
 	default:
-	    setSpeed((level + 1) * 150 + (int) (Math.random() * 400 - 200));
+	    speed = (level + 1) * 150 + (int) (Math.random() * 400 - 200);
 	    break;
 	}
+    }
+
+    public Gpu(Device device, int level, int a, int b) {
+	super(level, device);
+
+	speed = a;
     }
 }
