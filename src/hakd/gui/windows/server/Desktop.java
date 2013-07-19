@@ -1,4 +1,4 @@
-package hakd.gui.windows;
+package hakd.gui.windows.server;
 
 import hakd.gui.Assets;
 import hakd.networks.devices.Device;
@@ -18,7 +18,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Desktop {
-    private final ServerWindow window;
+    private final ServerWindowStage window;
 
     private final Table table;
     private final Group desktop;
@@ -29,7 +29,7 @@ public class Desktop {
 
     private boolean dragged = true;
 
-    public Desktop(Device d, ServerWindow w) {
+    public Desktop(Device d, ServerWindowStage w) {
 	device = d;
 	window = w;
 
@@ -99,7 +99,7 @@ public class Desktop {
 	desktop.addActor(terminal);
     }
 
-    public ServerWindow getWindow() {
+    public ServerWindowStage getWindow() {
 	return window;
     }
 

@@ -2,7 +2,7 @@ package hakd.game.gameplay;
 
 import hakd.gui.Assets;
 import hakd.gui.screens.GameScreen;
-import hakd.gui.windows.ServerWindow;
+import hakd.gui.windows.server.ServerWindowStage;
 import hakd.networks.Network;
 import hakd.other.Util;
 
@@ -22,7 +22,7 @@ public class Player {
     private int isoX;
     private int isoY;
 
-    private ServerWindow openWindow;
+    private ServerWindowStage openWindow;
 
     // --------methods--------
     public Player(String name, Network home, GameScreen screen) {
@@ -68,11 +68,11 @@ public class Player {
 	return name;
     }
 
-    public ServerWindow getOpenWindow() {
+    public ServerWindowStage getOpenWindow() {
 	return openWindow;
     }
 
-    public void setOpenWindow(ServerWindow openWindow) {
+    public void setOpenWindow(ServerWindowStage openWindow) {
 	this.openWindow = openWindow;
     }
 

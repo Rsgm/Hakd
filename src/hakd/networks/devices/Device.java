@@ -1,6 +1,6 @@
 package hakd.networks.devices;
 
-import hakd.gui.windows.ServerWindow;
+import hakd.gui.windows.server.ServerWindowStage;
 import hakd.internet.Connectable;
 import hakd.internet.Connection;
 import hakd.internet.NetworkController;
@@ -55,7 +55,7 @@ public class Device implements Connectable {
     private DeviceType type;
 
     // server gui
-    private ServerWindow window;
+    private ServerWindowStage window;
 
     // --------constructor--------
     public Device(Network network, int level, DeviceType type) { // idea: have
@@ -125,7 +125,7 @@ public class Device implements Connectable {
 
 	if (network.getType() == NetworkType.PLAYER) {
 	    if (type == DeviceType.DNS || type == DeviceType.SERVER) {
-		window = new ServerWindow(this);
+		window = new ServerWindowStage(this);
 	    }// else if router, routerwindow.open
 	}
     }
@@ -143,7 +143,7 @@ public class Device implements Connectable {
 
 	if (network.getType() == NetworkType.PLAYER) {
 	    if (type == DeviceType.DNS || type == DeviceType.SERVER) {
-		window = new ServerWindow(this);
+		window = new ServerWindowStage(this);
 	    }
 	}
     }
@@ -409,11 +409,11 @@ public class Device implements Connectable {
 	this.model = model;
     }
 
-    public ServerWindow getWindow() {
+    public ServerWindowStage getWindow() {
 	return window;
     }
 
-    public void setWindow(ServerWindow window) {
+    public void setWindow(ServerWindowStage window) {
 	this.window = window;
     }
 

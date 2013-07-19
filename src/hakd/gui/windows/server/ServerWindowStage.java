@@ -1,14 +1,15 @@
-package hakd.gui.windows;
+package hakd.gui.windows.server;
 
 import hakd.gui.input.GameInput;
 import hakd.gui.screens.GameScreen;
+import hakd.gui.windows.WindowStage;
 import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-public class ServerWindow implements WindowStage {
+public class ServerWindowStage implements WindowStage {
     private final Stage stage;
     private final Group canvas;
 
@@ -21,7 +22,7 @@ public class ServerWindow implements WindowStage {
     private final Device device;
     private GameScreen screen;
 
-    public ServerWindow(Device d) {
+    public ServerWindowStage(Device d) {
 	stage = new Stage();
 	device = d;
 

@@ -1,8 +1,10 @@
 package hakd.gui.windows.actors;
 
-import hakd.gui.windows.NewServerWindow;
+import hakd.gui.windows.newdevice.NewServerWindow;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.Device.DeviceType;
+import hakd.networks.devices.Dns;
+import hakd.networks.devices.Router;
 import hakd.networks.devices.Server;
 import hakd.networks.devices.parts.Cpu;
 import hakd.networks.devices.parts.Gpu;
@@ -21,50 +23,63 @@ public class BuyServerButton extends TextButton {
     private Memory memory;
     private Storage storage;
 
-    private Server currentServer;
+    private Device currentDevice;
     private int level;
 
     private final NewServerWindow newServerWindow;
-    private final Server s;
+    private final Device d;
 
     /*
      * For ease, you can only buy whole servers with one part each. You can buy
      * more parts after that though.
      */
 
-    public BuyServerButton(Server currentServer, final int level,
+    public BuyServerButton(Device currentDevice, final int level,
 	    final NewServerWindow newServerWindow, Skin skin, final Cpu cpu,
 	    final Gpu gpu, final Memory memory, final Storage storage) {
 	super("buy", skin);
 
 	this.newServerWindow = newServerWindow;
 
-	this.currentServer = currentServer;
-	s = new Server(currentServer.getNetwork(), level, DeviceType.SERVER, 1,
-		1, 1, 1);
+	this.currentDevice = currentDevice;
+
+	switch (currentDevice.getType()) {
+	case DNS:
+	    d = new Dns(currentDevice.getNetwork(), level, DeviceType.SERVER,
+		    1, 1, 1, 1);
+	    break;
+	case ROUTER:
+	    d = new Router(currentDevice.getNetwork(), level,
+		    DeviceType.SERVER, 1, 1, 1, 1);
+	    break;
+	default:
+	    d = new Server(currentDevice.getNetwork(), level,
+		    DeviceType.SERVER, 1, 1, 1, 1);
+	    break;
+	}
 
 	if (cpu != null) {
 	    this.cpu = cpu;
 	} else {
-	    this.cpu = new Cpu(level, s);
+	    this.cpu = new Cpu(level, d);
 	}
 
 	if (gpu != null) {
 	    this.gpu = gpu;
 	} else {
-	    this.gpu = new Gpu(level, s);
+	    this.gpu = new Gpu(level, d);
 	}
 
 	if (memory != null) {
 	    this.memory = memory;
 	} else {
-	    this.memory = new Memory(level, s);
+	    this.memory = new Memory(level, d);
 	}
 
 	if (storage != null) {
 	    this.storage = storage;
 	} else {
-	    this.storage = new Storage(level, s);
+	    this.storage = new Storage(level, d);
 	}
 
 	addListener();
@@ -83,20 +98,20 @@ public class BuyServerButton extends TextButton {
 	    public void touchUp(InputEvent event, float x, float y,
 		    int pointer, int button) {
 
-		cpu.setDevice(s);
-		gpu.setDevice(s);
-		memory.setDevice(s);
-		storage.setDevice(s);
+		cpu.setDevice(d);
+		gpu.setDevice(d);
+		memory.setDevice(d);
+		storage.setDevice(d);
 
-		s.addPart(PartType.CPU, cpu);
-		s.addPart(PartType.GPU, gpu);
-		s.addPart(PartType.MEMORY, memory);
-		s.addPart(PartType.STORAGE, storage);
-		s.setMasterStorage(storage);
+		d.addPart(PartType.CPU, cpu);
+		d.addPart(PartType.GPU, gpu);
+		d.addPart(PartType.MEMORY, memory);
+		d.addPart(PartType.STORAGE, storage);
+		d.setMasterStorage(storage);
 
-		s.getNetwork().removeDevice(currentServer);
-		s.getNetwork().addDevice(s);
-		s.getNetwork().setLevel(0);
+		d.getNetwork().removeDevice(currentDevice);
+		d.getNetwork().addDevice(d);
+		d.getNetwork().setLevel(0);
 
 		newServerWindow.close();
 
@@ -138,11 +153,11 @@ public class BuyServerButton extends TextButton {
     }
 
     public Device getDevice() {
-	return currentServer;
+	return currentDevice;
     }
 
     public void setDevice(Server server) {
-	this.currentServer = server;
+	this.currentDevice = server;
     }
 
     public int getLevel() {

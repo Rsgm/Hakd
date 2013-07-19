@@ -1,6 +1,6 @@
 package hakd.gui.screens;
 
-import hakd.gui.windows.Terminal;
+import hakd.gui.windows.server.Terminal;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;

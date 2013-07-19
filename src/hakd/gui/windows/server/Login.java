@@ -1,4 +1,4 @@
-package hakd.gui.windows;
+package hakd.gui.windows.server;
 
 import hakd.gui.Assets;
 

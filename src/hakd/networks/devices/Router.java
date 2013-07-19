@@ -1,7 +1,7 @@
 package hakd.networks.devices;
 
-import hakd.internet.Port;
 import hakd.internet.NetworkController.Protocol;
+import hakd.internet.Port;
 import hakd.networks.Network;
 
 public class Router extends Device { // this holds a port list that tells
@@ -9,6 +9,12 @@ public class Router extends Device { // this holds a port list that tells
 
     public Router(Network network, int level) {
 	super(network, level, DeviceType.ROUTER);
+    }
+
+    public Router(Network network, int level, DeviceType type, int cpuSockets,
+	    int gpuSlots, int memorySlots, int storageSlots) {
+	super(network, level, type, cpuSockets, gpuSlots, memorySlots,
+		storageSlots);
     }
 
     @Override

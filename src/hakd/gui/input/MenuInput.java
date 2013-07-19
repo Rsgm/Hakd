@@ -1,7 +1,7 @@
 package hakd.gui.input;
 
 import hakd.game.Command;
-import hakd.gui.windows.Terminal;
+import hakd.gui.windows.server.Terminal;
 
 import java.util.List;
 

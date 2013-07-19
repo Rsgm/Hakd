@@ -13,6 +13,12 @@ public class Dns extends Device { // TODO let DNSs communicate a bit.
 	super(network, level, DeviceType.DNS);
     }
 
+    public Dns(Network network, int level, DeviceType type, int cpuSockets,
+	    int gpuSlots, int memorySlots, int storageSlots) {
+	super(network, level, type, cpuSockets, gpuSlots, memorySlots,
+		storageSlots);
+    }
+
     // --------methods--------
     public String assignIp(Network.Region region) { // assigns an ip to an
 						    // object that

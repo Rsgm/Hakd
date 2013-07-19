@@ -1,10 +1,11 @@
-package hakd.gui.windows;
+package hakd.gui.windows.newdevice;
 
 import hakd.gui.Assets;
 import hakd.gui.input.GameInput;
 import hakd.gui.screens.GameScreen;
+import hakd.gui.windows.WindowStage;
 import hakd.gui.windows.actors.BuyServerButton;
-import hakd.networks.devices.Server;
+import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -21,11 +22,12 @@ public class NewServerWindow implements WindowStage {
     private final ScrollPane scroll;
     private final Table table;
 
-    public NewServerWindow(Server server) {
+    public NewServerWindow(Device device) {
 	Skin skin = Assets.skin;
 
 	stage = new Stage();
-	window = new Window("Buy a new server", skin);
+	window = new Window("Buy a new "
+		+ device.getType().toString().toLowerCase(), skin);
 	table = new Table(skin);
 	scroll = new ScrollPane(table);
 
@@ -36,13 +38,13 @@ public class NewServerWindow implements WindowStage {
 	window.setPosition(stage.getWidth() / 2 - window.getWidth() / 2,
 		stage.getHeight() / 2 - window.getHeight() / 2);
 
-	BuyServerButton server1 = new BuyServerButton(server, 0, this, skin,
+	BuyServerButton server1 = new BuyServerButton(device, 0, this, skin,
 		null, null, null, null);
-	BuyServerButton server2 = new BuyServerButton(server, 0, this, skin,
+	BuyServerButton server2 = new BuyServerButton(device, 0, this, skin,
 		null, null, null, null);
-	BuyServerButton server3 = new BuyServerButton(server, 0, this, skin,
+	BuyServerButton server3 = new BuyServerButton(device, 0, this, skin,
 		null, null, null, null);
-	BuyServerButton server4 = new BuyServerButton(server, 0, this, skin,
+	BuyServerButton server4 = new BuyServerButton(device, 0, this, skin,
 		null, null, null, null);
 
 	table.add(

@@ -1,4 +1,4 @@
-package hakd.gui.windows;
+package hakd.gui.windows.server;
 
 import hakd.game.Command;
 import hakd.gui.Assets;
@@ -23,7 +23,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public class Terminal {
-    private final ServerWindow window;
+    private final ServerWindowStage window;
 
     private final Table table;
 
@@ -37,7 +37,7 @@ public class Terminal {
 
     private final ImageButton close;
 
-    public Terminal(Device d, ServerWindow w) {
+    public Terminal(Device d, ServerWindowStage w) {
 	device = d;
 	window = w;
 
