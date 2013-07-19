@@ -8,4 +8,10 @@ public class Server extends Device {
 	super(n, level, DeviceType.SERVER);
 
     }
+
+    public Server(Network network, int level, DeviceType type, int cpuSockets,
+	    int gpuSlots, int memorySlots, int storageSlots) {
+	super(network, level, type, cpuSockets, gpuSlots, memorySlots,
+		storageSlots);
+    }
 }

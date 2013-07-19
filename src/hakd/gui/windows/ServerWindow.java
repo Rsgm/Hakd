@@ -1,5 +1,6 @@
 package hakd.gui.windows;
 
+import hakd.gui.input.GameInput;
 import hakd.gui.screens.GameScreen;
 import hakd.networks.devices.Device;
 
@@ -11,11 +12,11 @@ public class ServerWindow implements WindowStage {
     private final Stage stage;
     private final Group canvas;
 
-    private final Terminal terminal;
-    private final Desktop desktop;
-    private final Map map;
-    private final Login login;
-    private final Web web;
+    private Terminal terminal;
+    private Desktop desktop;
+    private Map map;
+    private Login login;
+    private Web web;
 
     private final Device device;
     private GameScreen screen;
@@ -27,12 +28,6 @@ public class ServerWindow implements WindowStage {
 	canvas = new Group();
 	stage.addActor(canvas);
 	canvas.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-
-	terminal = new Terminal(device, this);
-	desktop = new Desktop(device, this);
-	map = new Map();
-	login = new Login();
-	web = new Web();
     }
 
     @Override
@@ -48,6 +43,14 @@ public class ServerWindow implements WindowStage {
 	stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(),
 		false);
 
+	if (desktop == null) {
+	    terminal = new Terminal(device, this);
+	    desktop = new Desktop(device, this);
+	    map = new Map();
+	    login = new Login();
+	    web = new Web();
+	}
+
 	desktop.open(); // default screen when you open the
 			// server, I may change it to a login or
 			// startup screen
@@ -57,6 +60,8 @@ public class ServerWindow implements WindowStage {
     public void close() {
 	stage.clear();
 	screen.setOpenWindow(null);
+	Gdx.input.setInputProcessor(new GameInput(screen.getGame(), screen
+		.getCam(), screen.getPlayer(), screen));
     }
 
     public Stage getStage() {
@@ -95,6 +100,7 @@ public class ServerWindow implements WindowStage {
 	return screen;
     }
 
+    @Override
     public void setScreen(GameScreen screen) {
 	this.screen = screen;
     }

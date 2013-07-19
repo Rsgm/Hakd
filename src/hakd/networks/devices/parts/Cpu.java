@@ -28,11 +28,11 @@ public class Cpu extends Part {
 	}
     }
 
-    public Cpu(Device device, int level, int a, int b) {
+    public Cpu(Device device, int level, int speed, int cores) {
 	super(level, device);
 
-	speed = a;
-	cores = b;
+	this.speed = speed;
+	this.cores = cores;
     }
 
     public int getCores() {

@@ -53,12 +53,13 @@ public class Storage extends Part {
 
     }
 
-    public Storage(Device device, int level, int a, int b, boolean c) {
+    public Storage(Device device, int level, int speed, int capacity,
+	    boolean ssd) {
 	super(level, device);
 
-	speed = a;
-	capacity = b;
-	ssd = c;
+	this.speed = speed;
+	this.capacity = capacity;
+	this.ssd = ssd;
     }
 
     // adds a file to the end of one of the arraylists

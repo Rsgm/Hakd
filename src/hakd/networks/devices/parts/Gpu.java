@@ -18,9 +18,9 @@ public class Gpu extends Part {
 	}
     }
 
-    public Gpu(Device device, int level, int a, int b) {
+    public Gpu(Device device, int level, int speed, int b) {
 	super(level, device);
 
-	speed = a;
+	this.speed = speed;
     }
 }

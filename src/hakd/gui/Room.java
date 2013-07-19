@@ -4,12 +4,10 @@ import hakd.game.gameplay.Player;
 import hakd.gui.screens.GameScreen;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
-import hakd.networks.devices.Device.DeviceType;
 import hakd.networks.devices.Dns;
 import hakd.networks.devices.Router;
 import hakd.networks.devices.Server;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.maps.MapLayer;
@@ -20,11 +18,10 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 public class Room {
     private Player player;
     private Network network;
-    private List<Device> devices;
-
-    private Router[] routerSlots;
-    private Dns[] dnsSlots;
-    private Server[] serverSlots;
+    private final List<Dns> dnss;
+    private final List<Server> servers;
+    private final List<Router> routers;
+    private final List<Device> otherDevices;
 
     private TiledMap map;
     private Object[][] mapObjects;
@@ -40,7 +37,11 @@ public class Room {
     public Room(Player player, GameScreen gameScreen, RoomMap roomMap) {
 	this.player = player;
 	network = player.getNetwork();
-	devices = network.getDevices();
+
+	dnss = network.getDnss();
+	servers = network.getServers();
+	routers = network.getRouters();
+	otherDevices = network.getOtherDevices();
 
 	map = new TmxMapLoader().load("hakd/gui/resources/maps/"
 		+ roomMap.toString() + ".tmx");
@@ -56,39 +57,13 @@ public class Room {
 	int routers = Integer.parseInt((String) map.getProperties().get(
 		"routers"));
 
-	routerSlots = new Router[routers];
-	dnsSlots = new Dns[dnss];
-	serverSlots = new Server[servers];
-
 	network.setServerLimit(servers);
 	network.setDnsLimit(dnss);
 	network.setRouterLimit(routers);
 
-	assignDevices();
 	buildRoom();
 
 	gameScreen.changeMap(map);
-    }
-
-    private void assignDevices() { // TODO make something to check for too many
-				   // servers, maybe before you buy a room
-	ArrayList<Dns> dnss = new ArrayList<Dns>();
-	ArrayList<Server> servers = new ArrayList<Server>();
-	ArrayList<Router> routers = new ArrayList<Router>();
-
-	for (Device d : devices) {
-	    if (d.getType() == DeviceType.DNS) {
-		dnss.add((Dns) d);
-	    } else if (d.getType() == DeviceType.ROUTER) {
-		routers.add((Router) d);
-	    } else if (d.getType() == DeviceType.SERVER) {
-		servers.add((Server) d);
-	    }
-	}
-
-	dnsSlots = dnss.toArray(new Dns[dnss.size()]);
-	serverSlots = servers.toArray(new Server[servers.size()]);
-	routerSlots = routers.toArray(new Router[routers.size()]);
     }
 
     private void buildRoom() {
@@ -116,13 +91,13 @@ public class Room {
 		String s = (String) o[0];
 		if (s.matches("ss.*")) {
 		    s = s.replace("ss", "");
-		    device = serverSlots[Integer.parseInt(s)];
+		    device = servers.get(Integer.parseInt(s));
 		} else if (s.matches("rs.*")) {
 		    s = s.replace("rs", "");
-		    device = routerSlots[Integer.parseInt(s)];
+		    device = routers.get(Integer.parseInt(s));
 		} else if (s.matches("ds.*")) {
 		    s = s.replace("ds", "");
-		    device = dnsSlots[Integer.parseInt(s)];
+		    device = dnss.get(Integer.parseInt(s));
 		}
 		break;
 	    }
@@ -155,38 +130,6 @@ public class Room {
 
     public void setNetwork(Network network) {
 	this.network = network;
-    }
-
-    public List<Device> getDevices() {
-	return devices;
-    }
-
-    public void setDevices(List<Device> devices) {
-	this.devices = devices;
-    }
-
-    public Router[] getRouterSlots() {
-	return routerSlots;
-    }
-
-    public void setRouterSlots(Router[] routerSlots) {
-	this.routerSlots = routerSlots;
-    }
-
-    public Dns[] getDnsSlots() {
-	return dnsSlots;
-    }
-
-    public void setDnsSlots(Dns[] dnsSlots) {
-	this.dnsSlots = dnsSlots;
-    }
-
-    public Server[] getServerSlots() {
-	return serverSlots;
-    }
-
-    public void setServerSlots(Server[] serverSlots) {
-	this.serverSlots = serverSlots;
     }
 
     public TiledMap getMap() {
@@ -243,6 +186,22 @@ public class Room {
 
     public void setObjetcts(TiledMapTileLayer objetcts) {
 	this.objetcts = objetcts;
+    }
+
+    public List<Dns> getDnss() {
+	return dnss;
+    }
+
+    public List<Server> getServers() {
+	return servers;
+    }
+
+    public List<Router> getRouters() {
+	return routers;
+    }
+
+    public List<Device> getOtherDevices() {
+	return otherDevices;
     }
 }
 

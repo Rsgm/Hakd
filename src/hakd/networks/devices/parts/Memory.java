@@ -32,11 +32,11 @@ public class Memory extends Part {
 	}
     }
 
-    public Memory(Device device, int level, int a, int b) {
+    public Memory(Device device, int level, int speed, int capacity) {
 	super(level, device);
 
-	speed = a;
-	capacity = b;
+	this.speed = speed;
+	this.capacity = capacity;
     }
 
     public int getCapacity() {

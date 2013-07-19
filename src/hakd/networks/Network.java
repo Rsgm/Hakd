@@ -13,37 +13,40 @@ import java.util.List;
 public class Network { // this only holds a set of devices and info, connecting
 		       // to this just forwards you to the masterRouter
     // stats
-    private ServiceProvider isp; // the network's isp
-    private int level; // 0-7, 0 for player because you start with almost
-		       // nothing
-    private int speed; // in Mb per second(1/1024*Gb), may want to change it to
-		       // MBps
-    private String ip; // all network variables will be in IP format
-    private String address;
-    private String owner; // owner, company, player
+    ServiceProvider isp; // the network's isp
+    int level; // 0-7, 0 for player because you start with almost
+	       // nothing
+    int speed; // in Mb per second(1/1024*Gb), may want to change it to
+	       // MBps
+    String ip; // all network variables will be in IP format
+    String address;
+    String owner; // owner, company, player
 
-    private int serverLimit; // amount of server objects to begin with and the
-			     // limit
-    private int dnsLimit; // same as serverLimit but for DNSs
-    private int routerLimit;
+    int serverLimit; // amount of server objects to begin with and the
+		     // limit
+    int dnsLimit; // same as serverLimit but for DNSs
+    int routerLimit;
 
-    private Stance stance;
-    private NetworkType type;
+    Stance stance;
+    NetworkType type;
 
-    private Router masterRouter; // main router
-    private Server masterServer; // main server
+    Router masterRouter; // main router
+    Server masterServer; // main server
 
     // objects
-    private List<Device> devices = new ArrayList<Device>();
+    final List<Device> otherDevices = new ArrayList<Device>();
+    final List<Server> servers = new ArrayList<Server>();
+    final List<Dns> dnss = new ArrayList<Dns>();
+    final List<Router> routers = new ArrayList<Router>();
 
     // gui
-    private Region region; // where the network is in the world, it helps find
-			   // an ip
-    private int x; // where the network is in the regionTab/map
-    private int y;
-    private int z;
+    Region region; // where the network is in the world, it helps find
+		   // an ip
+    int x; // where the network is in the regionTab/map
+    int y;
+    int z;
 
-    // private graphic? icon? sprite? image? texture? 3d model.
+    // graphic? icon? sprite? image? texture? 3d model.
     // TODO have a static class, or file, hold all of the models with the points
     // and textures
 
@@ -111,24 +114,20 @@ public class Network { // this only holds a set of devices and info, connecting
 
 	for (int i = 0; i < s; i++) { // create servers on the network
 	    Server server = new Server(this, level);
-	    devices.add(server);
-
-	    if (i == 0) {
-
-	    }
+	    servers.add(server);
 	}
 
 	for (int i = 0; i < dnsLimit; i++) { // create DNSs on the network
 	    if (type == NetworkType.ISP && i == 0) {
-		devices.add(new Dns(true, this, level));
+		dnss.add(new Dns(true, this, level));
 	    } else {
-		devices.add(new Dns(false, this, level));
+		dnss.add(new Dns(false, this, level));
 	    }
 	}
 
 	for (int i = 0; i < routerLimit; i++) { // create servers on the network
 	    Router r = new Router(this, level);
-	    devices.add(r);
+	    routers.add(r);
 
 	    if (i == 0) {
 		masterRouter = r;
@@ -140,7 +139,7 @@ public class Network { // this only holds a set of devices and info, connecting
     // --------methods--------
     public boolean Connect(Device client, String program, int port,
 	    NetworkController.Protocol protocol) {
-	for (Device d : devices) {
+	for (Device d : servers) {
 	    if (d.getType() == DeviceType.ROUTER) {
 		return d.Connect(client, program, port, protocol);
 	    }
@@ -150,8 +149,7 @@ public class Network { // this only holds a set of devices and info, connecting
 
     // removes a device from the network
     public void removeDevice(Device d) {
-	devices.remove(d);
-
+	servers.remove(d);
 	// TODO add a call to remove d from the room
     }
 
@@ -160,20 +158,23 @@ public class Network { // this only holds a set of devices and info, connecting
 	DeviceType dType = device.getType();
 
 	int total = 0;
-	for (Device d : devices) {
+	for (Device d : servers) {
 	    if (d.getType() == dType) {
 		total++;
 	    }
 	}
 
-	if (total > dnsLimit && dType == DeviceType.DNS) {
-	    devices.add(device);
+	if (total < dnsLimit && dType == DeviceType.DNS) {
+	    Dns dns = (Dns) device;
+	    dnss.add(dns);
 	    return true;
-	} else if (total > routerLimit && dType == DeviceType.ROUTER) {
-	    devices.add(device);
+	} else if (total < routerLimit && dType == DeviceType.ROUTER) {
+	    Router router = (Router) device;
+	    routers.add(router);
 	    return true;
-	} else if (total > serverLimit && dType == DeviceType.SERVER) {
-	    devices.add(device);
+	} else if (total < serverLimit && dType == DeviceType.SERVER) {
+	    Server server = (Server) device;
+	    servers.add(server);
 	    return true;
 	}
 
@@ -184,19 +185,19 @@ public class Network { // this only holds a set of devices and info, connecting
 			      // their stats do, these just define how to
 			      // generate a network
 	PLAYER(), COMPANY(), TEST(), ISP(), NPC();// more to come
-	private NetworkType() {
+	NetworkType() {
 	}
     }
 
     public enum Stance {
 	FRIENDLY(), NEUTRAL(), ENEMY();
-	private Stance() {
+	Stance() {
 	}
     }
 
     public enum Region {
 	NA(), SA(), ASIA(), EUROPE, COMPANIES; // others
-	private Region() {
+	Region() {
 	}
     }
 
@@ -273,14 +274,6 @@ public class Network { // this only holds a set of devices and info, connecting
 	this.stance = stance;
     }
 
-    public List<Device> getDevices() {
-	return devices;
-    }
-
-    public void setDevices(List<Device> devices) {
-	this.devices = devices;
-    }
-
     public Region getRegion() {
 	return region;
     }
@@ -343,5 +336,21 @@ public class Network { // this only holds a set of devices and info, connecting
 
     public void setZ(int z) {
 	this.z = z;
+    }
+
+    public List<Device> getOtherDevices() {
+	return otherDevices;
+    }
+
+    public List<Server> getServers() {
+	return servers;
+    }
+
+    public List<Dns> getDnss() {
+	return dnss;
+    }
+
+    public List<Router> getRouters() {
+	return routers;
     }
 }

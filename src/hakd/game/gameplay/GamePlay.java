@@ -22,6 +22,7 @@ public class GamePlay {
     }
 
     // creates the game ISPs
+    @SuppressWarnings("deprecation")
     private static void generateIsps() {
 	int amount = (int) (Math.random() * 6 + 6);
 	List<Isp> names = new ArrayList<Isp>(

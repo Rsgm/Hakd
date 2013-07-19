@@ -57,17 +57,12 @@ public class Terminal {
 	display = new Label("", skin.get("console", LabelStyle.class));
 	scroll = new ScrollPane(display, skin);
 
-	int deviceIndex = device.getNetwork().getDevices().indexOf(device);
-	if (deviceIndex == -1) {
-	    deviceIndex = 0;
-	}
-
 	display.setWrap(false);
 	display.setAlignment(10, Align.left);
 	display.setText("Terminal [Version 0." + ((int) Math.random() * 100)
 		/ 10 + "]" + "\nroot @ " + device.getNetwork().getIp() + "/"
-		+ deviceIndex + "\nMemory: " + device.getTotalMemory()
-		+ "MB\nStorage: " + device.getTotalStorage() + "GB");
+		+ "\nMemory: " + device.getTotalMemory() + "MB\nStorage: "
+		+ device.getTotalStorage() + "GB");
 
 	table.addListener(new InputListener() {
 	    @Override
@@ -120,9 +115,8 @@ public class Terminal {
 		if (keycode == Keys.ENTER) {
 		    System.out.println(input.getText());
 		    display.setText(display.getText() + "\n\nroot @ "
-			    + device.getNetwork().getIp() + "/"
-			    + device.getNetwork().getDevices().indexOf(device)
-			    + "\n>" + input.getText());
+			    + device.getNetwork().getIp() + "\n>"
+			    + input.getText());
 		    history.add(input.getText());
 		    new Command(input.getText(), device);
 

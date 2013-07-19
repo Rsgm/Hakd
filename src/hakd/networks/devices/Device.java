@@ -34,8 +34,7 @@ public class Device implements Connectable {
 						      // delete it
     private List<Connection> connections = new ArrayList<Connection>();
     private File logs; // TODO make this a file instead connecting from and the
-		       // action after
-    // that
+		       // action after that
 
     private Brand brand; // for example bell, or HQ
     private Model model;
@@ -125,44 +124,27 @@ public class Device implements Connectable {
 	}
 
 	if (network.getType() == NetworkType.PLAYER) {
-	    window = new ServerWindow(this);
+	    if (type == DeviceType.DNS || type == DeviceType.SERVER) {
+		window = new ServerWindow(this);
+	    }// else if router, routerwindow.open
 	}
     }
 
-    public Device(Network network, int level, int cpuSockets, int gpuSlots,
-	    int memorySlots, int storageSlots) {
+    public Device(Network network, int level, DeviceType type, int cpuSockets,
+	    int gpuSlots, int memorySlots, int storageSlots) {
+	this.network = network;
 	this.level = level;
 	this.cpuSockets = cpuSockets;
 	this.gpuSlots = gpuSlots;
 	this.memorySlots = memorySlots;
 	this.storageSlots = storageSlots;
 
-	for (int i = 0; i < cpuSockets; i++) {
-	    Cpu cpu = new Cpu(level, this);
-	    parts.add(cpu);
-	}
-	for (int i = 0; i < gpuSlots; i++) {
-	    Gpu gpu = new Gpu(level, this);
-	    parts.add(gpu);
-	}
-	for (int i = 0; i < memorySlots; i++) {
-	    Memory memory = new Memory(level, this);
-	    parts.add(memory);
-	    totalMemory += memory.getCapacity();
-	}
-	for (int i = 0; i < storageSlots; i++) {
-	    Storage storage = new Storage(level, this);
-	    parts.add(storage);
-	    totalStorage += storage.getCapacity();
-	}
-
-	if (storageSlots > 0) {
-	    masterStorage = (Storage) Part.findParts(parts, PartType.STORAGE)
-		    .get(0);
-	}
+	this.type = type;
 
 	if (network.getType() == NetworkType.PLAYER) {
-	    window = new ServerWindow(this);
+	    if (type == DeviceType.DNS || type == DeviceType.SERVER) {
+		window = new ServerWindow(this);
+	    }
 	}
     }
 
@@ -226,17 +208,6 @@ public class Device implements Connectable {
 	 * ---Example--- Log - 243.15.66.24 Connecting with half life 3 through
 	 * port 28190 using LAMBDA half life 3:28190>LAMBDA
 	 */
-    }
-
-    // finds all of the devices in the list of that type
-    public static List<Device> findDevices(List<Device> devices, DeviceType type) {
-	List<Device> returnDevices = new ArrayList<Device>();
-	for (Device d : devices) {
-	    if (d.getType() == type) {
-		returnDevices.add(d);
-	    }
-	}
-	return returnDevices;
     }
 
     public void addPart(PartType partType, int level, int a, int b, boolean c) {

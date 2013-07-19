@@ -6,12 +6,14 @@ import hakd.gui.Assets;
 import hakd.gui.Room;
 import hakd.gui.Room.RoomMap;
 import hakd.gui.input.GameInput;
-import hakd.gui.windows.NewServer;
+import hakd.gui.windows.NewServerWindow;
 import hakd.gui.windows.WindowStage;
 import hakd.internet.NetworkController;
 import hakd.networks.Network;
 import hakd.networks.Network.NetworkType;
 import hakd.networks.devices.Device;
+import hakd.networks.devices.Device.DeviceType;
+import hakd.networks.devices.Server;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -111,14 +113,16 @@ public class GameScreen extends HakdScreen {
 
 	    if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
 
-		if (d.getCpuSockets() == 0) {
-		    openWindow = new NewServer(d);
+		if (d.getCpuSockets() == 0 && d.getType() == DeviceType.SERVER) {
+		    openWindow = new NewServerWindow((Server) d);
 		    openWindow.setScreen(this);
 		    openWindow.open();
+		    d = null;
 		} else {
 		    d.getWindow().setScreen(this);
 		    openWindow = d.getWindow();
 		    d.getWindow().open();
+		    d = null;
 		}
 	    }
 	}
