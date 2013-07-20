@@ -34,7 +34,7 @@ public class ServerWindowStage implements WindowStage {
     @Override
     public void render() {
 	stage.act(Gdx.graphics.getDeltaTime());
-	desktop.getTable().toBack();
+	desktop.getDesktop().toBack(); // makes sure no windows can go behind it
 	stage.draw();
     }
 

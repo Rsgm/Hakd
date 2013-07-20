@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-public class Terminal {
+public class Terminal implements ServerWindow {
     private final ServerWindowStage window;
 
     private final Table table;
@@ -60,7 +60,7 @@ public class Terminal {
 	display.setWrap(false);
 	display.setAlignment(10, Align.left);
 	display.setText("Terminal [Version 0." + ((int) Math.random() * 100)
-		/ 10 + "]" + "\nroot @ " + device.getNetwork().getIp() + "/"
+		/ 10 + "]" + "\nroot @ " + device.getNetwork().getIp()
 		+ "\nMemory: " + device.getTotalMemory() + "MB\nStorage: "
 		+ device.getTotalStorage() + "GB");
 
@@ -153,10 +153,12 @@ public class Terminal {
 	table.addActor(close);
     }
 
+    @Override
     public void open() {
 	window.getCanvas().addActor(table);
     }
 
+    @Override
     public void close() {
 	window.getCanvas().removeActor(table);
     }

@@ -150,10 +150,10 @@
             <filename>graphics/loadingbackground.png</filename>
             <filename>graphics/spaceBarIcon.png</filename>
             <filename>graphics/title.png</filename>
-            <filename>graphics/console.png</filename>
-            <filename>graphics/list.png</filename>
             <filename>graphics/wallpaper.png</filename>
             <filename>graphics/close.png</filename>
+            <filename>graphics/consoleDown.png</filename>
+            <filename>graphics/consoleUp.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

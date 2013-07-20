@@ -4,7 +4,7 @@ filter: Linear,Linear
 repeat: none
 loading
   rotate: false
-  xy: 201, 2
+  xy: 194, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
@@ -16,23 +16,9 @@ close
   orig: 18, 18
   offset: 0, 0
   index: -1
-console
-  rotate: false
-  xy: 22, 2
-  size: 84, 84
-  orig: 84, 84
-  offset: 0, 0
-  index: -1
-list
-  rotate: false
-  xy: 108, 2
-  size: 91, 67
-  orig: 91, 67
-  offset: 0, 0
-  index: -1
 loadingbackground
   rotate: false
-  xy: 299, 2
+  xy: 292, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
@@ -44,17 +30,31 @@ wallpaper
   orig: 1920, 1080
   offset: 0, 0
   index: -1
+consoleUp
+  rotate: false
+  xy: 108, 2
+  size: 84, 84
+  orig: 84, 84
+  offset: 0, 0
+  index: -1
 title
   rotate: false
-  xy: 431, 2
+  xy: 424, 2
   size: 800, 210
   orig: 800, 210
   offset: 0, 0
   index: -1
 spaceBarIcon
   rotate: false
-  xy: 397, 2
+  xy: 390, 2
   size: 32, 32
   orig: 32, 32
+  offset: 0, 0
+  index: -1
+consoleDown
+  rotate: false
+  xy: 22, 2
+  size: 84, 84
+  orig: 84, 84
   offset: 0, 0
   index: -1
