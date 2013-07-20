@@ -154,6 +154,10 @@
             <filename>graphics/close.png</filename>
             <filename>graphics/consoleDown.png</filename>
             <filename>graphics/consoleUp.png</filename>
+            <filename>graphics/infoDown.png</filename>
+            <filename>graphics/infoUp.png</filename>
+            <filename>graphics/shutdownDown.png</filename>
+            <filename>graphics/shutdownUp.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

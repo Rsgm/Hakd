@@ -20,6 +20,7 @@ public class DesktopAppIcon extends ImageButton {
 	    @Override
 	    public boolean touchDown(InputEvent event, float x, float y,
 		    int pointer, int button) {
+		// down texture shade is black with alpha of 8 applied six times
 		return true;
 	    }
 

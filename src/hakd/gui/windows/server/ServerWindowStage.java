@@ -18,9 +18,11 @@ public class ServerWindowStage implements WindowStage {
     private Map map;
     private Login login;
     private Web web;
+    private Info info;
 
     private final Device device;
     private GameScreen screen;
+    private Shutdown shutdown;
 
     public ServerWindowStage(Device d) {
 	stage = new Stage();
@@ -45,11 +47,13 @@ public class ServerWindowStage implements WindowStage {
 		false);
 
 	if (desktop == null) {
-	    terminal = new Terminal(device, this);
-	    desktop = new Desktop(device, this);
+	    terminal = new Terminal(this);
+	    desktop = new Desktop(this);
 	    map = new Map();
 	    login = new Login();
 	    web = new Web();
+	    info = new Info();
+	    shutdown = new Shutdown(this);
 	}
 
 	desktop.open(); // default screen when you open the
@@ -63,6 +67,11 @@ public class ServerWindowStage implements WindowStage {
 	screen.setOpenWindow(null);
 	Gdx.input.setInputProcessor(new GameInput(screen.getGame(), screen
 		.getCam(), screen.getPlayer(), screen));
+    }
+
+    @Override
+    public void setScreen(GameScreen screen) {
+	this.screen = screen;
     }
 
     public Stage getStage() {
@@ -101,8 +110,39 @@ public class ServerWindowStage implements WindowStage {
 	return screen;
     }
 
-    @Override
-    public void setScreen(GameScreen screen) {
-	this.screen = screen;
+    public void setTerminal(Terminal terminal) {
+	this.terminal = terminal;
+    }
+
+    public void setDesktop(Desktop desktop) {
+	this.desktop = desktop;
+    }
+
+    public void setMap(Map map) {
+	this.map = map;
+    }
+
+    public void setLogin(Login login) {
+	this.login = login;
+    }
+
+    public void setWeb(Web web) {
+	this.web = web;
+    }
+
+    public Info getInfo() {
+	return info;
+    }
+
+    public void setInfo(Info info) {
+	this.info = info;
+    }
+
+    public Shutdown getShutdown() {
+	return shutdown;
+    }
+
+    public void setShutdown(Shutdown shutdown) {
+	this.shutdown = shutdown;
     }
 }

@@ -37,9 +37,9 @@ public class Terminal implements ServerWindow {
 
     private final ImageButton close;
 
-    public Terminal(Device d, ServerWindowStage w) {
-	device = d;
+    public Terminal(ServerWindowStage w) {
 	window = w;
+	device = window.getDevice();
 
 	Skin skin = Assets.skin;
 	history = new ArrayList<String>();

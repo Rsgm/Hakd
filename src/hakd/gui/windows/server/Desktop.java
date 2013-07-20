@@ -21,9 +21,9 @@ public class Desktop {
 
     private final Image background;
 
-    public Desktop(Device d, ServerWindowStage w) {
-	device = d;
+    public Desktop(ServerWindowStage w) {
 	window = w;
+	device = window.getDevice();
 
 	desktop = new Group();
 	desktopApps = new ArrayList<Button>();
@@ -51,6 +51,20 @@ public class Desktop {
 			.findRegion("consoleDown")), window.getTerminal());
 	desktopApps.add(terminal);
 	desktop.addActor(terminal);
+
+	ImageButton info = new DesktopAppIcon(new TextureRegionDrawable(
+		Assets.linearTextures.findRegion("infoUp")),
+		new TextureRegionDrawable(Assets.linearTextures
+			.findRegion("infoDown")), window.getInfo());
+	desktopApps.add(info);
+	desktop.addActor(info);
+
+	ImageButton shutdown = new DesktopAppIcon(new TextureRegionDrawable(
+		Assets.linearTextures.findRegion("shutdownUp")),
+		new TextureRegionDrawable(Assets.linearTextures
+			.findRegion("shutdownDown")), window.getShutdown());
+	desktopApps.add(shutdown);
+	desktop.addActor(shutdown);
     }
 
     public ServerWindowStage getWindow() {
