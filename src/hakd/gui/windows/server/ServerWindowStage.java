@@ -48,12 +48,14 @@ public class ServerWindowStage implements WindowStage {
 
 	if (desktop == null) {
 	    terminal = new Terminal(this);
-	    desktop = new Desktop(this);
 	    map = new Map();
 	    login = new Login();
 	    web = new Web();
-	    info = new Info();
+	    info = new Info(this);
 	    shutdown = new Shutdown(this);
+
+	    desktop = new Desktop(this); // has to be last, this creates the
+					 // DesktopAppIcons
 	}
 
 	desktop.open(); // default screen when you open the
@@ -63,7 +65,7 @@ public class ServerWindowStage implements WindowStage {
 
     @Override
     public void close() {
-	stage.clear();
+	canvas.clear();
 	screen.setOpenWindow(null);
 	Gdx.input.setInputProcessor(new GameInput(screen.getGame(), screen
 		.getCam(), screen.getPlayer(), screen));

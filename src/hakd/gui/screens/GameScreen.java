@@ -13,7 +13,6 @@ import hakd.networks.Network;
 import hakd.networks.Network.NetworkType;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.Device.DeviceType;
-import hakd.networks.devices.Server;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -114,15 +113,13 @@ public class GameScreen extends HakdScreen {
 	    if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
 
 		if (d.getCpuSockets() == 0 && d.getType() == DeviceType.SERVER) {
-		    openWindow = new NewServerWindow((Server) d);
+		    openWindow = new NewServerWindow(d);
 		    openWindow.setScreen(this);
 		    openWindow.open();
-		    d = null;
 		} else {
 		    d.getWindow().setScreen(this);
 		    openWindow = d.getWindow();
 		    d.getWindow().open();
-		    d = null;
 		}
 	    }
 	}

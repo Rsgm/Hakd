@@ -13,7 +13,7 @@ public class DesktopAppIcon extends ImageButton {
     private boolean dragged = true;
 
     public DesktopAppIcon(Drawable imageUp, Drawable imageDown,
-	    final ServerWindow o) {
+	    final ServerWindow window) {
 	super(imageUp, imageDown);
 
 	addListener(new InputListener() {
@@ -29,7 +29,7 @@ public class DesktopAppIcon extends ImageButton {
 		    int pointer, int button) {
 		super.touchUp(event, x, y, pointer, button);
 		if (!dragged) {
-		    o.open();
+		    window.open();
 		} else {
 		    dragged = false;
 		}
