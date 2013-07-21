@@ -1,5 +1,5 @@
 package hakd.gui.windows.server;
 
-public class Store {
+public final class Store {
 
 }

@@ -9,7 +9,7 @@ import hakd.other.names.Owner;
 import java.util.ArrayList;
 import java.util.List;
 
-public class NetworkController {
+public final class NetworkController {
     private static List<Network> PublicNetworks = new ArrayList<Network>();
     private static List<Dns> publicDns = new ArrayList<Dns>();
     private static List<ServiceProvider> serviceProviders = new ArrayList<ServiceProvider>();

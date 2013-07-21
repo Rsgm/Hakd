@@ -5,7 +5,7 @@ import hakd.networks.devices.Device;
 
 import java.util.List;
 
-public class Port {
+public final class Port {
     private Device device;
     private String program;
     private int port;

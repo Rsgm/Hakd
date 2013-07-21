@@ -2,7 +2,7 @@ package hakd.game.gameplay;
 
 import hakd.networks.Network;
 
-public class Character {
+public final class Character {
 
 	int		money	= 0;
 	String	name;			// does not really change

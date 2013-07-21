@@ -2,7 +2,7 @@ package hakd.gui.windows;
 
 import hakd.gui.screens.GameScreen;
 
-public class PopUpWindow implements WindowStage {
+public final class PopUpWindow implements WindowStage {
 
     @Override
     public void render() {

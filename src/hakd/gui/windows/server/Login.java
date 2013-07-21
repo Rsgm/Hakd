@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 
-public class Login { // test window, I am not sure I will use this one. I may
+public final class Login { // test window, I am not sure I will use this one. I may
 		     // use this before you can access some "websites".
     com.badlogic.gdx.scenes.scene2d.ui.Window table;
 

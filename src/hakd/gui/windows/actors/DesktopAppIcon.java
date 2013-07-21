@@ -9,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
 
-public class DesktopAppIcon extends ImageButton {
+public final class DesktopAppIcon extends ImageButton {
     private boolean dragged = true;
 
     public DesktopAppIcon(Drawable imageUp, Drawable imageDown,

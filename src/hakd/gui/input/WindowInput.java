@@ -2,7 +2,7 @@ package hakd.gui.input;
 
 import com.badlogic.gdx.InputProcessor;
 
-public class WindowInput implements InputProcessor {
+public final class WindowInput implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {

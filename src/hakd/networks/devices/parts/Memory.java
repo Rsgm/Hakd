@@ -2,7 +2,7 @@ package hakd.networks.devices.parts;
 
 import hakd.networks.devices.Device;
 
-public class Memory extends Part {
+public final class Memory extends Part {
     private int capacity;
 
     public Memory(int level, Device device) {

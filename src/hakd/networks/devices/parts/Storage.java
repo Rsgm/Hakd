@@ -7,7 +7,7 @@ import hakd.other.File.FileType;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Storage extends Part {
+public final class Storage extends Part {
     private boolean ssd; // doubles the speed
     private int capacity; // in GB
 

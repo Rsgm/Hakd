@@ -8,7 +8,7 @@ import hakd.other.Util;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class Player {
+public final class Player {
     // player stats
     private int money; // in $ //add redundancy to money // triple redundancy
 		       // with voting, maybe some rudimentary encryption, or no

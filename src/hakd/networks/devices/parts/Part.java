@@ -15,8 +15,8 @@ public class Part {
 
     int level;
     int speed; // either MHz or MB/s(megabyte/s, not megabit/s)
-		       // depending on the part // cpu also has core modifier
-		       // speed = speed
+	       // depending on the part // cpu also has core modifier
+	       // speed = speed
     // (1.8*cores)
 
     String brand;

@@ -4,7 +4,7 @@ Connection.Protocol.LAMBDA
 
 (int) (5*4.5) * 3
 
-
+
 java.util.ArrayList<Port> p = new java.util.ArrayList<Port>();
 p.add(new Port(null, "portal 3", 101, Protocol.LAMBDA));
 p.add(new Port(null, "cod", 2020, Protocol.COD));
@@ -19,7 +19,7 @@ Part.findParts(d.getParts(), PartType.STORAGE)
 
 Isp.values()
 Owner.COMPANY.company
-		
+
 
 GamePlay.generateGame();
 NetworkController.getPublicNetworks()

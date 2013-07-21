@@ -10,7 +10,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
-public class TitleScreen extends HakdScreen {
+public final class TitleScreen extends HakdScreen {
     private BitmapFont font;
     private BitmapFont creditFont;
 

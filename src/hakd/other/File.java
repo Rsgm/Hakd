@@ -1,6 +1,6 @@
 package hakd.other;
 
-public class File { // TODO file hashes!
+public final class File { // TODO file hashes!
 
     // data
     private int size;

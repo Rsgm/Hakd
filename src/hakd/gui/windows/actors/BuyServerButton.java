@@ -17,7 +17,7 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-public class BuyServerButton extends TextButton {
+public final class BuyServerButton extends TextButton {
     private Cpu cpu;
     private Gpu gpu;
     private Memory memory;

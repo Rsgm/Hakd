@@ -23,7 +23,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 
-public class GameScreen extends HakdScreen {
+public final class GameScreen extends HakdScreen {
     private Player player;
     // TODO Sometime make this an array and have other people in the game with
     // different skills and personalities

@@ -1,0 +1,6 @@
+String s = "\"te st\"";
+s.matches("(?:\".*?\")")
+
+
+Scanner scanner = new Scanner("\"hel lo 1\"");
+scanner.next("(?:\".*\")")-

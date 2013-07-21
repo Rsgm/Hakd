@@ -14,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
-public class NewServerWindow implements WindowStage {
+public final class NewServerWindow implements WindowStage {
     private GameScreen screen;
     private final Stage stage;
 

@@ -1,7 +1,7 @@
 package hakd.other;
 
 
-public class Util {
+public final class Util {
 
     public static int[] orthoToIso(float x, float y, float height) {// converts
 								    // float x/y

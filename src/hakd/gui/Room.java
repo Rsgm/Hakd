@@ -15,7 +15,7 @@ import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 
-public class Room {
+public final class Room {
     private Player player;
     private Network network;
     private final List<Dns> dnss;

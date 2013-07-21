@@ -1,5 +1,5 @@
 package hakd.game.gameplay.store;
 
-public class Store {
+public final class Store {
 
 }

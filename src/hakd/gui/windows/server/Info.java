@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 
-public class Info implements ServerWindow {
+public final class Info implements ServerWindow {
     private final ServerWindowStage window;
     private final Device device;
     private final Window infoWindow;

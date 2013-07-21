@@ -3,7 +3,7 @@ package hakd.networks;
 import hakd.networks.devices.Dns;
 import hakd.other.names.Isp;
 
-public class ServiceProvider extends Network {
+public final class ServiceProvider extends Network {
     private Dns masterDns;
 
     @Deprecated

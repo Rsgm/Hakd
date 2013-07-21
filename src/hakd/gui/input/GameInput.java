@@ -9,7 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
-public class GameInput implements InputProcessor {
+public final class GameInput implements InputProcessor {
     private final Hakd game;
 
     private final OrthographicCamera cam;

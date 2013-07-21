@@ -9,7 +9,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
-public class ServerWindowStage implements WindowStage {
+public final class ServerWindowStage implements WindowStage {
     private final Stage stage;
     private final Group canvas;
 

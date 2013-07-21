@@ -2,7 +2,7 @@ package hakd.networks.devices.parts;
 
 import hakd.networks.devices.Device;
 
-public class Gpu extends Part {
+public final class Gpu extends Part {
 
     public Gpu(int level, Device device) {
 	super(level, device);

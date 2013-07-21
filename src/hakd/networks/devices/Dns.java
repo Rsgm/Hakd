@@ -6,7 +6,7 @@ import hakd.networks.Network;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Dns extends Device { // TODO let DNSs communicate a bit.
+public final class Dns extends Device { // TODO let DNSs communicate a bit.
     private List<Network> hosts = new ArrayList<Network>();
 
     public Dns(Boolean publicDns, Network network, int level) {

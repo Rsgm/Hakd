@@ -8,7 +8,7 @@ import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 
-public class Assets {
+public final class Assets {
     public static TextureAtlas nearestTextures;
     public static TextureAtlas linearTextures;
 

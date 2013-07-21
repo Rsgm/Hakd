@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-public class GamePlay {
+public final class GamePlay {
 
     public static void generateGame() {
 	NetworkController.getOwners().addAll(Arrays.asList(Owner.values()));

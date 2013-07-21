@@ -11,7 +11,7 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 
-public class MenuScreen extends HakdScreen { // terminal directory: BOOT>_
+public final class MenuScreen extends HakdScreen { // terminal directory: BOOT>_
     private Terminal terminal;
     private BitmapFont consoleFont;
     private final Color consoleFontColor = new Color(0.0f, 0.7f, 0.0f, 1.0f);

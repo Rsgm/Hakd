@@ -22,7 +22,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
-public class Terminal implements ServerWindow {
+public final class Terminal implements ServerWindow {
     private final ServerWindowStage window;
 
     private final Table table;

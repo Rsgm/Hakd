@@ -5,13 +5,12 @@ import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
 
-public class Command {
-    private final String input;
+public final class Command {
+    private String input;
     private final Device device;
     private final Terminal terminal;
 
@@ -37,44 +36,23 @@ public class Command {
 		// server*/, traceroute(address), clone server to server(maybe
 		// just hard
 		// drive to hard drive)
-
-		Scanner scanner = new Scanner(input);
 		List<String> args = new ArrayList<String>();
-		boolean inQuotes = false; // credit to redditor BritPack for
-					  // this, thank you
 
-		if (input.matches(device.getNetwork().getIp() + ">.+")) {
-		    scanner.skip(".+>");
-		    scanner.useDelimiter("\\s+");
-
-		    while (scanner.hasNext()) {
-			// Get the current token
-			String next = scanner.next();
-			// Are we inside quotes
-			if (inQuotes) {
-			    // If so, add this string to the end of the last
-			    // value
-			    int offset = args.size() - 1;
-			    args.set(offset, args.get(offset) + " " + next);
-			    // If it ends in a quotation then we exit quotes
-			    if (next.endsWith("\"")) {
-				inQuotes = false;
-			    }
-			} else {
-			    // Add the string to the values
-			    args.add(next);
-			    // Are we moving into quotes?
-			    if (next.startsWith("\"")
-				    && scanner.hasNext("\\S*\"")) {
-				inQuotes = true;
-			    }
-			}
+		while (input.matches(".*?[(?:\".*?\")|\\S+].*")) {
+		    if (input.startsWith(" ")) {
+			input = input.replaceFirst("\\s+", "");
 		    }
 
-		    // run(args);
-		    System.out.println(args.toString());
+		    String inputTemp = input;
+		    input = input.replaceFirst("(?:\".*?\")|\\S+", "");
+		    int l = input.length();
+
+		    String next = inputTemp.substring(0, inputTemp.length() - l);
+		    args.add(next);
 		}
-		scanner.close();
+
+		// run(args);
+		System.out.println(args.toString());
 	    }
 	});
     }

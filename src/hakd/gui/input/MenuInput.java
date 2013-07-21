@@ -10,7 +10,7 @@ import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class MenuInput implements InputProcessor {
+public final class MenuInput implements InputProcessor {
 	private Terminal		terminal;
 
 	private List<String>	history;

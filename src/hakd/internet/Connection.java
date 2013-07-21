@@ -3,7 +3,7 @@ package hakd.internet;
 import hakd.internet.NetworkController.Protocol;
 import hakd.networks.devices.Device;
 
-public class Connection { // connections are one way, and one connection to one
+public final class Connection { // connections are one way, and one connection to one
 			  // port // for two way connections just use two
 			  // connections
 
