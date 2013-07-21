@@ -38,7 +38,7 @@ public final class Command {
 		// drive to hard drive)
 		List<String> args = new ArrayList<String>();
 
-		while (input.matches(".*?[(?:\".*?\")|\\S+].*")) {
+		while (input.matches("\\s*[(?:\".*?\")|\\S+].*")) {
 		    if (input.startsWith(" ")) {
 			input = input.replaceFirst("\\s+", "");
 		    }
