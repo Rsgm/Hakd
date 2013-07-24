@@ -3,8 +3,11 @@ package hakd.game;
 import hakd.gui.windows.server.Terminal;
 import hakd.networks.devices.Device;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
+
+import org.python.util.PythonInterpreter;
 
 import com.badlogic.gdx.utils.Timer;
 import com.badlogic.gdx.utils.Timer.Task;
@@ -36,7 +39,7 @@ public final class Command {
 		// server*/, traceroute(address), clone server to server(maybe
 		// just hard
 		// drive to hard drive)
-		List<String> args = new ArrayList<String>();
+		List<String> parameters = new ArrayList<String>();
 
 		while (input.matches("\\s*[(?:\".*?\")|\\S+].*")) {
 		    if (input.startsWith(" ")) {
@@ -48,12 +51,30 @@ public final class Command {
 		    int l = input.length();
 
 		    String next = inputTemp.substring(0, inputTemp.length() - l);
-		    args.add(next);
+		    parameters.add(next);
 		}
 
-		// run(args);
-		System.out.println(args.toString());
+		System.out.println(parameters.toString());
+		if (parameters != null && !parameters.isEmpty()) {
+		    runPython(parameters);
+		}
 	    }
 	});
+    }
+
+    private void runPython(List<String> parameters) {
+	PythonInterpreter pi = new PythonInterpreter();
+	pi.set("parameters", parameters);
+	pi.set("device", device);
+
+	File file = new File("python/" + parameters.get(0) + ".py");
+	System.out.println(file.getPath());
+
+	if (file.exists()) {
+	    // first parameter is always the command
+	    pi.execfile(file.getPath());
+	} else {
+	    terminal.addText("Command '" + parameters.get(0) + "' not found.");
+	}
     }
 }
