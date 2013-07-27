@@ -22,6 +22,8 @@ import hakd.other.names.Model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
+
 public class Device implements Connectable {
 
     // stats
@@ -56,6 +58,7 @@ public class Device implements Connectable {
 
     // server gui
     private ServerWindowStage window;
+    private Sprite tile;
 
     // --------constructor--------
     public Device(Network network, int level, DeviceType type) { // idea: have
@@ -124,9 +127,17 @@ public class Device implements Connectable {
 	}
 
 	if (network.getType() == NetworkType.PLAYER) {
-	    if (type == DeviceType.DNS || type == DeviceType.SERVER) {
+	    switch (type) {
+	    case DNS:
 		window = new ServerWindowStage(this);
-	    }// else if router, routerwindow.open
+		break;
+	    case ROUTER:
+		break;
+	    default:
+		window = new ServerWindowStage(this);
+		break;
+	    }
+
 	}
     }
 
@@ -431,5 +442,13 @@ public class Device implements Connectable {
 
     public void setTotalStorage(int totalStorage) {
 	this.totalStorage = totalStorage;
+    }
+
+    public Sprite getTile() {
+	return tile;
+    }
+
+    public void setTile(Sprite tile) {
+	this.tile = tile;
     }
 }

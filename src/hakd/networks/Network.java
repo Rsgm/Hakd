@@ -1,5 +1,6 @@
 package hakd.networks;
 
+import hakd.game.gameplay.Player;
 import hakd.internet.NetworkController;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.Device.DeviceType;
@@ -21,6 +22,7 @@ public class Network { // this only holds a set of devices and info, connecting
     String ip; // all network variables will be in IP format
     String address;
     String owner; // owner, company, player
+    Player player;
 
     int serverLimit; // amount of server objects to begin with and the
 		     // limit
@@ -46,18 +48,20 @@ public class Network { // this only holds a set of devices and info, connecting
     int y;
     int z;
 
-    // graphic? icon? sprite? image? texture? 3d model.
+    // graphic? icon? sprite? image? texture? -3d model and tile-.
     // TODO have a static class, or file, hold all of the models with the points
     // and textures
 
     // --------constructor--------
     @Deprecated
-    public Network(NetworkType type) { // this can't be used, you must use the
-				       // add network or add public network
-				       // methods in network controller
+    public Network(NetworkType type) { // this can't be used, you
+				       // must use the
+	// add network or add public network
+	// methods in network controller
 	level = (int) (Math.random() * 8);
 	stance = Stance.NEUTRAL;
 	this.type = type;
+	this.player = player;
 
 	switch (type) { // I should really clean these up, meh, later
 	case PLAYER:// new player // only happens at the start of the game
@@ -352,5 +356,13 @@ public class Network { // this only holds a set of devices and info, connecting
 
     public List<Router> getRouters() {
 	return routers;
+    }
+
+    public Player getPlayer() {
+	return player;
+    }
+
+    public void setPlayer(Player player) {
+	this.player = player;
     }
 }

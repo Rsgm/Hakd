@@ -121,4 +121,8 @@ public final class NewServerWindow implements WindowStage {
     public void setScreen(GameScreen screen) {
 	this.screen = screen;
     }
+
+    public GameScreen getScreen() {
+	return screen;
+    }
 }

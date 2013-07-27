@@ -9,6 +9,34 @@ player0
   orig: 16, 32
   offset: 0, 0
   index: -1
+s-1
+  rotate: false
+  xy: 26, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+s0
+  rotate: false
+  xy: 92, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+s1
+  rotate: false
+  xy: 158, 2
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+s2
+  rotate: false
+  xy: 2, 68
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 grey
   rotate: false
   xy: 5, 2
@@ -16,18 +44,46 @@ grey
   orig: 1, 1
   offset: 0, 0
   index: -1
+s3
+  rotate: false
+  xy: 68, 68
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
+s4
+  rotate: false
+  xy: 134, 68
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 untitled
   rotate: false
-  xy: 26, 2
+  xy: 134, 134
   size: 4, 1
   orig: 4, 1
   offset: 0, 0
   index: -1
+s5
+  rotate: false
+  xy: 2, 134
+  size: 64, 64
+  orig: 64, 64
+  offset: 0, 0
+  index: -1
 white
   rotate: false
-  xy: 2, 36
+  xy: 140, 134
   size: 1, 1
   orig: 1, 1
+  offset: 0, 0
+  index: -1
+s6
+  rotate: false
+  xy: 68, 134
+  size: 64, 64
+  orig: 64, 64
   offset: 0, 0
   index: -1
 black

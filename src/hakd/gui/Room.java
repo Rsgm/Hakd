@@ -4,13 +4,17 @@ import hakd.game.gameplay.Player;
 import hakd.gui.screens.GameScreen;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
+import hakd.networks.devices.Device.DeviceType;
 import hakd.networks.devices.Dns;
 import hakd.networks.devices.Router;
 import hakd.networks.devices.Server;
+import hakd.other.Util;
 
 import java.util.List;
 
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.MapLayer;
+import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
@@ -29,7 +33,7 @@ public final class Room {
     private TiledMapTileLayer floor;
     private TiledMapTileLayer wall;
     private MapLayer bounds; // if it matters, maybe rename this to
-			     // wall/boundary layer
+    // wall/boundary layer
     private TiledMapTileLayer objetcts; // Intractable tiles
 
     private GameScreen gameScreen;
@@ -70,7 +74,7 @@ public final class Room {
 	mapObjects = new Object[bounds.getObjects().getCount()][3];
 
 	int i = 0;
-	for (com.badlogic.gdx.maps.MapObject o : bounds.getObjects()) {
+	for (MapObject o : bounds.getObjects()) {
 	    mapObjects[i][0] = o.getName();
 
 	    if (o.getName().matches("[rds]s.*")) {
@@ -81,6 +85,50 @@ public final class Room {
 	    }
 	    i++;
 	}
+
+	for (Dns d : dnss) {
+	}
+	for (Router r : routers) {
+
+	}
+	for (Server s : servers) {
+	    s.setTile(new Sprite(Assets.nearestTextures.findRegion("s"
+		    + s.getLevel())));
+	    s.getTile().setSize(s.getTile().getWidth() / GameScreen.tileSize,
+		    s.getTile().getHeight() / GameScreen.tileSize);
+
+	    int[] isoPos = findDeviceCoords(s, DeviceType.SERVER); // position
+								   // in iso
+	    float[] ortho = Util.isoToOrtho(isoPos[0], isoPos[1],
+		    floor.getHeight());
+
+	    s.getTile().setPosition(ortho[0], ortho[1]);
+	}
+    }
+
+    // returns the position of a device in isometric coordinates
+    public int[] findDeviceCoords(Device d, DeviceType type) {
+	int index;
+	switch (type) {
+	case DNS:
+	    index = network.getDnss().indexOf(d);
+	    break;
+	case ROUTER:
+	    index = network.getRouters().indexOf(d);
+	    break;
+	default:
+	    index = network.getServers().indexOf(d);
+	    break;
+	}
+
+	String s;
+	for (Object[] o : mapObjects) {
+	    s = ((String) o[0]).replace("ss", "");
+	    if (Integer.parseInt(s) == index) {
+		return new int[] { (Integer) o[1], (Integer) o[2] };
+	    }
+	}
+	return null;
     }
 
     public Device getDeviceAtTile(Object x, Object y) {

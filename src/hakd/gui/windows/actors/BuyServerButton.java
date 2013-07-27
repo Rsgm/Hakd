@@ -1,5 +1,6 @@
 package hakd.gui.windows.actors;
 
+import hakd.gui.Assets;
 import hakd.gui.windows.newdevice.NewServerWindow;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.Device.DeviceType;
@@ -112,6 +113,10 @@ public final class BuyServerButton extends TextButton {
 		d.getNetwork().removeDevice(currentDevice);
 		d.getNetwork().addDevice(d);
 		d.getNetwork().setLevel(0);
+
+		d.setTile(currentDevice.getTile());
+		d.getTile().setRegion(
+			Assets.nearestTextures.findRegion("s" + d.getLevel()));
 
 		newServerWindow.close();
 

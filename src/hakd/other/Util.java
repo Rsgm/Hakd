@@ -1,23 +1,17 @@
 package hakd.other;
 
-
 public final class Util {
 
-    public static int[] orthoToIso(float x, float y, float height) {// converts
-								    // float x/y
-								    // orthogonal
-								    // screen
-								    // coordinates
-								    // into int
-								    // x/y
-								    // isometric
-    // map coordinates
+    // converts float x and y orthogonal screen coordinates into int x and y
+    // isometric
+    public static int[] orthoToIso(float x, float y, int height) {
+	// map coordinates
 	float a1 = 0.5f * x + y; // checks every frame, so use float not double
 	float a2 = -0.5f * x + y;
 	float b = height / 2 + .08f;
 
 	// I have a page full of math written out for this algorithm, front and
-	// back
+	// back, although it is just a system of equations
 	float firstIntersectX;
 	float firstIntersectY;
 
@@ -33,16 +27,24 @@ public final class Util {
 	secondIntersectY = -y + a2 + b;
 	secondIntersectX = 2 * (secondIntersectY - a2);
 
-	int[] returnInt = new int[2];
-	returnInt[0] = (int) (0.9f * Math.sqrt((firstIntersectX - x)
+	int[] iso = new int[2];
+	iso[0] = (int) (0.9f * Math.sqrt((firstIntersectX - x)
 		* (firstIntersectX - x) + (firstIntersectY - y)
 		* (firstIntersectY - y)));
-	returnInt[1] = (int) (0.9f * Math.sqrt((secondIntersectX - x)
+	iso[1] = (int) (0.9f * Math.sqrt((secondIntersectX - x)
 		* (secondIntersectX - x) + (secondIntersectY - y)
 		* (secondIntersectY - y)));
 
-	return returnInt;
+	return iso;
     }
 
-    // public static isoToOrtho{}
+    // returns float x and y orthogonal screen coordinates at the bottom
+    // middle of the isometric tile coordinate
+    public static float[] isoToOrtho(float iX, float iY, float roomHeight) {
+	float[] ortho = new float[2];
+	ortho[0] = (roomHeight + iX - iY) / 2 - 0.5f;
+	ortho[1] = (roomHeight - iX - iY) / 4 - 0.25f;
+	return ortho; // adapted from
+		      // http://www.java-gaming.org/topics/isometric-screen-space/27698/view.html
+    }
 }

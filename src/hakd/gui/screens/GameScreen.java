@@ -13,6 +13,9 @@ import hakd.networks.Network;
 import hakd.networks.Network.NetworkType;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.Device.DeviceType;
+import hakd.networks.devices.Dns;
+import hakd.networks.devices.Router;
+import hakd.networks.devices.Server;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
@@ -30,7 +33,7 @@ public final class GameScreen extends HakdScreen {
     // private int arraylist<npc> npcs = new arraylist<npc>(); maybe
 
     private Room room;
-    private final float tileSize = 64;
+    public static final float tileSize = 64;
     private IsometricTiledMapRenderer renderer; // it says this is experimental,
 						// but it was an old article
 
@@ -74,6 +77,17 @@ public final class GameScreen extends HakdScreen {
 	renderer.render();
 
 	rBatch.begin();
+	for (Dns d : player.getNetwork().getDnss()) {
+	    d.getTile().draw(rBatch);
+	}
+
+	for (Router r : player.getNetwork().getRouters()) {
+	    r.getTile().draw(rBatch);
+	}
+	for (Server s : player.getNetwork().getServers()) {
+	    s.getTile().draw(rBatch);
+	}
+
 	if (openWindow == null) {
 	    updateMovement();
 	    checkPosition(rBatch);
@@ -137,20 +151,20 @@ public final class GameScreen extends HakdScreen {
 	float x = 0;
 	float y = 0;
 	if ((i.isKeyPressed(Keys.W) || i.isKeyPressed(Keys.UP))) {
-	    x += 1;
+	    // x += 1;
 	    y += 1;
 	}
 	if (i.isKeyPressed(Keys.A) || i.isKeyPressed(Keys.LEFT)) {
 	    x += -1;
-	    y += 1;
+	    // y += 1;
 	}
 	if (i.isKeyPressed(Keys.S) || i.isKeyPressed(Keys.DOWN)) {
-	    x += -1;
+	    // x += -1;
 	    y += -1;
 	}
 	if (i.isKeyPressed(Keys.D) || i.isKeyPressed(Keys.RIGHT)) {
 	    x += 1;
-	    y += -1;
+	    // y += -1;
 	}
 
 	if (x < -1 || x > 1) {
@@ -158,6 +172,8 @@ public final class GameScreen extends HakdScreen {
 	}
 
 	player.move(1.5f * x / tileSize / 1.0f, y / tileSize / 1.5f);
+	System.out.println(player.getSprite().getX() + "	"
+		+ player.getSprite().getY());
     }
 
     public void changeMap(TiledMap map) { // TODO make a transition effect
@@ -188,10 +204,6 @@ public final class GameScreen extends HakdScreen {
 
     public void setRenderer(IsometricTiledMapRenderer renderer) {
 	this.renderer = renderer;
-    }
-
-    public float getTileSize() {
-	return tileSize;
     }
 
     public WindowStage getOpenWindow() {
