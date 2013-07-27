@@ -42,9 +42,6 @@ public final class Player {
 		sprite.getY(), screen.getRoom().getFloor().getHeight());
 	isoX = coords[0];
 	isoY = coords[1];
-
-	// System.out.println(isoX + "	" + isoY);
-	// System.out.println(sprite.getX() + "	" + sprite.getY());
     }
 
     // --------getters/setters--------

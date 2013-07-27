@@ -8,7 +8,7 @@ public final class Util {
 	// map coordinates
 	float a1 = 0.5f * x + y; // checks every frame, so use float not double
 	float a2 = -0.5f * x + y;
-	float b = height / 2 + .08f;
+	float b = (height) / 2 + 0.6f;
 
 	// I have a page full of math written out for this algorithm, front and
 	// back, although it is just a system of equations

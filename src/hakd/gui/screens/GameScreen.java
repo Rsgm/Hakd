@@ -109,11 +109,7 @@ public final class GameScreen extends HakdScreen {
 	int x = player.getIsoX();
 	int y = player.getIsoY();
 
-	Device d = room.getDeviceAtTile(x - 1, y);
-
-	if (d == null) {
-	    d = room.getDeviceAtTile(x, y - 1);
-	}
+	Device d = room.getDeviceAtTile(x, y - 1);
 
 	if (d != null) {
 	    Sprite s = new Sprite(
@@ -151,20 +147,20 @@ public final class GameScreen extends HakdScreen {
 	float x = 0;
 	float y = 0;
 	if ((i.isKeyPressed(Keys.W) || i.isKeyPressed(Keys.UP))) {
-	    // x += 1;
+	    x += 1;
 	    y += 1;
 	}
 	if (i.isKeyPressed(Keys.A) || i.isKeyPressed(Keys.LEFT)) {
 	    x += -1;
-	    // y += 1;
+	    y += 1;
 	}
 	if (i.isKeyPressed(Keys.S) || i.isKeyPressed(Keys.DOWN)) {
-	    // x += -1;
+	    x += -1;
 	    y += -1;
 	}
 	if (i.isKeyPressed(Keys.D) || i.isKeyPressed(Keys.RIGHT)) {
 	    x += 1;
-	    // y += -1;
+	    y += -1;
 	}
 
 	if (x < -1 || x > 1) {
@@ -172,8 +168,6 @@ public final class GameScreen extends HakdScreen {
 	}
 
 	player.move(1.5f * x / tileSize / 1.0f, y / tileSize / 1.5f);
-	System.out.println(player.getSprite().getX() + "	"
-		+ player.getSprite().getY());
     }
 
     public void changeMap(TiledMap map) { // TODO make a transition effect
