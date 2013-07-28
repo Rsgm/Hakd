@@ -167,7 +167,9 @@ public final class GameScreen extends HakdScreen {
 	    x /= 2; // x does not equal 2
 	}
 
-	player.move(1.5f * x / tileSize / 1.0f, y / tileSize / 1.5f);
+	player.move(1.41f * x / tileSize, y / tileSize / 1.41f);
+	// these were at1.5f each, they may need to be changed to account for
+	// screen size
     }
 
     public void changeMap(TiledMap map) { // TODO make a transition effect
