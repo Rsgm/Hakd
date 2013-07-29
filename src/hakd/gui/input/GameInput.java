@@ -63,9 +63,9 @@ public final class GameInput implements InputProcessor {
 	float width = screen.getRoom().getFloor().getWidth();
 
 	float deltaX = (lastMouseX - screenX)
-		/ (Gdx.graphics.getHeight() / height) * cam.zoom;
+		/ (Gdx.graphics.getWidth() / width) * cam.zoom;
 	float deltaY = (screenY - lastMouseY)
-		/ (Gdx.graphics.getHeight() / width) * cam.zoom;
+		/ (Gdx.graphics.getHeight() / height) * cam.zoom;
 
 	System.out.println(deltaX + "	" + deltaY + "	" + cam.position.x + "	"
 		+ cam.position.y);
