@@ -7,7 +7,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
 
-public class Hakd extends Game {
+public final class Hakd extends Game {
     private int width;
     private int height;
 

@@ -3,8 +3,8 @@ package hakd.networks.devices;
 import hakd.gui.windows.server.ServerWindowStage;
 import hakd.internet.Connectable;
 import hakd.internet.Connection;
-import hakd.internet.NetworkController;
-import hakd.internet.NetworkController.Protocol;
+import hakd.internet.Internet;
+import hakd.internet.Internet.Protocol;
 import hakd.internet.Port;
 import hakd.networks.Network;
 import hakd.networks.Network.NetworkType;
@@ -27,38 +27,38 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 public class Device implements Connectable {
 
     // stats
-    private Network network;
-    private int level;
-    // private int webserver = 0; // 0 = 404, if port 80 is open
-    private List<Port> ports = new ArrayList<Port>(); // port, program /
-						      // if its
-						      // closed just
-						      // delete it
-    private List<Connection> connections = new ArrayList<Connection>();
-    private File logs; // TODO make this a file instead connecting from and the
-		       // action after that
+    Network network;
+    int level;
+    // int webserver = 0; // 0 = 404, if port 80 is open
+    List<Port> ports = new ArrayList<Port>(); // port, program /
+					      // if its
+					      // closed just
+					      // delete it
+    List<Connection> connections = new ArrayList<Connection>();
+    File logs; // TODO make this a file instead connecting from and the
+	       // action after that
 
-    private Brand brand; // for example bell, or HQ
-    private Model model;
+    Brand brand; // for example bell, or HQ
+    Model model;
 
-    private int totalMemory; // in MB
-    private int totalStorage; // in ???
+    int totalMemory; // in MB
+    int totalStorage; // in ???
 
     // objects
-    private List<Part> parts = new ArrayList<Part>();
-    private int cpuSockets; // easier than using a for loop to count the amount,
-			    // just remember to
+    List<Part> parts = new ArrayList<Part>();
+    int cpuSockets; // easier than using a for loop to count the amount,
+		    // just remember to
     // change this port
-    private int memorySlots; // maybe have a maximum part number, so you can
-			     // specialize a server
-    private int storageSlots;
-    private int gpuSlots;
-    private Storage masterStorage; // TODO where the os resides
-    private DeviceType type;
+    int memorySlots; // maybe have a maximum part number, so you can
+		     // specialize a server
+    int storageSlots;
+    int gpuSlots;
+    Storage masterStorage; // TODO where the os resides
+    DeviceType type;
 
     // server gui
-    private ServerWindowStage window;
-    private Sprite tile;
+    ServerWindowStage window;
+    Sprite tile;
 
     // --------constructor--------
     public Device(Network network, int level, DeviceType type) { // idea: have
@@ -163,7 +163,7 @@ public class Device implements Connectable {
 
     @Override
     public boolean Connect(Device client, String program, int port,
-	    NetworkController.Protocol protocol) { // TODO this
+	    Internet.Protocol protocol) { // TODO this
 	Connection c = new Connection(this, client, Protocol.getProtocol(port));
 	connections.add(c);
 

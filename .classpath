@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
 	<classpathentry excluding="test/" kind="src" path="src"/>
-	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/java-6-openjdk-amd64"/>
 	<classpathentry kind="lib" path="lib/libgdx/gdx-backend-lwjgl-natives.jar"/>
 	<classpathentry kind="lib" path="lib/libgdx/gdx-backend-lwjgl.jar" sourcepath="lib/libgdx/sources/gdx-backend-lwjgl-sources.jar"/>
 	<classpathentry kind="lib" path="lib/libgdx/gdx.jar" sourcepath="lib/libgdx/gdx-sources.jar">

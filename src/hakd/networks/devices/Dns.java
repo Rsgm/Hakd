@@ -1,6 +1,5 @@
 package hakd.networks.devices;
 
-import hakd.internet.NetworkController;
 import hakd.networks.Network;
 
 import java.util.ArrayList;
@@ -73,7 +72,8 @@ public final class Dns extends Device { // TODO let DNSs communicate a bit.
     // be a player's ip if they buy it
     public boolean addUrl(String ip, String address) {
 	if (address.matches("^[\\d|\\w]{1,64}\\.\\w{2,3}$")
-		&& NetworkController.getIp(address) == null) { // address regex
+		&& network.getInternet().getIp(address) == null) { // address
+								   // regex
 	    findNetwork(ip).setAddress(address);
 	    return true; // "you have successfully registered the url " + url +
 			 // " for the ip " + ip;
@@ -84,7 +84,7 @@ public final class Dns extends Device { // TODO let DNSs communicate a bit.
     // returns the network with the given address or ip
     public Network findNetwork(String address) {
 	if (address.matches("^[\\d|\\w]{1,64}\\.\\w{2,3}$")) {
-	    address = NetworkController.getIp(address);
+	    address = network.getInternet().getIp(address);
 	}
 
 	for (Network n : hosts) {
@@ -108,69 +108,6 @@ public final class Dns extends Device { // TODO let DNSs communicate a bit.
     int getRandomNumber() {
 	return 4; // chosen by fair dice roll
 		  // guaranteed to be random
-    }
-
-    // I only keep this for the algorithms it has
-    { // old method
-      // public static void addConnection(Network network, String address) {
-      // Vector<Line> lines = GameScreem.getLines();
-      // int radius = GameScreem.getRadius();
-      // double r, a, b, c, xTrig, yTrig, x1, y1, x2, y2; // triangle>ABC
-      //
-      // x1 = network.getxCoordinate();
-      // y1 = network.getyCoordinate();
-      // x2 = Network.getNetworks().get(findNetwork(address)).getxCoordinate();
-      // y2 = Network.getNetworks().get(findNetwork(address)).getyCoordinate();
-      // r = radius;
-      //
-      // a = 1; // line BC, point C is only (x2,y2+1)
-      // b = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 + 1 - y1) * (y2 + 1 - y1));
-      // //
-      // line CA
-      // c = Math.sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1)); // line
-      // AB
-      //
-      // Line line = new Line();
-      // if (x2 - x1 != 0) {
-      // xTrig = r * Math.sin(Math.acos((a * a - b * b + c * c) / (2 * a * c)));
-      // yTrig = r * Math.cos(Math.acos((a * a - b * b + c * c) / (2 * a * c)));
-      // if (x2 - x1 > 0) {
-      // line.setStartX(x1 + xTrig);
-      // line.setStartY(y1 - yTrig);
-      // line.setEndX(x2 - xTrig);
-      // line.setEndY(y2 + yTrig);
-      // } else if (x2 - x1 < 0) {
-      // line.setStartX(x1 - xTrig);
-      // line.setStartY(y1 - yTrig);
-      // line.setEndX(x2 + xTrig);
-      // line.setEndY(y2 + yTrig);
-      // }
-      // } else {
-      // if (y2 - y1 > 0) {
-      // line.setEndX(x2);
-      // line.setEndY(y2 + r);
-      // } else if (y2 - y1 < 0) {
-      // line.setEndX(x2);
-      // line.setEndY(y2 - r);
-      // } else {
-      // return;
-      // }
-      // return;
-      // }
-      // if (Double.isNaN(yTrig) || Double.isNaN(xTrig)) {
-      // return;
-      // }
-      //
-      // line.setFill(Paint.valueOf("black"));
-      // line.setStrokeWidth(1.15);
-      // line.setOpacity(0.3);
-      // lines.add(line);
-      // Connection.getConnection().add(new Connection(network,
-      // Network.getNetworks().get(findNetwork(address))));
-      //
-      // // GameScreem.updateRegion();
-      // return;
-      // }
     }
 
     // --------getters/setters--------

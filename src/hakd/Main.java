@@ -8,7 +8,6 @@ import com.badlogic.gdx.backends.lwjgl.LwjglApplicationConfiguration;
 public final class Main {
 
     public static void main(String[] args) {
-
 	LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
 	config.resizable = false;
 	config.title = "Hak'd";

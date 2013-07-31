@@ -164,7 +164,7 @@ public final class Terminal implements ServerWindow {
     }
 
     public void addText(String s) {
-	display.setText(display.getText() + "\n\t" + s);
+	display.setText(display.getText() + "\n   " + s);
 	scroll.setScrollY(display.getHeight());
     }
 

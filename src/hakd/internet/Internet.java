@@ -4,19 +4,61 @@ import hakd.networks.Network;
 import hakd.networks.Network.NetworkType;
 import hakd.networks.ServiceProvider;
 import hakd.networks.devices.Dns;
+import hakd.other.names.Isp;
 import hakd.other.names.Owner;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-public final class NetworkController {
-    private static List<Network> PublicNetworks = new ArrayList<Network>();
-    private static List<Dns> publicDns = new ArrayList<Dns>();
-    private static List<ServiceProvider> serviceProviders = new ArrayList<ServiceProvider>();
-    private static List<Owner> owners = new ArrayList<Owner>();
+public final class Internet {
+    private List<Network> PublicNetworks = new ArrayList<Network>();
+    private List<Dns> publicDns = new ArrayList<Dns>();
+    private List<ServiceProvider> serviceProviders = new ArrayList<ServiceProvider>();
+    private List<Owner> owners = new ArrayList<Owner>();
+
+    // public static
+
+    public Internet() {
+	owners.addAll(Arrays.asList(Owner.values()));
+	// brands and models don't need this because you can have two of the
+	// same brand
+
+	generateIsps();
+	generateNetworks();
+    }
+
+    private void generateIsps() {
+	int amount = (int) (Math.random() * 6 + 6);
+	List<Isp> names = new ArrayList<Isp>(
+		Arrays.asList(Isp.values().clone()));
+
+	for (int i = 0; i < amount; i++) {
+	    int random = (int) (Math.random() * names.size());
+
+	    @SuppressWarnings("deprecation")
+	    ServiceProvider s = new ServiceProvider(names.get(random), this);
+
+	    s.setIp(s.register(s, 10));
+	    names.remove(random);
+	    publicDns.add(s.getDns());
+	    serviceProviders.add(s);
+	    PublicNetworks.add(s); // this may not be the best but lets see what
+				   // happens
+	}
+    }
+
+    // creates the initial game networks
+    private void generateNetworks() {
+	int amount = (int) (Math.random() * 6 + 30);
+
+	for (int i = 0; i < amount; i++) {
+	    addPublicNetwork(NetworkType.TEST);
+	}
+    }
 
     // returns the network at the given address
-    public static Network getNetwork(String address) {
+    public Network getNetwork(String address) {
 	for (Dns d : publicDns) {
 	    Network n = d.findNetwork(address);
 	    if (n != null) {
@@ -27,7 +69,7 @@ public final class NetworkController {
     }
 
     // returns the networks of the given type
-    public static List<Network> getNetworkByType(NetworkType type) {
+    public List<Network> getNetworkByType(NetworkType type) {
 	List<Network> array = new ArrayList<Network>();
 	for (Network n : PublicNetworks) {
 	    if (n.getType() == type) {
@@ -38,7 +80,7 @@ public final class NetworkController {
     }
 
     // public dns ip request, gets the ip of a server at that address
-    public static String getIp(String address) {
+    public String getIp(String address) {
 	for (Dns d : publicDns) {
 	    String s = d.getIp(address);
 	    if (s != null) { // why is this needed? removing it is probably not
@@ -51,7 +93,7 @@ public final class NetworkController {
     }
 
     // add the network to all public DNSs
-    public static Network addPublicNetwork(NetworkType type) {
+    public Network addPublicNetwork(NetworkType type) {
 	Network n = addNetwork(type);
 	n.getIsp().register(n, 5);
 	return n;
@@ -59,7 +101,7 @@ public final class NetworkController {
 
     // removes references to a network from all public DNSs(there may not be
     // any) and the network list
-    public static void removePublicNetwork(Network network) {
+    public void removePublicNetwork(Network network) {
 	for (Dns d : publicDns) {
 	    d.getHosts().remove(network);
 	}
@@ -71,9 +113,10 @@ public final class NetworkController {
     // creates a network, needed because you can't add(this) in a constructor,
     // strange
     @SuppressWarnings("deprecation")
-    public static Network addNetwork(Network.NetworkType type) {
-	Network n = new Network(type); // this is the only place to use this
-				       // constructor
+    public Network addNetwork(Network.NetworkType type) {
+	Network n = new Network(type, this); // this is the only place to use
+					     // this
+					     // constructor
 	PublicNetworks.add(n);
 	return n;
     }
@@ -100,40 +143,39 @@ public final class NetworkController {
     }
 
     // removes a network
-    public static void removeNetwork(Network network) {
+    public void removeNetwork(Network network) {
 	PublicNetworks.remove(network);
     }
 
-    public static List<ServiceProvider> getServiceProviders() {
+    public List<ServiceProvider> getServiceProviders() {
 	return serviceProviders;
     }
 
-    public static void setServiceProviders(
-	    List<ServiceProvider> serviceProviders) {
-	NetworkController.serviceProviders = serviceProviders;
+    public void setServiceProviders(List<ServiceProvider> serviceProviders) {
+	this.serviceProviders = serviceProviders;
     }
 
-    public static List<Dns> getPublicDns() {
+    public List<Dns> getPublicDns() {
 	return publicDns;
     }
 
-    public static void setPublicDns(List<Dns> publicDns) {
-	NetworkController.publicDns = publicDns;
+    public void setPublicDns(List<Dns> publicDns) {
+	this.publicDns = publicDns;
     }
 
-    public static List<Owner> getOwners() {
+    public List<Owner> getOwners() {
 	return owners;
     }
 
-    public static void setOwners(List<Owner> owners) {
-	NetworkController.owners = owners;
+    public void setOwners(List<Owner> owners) {
+	this.owners = owners;
     }
 
-    public static List<Network> getPublicNetworks() {
+    public List<Network> getPublicNetworks() {
 	return PublicNetworks;
     }
 
-    public static void setPublicNetworks(List<Network> publicNetworks) {
+    public void setPublicNetworks(List<Network> publicNetworks) {
 	PublicNetworks = publicNetworks;
     }
 }

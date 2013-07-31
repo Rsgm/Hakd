@@ -3,10 +3,15 @@ package hakd.gui.windows.server;
 import hakd.gui.Assets;
 import hakd.networks.devices.Device;
 
+import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.scenes.scene2d.InputEvent;
+import com.badlogic.gdx.scenes.scene2d.InputListener;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
+import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public final class Info implements ServerWindow {
     private final ServerWindowStage window;
@@ -14,6 +19,7 @@ public final class Info implements ServerWindow {
     private final Window infoWindow;
     private final ScrollPane scroll;
     private final Table table;
+    private final ImageButton close;
 
     public Info(ServerWindowStage w) {
 	window = w;
@@ -26,6 +32,60 @@ public final class Info implements ServerWindow {
 	table = new Table(skin);
 	scroll = new ScrollPane(table);
 	infoWindow.add(scroll);
+
+	close = new ImageButton(new TextureRegionDrawable(
+		Assets.linearTextures.findRegion("close")));
+	close.setPosition(infoWindow.getWidth() - close.getWidth(),
+		infoWindow.getHeight() - close.getHeight() - 20);
+
+	infoWindow.addListener(new InputListener() {
+	    @Override
+	    public boolean touchDown(InputEvent event, float x, float y,
+		    int pointer, int button) {
+		// touch up will not work without this returning true
+		return true;
+	    }
+
+	    @Override
+	    public void touchUp(InputEvent event, float x, float y,
+		    int pointer, int button) {
+		if (y >= infoWindow.getHeight() - 20) {
+		    if (infoWindow.getX() < 0) {
+			infoWindow.setX(0);
+		    }
+		    if (infoWindow.getY() < 0) {
+			infoWindow.setY(0);
+		    }
+		    if (infoWindow.getX() + infoWindow.getWidth() > Gdx.graphics
+			    .getWidth()) {
+			infoWindow.setX(Gdx.graphics.getWidth()
+				- infoWindow.getWidth());
+		    }
+		    if (infoWindow.getY() + infoWindow.getHeight() > Gdx.graphics
+			    .getHeight()) {
+			infoWindow.setY(Gdx.graphics.getHeight()
+				- infoWindow.getHeight());
+		    }
+		}
+	    }
+	});
+
+	close.addListener(new InputListener() {
+	    @Override
+	    public boolean touchDown(InputEvent event, float x, float y,
+		    int pointer, int button) {
+		return true;
+	    }
+
+	    @Override
+	    public void touchUp(InputEvent event, float x, float y,
+		    int pointer, int button) {
+		super.touchUp(event, x, y, pointer, button);
+		close();
+	    }
+	});
+
+	infoWindow.addActor(close);
     }
 
     @Override

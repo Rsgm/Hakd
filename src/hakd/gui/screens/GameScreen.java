@@ -1,6 +1,5 @@
 package hakd.gui.screens;
 
-import hakd.game.gameplay.GamePlay;
 import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
 import hakd.gui.Room;
@@ -8,7 +7,7 @@ import hakd.gui.Room.RoomMap;
 import hakd.gui.input.GameInput;
 import hakd.gui.windows.WindowStage;
 import hakd.gui.windows.newdevice.NewServerWindow;
-import hakd.internet.NetworkController;
+import hakd.internet.Internet;
 import hakd.networks.Network;
 import hakd.networks.Network.NetworkType;
 import hakd.networks.devices.Device;
@@ -38,15 +37,17 @@ public final class GameScreen extends HakdScreen {
 						// but it was an old article
 
     private WindowStage openWindow = null;
+    private static Internet internet;
 
     public GameScreen(Game game, String name) {
 	super(game);
 
-	GamePlay.generateGame();
-	Network n = NetworkController.addPublicNetwork(NetworkType.PLAYER);
+	internet = new Internet();
+	Network n = internet.addPublicNetwork(NetworkType.PLAYER);
 
 	player = new Player(name, n, this);
 	room = new Room(player, this, RoomMap.room1);
+	n.setPlayer(player);
 
 	Sprite sprite = player.getSprite();
 	sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight()
@@ -139,6 +140,11 @@ public final class GameScreen extends HakdScreen {
     public void dispose() {
 	super.dispose();
 	room.dispose();
+    }
+
+    @Override
+    public void hide() {
+
     }
 
     private void updateMovement() {

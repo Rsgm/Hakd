@@ -1,6 +1,6 @@
 package hakd.internet;
 
-import hakd.internet.NetworkController.Protocol;
+import hakd.internet.Internet.Protocol;
 import hakd.networks.devices.Device;
 
 import java.util.List;

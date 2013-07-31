@@ -1,6 +1,6 @@
 package hakd.networks.devices;
 
-import hakd.internet.NetworkController.Protocol;
+import hakd.internet.Internet.Protocol;
 import hakd.internet.Port;
 import hakd.networks.Network;
 

@@ -1,7 +1,7 @@
 package hakd.networks;
 
 import hakd.game.gameplay.Player;
-import hakd.internet.NetworkController;
+import hakd.internet.Internet;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.Device.DeviceType;
 import hakd.networks.devices.Dns;
@@ -47,6 +47,7 @@ public class Network { // this only holds a set of devices and info, connecting
     int x; // where the network is in the regionTab/map
     int y;
     int z;
+    private Internet internet;
 
     // graphic? icon? sprite? image? texture? -3d model and tile-.
     // TODO have a static class, or file, hold all of the models with the points
@@ -54,14 +55,15 @@ public class Network { // this only holds a set of devices and info, connecting
 
     // --------constructor--------
     @Deprecated
-    public Network(NetworkType type) { // this can't be used, you
-				       // must use the
+    public Network(NetworkType type, Internet internet) { // this can't be used,
+							  // you
+	// must use the
 	// add network or add public network
 	// methods in network controller
 	level = (int) (Math.random() * 8);
 	stance = Stance.NEUTRAL;
 	this.type = type;
-	this.player = player;
+	this.setInternet(internet);
 
 	switch (type) { // I should really clean these up, meh, later
 	case PLAYER:// new player // only happens at the start of the game
@@ -105,9 +107,9 @@ public class Network { // this only holds a set of devices and info, connecting
 	}
 
 	if (type != NetworkType.ISP) {
-	    isp = NetworkController.getServiceProviders().get(
-		    (int) (Math.random() * NetworkController
-			    .getServiceProviders().size()));
+	    isp = internet.getServiceProviders().get(
+		    (int) (Math.random() * internet.getServiceProviders()
+			    .size()));
 	    ip = isp.register(this, 1);
 	    // TODO what does the isp connect to? it already gets an ip
 	}
@@ -142,7 +144,7 @@ public class Network { // this only holds a set of devices and info, connecting
 
     // --------methods--------
     public boolean Connect(Device client, String program, int port,
-	    NetworkController.Protocol protocol) {
+	    Internet.Protocol protocol) {
 	for (Device d : servers) {
 	    if (d.getType() == DeviceType.ROUTER) {
 		return d.Connect(client, program, port, protocol);
@@ -364,5 +366,13 @@ public class Network { // this only holds a set of devices and info, connecting
 
     public void setPlayer(Player player) {
 	this.player = player;
+    }
+
+    public Internet getInternet() {
+	return internet;
+    }
+
+    public void setInternet(Internet internet) {
+	this.internet = internet;
     }
 }

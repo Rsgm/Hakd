@@ -1,5 +1,6 @@
 package hakd.networks;
 
+import hakd.internet.Internet;
 import hakd.networks.devices.Dns;
 import hakd.other.names.Isp;
 
@@ -7,9 +8,10 @@ public final class ServiceProvider extends Network {
     private Dns masterDns;
 
     @Deprecated
-    public ServiceProvider(Isp owner) { // these can be used like normal, but
-					// see network
-	super(NetworkType.ISP); // this is ok
+    public ServiceProvider(Isp owner, Internet internet) { // these can be used
+							   // like normal, but
+	// see network
+	super(NetworkType.ISP, internet); // this is ok
 
 	this.owner = owner.company;
 	masterDns = dnss.get(0);

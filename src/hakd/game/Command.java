@@ -4,8 +4,11 @@ import hakd.gui.windows.server.Terminal;
 import hakd.networks.devices.Device;
 
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOError;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import org.python.util.PythonInterpreter;
 
@@ -56,7 +59,15 @@ public final class Command {
 
 		System.out.println(parameters.toString());
 		if (parameters != null && !parameters.isEmpty()) {
-		    runPython(parameters);
+		    try {
+			runPython(parameters);
+		    } catch (IOError e) {
+			// TODO Auto-generated catch block
+			// e.printStackTrace();
+		    } catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		    }
 		}
 	    }
 	});
@@ -64,17 +75,44 @@ public final class Command {
 
     private void runPython(List<String> parameters) {
 	PythonInterpreter pi = new PythonInterpreter();
-	pi.set("parameters", parameters);
-	pi.set("device", device);
 
 	File file = new File("python/" + parameters.get(0) + ".py");
 	System.out.println(file.getPath());
 
-	if (file.exists()) {
-	    // first parameter is always the command
-	    pi.execfile(file.getPath());
-	} else {
-	    terminal.addText("Command '" + parameters.get(0) + "' not found.");
+	if (parameters.size() > 1) {
+	    parameters.remove(0);
+	    pi.set("parameters", parameters);
 	}
+	pi.set("device", device);
+
+	// if (!checkPython(file)) {
+	// return;
+	// }
+
+	// first parameter is always the command
+	pi.execfile(file.getPath());
+    }
+
+    private boolean checkPython(File file) {
+	Scanner s;
+	try {
+	    s = new Scanner(file);
+
+	    String line;
+	    while (s.hasNext("from")) {
+		line = s.nextLine();
+
+		// this may not work for device.addPart and other device methods
+		if (line.startsWith("from hakd")
+			&& !line.matches("^from hakd\\.game\\.pythonapi.+")) {
+		    return false;
+		}
+	    }
+
+	} catch (FileNotFoundException e) {
+	    e.printStackTrace();
+	}
+
+	return true;
     }
 }

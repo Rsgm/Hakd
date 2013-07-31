@@ -1,6 +1,6 @@
 package hakd.internet;
 
-import hakd.internet.NetworkController.Protocol;
+import hakd.internet.Internet.Protocol;
 import hakd.networks.devices.Device;
 
 public final class Connection { // connections are one way, and one connection to one

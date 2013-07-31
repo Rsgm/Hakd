@@ -1,7 +1,10 @@
 package hakd.game.pythonapi;
 
-import org.python.core.PyString;
+public class test extends ClassLoader {
+    public static ClassLoader t;
 
-public class test extends  {
+    public test() {
+	t = this;
+    }
 
 }

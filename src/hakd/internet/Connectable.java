@@ -1,13 +1,13 @@
 package hakd.internet;
 
-import hakd.internet.NetworkController.Protocol;
+import hakd.internet.Internet.Protocol;
 import hakd.networks.devices.Device;
 
 public interface Connectable {
 
     // connects to a specified host on the specified port
     public boolean Connect(Device client, String program, int port,
-	    NetworkController.Protocol protocol);
+	    Internet.Protocol protocol);
 
     // disconnects from the network
     public boolean Disconnect(Device client, String program, int port);
