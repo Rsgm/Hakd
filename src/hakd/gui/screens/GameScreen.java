@@ -20,6 +20,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
@@ -31,13 +32,14 @@ public final class GameScreen extends HakdScreen {
     // different skills and personalities
     // private int arraylist<npc> npcs = new arraylist<npc>(); maybe
 
-    private Room room;
+    public static Internet internet;
     public static final float tileSize = 64;
+
+    private Room room;
+    private WindowStage openWindow = null;
+    private final MapScreen map;
     private IsometricTiledMapRenderer renderer; // it says this is experimental,
 						// but it was an old article
-
-    private WindowStage openWindow = null;
-    private static Internet internet;
 
     public GameScreen(Game game, String name) {
 	super(game);
@@ -53,28 +55,35 @@ public final class GameScreen extends HakdScreen {
 	sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight()
 		/ tileSize);
 
-	cam.setToOrtho(false, room.getFloor().getWidth(), room.getFloor()
-		.getHeight());
+	cam = new OrthographicCamera();
+	((OrthographicCamera) cam).setToOrtho(false,
+		room.getFloor().getWidth(), room.getFloor().getHeight());
 	cam.update();
 
-	renderer.setView(cam);
+	renderer.setView((OrthographicCamera) cam);
 
 	cam.position.x = room.getFloor().getWidth() / 2;
 	cam.position.y = 0;
+
+	map = new MapScreen(game, internet);
     }
 
     @Override
     public void show() {
 	super.show();
-	Gdx.input.setInputProcessor(new GameInput(game, cam, player, this));
+	Gdx.input.setInputProcessor(new GameInput(game,
+		(OrthographicCamera) cam, player, this));
 	// I guess this has to be set in the show method
     }
 
     @Override
     public void render(float delta) {
 	super.render(delta);
+
+	game.setScreen(map);
+
 	SpriteBatch rBatch = renderer.getSpriteBatch();
-	renderer.setView(cam);
+	renderer.setView((OrthographicCamera) cam);
 	renderer.render();
 
 	rBatch.begin();
@@ -144,7 +153,7 @@ public final class GameScreen extends HakdScreen {
 
     @Override
     public void hide() {
-
+	Gdx.input.setInputProcessor(null);
     }
 
     private void updateMovement() {
@@ -214,5 +223,9 @@ public final class GameScreen extends HakdScreen {
 
     public void setOpenWindow(WindowStage openWindow) {
 	this.openWindow = openWindow;
+    }
+
+    public MapScreen getMap() {
+	return map;
     }
 }

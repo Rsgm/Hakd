@@ -14,7 +14,7 @@ public final class Hakd extends Game {
     private boolean fullscreen;
     private boolean vsync;
 
-    private static Preferences prefs;
+    private Preferences prefs;
 
     // private static Preferences save1; // save this for later
 
@@ -41,7 +41,7 @@ public final class Hakd extends Game {
 	setScreen(new TitleScreen(this));
     }
 
-    private static void newPrefs() {
+    private void newPrefs() {
 	/*
 	 * the directory for these can't be changes, on linux it is /home/[user
 	 * name]/.prefs/, on windows it is users/[user name]/.prefs/, I have not

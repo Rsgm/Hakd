@@ -11,6 +11,14 @@ import hakd.networks.devices.Server;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.VertexAttributes.Usage;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+
 public class Network { // this only holds a set of devices and info, connecting
 		       // to this just forwards you to the masterRouter
     // stats
@@ -42,16 +50,12 @@ public class Network { // this only holds a set of devices and info, connecting
     final List<Router> routers = new ArrayList<Router>();
 
     // gui
+    Model model;
+    ModelInstance instance;
     Region region; // where the network is in the world, it helps find
 		   // an ip
-    int x; // where the network is in the regionTab/map
-    int y;
-    int z;
-    private Internet internet;
 
-    // graphic? icon? sprite? image? texture? -3d model and tile-.
-    // TODO have a static class, or file, hold all of the models with the points
-    // and textures
+    private Internet internet;
 
     // --------constructor--------
     @Deprecated
@@ -65,6 +69,8 @@ public class Network { // this only holds a set of devices and info, connecting
 	this.type = type;
 	this.setInternet(internet);
 
+	ModelBuilder modelBuilder = new ModelBuilder();
+
 	switch (type) { // I should really clean these up, meh, later
 	case PLAYER:// new player // only happens at the start of the game
 	    region = Region.NA;
@@ -72,6 +78,9 @@ public class Network { // this only holds a set of devices and info, connecting
 	    serverLimit = 1;
 	    routerLimit = 0;
 	    stance = Stance.FRIENDLY;
+	    model = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(
+		    ColorAttribute.createDiffuse(Color.BLUE)), Usage.Position
+		    | Usage.Normal);
 	    break;
 	default:
 	    region = Region.NA;
@@ -80,6 +89,9 @@ public class Network { // this only holds a set of devices and info, connecting
 	    dnsLimit = 1;
 	    routerLimit = 1;
 	    stance = Stance.NEUTRAL;
+	    model = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(
+		    ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
+		    Usage.Position | Usage.Normal);
 	    break;
 	case TEST:
 	    region = Region.ASIA;
@@ -89,6 +101,9 @@ public class Network { // this only holds a set of devices and info, connecting
 	    routerLimit = 1; // for now just one
 	    level = 7;
 	    stance = Stance.NEUTRAL;
+	    model = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(
+		    ColorAttribute.createDiffuse(Color.WHITE)), Usage.Position
+		    | Usage.Normal);
 	    break;
 	case COMPANY: // company // random company
 	    region = Region.COMPANIES;
@@ -96,6 +111,9 @@ public class Network { // this only holds a set of devices and info, connecting
 	    dnsLimit = (int) (level / 3.5);
 	    routerLimit = 1;
 	    owner = "company";
+	    model = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(
+		    ColorAttribute.createDiffuse(Color.ORANGE)), Usage.Position
+		    | Usage.Normal);
 	    break;
 	case ISP:
 	    region = Region.COMPANIES;
@@ -103,8 +121,12 @@ public class Network { // this only holds a set of devices and info, connecting
 	    level = (int) (Math.random() * 8);
 	    dnsLimit = 3;
 	    routerLimit = 1;
+	    model = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(
+		    ColorAttribute.createDiffuse(Color.ORANGE)), Usage.Position
+		    | Usage.Normal);
 	    break;
 	}
+	instance = new ModelInstance(model);
 
 	if (type != NetworkType.ISP) {
 	    isp = internet.getServiceProviders().get(
@@ -320,30 +342,6 @@ public class Network { // this only holds a set of devices and info, connecting
 	this.masterServer = masterServer;
     }
 
-    public int getX() {
-	return x;
-    }
-
-    public void setX(int x) {
-	this.x = x;
-    }
-
-    public int getY() {
-	return y;
-    }
-
-    public void setY(int y) {
-	this.y = y;
-    }
-
-    public int getZ() {
-	return z;
-    }
-
-    public void setZ(int z) {
-	this.z = z;
-    }
-
     public List<Device> getOtherDevices() {
 	return otherDevices;
     }
@@ -374,5 +372,21 @@ public class Network { // this only holds a set of devices and info, connecting
 
     public void setInternet(Internet internet) {
 	this.internet = internet;
+    }
+
+    public Model getModel() {
+	return model;
+    }
+
+    public void setModel(Model model) {
+	this.model = model;
+    }
+
+    public ModelInstance getInstance() {
+	return instance;
+    }
+
+    public void setInstance(ModelInstance instance) {
+	this.instance = instance;
     }
 }

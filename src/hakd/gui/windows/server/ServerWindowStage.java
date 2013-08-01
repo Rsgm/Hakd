@@ -6,6 +6,7 @@ import hakd.gui.windows.WindowStage;
 import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 
@@ -15,7 +16,6 @@ public final class ServerWindowStage implements WindowStage {
 
     private Terminal terminal;
     private Desktop desktop;
-    private Map map;
     private Login login;
     private Web web;
     private Info info;
@@ -48,7 +48,6 @@ public final class ServerWindowStage implements WindowStage {
 
 	if (desktop == null) {
 	    terminal = new Terminal(this);
-	    map = new Map();
 	    login = new Login();
 	    web = new Web();
 	    info = new Info(this);
@@ -67,8 +66,9 @@ public final class ServerWindowStage implements WindowStage {
     public void close() {
 	canvas.clear();
 	screen.setOpenWindow(null);
-	Gdx.input.setInputProcessor(new GameInput(screen.getGame(), screen
-		.getCam(), screen.getPlayer(), screen));
+	Gdx.input.setInputProcessor(new GameInput(screen.getGame(),
+		(OrthographicCamera) screen.getCam(), screen.getPlayer(),
+		screen));
     }
 
     @Override
@@ -90,10 +90,6 @@ public final class ServerWindowStage implements WindowStage {
 
     public Desktop getDesktop() {
 	return desktop;
-    }
-
-    public Map getMap() {
-	return map;
     }
 
     public Login getLogin() {
@@ -118,10 +114,6 @@ public final class ServerWindowStage implements WindowStage {
 
     public void setDesktop(Desktop desktop) {
 	this.desktop = desktop;
-    }
-
-    public void setMap(Map map) {
-	this.map = map;
     }
 
     public void setLogin(Login login) {

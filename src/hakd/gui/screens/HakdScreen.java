@@ -3,10 +3,10 @@ package hakd.gui.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL10;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.math.Rectangle;
 
 public class HakdScreen implements Screen {
     int width = Gdx.graphics.getWidth();
@@ -14,15 +14,12 @@ public class HakdScreen implements Screen {
 
     Game game;
 
-    OrthographicCamera cam;
+    Camera cam;
     SpriteBatch batch = new SpriteBatch();
-
-    Rectangle viewport;
 
     public HakdScreen(Game game) {
 	this.game = game;
 
-	cam = new OrthographicCamera();
 	batch = new SpriteBatch();
     }
 
@@ -100,7 +97,7 @@ public class HakdScreen implements Screen {
 	this.batch = batch;
     }
 
-    public OrthographicCamera getCam() {
+    public Camera getCam() {
 	return cam;
     }
 

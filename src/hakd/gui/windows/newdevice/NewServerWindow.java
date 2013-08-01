@@ -8,6 +8,7 @@ import hakd.gui.windows.actors.BuyServerButton;
 import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
@@ -113,8 +114,9 @@ public final class NewServerWindow implements WindowStage {
     public void close() {
 	stage.clear();
 	screen.setOpenWindow(null);
-	Gdx.input.setInputProcessor(new GameInput(screen.getGame(), screen
-		.getCam(), screen.getPlayer(), screen));
+	Gdx.input.setInputProcessor(new GameInput(screen.getGame(),
+		(OrthographicCamera) screen.getCam(), screen.getPlayer(),
+		screen));
     }
 
     @Override

@@ -17,8 +17,6 @@ public final class Internet {
     private List<ServiceProvider> serviceProviders = new ArrayList<ServiceProvider>();
     private List<Owner> owners = new ArrayList<Owner>();
 
-    // public static
-
     public Internet() {
 	owners.addAll(Arrays.asList(Owner.values()));
 	// brands and models don't need this because you can have two of the
