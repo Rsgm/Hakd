@@ -1,6 +1,7 @@
 package hakd.gui.screens;
 
 import hakd.gui.input.MapInput;
+import hakd.internet.Connection;
 import hakd.internet.Internet;
 import hakd.networks.Network;
 
@@ -10,24 +11,24 @@ import java.util.List;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelBatch;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
 import com.badlogic.gdx.graphics.g3d.lights.Lights;
+import com.badlogic.gdx.math.Vector3;
 
 public class MapScreen extends HakdScreen {
     // Player player;
     // Network network;
     Internet internet;
 
-    public Model model;
-    public ModelInstance instance;
     private final ModelBatch modelBatch;
-    public Lights lights;
-    public MapInput mapInput;
+    private final Lights lights;
+    private MapInput mapInput;
 
-    List<ModelInstance> modelInstances;
+    private List<ModelInstance> modelInstances;
+
+    private Vector3 focus;
 
     public MapScreen(Game game, Internet internet) {
 	super(game);
@@ -39,7 +40,7 @@ public class MapScreen extends HakdScreen {
 	cam.position.set(10f, 10f, 10f);
 	cam.lookAt(0, 0, 0);
 	cam.near = 0.1f;
-	cam.far = 300f;
+	cam.far = 1000f;
 	cam.update();
 
 	modelBatch = new ModelBatch();
@@ -56,28 +57,29 @@ public class MapScreen extends HakdScreen {
 	modelInstances = new ArrayList<ModelInstance>();
 
 	for (Network n : internet.getPublicNetworks()) {
-	    n.getInstance().transform.setToTranslation(
-		    (float) (Math.random() * 5 * internet.getPublicNetworks()
-			    .size()), (float) (Math.random() * 1 * internet
-			    .getPublicNetworks().size()),
-		    (float) (Math.random() * 5 * internet.getPublicNetworks()
-			    .size()));
 	    modelInstances.add(n.getInstance());
+	    for (Connection c : n.getConnections()) {
+		modelInstances.add(c.getInstance());
+	    }
 	}
     }
 
     @Override
     public void show() {
 	super.show();
-	mapInput = new MapInput(cam);
+	mapInput = new MapInput(this);
 	Gdx.input.setInputProcessor(mapInput);
+
+	focus = new Vector3(0, 0, 0);
+	cam.translate(focus);
+	cam.lookAt(focus);
     }
 
     @Override
     public void render(float delta) {
-	System.out.println(delta);
+	// System.out.println(1 / delta);
 
-	mapInput.update();
+	// cam.rotateAround(focus, new Vector3(0, 1, 0), .08f);
 
 	Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(),
 		Gdx.graphics.getHeight());
@@ -93,11 +95,18 @@ public class MapScreen extends HakdScreen {
     @Override
     public void dispose() {
 	super.dispose();
-	model.dispose();
     }
 
     @Override
     public void hide() {
 	Gdx.input.setInputProcessor(null);
+    }
+
+    public Vector3 getFocus() {
+	return focus;
+    }
+
+    public void setFocus(Vector3 focus) {
+	this.focus = focus;
     }
 }

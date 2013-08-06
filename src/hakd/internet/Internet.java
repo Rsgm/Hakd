@@ -39,7 +39,7 @@ public final class Internet {
 
 	    s.setIp(s.register(s, 10));
 	    names.remove(random);
-	    publicDns.add(s.getDns());
+	    publicDns.add(s.getMasterDns());
 	    serviceProviders.add(s);
 	    PublicNetworks.add(s); // this may not be the best but lets see what
 				   // happens
@@ -48,10 +48,17 @@ public final class Internet {
 
     // creates the initial game networks
     private void generateNetworks() {
-	int amount = (int) (Math.random() * 6 + 30);
+	int amount = (int) (Math.random() * 6 + 40);
 
 	for (int i = 0; i < amount; i++) {
-	    addPublicNetwork(NetworkType.TEST);
+	    int test = (int) (Math.random() * 10);
+	    if (test < 7) {
+		addPublicNetwork(NetworkType.NPC);
+	    } else if (test < 9) {
+		addPublicNetwork(NetworkType.COMPANY);
+	    } else if (test == 9) {
+		addPublicNetwork(NetworkType.TEST);
+	    }
 	}
     }
 

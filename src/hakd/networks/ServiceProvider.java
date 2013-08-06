@@ -23,11 +23,11 @@ public final class ServiceProvider extends Network {
 	return masterDns.assignIp(network.getRegion());
     }
 
-    public Dns getDns() {
+    public Dns getMasterDns() {
 	return masterDns;
     }
 
-    public void setDns(Dns dns) {
-	this.masterDns = dns;
+    public void setMasterDns(Dns masterDns) {
+	this.masterDns = masterDns;
     }
 }

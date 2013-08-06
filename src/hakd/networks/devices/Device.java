@@ -34,7 +34,6 @@ public class Device implements Connectable {
 					      // if its
 					      // closed just
 					      // delete it
-    List<Connection> connections = new ArrayList<Connection>();
     File logs; // TODO make this a file instead connecting from and the
 	       // action after that
 
@@ -165,7 +164,7 @@ public class Device implements Connectable {
     public boolean Connect(Device client, String program, int port,
 	    Internet.Protocol protocol) { // TODO this
 	Connection c = new Connection(this, client, Protocol.getProtocol(port));
-	connections.add(c);
+	network.getConnections().add(c);
 
 	if (Port.checkPortAnd(ports, program, port, protocol)) {
 	    // Desktop d = Desktop.getDesktop();
@@ -188,7 +187,8 @@ public class Device implements Connectable {
 
     @Override
     public boolean Disconnect(Device device, String program, int port) {
-	// TODO this
+	network.getConnections().remove(
+		network.findConnection(this, device, program, port));
 	return false;
     }
 
@@ -386,14 +386,6 @@ public class Device implements Connectable {
 
     public void setParts(List<Part> parts) {
 	this.parts = parts;
-    }
-
-    public List<Connection> getConnections() {
-	return connections;
-    }
-
-    public void setConnections(List<Connection> connections) {
-	this.connections = connections;
     }
 
     public DeviceType getType() {

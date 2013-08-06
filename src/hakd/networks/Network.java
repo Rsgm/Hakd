@@ -1,7 +1,9 @@
 package hakd.networks;
 
 import hakd.game.gameplay.Player;
+import hakd.internet.Connection;
 import hakd.internet.Internet;
+import hakd.internet.Internet.Protocol;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.Device.DeviceType;
 import hakd.networks.devices.Dns;
@@ -18,6 +20,7 @@ import com.badlogic.gdx.graphics.g3d.ModelInstance;
 import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.math.Vector3;
 
 public class Network { // this only holds a set of devices and info, connecting
 		       // to this just forwards you to the masterRouter
@@ -43,15 +46,20 @@ public class Network { // this only holds a set of devices and info, connecting
     Router masterRouter; // main router
     Server masterServer; // main server
 
-    // objects
+    // children
     final List<Device> otherDevices = new ArrayList<Device>();
     final List<Server> servers = new ArrayList<Server>();
     final List<Dns> dnss = new ArrayList<Dns>();
     final List<Router> routers = new ArrayList<Router>();
 
+    // internet
+    List<Connection> connections = new ArrayList<Connection>();
+
     // gui
-    Model model;
+    Model sphere;
     ModelInstance instance;
+    Vector3 position;
+    static final float worldSize = 100;
     Region region; // where the network is in the world, it helps find
 		   // an ip
 
@@ -69,6 +77,10 @@ public class Network { // this only holds a set of devices and info, connecting
 	this.type = type;
 	this.setInternet(internet);
 
+	position = new Vector3(
+		(float) ((Math.random() * worldSize) - worldSize / 2),
+		(float) ((Math.random() * worldSize) - worldSize / 2),
+		(float) ((Math.random() * worldSize) - worldSize / 2));
 	ModelBuilder modelBuilder = new ModelBuilder();
 
 	switch (type) { // I should really clean these up, meh, later
@@ -78,9 +90,9 @@ public class Network { // this only holds a set of devices and info, connecting
 	    serverLimit = 1;
 	    routerLimit = 0;
 	    stance = Stance.FRIENDLY;
-	    model = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(
-		    ColorAttribute.createDiffuse(Color.BLUE)), Usage.Position
-		    | Usage.Normal);
+	    sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10,
+		    new Material(ColorAttribute.createDiffuse(Color.BLUE)),
+		    Usage.Position | Usage.Normal);
 	    break;
 	default:
 	    region = Region.NA;
@@ -89,9 +101,10 @@ public class Network { // this only holds a set of devices and info, connecting
 	    dnsLimit = 1;
 	    routerLimit = 1;
 	    stance = Stance.NEUTRAL;
-	    model = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(
-		    ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
-		    Usage.Position | Usage.Normal);
+	    sphere = modelBuilder
+		    .createSphere(5f, 5f, 5f, 20, 10, new Material(
+			    ColorAttribute.createDiffuse(Color.LIGHT_GRAY)),
+			    Usage.Position | Usage.Normal);
 	    break;
 	case TEST:
 	    region = Region.ASIA;
@@ -101,9 +114,9 @@ public class Network { // this only holds a set of devices and info, connecting
 	    routerLimit = 1; // for now just one
 	    level = 7;
 	    stance = Stance.NEUTRAL;
-	    model = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(
-		    ColorAttribute.createDiffuse(Color.WHITE)), Usage.Position
-		    | Usage.Normal);
+	    sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10,
+		    new Material(ColorAttribute.createDiffuse(Color.RED)),
+		    Usage.Position | Usage.Normal);
 	    break;
 	case COMPANY: // company // random company
 	    region = Region.COMPANIES;
@@ -111,9 +124,9 @@ public class Network { // this only holds a set of devices and info, connecting
 	    dnsLimit = (int) (level / 3.5);
 	    routerLimit = 1;
 	    owner = "company";
-	    model = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(
-		    ColorAttribute.createDiffuse(Color.ORANGE)), Usage.Position
-		    | Usage.Normal);
+	    sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10,
+		    new Material(ColorAttribute.createDiffuse(Color.ORANGE)),
+		    Usage.Position | Usage.Normal);
 	    break;
 	case ISP:
 	    region = Region.COMPANIES;
@@ -121,12 +134,14 @@ public class Network { // this only holds a set of devices and info, connecting
 	    level = (int) (Math.random() * 8);
 	    dnsLimit = 3;
 	    routerLimit = 1;
-	    model = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(
-		    ColorAttribute.createDiffuse(Color.ORANGE)), Usage.Position
-		    | Usage.Normal);
+	    sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10,
+		    new Material(ColorAttribute.createDiffuse(Color.CYAN)),
+		    Usage.Position | Usage.Normal);
 	    break;
 	}
-	instance = new ModelInstance(model);
+
+	instance = new ModelInstance(sphere);
+	instance.transform.setToTranslation(position);
 
 	if (type != NetworkType.ISP) {
 	    isp = internet.getServiceProviders().get(
@@ -162,6 +177,11 @@ public class Network { // this only holds a set of devices and info, connecting
 	    }
 	}
 
+	// TODO remove this
+	if (type != NetworkType.ISP) {
+	    servers.get(0).Connect(isp.getMasterDns(), "test", 1337,
+		    Protocol.LEET);
+	}
     }
 
     // --------methods--------
@@ -207,6 +227,17 @@ public class Network { // this only holds a set of devices and info, connecting
 	}
 
 	return false;
+    }
+
+    public Object findConnection(Device d1, Device d2, String program, int port) {
+	Connection connection = null;
+	// for(Connection c : connections){
+	// //
+	// if((c.getHost()==d1||c.getHost()==d2)&&(c.getClient()==d1||c.getClient()==d2)&&(c.)&&()){
+	// // connection = c;
+	// // }
+	// }
+	return connection;
     }
 
     public enum NetworkType { // these don't define networks or who owns them,
@@ -375,18 +406,42 @@ public class Network { // this only holds a set of devices and info, connecting
     }
 
     public Model getModel() {
-	return model;
+	return sphere;
     }
 
     public void setModel(Model model) {
-	this.model = model;
+	this.sphere = model;
+    }
+
+    public Vector3 getPosition() {
+	return position;
+    }
+
+    public void setPosition(Vector3 position) {
+	this.position = position;
+    }
+
+    public Model getSphere() {
+	return sphere;
+    }
+
+    public void setSphere(Model sphere) {
+	this.sphere = sphere;
     }
 
     public ModelInstance getInstance() {
 	return instance;
     }
 
-    public void setInstance(ModelInstance instance) {
-	this.instance = instance;
+    public void setInstance(ModelInstance sphereInstance) {
+	this.instance = sphereInstance;
+    }
+
+    public List<Connection> getConnections() {
+	return connections;
+    }
+
+    public void setConnections(List<Connection> connections) {
+	this.connections = connections;
     }
 }
