@@ -10,7 +10,6 @@ import com.badlogic.gdx.Preferences;
 public final class Hakd extends Game {
     private int width;
     private int height;
-
     private boolean fullscreen;
     private boolean vsync;
 
@@ -28,8 +27,8 @@ public final class Hakd extends Game {
 	newPrefs();
 	// }
 
-	width = Gdx.graphics.getWidth();
-	height = Gdx.graphics.getHeight();
+	width = prefs.getInteger("width");
+	height = prefs.getInteger("height");
 	fullscreen = prefs.getBoolean("fullscreen");
 	vsync = prefs.getBoolean("vsync");
 
@@ -49,10 +48,10 @@ public final class Hakd extends Game {
 	 */
 
 	prefs.putBoolean("played-before", true);
-	prefs.putInteger("width", 800);
-	prefs.putInteger("height", 600);
+	prefs.putInteger("width", 1400);
+	prefs.putInteger("height", 850);
 	prefs.putBoolean("fullscreen", false);
-	prefs.putBoolean("vsync", false);
+	prefs.putBoolean("vsync", true);
 	prefs.putBoolean("sound", true);
 
 	prefs.flush();

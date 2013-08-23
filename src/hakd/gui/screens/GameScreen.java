@@ -44,8 +44,12 @@ public final class GameScreen extends HakdScreen {
     public GameScreen(Game game, String name) {
 	super(game);
 
+	for (short i = 1; i < 256; i++) {
+	    Dns.ipNumbers.add(i);
+	}
+
 	internet = new Internet();
-	Network n = internet.addPublicNetwork(NetworkType.PLAYER);
+	Network n = internet.NewPublicNetwork(NetworkType.PLAYER);
 
 	player = new Player(name, n, this);
 	room = new Room(player, this, RoomMap.room1);
@@ -65,14 +69,14 @@ public final class GameScreen extends HakdScreen {
 	cam.position.x = room.getFloor().getWidth() / 2;
 	cam.position.y = 0;
 
-	map = new MapScreen(game, internet);
+	map = new MapScreen(game, this, internet);
     }
 
     @Override
     public void show() {
 	super.show();
 	Gdx.input.setInputProcessor(new GameInput(game,
-		(OrthographicCamera) cam, player, this));
+		(OrthographicCamera) cam, player));
 	// I guess this has to be set in the show method
     }
 
@@ -80,19 +84,17 @@ public final class GameScreen extends HakdScreen {
     public void render(float delta) {
 	super.render(delta);
 
-	game.setScreen(map);
-
 	SpriteBatch rBatch = renderer.getSpriteBatch();
 	renderer.setView((OrthographicCamera) cam);
 	renderer.render();
 
 	rBatch.begin();
-	for (Dns d : player.getNetwork().getDnss()) {
-	    d.getTile().draw(rBatch);
+	for (Router r : player.getNetwork().getRouters()) { // this needs
+							    // graphics
+							    // r.getTile().draw(rBatch);
 	}
-
-	for (Router r : player.getNetwork().getRouters()) {
-	    r.getTile().draw(rBatch);
+	for (Dns d : player.getNetwork().getDnss()) {
+	    // d.getTile().draw(rBatch);
 	}
 	for (Server s : player.getNetwork().getServers()) {
 	    s.getTile().draw(rBatch);

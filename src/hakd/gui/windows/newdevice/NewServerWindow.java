@@ -4,7 +4,7 @@ import hakd.gui.Assets;
 import hakd.gui.input.GameInput;
 import hakd.gui.screens.GameScreen;
 import hakd.gui.windows.WindowStage;
-import hakd.gui.windows.actors.BuyServerButton;
+import hakd.gui.windows.actors.BuyDeviceButton;
 import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.Gdx;
@@ -39,13 +39,13 @@ public final class NewServerWindow implements WindowStage {
 	window.setPosition(stage.getWidth() / 2 - window.getWidth() / 2,
 		stage.getHeight() / 2 - window.getHeight() / 2);
 
-	BuyServerButton server1 = new BuyServerButton(device, 0, this, skin,
+	BuyDeviceButton server1 = new BuyDeviceButton(device, 0, this, skin,
 		null, null, null, null);
-	BuyServerButton server2 = new BuyServerButton(device, 0, this, skin,
+	BuyDeviceButton server2 = new BuyDeviceButton(device, 0, this, skin,
 		null, null, null, null);
-	BuyServerButton server3 = new BuyServerButton(device, 0, this, skin,
+	BuyDeviceButton server3 = new BuyDeviceButton(device, 0, this, skin,
 		null, null, null, null);
-	BuyServerButton server4 = new BuyServerButton(device, 0, this, skin,
+	BuyDeviceButton server4 = new BuyDeviceButton(device, 0, this, skin,
 		null, null, null, null);
 
 	table.add(
@@ -115,8 +115,7 @@ public final class NewServerWindow implements WindowStage {
 	stage.clear();
 	screen.setOpenWindow(null);
 	Gdx.input.setInputProcessor(new GameInput(screen.getGame(),
-		(OrthographicCamera) screen.getCam(), screen.getPlayer(),
-		screen));
+		(OrthographicCamera) screen.getCam(), screen.getPlayer()));
     }
 
     @Override

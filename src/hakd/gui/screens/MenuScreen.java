@@ -51,7 +51,7 @@ public final class MenuScreen extends HakdScreen { // terminal directory: BOOT>_
     }
 
     @Override
-    public void render(float delta) { // TODO use a view port type thing that
+    public void render(float delta) { // TODO use a view portNumber type thing that
 				      // scrolls through an off-screen terminal
 	super.render(delta);
 	time += delta;

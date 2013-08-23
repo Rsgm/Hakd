@@ -2,6 +2,7 @@ package hakd.gui.windows.server;
 
 import hakd.game.Command;
 import hakd.gui.Assets;
+import hakd.internet.Internet;
 import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
@@ -60,7 +61,7 @@ public final class Terminal implements ServerWindow {
 	display.setWrap(false);
 	display.setAlignment(10, Align.left);
 	display.setText("Terminal [Version 0." + ((int) Math.random() * 100)
-		/ 10 + "]" + "\nroot @ " + device.getNetwork().getIp()
+		/ 10 + "]" + "\nroot @ " + Internet.ipToString(device.getIp())
 		+ "\nMemory: " + device.getTotalMemory() + "MB\nStorage: "
 		+ device.getTotalStorage() + "GB");
 
@@ -115,7 +116,7 @@ public final class Terminal implements ServerWindow {
 		if (keycode == Keys.ENTER) {
 		    System.out.println(input.getText());
 		    display.setText(display.getText() + "\n\nroot @ "
-			    + device.getNetwork().getIp() + "\n>"
+			    + Internet.ipToString(device.getIp()) + "\n>"
 			    + input.getText());
 		    history.add(input.getText());
 		    new Command(input.getText(), device);

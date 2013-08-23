@@ -1,12 +1,12 @@
 package hakd.game.gameplay;
 
-import hakd.networks.Network;
+import hakd.networks.DefaultNetwork;
 
 public final class Character {
 
 	int		money	= 0;
 	String	name;			// does not really change
-	Network	home;
+	DefaultNetwork	home;
 
 	public int getMoney() {
 		return money;
@@ -16,11 +16,11 @@ public final class Character {
 		this.money = money;
 	}
 
-	public Network getHome() {
+	public DefaultNetwork getHome() {
 		return home;
 	}
 
-	public void setHome(Network home) {
+	public void setHome(DefaultNetwork home) {
 		this.home = home;
 	}
 

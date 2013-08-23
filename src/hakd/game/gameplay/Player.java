@@ -25,9 +25,9 @@ public final class Player {
     private ServerWindowStage openWindow;
 
     // --------methods--------
-    public Player(String name, Network home, GameScreen screen) {
+    public Player(String name, Network n, GameScreen screen) {
 	this.name = name;
-	this.network = home;
+	this.network = n;
 
 	this.screen = screen;
 

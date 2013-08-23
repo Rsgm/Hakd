@@ -6,6 +6,7 @@ import hakd.gui.windows.WindowStage;
 import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -38,6 +39,10 @@ public final class ServerWindowStage implements WindowStage {
 	stage.act(Gdx.graphics.getDeltaTime());
 	desktop.getDesktop().toBack(); // makes sure no windows can go behind it
 	stage.draw();
+
+	if (Gdx.input.isKeyPressed(Keys.TAB)) {
+	    screen.getGame().setScreen(screen.getMap());
+	}
     }
 
     @Override
@@ -67,8 +72,7 @@ public final class ServerWindowStage implements WindowStage {
 	canvas.clear();
 	screen.setOpenWindow(null);
 	Gdx.input.setInputProcessor(new GameInput(screen.getGame(),
-		(OrthographicCamera) screen.getCam(), screen.getPlayer(),
-		screen));
+		(OrthographicCamera) screen.getCam(), screen.getPlayer()));
     }
 
     @Override

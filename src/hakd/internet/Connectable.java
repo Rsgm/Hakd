@@ -1,24 +1,31 @@
 package hakd.internet;
 
+import hakd.internet.Connection.ConnectionStatus;
 import hakd.internet.Internet.Protocol;
 import hakd.networks.devices.Device;
 
 public interface Connectable {
 
-    // connects to a specified host on the specified port
-    public boolean Connect(Device client, String program, int port,
-	    Internet.Protocol protocol);
+    /** connects to a specified host on the specified portNumber */
+    public ConnectionStatus Connect(Device client, Port port);
 
-    // disconnects from the network
-    public boolean Disconnect(Device client, String program, int port);
+    /** disconnects from the network */
+    public boolean Disconnect(Connection c);
 
-    // add/bind/register a port to a server to a program
-    public boolean addPorts(Device device, String program, int port,
-	    Protocol protocol);
+    /**
+     * Creates a new portNumber with specified information.
+     * */
+    public boolean openPort(String program, int portNumber, Protocol protocol);
 
-    // remove a given port or set of port with a given port, server, or program
-    public boolean removePort(int port);
+    /**
+     * A variant of openPort(String, int, Protocol) in which it uses an already
+     * made port.
+     */
+    boolean openPort(Port port);
 
-    // add a log of the event
+    /** */
+    public boolean closePort(Port port);
+
+    /** Creates a log of the event */
     public void log(Device client, String program, int port, Protocol protocol);
 }

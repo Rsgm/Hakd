@@ -6,6 +6,7 @@ import hakd.gui.screens.GameScreen;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 
@@ -20,24 +21,24 @@ public final class GameInput implements InputProcessor {
     private int lastMouseX;
     private int lastMouseY;
 
-    public GameInput(Game game, OrthographicCamera cam, Player player,
-	    GameScreen screen) {
+    public GameInput(Game game, OrthographicCamera cam, Player player) {
 	this.game = (Hakd) game;
 	this.cam = cam;
 	this.player = player;
-	this.screen = screen;
+	this.screen = (GameScreen) game.getScreen();
     }
 
     @Override
     public boolean keyDown(int keycode) {
-	// TODO Auto-generated method stub
 	return false;
     }
 
     @Override
     public boolean keyUp(int keycode) {
-	// TODO Auto-generated method stub
-	return false;
+	if (keycode == Keys.TAB) {
+	    game.setScreen(screen.getMap());
+	}
+	return true;
     }
 
     @Override

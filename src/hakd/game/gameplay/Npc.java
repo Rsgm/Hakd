@@ -1,18 +1,22 @@
 package hakd.game.gameplay;
 
-import hakd.networks.Network;
+import hakd.networks.DefaultNetwork;
 
 public final class Npc {
     // hackers
 
     private int money;
     private String name;
-    private Network home;
+    private DefaultNetwork home;
 
-    public Npc(Network n, String name, int money) {
+    public Npc(DefaultNetwork n, String name, int money) {
 	this.money = money;
 	this.name = name;
 	this.home = n;
+    }
+
+    public enum People {
+
     }
 
     public int getMoney() {
@@ -31,11 +35,11 @@ public final class Npc {
 	this.name = name;
     }
 
-    public Network getHome() {
+    public DefaultNetwork getHome() {
 	return home;
     }
 
-    public void setHome(Network home) {
+    public void setHome(DefaultNetwork home) {
 	this.home = home;
     }
 }

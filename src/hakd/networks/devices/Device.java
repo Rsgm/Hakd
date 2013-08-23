@@ -3,7 +3,7 @@ package hakd.networks.devices;
 import hakd.gui.windows.server.ServerWindowStage;
 import hakd.internet.Connectable;
 import hakd.internet.Connection;
-import hakd.internet.Internet;
+import hakd.internet.Connection.ConnectionStatus;
 import hakd.internet.Internet.Protocol;
 import hakd.internet.Port;
 import hakd.networks.Network;
@@ -12,25 +12,30 @@ import hakd.networks.devices.parts.Cpu;
 import hakd.networks.devices.parts.Gpu;
 import hakd.networks.devices.parts.Memory;
 import hakd.networks.devices.parts.Part;
+import hakd.networks.devices.parts.Part.Brand;
+import hakd.networks.devices.parts.Part.Model;
 import hakd.networks.devices.parts.Part.PartType;
 import hakd.networks.devices.parts.Storage;
+import hakd.other.Disposable;
 import hakd.other.File;
 import hakd.other.File.FileType;
-import hakd.other.names.Brand;
-import hakd.other.names.Model;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
-public class Device implements Connectable {
+public class Device implements Connectable, Disposable {
 
     // stats
     Network network;
     int level;
-    // int webserver = 0; // 0 = 404, if port 80 is open
-    List<Port> ports = new ArrayList<Port>(); // port, program /
+    short[] ip = new short[4]; // all network variables will be in IP
+			       // format
+    String address;
+    Router parentRouter; // the router this device belongs to
+    // int webserver = 0; // 0 = 404, if portNumber 80 is open
+    List<Port> ports = new ArrayList<Port>(); // portNumber, program /
 					      // if its
 					      // closed just
 					      // delete it
@@ -43,11 +48,13 @@ public class Device implements Connectable {
     int totalMemory; // in MB
     int totalStorage; // in ???
 
+    List<Connection> connections = new ArrayList<Connection>();
+
     // objects
     List<Part> parts = new ArrayList<Part>();
     int cpuSockets; // easier than using a for loop to count the amount,
 		    // just remember to
-    // change this port
+    // change this portNumber
     int memorySlots; // maybe have a maximum part number, so you can
 		     // specialize a server
     int storageSlots;
@@ -59,18 +66,27 @@ public class Device implements Connectable {
     ServerWindowStage window;
     Sprite tile;
 
-    // --------constructor--------
-    public Device(Network network, int level, DeviceType type) { // idea: have
-								 // random
-								 // smartphone
-								 // connections
-								 // and
-								 // disconnections
+    /**
+     * @param network
+     *            - The network This device belongs to.
+     * @param level
+     *            - The level of the network, used to generate parts.
+     * @param type
+     *            - The device type.
+     */
+    public Device(Network network, int level, DeviceType type) { // idea:
+								  // have
+	// random
+	// smartphone
+	// connections
+	// and
+	// disconnections
 
-	this.network = network; // idea: smartphones are like insects on a
-				// network,
-				// many types, random behavior, and there are
-				// lots of them
+	this.network = network; // idea: smartphones are like
+				 // insects on a
+	// network,
+	// many types, random behavior, and there are
+	// lots of them
 
 	this.level = level;
 	this.type = type;
@@ -101,6 +117,7 @@ public class Device implements Connectable {
 	    storageSlots = 1;
 	    break;
 	}
+
 	for (int i = 0; i < cpuSockets; i++) {
 	    Cpu cpu = new Cpu(level, this);
 	    parts.add(cpu);
@@ -125,21 +142,44 @@ public class Device implements Connectable {
 		    .get(0);
 	}
 
-	if (network.getType() == NetworkType.PLAYER) {
-	    switch (type) {
-	    case DNS:
-		window = new ServerWindowStage(this);
-		break;
-	    case ROUTER:
-		break;
-	    default:
-		window = new ServerWindowStage(this);
-		break;
-	    }
+	switch (type) {
+	case DNS:
 
+	    if (network.getType() == NetworkType.PLAYER) {
+		window = new ServerWindowStage(this);
+	    }
+	    break;
+	case ROUTER:
+
+	    if (network.getType() == NetworkType.PLAYER) {
+	    }
+	    break;
+	default:
+
+	    if (network.getType() == NetworkType.PLAYER) {
+		window = new ServerWindowStage(this);
+	    }
+	    break;
 	}
+
     }
 
+    /**
+     * @param network
+     *            - The parent network.
+     * @param level
+     *            - The level of the network, used to generate parts.
+     * @param type
+     *            - The device type.
+     * @param cpuSockets
+     *            - The amount of CPU parts to make.
+     * @param gpuSlots
+     *            - The amount of GPU parts to make.
+     * @param memorySlots
+     *            - The amount of memory parts to make.
+     * @param storageSlots
+     *            - The amount of storage parts to make.
+     */
     public Device(Network network, int level, DeviceType type, int cpuSockets,
 	    int gpuSlots, int memorySlots, int storageSlots) {
 	this.network = network;
@@ -158,66 +198,101 @@ public class Device implements Connectable {
 	}
     }
 
-    // --------methods--------
+    @Override
+    public ConnectionStatus Connect(Device client, Port port) {
+	ConnectionStatus permission = hasPermission(port);
+
+	Connection c = new Connection(this, client, port);
+	if (permission == ConnectionStatus.OK) {
+	    connections.add(c);
+	} else {
+	    return permission;
+	}
+
+	permission = client.Connect(this, port, true);
+	if (permission == ConnectionStatus.OK) {
+	    List<Connection> connections = client.getConnections();
+	    c.setSiblingConnection(connections.get(connections.size() - 1));
+	    connections.get(connections.size() - 1).setSiblingConnection(c);
+	} else {
+	    connections.remove(c);
+	}
+
+	// if player, connect to server program()
+
+	return permission;
+    }
+
+    private ConnectionStatus Connect(Device client, Port port, boolean twoWay) {
+	ConnectionStatus permission = hasPermission(port);
+
+	Connection c = new Connection(this, client, port);
+	if (permission == ConnectionStatus.OK) {
+	    connections.add(c);
+	} else {
+	    return permission;
+	}
+
+	// if player, connect to server program()
+
+	return permission;
+    }
+
+    /**
+     * if it has permission to connect
+     * 
+     * @return True if it is allowed.
+     */
+    ConnectionStatus hasPermission(Port port) {
+
+	// check server firewall settings, inbound/outbound
+	return ConnectionStatus.OK;
+    }
 
     @Override
-    public boolean Connect(Device client, String program, int port,
-	    Internet.Protocol protocol) { // TODO this
-	Connection c = new Connection(this, client, Protocol.getProtocol(port));
-	network.getConnections().add(c);
+    public boolean Disconnect(Connection c) {
+	return c.close();
+    }
 
-	if (Port.checkPortAnd(ports, program, port, protocol)) {
-	    // Desktop d = Desktop.getDesktop();
+    @Override
+    public boolean openPort(String program, int portNumber, Protocol protocol) {
+	if (!Port.checkPort(ports, portNumber)) {
+	    ports.add(new Port(program, portNumber, protocol));
+	    return true;
+	}
+	return false;
+    }
 
-	    switch (port) {
-	    default: // 80, 443, others but just get directed to a 404 if not a
-		     // website
-		     // d.browse(URI.create("http://localhost:80/network/" +
-		     // network.getIp())); // I am not doing the html store any
-		     // more
-	    case 31337:
-		// grant complete(root?) access
-		// open ssh
-		break;
+    @Override
+    public boolean openPort(Port port) {
+	if (!Port.checkPort(ports, port.getPortNumber())) {
+	    ports.add(port);
+	    return true;
+	}
+	return false;
+    }
+
+    @Override
+    public boolean closePort(Port port) {
+	for (Connection c : connections) {
+	    if (c.getClientPort() == port) {
+		c.close();// you may have to close these from a for loop with a
+			  // temporary array
 	    }
-	    return true;
 	}
-	return false;
-    }
 
-    @Override
-    public boolean Disconnect(Device device, String program, int port) {
-	network.getConnections().remove(
-		network.findConnection(this, device, program, port));
-	return false;
-    }
-
-    @Override
-    public boolean addPorts(Device device, String program, int port,
-	    Protocol protocol) {
-	if (Port.checkPortOr(ports, null, null, port, null) == false) {
-	    ports.add(new Port(null, program, port, protocol));
-	    return true;
-	}
-	return false;
-    }
-
-    @Override
-    public boolean removePort(int port) { // this may be a memory leak where
-					  // devices can't remove the ports they
-					  // bind when they are removed
-	return ports.remove(Port.getPort(ports, null, port));
+	return ports.remove(port);
     }
 
     @Override
     public void log(Device client, String program, int port, Protocol protocol) {
-	masterStorage.addFile(new File(0, "Log - "
-		+ client.getNetwork().getIp() + ".log", "Connecting with "
-		+ program + " through port" + port + " using " + protocol
-		+ "\n" + program + ":" + port + ">" + protocol, FileType.LOG));
+	masterStorage.addFile(new File(0, "Log - " + client.ip + ".log",
+		"Connecting with " + program + " through portNumber" + port
+			+ " using " + protocol + "\n" + program + ":" + port
+			+ ">" + protocol, FileType.LOG));
 	/*
 	 * ---Example--- Log - 243.15.66.24 Connecting with half life 3 through
-	 * port 28190 using LAMBDA half life 3:28190>LAMBDA
+	 * portNumber 28190 using LAMBDA half life 3:28190>LAMBDA
 	 */
     }
 
@@ -297,6 +372,21 @@ public class Device implements Connectable {
 	    totalStorage += storage.getCapacity();
 	    break;
 	}
+    }
+
+    @Override
+    public void dispose() {
+	for (Connection c : connections) {
+	    Disconnect(c);
+	}
+	for (Port p : ports) {
+	    closePort(p);
+	}
+
+	ip = null;
+	address = null;
+	network = null;
+	parentRouter = null;
     }
 
     public enum DeviceType {
@@ -442,5 +532,37 @@ public class Device implements Connectable {
 
     public void setTile(Sprite tile) {
 	this.tile = tile;
+    }
+
+    public short[] getIp() {
+	return ip;
+    }
+
+    public void setIp(short[] ip) {
+	this.ip = ip;
+    }
+
+    public String getAddress() {
+	return address;
+    }
+
+    public void setAddress(String address) {
+	this.address = address;
+    }
+
+    public List<Connection> getConnections() {
+	return connections;
+    }
+
+    public void setConnections(List<Connection> connections) {
+	this.connections = connections;
+    }
+
+    public Router getParentRouter() {
+	return parentRouter;
+    }
+
+    public void setParentRouter(Router parentRouter) {
+	this.parentRouter = parentRouter;
     }
 }

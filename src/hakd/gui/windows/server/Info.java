@@ -1,6 +1,8 @@
 package hakd.gui.windows.server;
 
 import hakd.gui.Assets;
+import hakd.internet.Internet;
+import hakd.internet.Port;
 import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.Gdx;
@@ -101,6 +103,9 @@ public final class Info implements ServerWindow {
     }
 
     private void add() {
+	table.add("IP:");
+	table.add(Internet.ipToString(device.getIp()));
+	table.row();
 	table.add("Brand:");
 	// table.add(device.getBrand().toString());
 	table.row();
@@ -132,7 +137,11 @@ public final class Info implements ServerWindow {
 	table.add(device.getTotalStorage() + "");
 	table.row();
 	table.add("Open Ports:");
-	table.add(device.getPorts().toString() + "");
+	table.add("[ ");
+	for (Port p : device.getPorts()) {
+	    table.add(p.getPortNumber() + ", ");
+	}
+	table.add("]");
 	table.row();
     }
 }

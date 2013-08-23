@@ -1,71 +1,55 @@
 package hakd.internet;
 
 import hakd.internet.Internet.Protocol;
-import hakd.networks.devices.Device;
 
 import java.util.List;
 
+/**
+ * Ports are places that connections can be made. Note: you can have multiple
+ * connections per portNumber.
+ */
 public final class Port {
-    private Device device;
     private String program;
-    private int port;
+    private int portNumber;
     private Protocol protocol;
 
-    public Port(Device device, String program, int port, Protocol protocol) {
-	this.device = device;
+    public Port(String program, int portNumber, Protocol protocol) {
 	this.program = program;
-	this.port = port;
+	this.portNumber = portNumber;
 	this.protocol = protocol;
     }
 
-    // --------methods--------
-
-    // searches an array for a given port parameter
-    public static boolean checkPortOr(List<Port> array, Device device,
-	    String program, int port, Protocol protocol) {
-	for (Port p : array) { // this will work as long as none of the ports in
-			       // the array have null parameters
-	    if (p.getDevice() == device || p.getProgram().equals(program)
-		    || p.getPort() == port || p.getProtocol() == protocol) {
-		return true;
-	    }
-	}
-	return false; // it is best to search for individual parameters because
-		      // they are compared with or
-    }
-
-    // searches an array for a given program binding
-    public static boolean checkPortAnd(List<Port> array, String program,
-	    int port, Protocol protocol) {
-	for (Port p : array) { // this will work as long as none of the ports in
-			       // the array have null parameters
-	    if (p.getProgram().equals(program) && p.getPort() == port
-		    && p.getProtocol() == protocol) {
-		return true;
-	    }
-	}
-	return false; // it is best to search for individual parameters because
-		      // they are compared with or
-    }
-
-    // given a device or port number, this will return the port it is on
-    public static Port getPort(List<Port> array, Device device, int port) {
+    /**
+     * Searches an array for a given portNumber.
+     * 
+     * @return True if the portNumber is open.
+     */
+    public static boolean checkPort(List<Port> array, int port) {
 	for (Port p : array) {
-	    if (p.getDevice() == device || p.getPort() == port) {
+	    if (p.getPortNumber() == port) {
+		return true;
+	    }
+	}
+	return false;
+    }
+
+    /**
+     * Searches an array for a portNumber number of an open portNumber.
+     * 
+     * @param array
+     *            - The array of ports to search.
+     * @param portNumber
+     *            - The portNumber number to search for.
+     * @return The portNumber with the specified portNumber number.
+     */
+    public static Port getPort(List<Port> array, int port) {
+	for (Port p : array) {
+	    if (p.getPortNumber() == port) {
 		return p;
 	    }
 	}
 	return null; // it is best to search for individual parameters because
 		     // they are compared with or
-    }
-
-    // --------getters/setters--------
-    public Device getDevice() {
-	return device;
-    }
-
-    public void setDevice(Device device) {
-	this.device = device;
     }
 
     public String getProgram() {
@@ -76,12 +60,12 @@ public final class Port {
 	this.program = program;
     }
 
-    public int getPort() {
-	return port;
+    public int getPortNumber() {
+	return portNumber;
     }
 
-    public void setPort(int port) {
-	this.port = port;
+    public void setPortNumber(int portNumber) {
+	this.portNumber = portNumber;
     }
 
     public Protocol getProtocol() {

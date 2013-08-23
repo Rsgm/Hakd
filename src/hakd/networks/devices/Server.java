@@ -1,10 +1,11 @@
 package hakd.networks.devices;
 
+import hakd.networks.DefaultNetwork;
 import hakd.networks.Network;
 
 public final class Server extends Device {
 
-    public Server(Network n, int level) {
+    public Server(DefaultNetwork n, int level) {
 	super(n, level, DeviceType.SERVER);
 
     }

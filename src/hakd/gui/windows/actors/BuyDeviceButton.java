@@ -3,10 +3,6 @@ package hakd.gui.windows.actors;
 import hakd.gui.Assets;
 import hakd.gui.windows.newdevice.NewServerWindow;
 import hakd.networks.devices.Device;
-import hakd.networks.devices.Device.DeviceType;
-import hakd.networks.devices.Dns;
-import hakd.networks.devices.Router;
-import hakd.networks.devices.Server;
 import hakd.networks.devices.parts.Cpu;
 import hakd.networks.devices.parts.Gpu;
 import hakd.networks.devices.parts.Memory;
@@ -18,69 +14,68 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 
-public final class BuyServerButton extends TextButton {
+public final class BuyDeviceButton extends TextButton {
     private Cpu cpu;
     private Gpu gpu;
     private Memory memory;
     private Storage storage;
 
-    private Device currentDevice;
+    private final Device device;
     private int level;
 
     private final NewServerWindow newServerWindow;
-    private final Device d;
 
     /*
      * For ease, you can only buy whole servers with one part each. You can buy
      * more parts after that though.
      */
 
-    public BuyServerButton(Device currentDevice, final int level,
+    public BuyDeviceButton(Device device, final int level,
 	    final NewServerWindow newServerWindow, Skin skin, final Cpu cpu,
 	    final Gpu gpu, final Memory memory, final Storage storage) {
 	super("buy", skin);
 
 	this.newServerWindow = newServerWindow;
 
-	this.currentDevice = currentDevice;
+	this.device = device;
 
-	switch (currentDevice.getType()) {
-	case DNS:
-	    d = new Dns(currentDevice.getNetwork(), level, DeviceType.SERVER,
-		    1, 1, 1, 1);
-	    break;
-	case ROUTER:
-	    d = new Router(currentDevice.getNetwork(), level,
-		    DeviceType.SERVER, 1, 1, 1, 1);
-	    break;
-	default:
-	    d = new Server(currentDevice.getNetwork(), level,
-		    DeviceType.SERVER, 1, 1, 1, 1);
-	    break;
-	}
+	// switch (device.getType()) {
+	// case DNS:
+	// device = new Dns(device.getNetwork(), level, DeviceType.SERVER, 1,
+	// 1, 1, 1);
+	// break;
+	// case ROUTER:
+	// device = new Router(device.getNetwork(), level, DeviceType.SERVER,
+	// 1, 1, 1, 1);
+	// break;
+	// default:
+	// device = new Server(device.getNetwork(), level, DeviceType.SERVER,
+	// 1, 1, 1, 1);
+	// break;
+	// }
 
 	if (cpu != null) {
 	    this.cpu = cpu;
 	} else {
-	    this.cpu = new Cpu(level, d);
+	    this.cpu = new Cpu(level, device);
 	}
 
 	if (gpu != null) {
 	    this.gpu = gpu;
 	} else {
-	    this.gpu = new Gpu(level, d);
+	    this.gpu = new Gpu(level, device);
 	}
 
 	if (memory != null) {
 	    this.memory = memory;
 	} else {
-	    this.memory = new Memory(level, d);
+	    this.memory = new Memory(level, device);
 	}
 
 	if (storage != null) {
 	    this.storage = storage;
 	} else {
-	    this.storage = new Storage(level, d);
+	    this.storage = new Storage(level, device);
 	}
 
 	addListener();
@@ -98,29 +93,33 @@ public final class BuyServerButton extends TextButton {
 	    @Override
 	    public void touchUp(InputEvent event, float x, float y,
 		    int pointer, int button) {
+		super.touchUp(event, x, y, pointer, button);
 
-		cpu.setDevice(d);
-		gpu.setDevice(d);
-		memory.setDevice(d);
-		storage.setDevice(d);
+		device.setCpuSockets(1);
+		device.setGpuSlots(1);
+		device.setMemorySlots(1);
+		device.setStorageSlots(1);
 
-		d.addPart(PartType.CPU, cpu);
-		d.addPart(PartType.GPU, gpu);
-		d.addPart(PartType.MEMORY, memory);
-		d.addPart(PartType.STORAGE, storage);
-		d.setMasterStorage(storage);
+		cpu.setDevice(device);
+		gpu.setDevice(device);
+		memory.setDevice(device);
+		storage.setDevice(device);
 
-		d.getNetwork().removeDevice(currentDevice);
-		d.getNetwork().addDevice(d);
-		d.getNetwork().setLevel(0);
+		device.addPart(PartType.CPU, cpu);
+		device.addPart(PartType.GPU, gpu);
+		device.addPart(PartType.MEMORY, memory);
+		device.addPart(PartType.STORAGE, storage);
+		device.setMasterStorage(storage);
 
-		d.setTile(currentDevice.getTile());
-		d.getTile().setRegion(
-			Assets.nearestTextures.findRegion("s" + d.getLevel()));
+		device.getNetwork().setLevel(0);
+		device.setLevel(0);
+
+		device.setTile(device.getTile());
+		device.getTile().setRegion(
+			Assets.nearestTextures.findRegion("s"
+				+ device.getLevel()));
 
 		newServerWindow.close();
-
-		super.touchUp(event, x, y, pointer, button);
 	    }
 	});
     }
@@ -158,11 +157,7 @@ public final class BuyServerButton extends TextButton {
     }
 
     public Device getDevice() {
-	return currentDevice;
-    }
-
-    public void setDevice(Server server) {
-	this.currentDevice = server;
+	return device;
     }
 
     public int getLevel() {

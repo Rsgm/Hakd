@@ -85,7 +85,7 @@ public final class Command {
 	}
 	pi.set("device", device);
 
-	// if (!checkPython(file)) {
+	// if (!checkPythonForCheats(file)) {
 	// return;
 	// }
 
@@ -93,7 +93,7 @@ public final class Command {
 	pi.execfile(file.getPath());
     }
 
-    private boolean checkPython(File file) {
+    private boolean checkPythonForCheats(File file) {
 	Scanner s;
 	try {
 	    s = new Scanner(file);

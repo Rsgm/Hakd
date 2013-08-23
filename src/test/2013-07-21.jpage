@@ -3,4 +3,14 @@ s.matches("(?:\".*?\")")
 
 
 Scanner scanner = new Scanner("\"hel lo 1\"");
-scanner.next("(?:\".*\")")-
+scanner.next("(?:\".*\")")
+
+
+String s = "45.61.78.176";
+Scanner scanner = new Scanner(s);
+scanner.useDelimiter("\\.");
+scanner.nextInt();
+scanner.nextInt();
+scanner.nextInt();
+scanner.nextInt();
+

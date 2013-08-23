@@ -17,5 +17,6 @@
 			<attribute name="javadoc_location" value="http://www.jython.org/javadoc/"/>
 		</attributes>
 	</classpathentry>
+	<classpathentry kind="lib" path="lib/ai_path.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
