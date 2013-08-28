@@ -5,6 +5,7 @@ import hakd.internet.Connectable;
 import hakd.internet.Connection;
 import hakd.internet.Connection.ConnectionStatus;
 import hakd.internet.Internet.Protocol;
+import hakd.internet.Packet;
 import hakd.internet.Port;
 import hakd.networks.Network;
 import hakd.networks.Network.NetworkType;
@@ -22,6 +23,8 @@ import hakd.other.File.FileType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 
@@ -35,10 +38,10 @@ public class Device implements Connectable, Disposable {
     String address;
     Router parentRouter; // the router this device belongs to
     // int webserver = 0; // 0 = 404, if portNumber 80 is open
-    List<Port> ports = new ArrayList<Port>(); // portNumber, program /
-					      // if its
-					      // closed just
-					      // delete it
+    final List<Port> ports = new ArrayList<Port>(); // portNumber, program /
+						    // if its
+						    // closed just
+						    // delete it
     File logs; // TODO make this a file instead connecting from and the
 	       // action after that
 
@@ -48,10 +51,11 @@ public class Device implements Connectable, Disposable {
     int totalMemory; // in MB
     int totalStorage; // in ???
 
-    List<Connection> connections = new ArrayList<Connection>();
+    final List<Connection> connections = new ArrayList<Connection>();
+    final Queue<Packet> ConnectionDataBuffer = new ConcurrentLinkedQueue<Packet>();
 
     // objects
-    List<Part> parts = new ArrayList<Part>();
+    final List<Part> parts = new ArrayList<Part>();
     int cpuSockets; // easier than using a for loop to count the amount,
 		    // just remember to
     // change this portNumber
@@ -75,7 +79,7 @@ public class Device implements Connectable, Disposable {
      *            - The device type.
      */
     public Device(Network network, int level, DeviceType type) { // idea:
-								  // have
+								 // have
 	// random
 	// smartphone
 	// connections
@@ -83,7 +87,7 @@ public class Device implements Connectable, Disposable {
 	// disconnections
 
 	this.network = network; // idea: smartphones are like
-				 // insects on a
+				// insects on a
 	// network,
 	// many types, random behavior, and there are
 	// lots of them
@@ -470,14 +474,6 @@ public class Device implements Connectable, Disposable {
 	this.level = level;
     }
 
-    public void setPorts(List<Port> ports) {
-	this.ports = ports;
-    }
-
-    public void setParts(List<Part> parts) {
-	this.parts = parts;
-    }
-
     public DeviceType getType() {
 	return type;
     }
@@ -552,10 +548,6 @@ public class Device implements Connectable, Disposable {
 
     public List<Connection> getConnections() {
 	return connections;
-    }
-
-    public void setConnections(List<Connection> connections) {
-	this.connections = connections;
     }
 
     public Router getParentRouter() {

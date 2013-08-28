@@ -7,10 +7,13 @@ import hakd.networks.devices.Device;
 import java.util.ArrayList;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.ui.Button;
 import com.badlogic.gdx.scenes.scene2d.ui.Image;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 
 public final class Desktop {
@@ -45,24 +48,30 @@ public final class Desktop {
     }
 
     private void defaultApps() {
+	Sprite s;
+	Color c = new Color(.7f, .7f, .7f, 1f);
+
+	s = Assets.linearTextures.createSprite("consoleUp");
+	s.setColor(c);
 	ImageButton terminal = new DesktopAppIcon(new TextureRegionDrawable(
 		Assets.linearTextures.findRegion("consoleUp")),
-		new TextureRegionDrawable(Assets.linearTextures
-			.findRegion("consoleDown")), window.getTerminal());
+		new SpriteDrawable(s), window.getTerminal());
 	desktopApps.add(terminal);
 	desktop.addActor(terminal);
 
+	s = Assets.linearTextures.createSprite("infoUp");
+	s.setColor(c);
 	ImageButton info = new DesktopAppIcon(new TextureRegionDrawable(
 		Assets.linearTextures.findRegion("infoUp")),
-		new TextureRegionDrawable(Assets.linearTextures
-			.findRegion("infoDown")), window.getInfo());
+		new SpriteDrawable(s), window.getInfo());
 	desktopApps.add(info);
 	desktop.addActor(info);
 
+	s = Assets.linearTextures.createSprite("shutdownUp");
+	s.setColor(c);
 	ImageButton shutdown = new DesktopAppIcon(new TextureRegionDrawable(
 		Assets.linearTextures.findRegion("shutdownUp")),
-		new TextureRegionDrawable(Assets.linearTextures
-			.findRegion("shutdownDown")), window.getShutdown());
+		new SpriteDrawable(s), window.getShutdown());
 	desktopApps.add(shutdown);
 	desktop.addActor(shutdown);
     }

@@ -1,5 +1,5 @@
-from hakd.game.pythonapi import Display
+from hakd.game.pythonapi import PyDisplay
 
-Display.write(device, "Old Storage Amount: " + str(device.getTotalStorage()))
+PyDisplay.write(device, "Old Storage Amount: " + str(device.getTotalStorage()))
 device.totalStorage = int(parameters[0])
-Display.write(device, "New Storage Amount: " + str(device.getTotalStorage()))
+PyDisplay.write(device, "New Storage Amount: " + str(device.getTotalStorage()))

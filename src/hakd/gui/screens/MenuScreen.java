@@ -21,7 +21,7 @@ public final class MenuScreen extends HakdScreen { // terminal directory: BOOT>_
 
     private boolean typed = false;
 
-    // TODO make two methods to add text to the screen, one that types the test
+    // TODO make two methods to add text to the screen, one that types the PyTest
     // letter by letter, and one that adds it to the display
 
     public MenuScreen(Game game) { // terminal screen

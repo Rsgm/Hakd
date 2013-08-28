@@ -35,6 +35,7 @@ public final class Terminal implements ServerWindow {
     private final List<String> history; // command history
     private int line = 0; // holds the position of the history
     private final Device device;
+    private Command command;
 
     private final ImageButton close;
 
@@ -113,19 +114,22 @@ public final class Terminal implements ServerWindow {
 	input.addListener(new InputListener() {
 	    @Override
 	    public boolean keyDown(InputEvent event, int keycode) {
-		if (keycode == Keys.ENTER) {
+		if (keycode == Keys.ENTER && command == null) {
 		    System.out.println(input.getText());
 		    display.setText(display.getText() + "\n\nroot @ "
 			    + Internet.ipToString(device.getIp()) + "\n>"
 			    + input.getText());
 		    history.add(input.getText());
-		    new Command(input.getText(), device);
+		    command = new Command(input.getText(), device);
 
 		    line = history.size();
 		    input.setText("");
 		} else if (keycode == Keys.C
-			&& (keycode == Keys.CONTROL_LEFT || keycode == Keys.CONTROL_RIGHT)) {
-		    input.setText("");
+			&& (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input
+				.isKeyPressed(Keys.CONTROL_RIGHT))
+			&& command != null) {
+		    addText("Stopping program");
+		    command.stop();
 		} else if (keycode == Keys.DOWN && line < history.size() - 1) {
 		    line++;
 		    input.setText(history.get(line));
@@ -154,6 +158,36 @@ public final class Terminal implements ServerWindow {
 	table.addActor(close);
     }
 
+    public void addText(String text) {
+	display.setText(display.getText() + "\n   " + text);
+	scroll.setScrollY(display.getHeight());
+	// I doubt that set text is thread safe, although only two threads, that
+	// I know of, can access it; the main and command threads.
+    }
+
+    public void replaceText(String newText, int lineFromBottom) {
+	String t = display.getText().toString();
+	int n = t.length();
+	int m = n;
+	lineFromBottom++;
+
+	if (lineFromBottom < 1) {
+	    return;
+	}
+
+	for (int i = 0; i < lineFromBottom; i++) {
+	    m = n;
+	    n = t.lastIndexOf("\n", n - 2);
+	}
+
+	String s = t.substring(0, n);
+	s += "\n   " + newText;
+	s += t.substring(m, t.length());
+
+	display.setText(s);
+	scroll.setScrollY(display.getHeight());
+    }
+
     @Override
     public void open() {
 	window.getCanvas().addActor(table);
@@ -164,16 +198,19 @@ public final class Terminal implements ServerWindow {
 	window.getCanvas().removeActor(table);
     }
 
-    public void addText(String s) {
-	display.setText(display.getText() + "\n   " + s);
-	scroll.setScrollY(display.getHeight());
-    }
-
     public Label getDisplay() {
 	return display;
     }
 
     public ScrollPane getScroll() {
 	return scroll;
+    }
+
+    public Command getCommand() {
+	return command;
+    }
+
+    public void setCommand(Command command) {
+	this.command = command;
     }
 }

@@ -42,7 +42,7 @@ public final class Internet {
 	int backbones = 4;// (int) (Math.random() * 3 +
 			  // IpRegion.values().length);
 	int isps = /* 24 */(int) (Math.random() * 8 + 8);
-	int networks = 0; // (int) (Math.random() * 15 + 60));
+	int networks = (int) (Math.random() * 15 + 60);
 
 	backboneProviderNetworks = new ArrayList<BackboneProviderNetwork>(isps);
 	internetProviderNetworks = new ArrayList<InternetProviderNetwork>(
@@ -89,7 +89,7 @@ public final class Internet {
 		NewPublicNetwork(NetworkType.NPC);
 	    } else if (test >= 6) {
 		NewPublicNetwork(NetworkType.BUSINESS);
-		// } else if (test == 9) {
+		// } else if (PyTest == 9) {
 		// NewPublicNetwork(NetworkType.TEST);
 	    }
 	}

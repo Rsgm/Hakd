@@ -48,8 +48,8 @@ public final class Hakd extends Game {
 	 */
 
 	prefs.putBoolean("played-before", true);
-	prefs.putInteger("width", 1400);
-	prefs.putInteger("height", 850);
+	prefs.putInteger("width", 800);
+	prefs.putInteger("height", 600);
 	prefs.putBoolean("fullscreen", false);
 	prefs.putBoolean("vsync", true);
 	prefs.putBoolean("sound", true);

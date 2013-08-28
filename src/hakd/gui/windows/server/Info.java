@@ -92,6 +92,7 @@ public final class Info implements ServerWindow {
 
     @Override
     public void open() {
+	table.clear();
 	add();
 	window.getCanvas().addActor(infoWindow);
     }
@@ -137,7 +138,7 @@ public final class Info implements ServerWindow {
 	table.add(device.getTotalStorage() + "");
 	table.row();
 	table.add("Open Ports:");
-	table.add("[ ");
+	table.add("[");
 	for (Port p : device.getPorts()) {
 	    table.add(p.getPortNumber() + ", ");
 	}

@@ -83,7 +83,7 @@ public class DefaultNetwork implements Network {
 	    break;
 	case NPC:
 	    ipRegion = IpRegion.NA;
-	    owner = "test";
+	    owner = "PyTest";
 	    serverLimit = 4;
 	    dnsLimit = 1;
 	    routerLimit = 1;
@@ -95,7 +95,7 @@ public class DefaultNetwork implements Network {
 	    break;
 	case TEST:
 	    ipRegion = IpRegion.ASIA;
-	    owner = "test";
+	    owner = "PyTest";
 	    serverLimit = 32;
 	    dnsLimit = 2;
 	    routerLimit = 1; // for now just one
@@ -139,7 +139,7 @@ public class DefaultNetwork implements Network {
 	    break;
 	default: // copied from the npc case
 	    ipRegion = IpRegion.NA;
-	    owner = "test";
+	    owner = "PyTest";
 	    serverLimit = 4;
 	    dnsLimit = 1;
 	    routerLimit = 1;

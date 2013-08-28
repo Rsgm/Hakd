@@ -1,9 +1,9 @@
 package hakd.game.pythonapi;
 
-public class test extends ClassLoader {
+public class PyTest extends ClassLoader {
     public static ClassLoader t;
 
-    public test() {
+    public PyTest() {
 	t = this;
     }
 

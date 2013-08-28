@@ -6,7 +6,6 @@ import hakd.gui.windows.WindowStage;
 import hakd.networks.devices.Device;
 
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
@@ -40,9 +39,10 @@ public final class ServerWindowStage implements WindowStage {
 	desktop.getDesktop().toBack(); // makes sure no windows can go behind it
 	stage.draw();
 
-	if (Gdx.input.isKeyPressed(Keys.TAB)) {
-	    screen.getGame().setScreen(screen.getMap());
-	}
+	// disabled untill the bug is fixed
+	// if (Gdx.input.isKeyPressed(Keys.TAB)) {
+	// screen.getGame().setScreen(screen.getMap());
+	// }
     }
 
     @Override

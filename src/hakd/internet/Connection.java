@@ -80,11 +80,7 @@ public final class Connection {
 		    Usage.Position | Usage.Normal);
 	    break;
 	case ISP:
-	    cylinder = modelBuilder.createCylinder(
-		    .6f,
-		    distance,
-		    .6f,
-		    5,
+	    cylinder = modelBuilder.createCylinder(.6f, distance, .6f, 5,
 		    new Material(ColorAttribute.createDiffuse(Color.WHITE)),
 		    Usage.Position | Usage.Normal);
 	    break;
@@ -106,9 +102,6 @@ public final class Connection {
 		-(float) Math.toDegrees(Math.acos(v4.dot(Vector3.Y))));
     }
 
-    // TODO make methods for sending data and secure
-    // data from host to client // does it need a data buffer?
-
     public boolean close() {
 	boolean test = host.getConnections().remove(this)
 		|| client.getConnections().remove(this);
@@ -118,6 +111,13 @@ public final class Connection {
 	    siblingConnection.close();
 	}
 	return test;
+    }
+
+    // TODO make methods for sending data and secure
+    // data from host to client // does it need a data buffer?
+    public Packet sendData(Byte[] data) {
+
+	return null;
     }
 
     /**
