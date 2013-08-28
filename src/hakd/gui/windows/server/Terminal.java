@@ -38,8 +38,10 @@ public final class Terminal implements ServerWindow {
     private Command command;
 
     private final ImageButton close;
+    private final Terminal terminal;
 
     public Terminal(ServerWindowStage w) {
+	terminal = this;
 	window = w;
 	device = window.getDevice();
 
@@ -120,7 +122,7 @@ public final class Terminal implements ServerWindow {
 			    + Internet.ipToString(device.getIp()) + "\n>"
 			    + input.getText());
 		    history.add(input.getText());
-		    command = new Command(input.getText(), device);
+		    command = new Command(input.getText(), device, terminal);
 
 		    line = history.size();
 		    input.setText("");
@@ -128,7 +130,7 @@ public final class Terminal implements ServerWindow {
 			&& (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input
 				.isKeyPressed(Keys.CONTROL_RIGHT))
 			&& command != null) {
-		    addText("Stopping program");
+		    addText("Program Stopped");
 		    command.stop();
 		} else if (keycode == Keys.DOWN && line < history.size() - 1) {
 		    line++;

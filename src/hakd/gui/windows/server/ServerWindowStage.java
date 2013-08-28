@@ -14,7 +14,10 @@ public final class ServerWindowStage implements WindowStage {
     private final Stage stage;
     private final Group canvas;
 
-    private Terminal terminal;
+    private Terminal terminal0;
+    private Terminal terminal1;
+    private Terminal terminal2;
+    private Terminal terminal3;
     private Desktop desktop;
     private Login login;
     private Web web;
@@ -52,7 +55,10 @@ public final class ServerWindowStage implements WindowStage {
 		false);
 
 	if (desktop == null) {
-	    terminal = new Terminal(this);
+	    terminal0 = new Terminal(this);
+	    terminal1 = new Terminal(this);
+	    terminal2 = new Terminal(this);
+	    terminal3 = new Terminal(this);
 	    login = new Login();
 	    web = new Web();
 	    info = new Info(this);
@@ -88,10 +94,6 @@ public final class ServerWindowStage implements WindowStage {
 	return canvas;
     }
 
-    public Terminal getTerminal() {
-	return terminal;
-    }
-
     public Desktop getDesktop() {
 	return desktop;
     }
@@ -110,10 +112,6 @@ public final class ServerWindowStage implements WindowStage {
 
     public GameScreen getScreen() {
 	return screen;
-    }
-
-    public void setTerminal(Terminal terminal) {
-	this.terminal = terminal;
     }
 
     public void setDesktop(Desktop desktop) {
@@ -142,5 +140,37 @@ public final class ServerWindowStage implements WindowStage {
 
     public void setShutdown(Shutdown shutdown) {
 	this.shutdown = shutdown;
+    }
+
+    public Terminal getTerminal0() {
+	return terminal0;
+    }
+
+    public void setTerminal0(Terminal terminal0) {
+	this.terminal0 = terminal0;
+    }
+
+    public Terminal getTerminal1() {
+	return terminal1;
+    }
+
+    public void setTerminal1(Terminal terminal1) {
+	this.terminal1 = terminal1;
+    }
+
+    public Terminal getTerminal2() {
+	return terminal2;
+    }
+
+    public void setTerminal2(Terminal terminal2) {
+	this.terminal2 = terminal2;
+    }
+
+    public Terminal getTerminal3() {
+	return terminal3;
+    }
+
+    public void setTerminal3(Terminal terminal3) {
+	this.terminal3 = terminal3;
     }
 }

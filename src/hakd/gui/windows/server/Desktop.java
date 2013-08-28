@@ -51,13 +51,37 @@ public final class Desktop {
 	Sprite s;
 	Color c = new Color(.7f, .7f, .7f, 1f);
 
-	s = Assets.linearTextures.createSprite("consoleUp");
+	s = Assets.linearTextures.createSprite("console0Up");
 	s.setColor(c);
-	ImageButton terminal = new DesktopAppIcon(new TextureRegionDrawable(
-		Assets.linearTextures.findRegion("consoleUp")),
-		new SpriteDrawable(s), window.getTerminal());
-	desktopApps.add(terminal);
-	desktop.addActor(terminal);
+	ImageButton terminal0 = new DesktopAppIcon(new TextureRegionDrawable(
+		Assets.linearTextures.findRegion("console0Up")),
+		new SpriteDrawable(s), window.getTerminal0());
+	desktopApps.add(terminal0);
+	desktop.addActor(terminal0);
+
+	s = Assets.linearTextures.createSprite("console1Up");
+	s.setColor(c);
+	ImageButton terminal1 = new DesktopAppIcon(new TextureRegionDrawable(
+		Assets.linearTextures.findRegion("console1Up")),
+		new SpriteDrawable(s), window.getTerminal1());
+	desktopApps.add(terminal1);
+	desktop.addActor(terminal1);
+
+	s = Assets.linearTextures.createSprite("console2Up");
+	s.setColor(c);
+	ImageButton terminal2 = new DesktopAppIcon(new TextureRegionDrawable(
+		Assets.linearTextures.findRegion("console2Up")),
+		new SpriteDrawable(s), window.getTerminal2());
+	desktopApps.add(terminal2);
+	desktop.addActor(terminal2);
+
+	s = Assets.linearTextures.createSprite("console3Up");
+	s.setColor(c);
+	ImageButton terminal3 = new DesktopAppIcon(new TextureRegionDrawable(
+		Assets.linearTextures.findRegion("console3Up")),
+		new SpriteDrawable(s), window.getTerminal3());
+	desktopApps.add(terminal3);
+	desktop.addActor(terminal3);
 
 	s = Assets.linearTextures.createSprite("infoUp");
 	s.setColor(c);

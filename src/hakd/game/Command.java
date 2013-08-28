@@ -25,12 +25,15 @@ public final class Command {
      * be intensive at all, but sleep(n) or large iterations will not lock up
      * the game.
      */
-    public Command(String input, Device device) { // this may need to tell if a
-						  // player issued it, so it
-						  // won't write to the display
+    public Command(String input, Device device, Terminal terminal) { // this may
+								     // need to
+								     // tell if
+								     // a
+	// player issued it, so it
+	// won't write to the display
 	this.input = input;
 	this.device = device;
-	this.terminal = device.getWindow().getTerminal();
+	this.terminal = terminal;
 
 	File f = new File("TerminalLog.txt");
 	if (!f.exists()) {
@@ -118,7 +121,7 @@ public final class Command {
 	    parameters.remove(0); // first parameter is always the command
 	    pi.set("parameters", parameters);
 	}
-	pi.set("device", device);
+	pi.set("terminal", terminal);
 
 	// there really is no good way of doing this
 	// if (!checkPythonForCheats(file)) {
