@@ -19,6 +19,12 @@ public final class Port {
 	this.protocol = protocol;
     }
 
+    public Port(Protocol protocol) {
+	this.program = protocol.name();
+	this.portNumber = protocol.portNumber;
+	this.protocol = protocol;
+    }
+
     /**
      * Searches an array for a given portNumber.
      * 

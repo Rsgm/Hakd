@@ -9,8 +9,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
 import java.util.Scanner;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
+import org.python.core.PyException;
 import org.python.util.PythonInterpreter;
 
 public final class Command {
@@ -19,21 +22,21 @@ public final class Command {
     private final Terminal terminal;
     private PrintWriter commandLog;
     private Thread t;
+    private final Queue<Integer> userInputBuffer;
 
     /**
      * Runs the desired command on a separate thread. Not that any program would
      * be intensive at all, but sleep(n) or large iterations will not lock up
      * the game.
      */
-    public Command(String input, Device device, Terminal terminal) { // this may
-								     // need to
-								     // tell if
-								     // a
-	// player issued it, so it
-	// won't write to the display
+    public Command(String input, Device device, Terminal terminal) {
+	// this may need to tell if a player did not issued it,
+	// so it won't write to the display
 	this.input = input;
 	this.device = device;
 	this.terminal = terminal;
+
+	userInputBuffer = new ConcurrentLinkedQueue<Integer>();
 
 	File f = new File("TerminalLog.txt");
 	if (!f.exists()) {
@@ -91,6 +94,7 @@ public final class Command {
 		terminal.setCommand(null);
 	    }
 	});
+	// t.setName(name); might want to change this
 	t.start();
     }
 
@@ -111,7 +115,16 @@ public final class Command {
 	    throws FileNotFoundException {
 	PythonInterpreter pi = new PythonInterpreter();
 
-	File file = new File("python/" + parameters.get(0) + ".py");
+	File[] files = new File("python/programs/").listFiles();
+	File file = null;
+
+	for (File f : files) {
+	    if (f.getName().substring(0, f.getName().length() - 3)
+		    .equals(parameters.get(0) + ".py")) {
+		file = f;
+	    }
+	}
+
 	System.out.println(file.getPath());
 	if (!file.exists()) {
 	    throw new FileNotFoundException();
@@ -128,7 +141,13 @@ public final class Command {
 	// return;
 	// }
 
-	pi.execfile(file.getPath());
+	try {
+	    pi.execfile(file.getPath());
+	} catch (PyException e) {
+	    throw e;
+	} catch (RuntimeException e) {
+	    throw e;
+	}
     }
 
     private boolean checkPythonForCheats(File file) {
@@ -152,5 +171,9 @@ public final class Command {
 	}
 
 	return true;
+    }
+
+    public Queue<Integer> getUserInputBuffer() {
+	return userInputBuffer;
     }
 }

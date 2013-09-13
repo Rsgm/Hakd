@@ -1,6 +1,7 @@
 package hakd.game.gameplay;
 
 import hakd.networks.DefaultNetwork;
+import hakd.other.Util;
 
 public final class Npc {
     // hackers
@@ -15,8 +16,10 @@ public final class Npc {
 	this.home = n;
     }
 
-    public enum People {
-
+    public Npc(DefaultNetwork n, int money) {
+	this.money = money;
+	this.name = Util.GanerateName() + " " + Util.GanerateName();
+	this.home = n;
     }
 
     public int getMoney() {

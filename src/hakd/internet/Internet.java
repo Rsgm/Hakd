@@ -12,6 +12,7 @@ import hakd.networks.devices.Router;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 import ai.pathfinder.Node;
 
@@ -124,7 +125,6 @@ public final class Internet {
 
     /** Searches for the device with the given ip on the public internet. */
     public Device findDevice(short[] ip) {
-
 	for (InternetProviderNetwork i : internetProviderNetworks) {
 	    if (i.getMasterDns().getIp()[1] == ip[1]) {
 		for (Connection c : i.getMasterDns().getConnections()) {
@@ -199,6 +199,20 @@ public final class Internet {
 
     public static String ipToString(short[] ip) {
 	return ip[0] + "." + ip[1] + "." + ip[2] + "." + ip[3];
+    }
+
+    public static short[] ipFromString(String ip) {
+	short[] array = new short[4];
+
+	if (ip.matches("(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)")) {
+	    Scanner scanner = new Scanner(ip);
+	    scanner.useDelimiter("\\.");
+	    for (int i = 0; i < 4; i++) {
+		array[i] = scanner.nextShort();
+	    }
+	    scanner.close();
+	}
+	return array;
     }
 
     public enum Protocol {

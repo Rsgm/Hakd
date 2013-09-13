@@ -1,9 +1,13 @@
 package hakd.other;
 
+import org.python.util.PythonInterpreter;
+
 public final class Util {
 
-    // converts float x and y orthogonal screen coordinates into int x and y
-    // isometric
+    /**
+     * Converts float x and y orthogonal screen coordinates into int x and y
+     * isometric.
+     */
     public static int[] orthoToIso(float x, float y, int height) {
 	// map coordinates
 	float a1 = 0.5f * x + y; // checks every frame, so use float not double
@@ -38,13 +42,23 @@ public final class Util {
 	return iso;
     }
 
-    // returns float x and y orthogonal screen coordinates at the bottom
-    // middle of the isometric tile coordinate
+    /**
+     * Returns float x and y orthogonal screen coordinates at the bottom middle
+     * of the isometric tile coordinate.
+     */
     public static float[] isoToOrtho(float iX, float iY, float roomHeight) {
 	float[] ortho = new float[2];
 	ortho[0] = (roomHeight + iX - iY) / 2 - 0.5f;
 	ortho[1] = (roomHeight - iX - iY) / 4 - 0.25f;
 	return ortho; // adapted from
 		      // http://www.java-gaming.org/topics/isometric-screen-space/27698/view.html
+    }
+
+    public static String GanerateName() {
+	PythonInterpreter pi = new PythonInterpreter();
+	pi.execfile("src/hakd/other/NameGenerator.py");
+	String s = pi.get("name").toString();
+	pi.cleanup();
+	return s;
     }
 }

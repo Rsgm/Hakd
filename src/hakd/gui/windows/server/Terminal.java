@@ -5,6 +5,7 @@ import hakd.gui.Assets;
 import hakd.internet.Internet;
 import hakd.networks.devices.Device;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,6 +33,9 @@ public final class Terminal implements ServerWindow {
     private final Label display;
     private final ScrollPane scroll;
 
+    private boolean firstTab = true;
+    private String tabString = "";
+    private int tabIndex;
     private final List<String> history; // command history
     private int line = 0; // holds the position of the history
     private final Device device;
@@ -132,6 +136,48 @@ public final class Terminal implements ServerWindow {
 			&& command != null) {
 		    addText("Program Stopped");
 		    command.stop();
+		} else if (keycode == Keys.TAB && command == null) {
+		    String s = "<";
+		    File[] files = new File("python/programs/").listFiles();
+		    List<File> filesFiltered = new ArrayList<File>();
+
+		    if (firstTab) {
+			tabString = input.getText();
+		    }
+
+		    for (File f : files) {
+			if (f.getName().startsWith(tabString)) {
+			    filesFiltered.add(f);
+			}
+		    }
+
+		    for (File f : filesFiltered) {
+			s += f.getName().substring(0, f.getName().length() - 3);
+			if (filesFiltered.lastIndexOf(f) != filesFiltered
+				.size() - 1) {
+			    s += ", ";
+			}
+		    }
+		    if (!filesFiltered.isEmpty()) {
+			if (firstTab) {
+			    addText(s + ">");
+			    firstTab = false;
+			}
+
+			String name = filesFiltered.get(tabIndex).getName();
+			input.setText(name.substring(0, name.length() - 3));
+			input.setCursorPosition(input.getText().length());
+			// change this to insert text for completion of
+			// parameters,
+			// instead of overwriting the input box
+		    } else {
+			addText("<There are no programs with that name>");
+		    }
+
+		    tabIndex++;
+		    if (tabIndex >= filesFiltered.size()) {
+			tabIndex = 0;
+		    }
 		} else if (keycode == Keys.DOWN && line < history.size() - 1) {
 		    line++;
 		    input.setText(history.get(line));
@@ -141,12 +187,26 @@ public final class Terminal implements ServerWindow {
 		    input.setText(history.get(line));
 		    input.setCursorPosition(input.getText().length());
 		}
+
+		if (keycode != Keys.TAB && keycode != Keys.LEFT
+			&& keycode != Keys.RIGHT) {
+		    tabIndex = 0;
+		    tabString = "";
+		    firstTab = true;
+		}
+
+		if (command != null) {
+		    command.getUserInputBuffer().offer(keycode);
+		}
 		return true;
 	    }
 
 	    @Override
 	    public boolean keyUp(InputEvent event, int keycode) {
-		if (keycode == Keys.ENTER) {
+		if (keycode == Keys.ENTER
+			|| (keycode == Keys.C
+				&& (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input
+					.isKeyPressed(Keys.CONTROL_RIGHT)) && command != null)) {
 		    scroll.setScrollY(display.getHeight());
 		}
 		return super.keyUp(event, keycode);

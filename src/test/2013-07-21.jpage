@@ -14,3 +14,4 @@ scanner.nextInt();
 scanner.nextInt();
 scanner.nextInt();
 
+Util.GanerateName() + " " + Util.GanerateName()
