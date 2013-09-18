@@ -2,7 +2,7 @@ Hakd
 ====
 Hakd is semi rogue-like game about hacking, with a realistic, simulated, and procedurally generated internet.
 
-[My todo list.](https://trello.com/b/aPgl1zpo/hak-d) This also has some of my ideas.
+[My to-do list.](https://trello.com/b/aPgl1zpo/hak-d) This also has some of my ideas.
 
 about
 =====
