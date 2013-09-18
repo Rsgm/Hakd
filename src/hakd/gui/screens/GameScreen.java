@@ -185,7 +185,6 @@ public final class GameScreen extends HakdScreen {
 
 	public void changeMap(TiledMap map) { // TODO make a transition effect
 		renderer = new IsometricTiledMapRenderer(map, 1 / tileSize);
-		// TODO try removing 1/tilesize and making the cam 800 by 600
 		// tilesize has to be float, otherwise it will round
 	}
 

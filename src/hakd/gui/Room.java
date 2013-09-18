@@ -260,10 +260,9 @@ public final class Room {
  * room. I will also need graphics and 3d models on top of the 3d projection
  * models for the internet map.
  * 
- * TODO have different virtual screens(todoception make this an implementation
- * or extending class) that return orthocameras or something, matrices maybe?
- * 
- * 
+ * (done)to-do have different virtual screens that return orthocameras or something, matrices maybe?
+ * (They have render methods.)
+ *
  * To get a new room, you first buy the room. Next you remove the old room, then
  * update the network limits. Finally you generate a new room.
  * 

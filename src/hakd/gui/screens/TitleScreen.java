@@ -59,10 +59,7 @@ public final class TitleScreen extends HakdScreen {
 
 		Gdx.input.setInputProcessor(new TitleInput(game));
 
-		game.setScreen(new GameScreen(game, "Shadow")); // TODO temporary until
-		// I get lua working for
-		// the start menu to
-		// work
+		game.setScreen(new GameScreen(game, "Shadow")); // TODO temporary until I get the start menu scripts done
 	}
 
 	@Override
@@ -132,7 +129,7 @@ public final class TitleScreen extends HakdScreen {
 				loadingsSprite.draw(batch);
 
 				if(time > 2 + randomTime) { // case 4 time + case 5 time
-					//		game.setScreen(new MenuScreen(game)); TODO
+					game.setScreen(new MenuScreen(game));
 				}
 				break;
 		}
