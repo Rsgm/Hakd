@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 
 public final class Dns extends Device { // TODO let DNSs communicate a bit.
-	public static List<Short> ipNumbers = new ArrayList<Short>(255);
+	public static final List<Short> ipNumbers = new ArrayList<Short>(255);
 
 	public Dns(DefaultNetwork defaultNetwork, int level) {
 		super(defaultNetwork, level, DeviceType.DNS);

@@ -53,7 +53,6 @@ public final class Util {
 	public static String GanerateName() {
 		PythonInterpreter pi = new PythonInterpreter();
 		pi.execfile("src/hakd/other/NameGenerator.py");
-		String s = pi.get("name").toString();
-		return s;
+		return pi.get("name").toString();
 	}
 }

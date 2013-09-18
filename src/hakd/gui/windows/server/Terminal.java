@@ -35,7 +35,6 @@ public final class Terminal implements ServerWindow {
 	private final Device device;
 	private Command command;
 
-	private final ImageButton close;
 	private final Terminal terminal;
 
 	public Terminal(ServerWindowStage w) {
@@ -49,7 +48,7 @@ public final class Terminal implements ServerWindow {
 		table = new com.badlogic.gdx.scenes.scene2d.ui.Window("Terminal", skin);
 		table.setSize(window.getCanvas().getWidth() * .9f, window.getCanvas().getHeight() * .9f);
 
-		close = new ImageButton(new TextureRegionDrawable(Assets.linearTextures.findRegion("close")));
+		ImageButton close = new ImageButton(new TextureRegionDrawable(Assets.linearTextures.findRegion("close")));
 		close.setPosition(table.getWidth() - close.getWidth(), table.getHeight() - close.getHeight() - 20);
 
 		input = new TextField("", skin.get("console", TextFieldStyle.class));
@@ -58,7 +57,7 @@ public final class Terminal implements ServerWindow {
 
 		display.setWrap(false);
 		display.setAlignment(10, Align.left);
-		display.setText("Terminal [Version 0." + ((int) Math.random() * 100) / 10 + "]" + "\nroot @ " + Internet.ipToString(device.getIp()) + "\nMemory: " + device.getTotalMemory() + "MB\nStorage: " + device.getTotalStorage() + "GB");
+		display.setText("Terminal [Version 0." + ((int) (Math.random() * 100)) / 10 + "]" + "\nroot @ " + Internet.ipToString(device.getIp()) + "\nMemory: " + device.getTotalMemory() + "MB\nStorage: " + device.getTotalStorage() + "GB");
 
 		table.addListener(new InputListener() {
 			@Override
@@ -122,6 +121,7 @@ public final class Terminal implements ServerWindow {
 						tabString = input.getText();
 					}
 
+					assert files != null;
 					for(File f : files) {
 						if(f.getName().startsWith(tabString)) {
 							filesFiltered.add(f);

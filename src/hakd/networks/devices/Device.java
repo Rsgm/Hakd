@@ -229,7 +229,7 @@ public class Device implements Connectable, Disposable {
 	 */
 	ConnectionStatus hasPermission(Port port) {
 
-		// check server firewall settings, inbound/outbound
+		// TODO check server firewall settings, inbound/outbound
 		return ConnectionStatus.OK;
 	}
 

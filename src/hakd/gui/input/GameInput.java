@@ -83,7 +83,7 @@ public final class GameInput implements InputProcessor {
 
 	@Override
 	public boolean scrolled(int amount) {
-		float zoom = 0;
+		float zoom;
 		if((cam.zoom > 0.25 && amount < 0) || (cam.zoom < 5 && amount > 0)) {
 			zoom = cam.zoom + amount / 20f;
 			cam.zoom = Math.round(zoom * 100) / 100f; // round the zoom to the

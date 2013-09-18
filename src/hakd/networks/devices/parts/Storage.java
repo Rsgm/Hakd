@@ -82,28 +82,28 @@ public final class Storage extends Part {
 		switch(type) {
 			case OS:
 				for(File f : osFiles) {
-					if(f.getName() == name) {
+					if(f.getName().equals(name)) {
 						osFiles.remove(f);
 					}
 				}
 				break;
 			default:
 				for(File f : userFiles) {
-					if(f.getName() == name) {
+					if(f.getName().equals(name)) {
 						userFiles.remove(f);
 					}
 				}
 				break;
 			case PROGRAM:
 				for(File f : programFiles) {
-					if(f.getName() == name) {
+					if(f.getName().equals(name)) {
 						programFiles.remove(f);
 					}
 				}
 				break;
 			case LOG:
 				for(File f : logFiles) {
-					if(f.getName() == name) {
+					if(f.getName().equals(name)) {
 						logFiles.remove(f);
 					}
 				}
@@ -116,28 +116,28 @@ public final class Storage extends Part {
 		switch(type) {
 			case OS:
 				for(File f : osFiles) {
-					if(f.getName() == name) {
+					if(f.getName().equals(name)) {
 						return osFiles.get(osFiles.indexOf(f));
 					}
 				}
 				break;
 			default:
 				for(File f : userFiles) {
-					if(f.getName() == name) {
+					if(f.getName().equals(name)) {
 						return userFiles.get(userFiles.indexOf(f));
 					}
 				}
 				break;
 			case PROGRAM:
 				for(File f : programFiles) {
-					if(f.getName() == name) {
+					if(f.getName().equals(name)) {
 						return programFiles.get(programFiles.indexOf(f));
 					}
 				}
 				break;
 			case LOG:
 				for(File f : logFiles) {
-					if(f.getName() == name) {
+					if(f.getName().equals(name)) {
 						return logFiles.get(logFiles.indexOf(f));
 					}
 				}

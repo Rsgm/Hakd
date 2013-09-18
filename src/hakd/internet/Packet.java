@@ -13,7 +13,7 @@ public class Packet {
 	public enum ByteCode {
 		temo(0x0), p(0x1);
 
-		byte code;
+		final byte code;
 
 		ByteCode(int code) {
 			this.code = (byte) code;

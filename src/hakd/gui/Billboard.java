@@ -23,8 +23,7 @@ public class Billboard extends Sprite {
 
 	public static Billboard make(String imgPath) {
 		Texture tex = new Texture(Gdx.files.internal(imgPath));
-		Billboard sp = new Billboard(tex);
-		return sp;
+		return new Billboard(tex);
 	}
 
 	public Billboard(Texture tex) {

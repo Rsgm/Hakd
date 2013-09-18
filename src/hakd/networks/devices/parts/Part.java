@@ -48,7 +48,7 @@ public class Part {
 
 	public enum Brand {
 		INTELLIGENCE("Intelligence");
-		public String brand;
+		public final String brand;
 
 		Brand(String brand) {
 			this.brand = brand;

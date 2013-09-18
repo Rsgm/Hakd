@@ -192,7 +192,7 @@ public final class Connection {
 		 */
 		Network_Authentication_Required(511);
 
-		int code;
+		final int code;
 
 		ConnectionStatus(int code) {
 			this.code = code;

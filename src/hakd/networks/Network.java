@@ -109,8 +109,8 @@ public interface Network {
 		BUSINESS(1, 56), SA(57, 62), NA(63, 76), EUROPE(77, 91), ASIA(92, 114), AFRICA(115, 126), PRIVATE(128, 172),
 		EDUCATION(173, 182), GOVERNMENT(214, 220), MILITARY(220, 255), none(1, 255);
 
-		public int min; // min backbone ip range
-		public int max; // max ip range
+		public final int min; // min backbone ip range
+		public final int max; // max ip range
 
 		IpRegion(int min, int max) {
 			this.min = min;
@@ -122,7 +122,7 @@ public interface Network {
 		COMPANY("Company"), TEST("Test"); // these will be replaced with better
 		// ones
 
-		public String company;
+		public final String company;
 
 		Owner(String company) {
 			this.company = company;

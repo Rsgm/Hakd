@@ -37,7 +37,9 @@ public final class Command {
 		File f = new File("TerminalLog.txt");
 		if(!f.exists()) {
 			try {
-				f.createNewFile();
+				if(!f.createNewFile()) {
+					throw new IOException();
+				}
 			} catch(IOException e) {
 				e.printStackTrace();
 			}
@@ -72,7 +74,7 @@ public final class Command {
 
 				System.out.println(parameters.toString());
 				commandLog.println(parameters.toString());
-				if(parameters != null && !parameters.isEmpty()) {
+				if(!parameters.isEmpty()) {
 					try {
 						runPython(parameters);
 					} catch(FileNotFoundException e) {
@@ -113,6 +115,7 @@ public final class Command {
 		File[] files = new File("python/programs/").listFiles();
 		File file = null;
 
+		assert files != null;
 		for(File f : files) {
 			if(f.getName().equals(parameters.get(0) + ".py")) {
 				file = f;
