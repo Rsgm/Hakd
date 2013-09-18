@@ -3,11 +3,11 @@ package hakd.gui.windows;
 import hakd.gui.screens.GameScreen;
 
 public interface WindowStage {
-    public void render();
+	public void render();
 
-    public void open();
+	public void open();
 
-    public void close();
+	public void close();
 
-    public void setScreen(GameScreen screen);
+	public void setScreen(GameScreen screen);
 }

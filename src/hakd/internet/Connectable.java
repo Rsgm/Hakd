@@ -6,26 +6,32 @@ import hakd.networks.devices.Device;
 
 public interface Connectable {
 
-    /** connects to a specified host on the specified portNumber */
-    public ConnectionStatus Connect(Device client, Port port);
+	/**
+	 * connects to a specified host on the specified portNumber
+	 */
+	public ConnectionStatus Connect(Device client, Port port);
 
-    /** disconnects from the network */
-    public boolean Disconnect(Connection c);
+	/**
+	 * disconnects from the network
+	 */
+	public boolean Disconnect(Connection c);
 
-    /**
-     * Creates a new portNumber with specified information.
-     * */
-    public boolean openPort(String program, int portNumber, Protocol protocol);
+	/**
+	 * Creates a new portNumber with specified information.
+	 */
+	public boolean openPort(String program, int portNumber, Protocol protocol);
 
-    /**
-     * A variant of openPort(String, int, Protocol) in which it uses an already
-     * made port.
-     */
-    boolean openPort(Port port);
+	/**
+	 * A variant of openPort(String, int, Protocol) in which it uses an already
+	 * made port.
+	 */
+	boolean openPort(Port port);
 
-    /** */
-    public boolean closePort(Port port);
+	/** */
+	public boolean closePort(Port port);
 
-    /** Creates a log of the event */
-    public void log(Device client, String program, int port, Protocol protocol);
+	/**
+	 * Creates a log of the event
+	 */
+	public void log(Device client, String program, int port, Protocol protocol);
 }

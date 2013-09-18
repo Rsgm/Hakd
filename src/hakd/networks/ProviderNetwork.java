@@ -5,9 +5,9 @@ import hakd.networks.devices.Router;
 
 public interface ProviderNetwork extends Network {
 
-    public short[] register(Router router, int speed);
+	public short[] register(Router router, int speed);
 
-    public Dns getMasterDns();
+	public Dns getMasterDns();
 
-    public void setMasterDns(Dns masterDns);
+	public void setMasterDns(Dns masterDns);
 }

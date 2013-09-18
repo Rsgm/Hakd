@@ -4,9 +4,9 @@ import hakd.networks.DefaultNetwork;
 
 public final class Character {
 
-	int		money	= 0;
-	String	name;			// does not really change
-	DefaultNetwork	home;
+	int money = 0;
+	String name;            // does not really change
+	DefaultNetwork home;
 
 	public int getMoney() {
 		return money;

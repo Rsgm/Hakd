@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="ai_path">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/ai_path.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

@@ -1,13 +1,11 @@
 package hakd.gui.input;
 
-import hakd.gui.screens.MenuScreen;
-
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 
 public final class TitleInput implements InputProcessor {
-	private final Game	game;
+	private final Game game;
 
 	public TitleInput(Game game) {
 		this.game = game;
@@ -15,8 +13,8 @@ public final class TitleInput implements InputProcessor {
 
 	@Override
 	public boolean keyDown(int keycode) {
-		if (keycode == Keys.ESCAPE || keycode == Keys.ENTER) {
-			game.setScreen(new MenuScreen(game));
+		if(keycode == Keys.ESCAPE || keycode == Keys.ENTER) {
+			//			game.setScreen(new MenuScreen(game)); TODO
 		}
 		return true;
 	}
