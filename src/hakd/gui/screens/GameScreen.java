@@ -26,201 +26,202 @@ import hakd.networks.devices.Router;
 import hakd.networks.devices.Server;
 
 public final class GameScreen extends HakdScreen {
-	private Player player;
-	// TODO Sometime make this an array and have other people in the game with
-	// different skills and personalities
-	// private int arraylist<npc> npcs = new arraylist<npc>(); maybe
+    private Player player;
+    // TODO Sometime make this an array and have other people in the game with
+    // different skills and personalities
+    // private int arraylist<npc> npcs = new arraylist<npc>(); maybe
 
-	public static Internet internet;
-	public static final float tileSize = 64;
+    public static Internet internet;
+    public static final float tileSize = 64;
 
-	private Room room;
-	private WindowStage openWindow = null;
-	private final MapScreen map;
-	private IsometricTiledMapRenderer renderer; // it says this is experimental,
-	// but it was an old article
+    private String name;
+    private Room room;
+    private WindowStage openWindow = null;
+    private MapScreen map;
+    private IsometricTiledMapRenderer renderer; // it says this is experimental, but it was an old article
 
-	public GameScreen(Game game, String name) {
-		super(game);
+    public GameScreen(Game game, String name) {
+        super(game);
+        this.name = name;
+    }
 
-		for(short i = 1; i < 256; i++) {
-			Dns.ipNumbers.add(i);
-		}
+    @Override
+    public void show() {
+        super.show();
 
-		internet = new Internet();
-		Network n = internet.NewPublicNetwork(NetworkType.PLAYER);
+        for (short i = 1; i < 256; i++) {
+            Dns.ipNumbers.add(i);
+        }
 
-		player = new Player(name, n, this);
-		room = new Room(player, this, RoomMap.room1);
-		n.setPlayer(player);
+        internet = new Internet();
+        Network n = internet.NewPublicNetwork(NetworkType.PLAYER);
 
-		Sprite sprite = player.getSprite();
-		sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
+        player = new Player(name, n, this);
+        room = new Room(player, this, RoomMap.room1);
+        n.setPlayer(player);
 
-		cam = new OrthographicCamera();
-		((OrthographicCamera) cam).setToOrtho(false, room.getFloor().getWidth(), room.getFloor().getHeight());
-		cam.update();
+        Sprite sprite = player.getSprite();
+        sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
 
-		renderer.setView((OrthographicCamera) cam);
+        cam = new OrthographicCamera();
+        ((OrthographicCamera) cam).setToOrtho(false, room.getFloor().getWidth(), room.getFloor().getHeight());
+        cam.update();
 
-		cam.position.x = room.getFloor().getWidth() / 2;
-		cam.position.y = 0;
+        renderer.setView((OrthographicCamera) cam);
 
-		map = new MapScreen(game, this, internet);
-	}
+        cam.position.x = room.getFloor().getWidth() / 2;
+        cam.position.y = 0;
 
-	@Override
-	public void show() {
-		super.show();
-		Gdx.input.setInputProcessor(new GameInput(game, (OrthographicCamera) cam, player));
-		// I guess this has to be set in the show method
-	}
+        map = new MapScreen(game, this, internet);
 
-	@Override
-	public void render(float delta) {
-		super.render(delta);
+        Gdx.input.setInputProcessor(new GameInput(game, (OrthographicCamera) cam, player));
+    }
 
-		SpriteBatch rBatch = renderer.getSpriteBatch();
-		renderer.setView((OrthographicCamera) cam);
-		renderer.render();
+    @Override
+    public void render(float delta) {
+        super.render(delta);
 
-		rBatch.begin();
-		for(Router r : player.getNetwork().getRouters()) { // this needs
-			// graphics
-			// r.getTile().draw(rBatch);
-		}
-		for(Dns d : player.getNetwork().getDnss()) {
-			// d.getTile().draw(rBatch);
-		}
-		for(Server s : player.getNetwork().getServers()) {
-			s.getTile().draw(rBatch);
-		}
+        SpriteBatch rBatch = renderer.getSpriteBatch();
+        renderer.setView((OrthographicCamera) cam);
+        renderer.render();
 
-		if(openWindow == null) {
-			updateMovement();
-			checkPosition(rBatch);
-		}
+        rBatch.begin();
+        for (Router r : player.getNetwork().getRouters()) { // this needs
+            // graphics
+            // r.getTile().draw(rBatch);
+        }
+        for (Dns d : player.getNetwork().getDnss()) {
+            // d.getTile().draw(rBatch);
+        }
+        for (Server s : player.getNetwork().getServers()) {
+            s.getTile().draw(rBatch);
+        }
 
-		// update display();
-		// update game
-		// update other, I don't know
+        if (openWindow == null) {
+            updateMovement();
+            checkPosition(rBatch);
+        }
 
-		player.getSprite().draw(rBatch);
-		rBatch.end();
+        // update display();
+        // update game
+        // update other, I don't know
 
-		if(openWindow != null) {
-			openWindow.render();
-		}
-	}
+        player.getSprite().draw(rBatch);
+        rBatch.end();
 
-	private void checkPosition(SpriteBatch batch) {
-		int x = player.getIsoX();
-		int y = player.getIsoY();
+        if (openWindow != null) {
+            openWindow.render();
+        }
+    }
 
-		Device d = room.getDeviceAtTile(x, y - 1);
+    private void checkPosition(SpriteBatch batch) {
+        int x = player.getIsoX();
+        int y = player.getIsoY();
 
-		if(d != null) {
-			Sprite s = new Sprite(Assets.linearTextures.findRegion("spaceBarIcon"));
-			s.setPosition(player.getSprite().getX(), player.getSprite().getY() + 32 / tileSize);
-			s.setSize(16 / tileSize, 16 / tileSize);
+        Device d = room.getDeviceAtTile(x, y - 1);
 
-			s.draw(batch);
+        if (d != null) {
+            Sprite s = new Sprite(Assets.linearTextures.findRegion("spaceBarIcon"));
+            s.setPosition(player.getSprite().getX(), player.getSprite().getY() + 32 / tileSize);
+            s.setSize(16 / tileSize, 16 / tileSize);
 
-			if(Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
+            s.draw(batch);
 
-				if(d.getCpuSockets() == 0 && d.getType() == DeviceType.SERVER) {
-					openWindow = new NewServerWindow(d);
-					openWindow.setScreen(this);
-					openWindow.open();
-				} else {
-					d.getWindow().setScreen(this);
-					openWindow = d.getWindow();
-					d.getWindow().open();
-				}
-			}
-		}
-	}
+            if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
 
-	@Override
-	public void dispose() {
-		super.dispose();
-		room.dispose();
-	}
+                if (d.getCpuSockets() == 0 && d.getType() == DeviceType.SERVER) {
+                    openWindow = new NewServerWindow(d);
+                    openWindow.setScreen(this);
+                    openWindow.open();
+                } else {
+                    d.getWindow().setScreen(this);
+                    openWindow = d.getWindow();
+                    d.getWindow().open();
+                }
+            }
+        }
+    }
 
-	@Override
-	public void hide() {
-		Gdx.input.setInputProcessor(null);
-	}
+    @Override
+    public void dispose() {
+        super.dispose();
+        room.dispose();
+    }
 
-	private void updateMovement() {
-		Input i = Gdx.input;
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(null);
+    }
 
-		float x = 0;
-		float y = 0;
-		if((i.isKeyPressed(Keys.W) || i.isKeyPressed(Keys.UP))) {
-			x += 1;
-			y += 1;
-		}
-		if(i.isKeyPressed(Keys.A) || i.isKeyPressed(Keys.LEFT)) {
-			x += -1;
-			y += 1;
-		}
-		if(i.isKeyPressed(Keys.S) || i.isKeyPressed(Keys.DOWN)) {
-			x += -1;
-			y += -1;
-		}
-		if(i.isKeyPressed(Keys.D) || i.isKeyPressed(Keys.RIGHT)) {
-			x += 1;
-			y += -1;
-		}
+    private void updateMovement() {
+        Input i = Gdx.input;
 
-		if(x < -1 || x > 1) {
-			x /= 2; // x does not equal 2
-		}
+        float x = 0;
+        float y = 0;
+        if ((i.isKeyPressed(Keys.W) || i.isKeyPressed(Keys.UP))) {
+            x += 1;
+            y += 1;
+        }
+        if (i.isKeyPressed(Keys.A) || i.isKeyPressed(Keys.LEFT)) {
+            x += -1;
+            y += 1;
+        }
+        if (i.isKeyPressed(Keys.S) || i.isKeyPressed(Keys.DOWN)) {
+            x += -1;
+            y += -1;
+        }
+        if (i.isKeyPressed(Keys.D) || i.isKeyPressed(Keys.RIGHT)) {
+            x += 1;
+            y += -1;
+        }
 
-		player.move(1.41f * x / tileSize, y / tileSize / 1.41f);
-		// these were at1.5f each, they may need to be changed to account for
-		// screen size
-	}
+        if (x < -1 || x > 1) {
+            x /= 2; // x does not equal 2
+        }
 
-	public void changeMap(TiledMap map) { // TODO make a transition effect
-		renderer = new IsometricTiledMapRenderer(map, 1 / tileSize);
-		// tilesize has to be float, otherwise it will round
-	}
+        player.move(1.41f * x / tileSize, y / tileSize / 1.41f);
+        // these were at1.5f each, they may need to be changed to account for
+        // screen size
+    }
 
-	public Player getPlayer() {
-		return player;
-	}
+    public void changeMap(TiledMap map) { // TODO make a transition effect
+        renderer = new IsometricTiledMapRenderer(map, 1 / tileSize);
+        // tilesize has to be float, otherwise it will round
+    }
 
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
+    public Player getPlayer() {
+        return player;
+    }
 
-	public Room getRoom() {
-		return room;
-	}
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 
-	public void setRoom(Room room) {
-		this.room = room;
-	}
+    public Room getRoom() {
+        return room;
+    }
 
-	public IsometricTiledMapRenderer getRenderer() {
-		return renderer;
-	}
+    public void setRoom(Room room) {
+        this.room = room;
+    }
 
-	public void setRenderer(IsometricTiledMapRenderer renderer) {
-		this.renderer = renderer;
-	}
+    public IsometricTiledMapRenderer getRenderer() {
+        return renderer;
+    }
 
-	public WindowStage getOpenWindow() {
-		return openWindow;
-	}
+    public void setRenderer(IsometricTiledMapRenderer renderer) {
+        this.renderer = renderer;
+    }
 
-	public void setOpenWindow(WindowStage openWindow) {
-		this.openWindow = openWindow;
-	}
+    public WindowStage getOpenWindow() {
+        return openWindow;
+    }
 
-	public MapScreen getMap() {
-		return map;
-	}
+    public void setOpenWindow(WindowStage openWindow) {
+        this.openWindow = openWindow;
+    }
+
+    public MapScreen getMap() {
+        return map;
+    }
 }

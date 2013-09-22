@@ -1,15 +1,15 @@
-from hakd.game.pythonapi.PyDisplay import rewrite as rw, write as w
+from hakd.game.pythonapi.PyDisplay import over_write as o, write as w
 import time
 
 w(terminal, "time until scan, 5")
 time.sleep(1)
-rw(terminal, "time until scan, 4", 0)
+o(terminal, "time until scan, 4", 0)
 time.sleep(1)
-rw(terminal, "time until scan, 3", 0)
+o(terminal, "time until scan, 3", 0)
 time.sleep(1)
-rw(terminal, "time until scan, 2", 0)
+o(terminal, "time until scan, 2", 0)
 time.sleep(1)
-rw(terminal, "time until scan, 1", 0)
+o(terminal, "time until scan, 1", 0)
 time.sleep(1)
 w(terminal, "done")
 
