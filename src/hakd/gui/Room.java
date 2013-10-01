@@ -8,7 +8,6 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import hakd.game.gameplay.Player;
 import hakd.gui.screens.GameScreen;
-import hakd.networks.Network;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.Device.DeviceType;
 import hakd.networks.devices.Dns;
@@ -19,229 +18,229 @@ import hakd.other.Util;
 import java.util.List;
 
 public final class Room {
-	private Player player;
-	private Network network;
-	private final List<Dns> dnss;
-	private final List<Server> servers;
-	private final List<Router> routers;
-	private final List<Device> otherDevices;
+    private Player player;
+    private Network network;
+    private final List<Dns> dnss;
+    private final List<Server> servers;
+    private final List<Router> routers;
+    private final List<Device> otherDevices;
 
-	private TiledMap map;
-	private Object[][] mapObjects;
+    private TiledMap map;
+    private Object[][] mapObjects;
 
-	private TiledMapTileLayer floor;
-	private TiledMapTileLayer wall;
-	private MapLayer bounds; // if it matters, maybe rename this to
-	// wall/boundary layer
-	private TiledMapTileLayer objetcts; // Intractable tiles
+    private TiledMapTileLayer floor;
+    private TiledMapTileLayer wall;
+    private MapLayer bounds; // if it matters, maybe rename this to
+    // wall/boundary layer
+    private TiledMapTileLayer objetcts; // Intractable tiles
 
-	private GameScreen gameScreen;
+    private GameScreen gameScreen;
 
-	public Room(Player player, GameScreen gameScreen, RoomMap roomMap) {
-		this.player = player;
-		network = player.getNetwork();
+    public Room(Player player, GameScreen gameScreen, RoomMap roomMap) {
+        this.player = player;
+        network = player.getNetwork();
 
-		dnss = network.getDnss();
-		servers = network.getServers();
-		routers = network.getRouters();
-		otherDevices = network.getOtherDevices();
+        dnss = network.getDnss();
+        servers = network.getServers();
+        routers = network.getRouters();
+        otherDevices = network.getOtherDevices();
 
-		map = new TmxMapLoader().load("hakd/gui/resources/maps/" + roomMap.toString() + ".tmx");
+        map = new TmxMapLoader().load("hakd/gui/resources/maps/" + roomMap.toString() + ".tmx");
 
-		floor = (TiledMapTileLayer) map.getLayers().get("floor");
-		floor = (TiledMapTileLayer) map.getLayers().get("wall");
-		bounds = map.getLayers().get("bounds");
-		objetcts = (TiledMapTileLayer) map.getLayers().get("objects");
+        floor = (TiledMapTileLayer) map.getLayers().get("floor");
+        floor = (TiledMapTileLayer) map.getLayers().get("wall");
+        bounds = map.getLayers().get("bounds");
+        objetcts = (TiledMapTileLayer) map.getLayers().get("objects");
 
-		int servers = Integer.parseInt((String) map.getProperties().get("servers"));
-		int dnss = Integer.parseInt((String) map.getProperties().get("dnss"));
-		int routers = Integer.parseInt((String) map.getProperties().get("routers"));
+        int servers = Integer.parseInt((String) map.getProperties().get("servers"));
+        int dnss = Integer.parseInt((String) map.getProperties().get("dnss"));
+        int routers = Integer.parseInt((String) map.getProperties().get("routers"));
 
-		network.setServerLimit(servers);
-		network.setDnsLimit(dnss);
-		network.setRouterLimit(routers);
+        network.setServerLimit(servers);
+        network.setDnsLimit(dnss);
+        network.setRouterLimit(routers);
 
-		buildRoom();
+        buildRoom();
 
-		gameScreen.changeMap(map);
-	}
+        gameScreen.changeMap(map);
+    }
 
-	private void buildRoom() {
-		mapObjects = new Object[bounds.getObjects().getCount()][3];
+    private void buildRoom() {
+        mapObjects = new Object[bounds.getObjects().getCount()][3];
 
-		int i = 0;
-		for(MapObject o : bounds.getObjects()) {
-			mapObjects[i][0] = o.getName();
+        int i = 0;
+        for (MapObject o : bounds.getObjects()) {
+            mapObjects[i][0] = o.getName();
 
-			if(o.getName().matches("[rds]s.*")) {
-				mapObjects[i][1] = Integer.parseInt((String) o.getProperties().get("x"));
-				mapObjects[i][2] = Integer.parseInt((String) o.getProperties().get("y"));
-			}
-			i++;
-		}
+            if (o.getName().matches("[rds]s.*")) {
+                mapObjects[i][1] = Integer.parseInt((String) o.getProperties().get("x"));
+                mapObjects[i][2] = Integer.parseInt((String) o.getProperties().get("y"));
+            }
+            i++;
+        }
 
-		for(Dns d : dnss) {
-		}
-		for(Router r : routers) {
+        for (Dns d : dnss) {
+        }
+        for (Router r : routers) {
 
-		}
-		for(Server s : servers) {
-			s.setTile(new Sprite(Assets.nearestTextures.findRegion("s" + s.getLevel())));
-			s.getTile().setSize(s.getTile().getWidth() / GameScreen.tileSize, s.getTile().getHeight() / GameScreen.tileSize);
+        }
+        for (Server s : servers) {
+            s.setTile(new Sprite(Assets.nearestTextures.findRegion("s" + s.getLevel())));
+            s.getTile().setSize(s.getTile().getWidth() / GameScreen.tileSize, s.getTile().getHeight() / GameScreen.tileSize);
 
-			int[] isoPos = findDeviceCoords(s, DeviceType.SERVER); // position
-			// in iso
-			float[] ortho = Util.isoToOrtho(isoPos[0], isoPos[1], floor.getHeight());
+            int[] isoPos = findDeviceCoords(s, DeviceType.SERVER); // position
+            // in iso
+            float[] ortho = Util.isoToOrtho(isoPos[0], isoPos[1], floor.getHeight());
 
-			s.getTile().setPosition(ortho[0], ortho[1]);
-		}
-	}
+            s.getTile().setPosition(ortho[0], ortho[1]);
+        }
+    }
 
-	// returns the position of a device in isometric coordinates
-	public int[] findDeviceCoords(Device d, DeviceType type) {
-		int index;
-		switch(type) {
-			case DNS:
-				index = network.getDnss().indexOf(d);
-				break;
-			case ROUTER:
-				index = network.getRouters().indexOf(d);
-				break;
-			default:
-				index = network.getServers().indexOf(d);
-				break;
-		}
+    // returns the position of a device in isometric coordinates
+    public int[] findDeviceCoords(Device d, DeviceType type) {
+        int index;
+        switch (type) {
+            case DNS:
+                index = network.getDnss().indexOf(d);
+                break;
+            case ROUTER:
+                index = network.getRouters().indexOf(d);
+                break;
+            default:
+                index = network.getServers().indexOf(d);
+                break;
+        }
 
-		String s;
-		for(Object[] o : mapObjects) {
-			s = ((String) o[0]).replace("ss", "");
-			if(Integer.parseInt(s) == index) {
-				return new int[]{(Integer) o[1], (Integer) o[2]};
-			}
-		}
-		return null;
-	}
+        String s;
+        for (Object[] o : mapObjects) {
+            s = ((String) o[0]).replace("ss", "");
+            if (Integer.parseInt(s) == index) {
+                return new int[]{(Integer) o[1], (Integer) o[2]};
+            }
+        }
+        return null;
+    }
 
-	public Device getDeviceAtTile(Object x, Object y) {
-		Device device = null;
+    public Device getDeviceAtTile(Object x, Object y) {
+        Device device = null;
 
-		for(Object[] o : mapObjects) {
-			if(o[1] == x && o[2] == y) {
-				String s = (String) o[0];
-				if(s.matches("ss.*")) {
-					s = s.replace("ss", "");
-					device = servers.get(Integer.parseInt(s));
-				} else if(s.matches("rs.*")) {
-					s = s.replace("rs", "");
-					device = routers.get(Integer.parseInt(s));
-				} else if(s.matches("ds.*")) {
-					s = s.replace("ds", "");
-					device = dnss.get(Integer.parseInt(s));
-				}
-				break;
-			}
-		}
-		return device;
-	}
+        for (Object[] o : mapObjects) {
+            if (o[1] == x && o[2] == y) {
+                String s = (String) o[0];
+                if (s.matches("ss.*")) {
+                    s = s.replace("ss", "");
+                    device = servers.get(Integer.parseInt(s));
+                } else if (s.matches("rs.*")) {
+                    s = s.replace("rs", "");
+                    device = routers.get(Integer.parseInt(s));
+                } else if (s.matches("ds.*")) {
+                    s = s.replace("ds", "");
+                    device = dnss.get(Integer.parseInt(s));
+                }
+                break;
+            }
+        }
+        return device;
+    }
 
-	public enum RoomMap {
-		room1(), room2(), room3(), room4(), room5(), room6();
+    public enum RoomMap {
+        room1(), room2(), room3(), room4(), room5(), room6();
 
-		private RoomMap() {
-		}
-	}
+        private RoomMap() {
+        }
+    }
 
-	public void dispose() {
-		map.dispose();
-	}
+    public void dispose() {
+        map.dispose();
+    }
 
-	public Player getPlayer() {
-		return player;
-	}
+    public Player getPlayer() {
+        return player;
+    }
 
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 
-	public Network getNetwork() {
-		return network;
-	}
+    public Network getNetwork() {
+        return network;
+    }
 
-	public void setNetwork(Network network) {
-		this.network = network;
-	}
+    public void setNetwork(Network network) {
+        this.network = network;
+    }
 
-	public TiledMap getMap() {
-		return map;
-	}
+    public TiledMap getMap() {
+        return map;
+    }
 
-	public void setMap(TiledMap map) {
-		this.map = map;
-	}
+    public void setMap(TiledMap map) {
+        this.map = map;
+    }
 
-	public TiledMapTileLayer getFloor() {
-		return floor;
-	}
+    public TiledMapTileLayer getFloor() {
+        return floor;
+    }
 
-	public void setFloor(TiledMapTileLayer floor) {
-		this.floor = floor;
-	}
+    public void setFloor(TiledMapTileLayer floor) {
+        this.floor = floor;
+    }
 
-	public GameScreen getGameScreen() {
-		return gameScreen;
-	}
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
 
-	public void setGameScreen(GameScreen gameScreen) {
-		this.gameScreen = gameScreen;
-	}
+    public void setGameScreen(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
+    }
 
-	public Object[][] getMapObjects() {
-		return mapObjects;
-	}
+    public Object[][] getMapObjects() {
+        return mapObjects;
+    }
 
-	public void setMapObjects(Object[][] mapObjects) {
-		this.mapObjects = mapObjects;
-	}
+    public void setMapObjects(Object[][] mapObjects) {
+        this.mapObjects = mapObjects;
+    }
 
-	public TiledMapTileLayer getWall() {
-		return wall;
-	}
+    public TiledMapTileLayer getWall() {
+        return wall;
+    }
 
-	public void setWall(TiledMapTileLayer wall) {
-		this.wall = wall;
-	}
+    public void setWall(TiledMapTileLayer wall) {
+        this.wall = wall;
+    }
 
-	public MapLayer getBounds() {
-		return bounds;
-	}
+    public MapLayer getBounds() {
+        return bounds;
+    }
 
-	public void setBounds(MapLayer bounds) {
-		this.bounds = bounds;
-	}
+    public void setBounds(MapLayer bounds) {
+        this.bounds = bounds;
+    }
 
-	public TiledMapTileLayer getObjetcts() {
-		return objetcts;
-	}
+    public TiledMapTileLayer getObjetcts() {
+        return objetcts;
+    }
 
-	public void setObjetcts(TiledMapTileLayer objetcts) {
-		this.objetcts = objetcts;
-	}
+    public void setObjetcts(TiledMapTileLayer objetcts) {
+        this.objetcts = objetcts;
+    }
 
-	public List<Dns> getDnss() {
-		return dnss;
-	}
+    public List<Dns> getDnss() {
+        return dnss;
+    }
 
-	public List<Server> getServers() {
-		return servers;
-	}
+    public List<Server> getServers() {
+        return servers;
+    }
 
-	public List<Router> getRouters() {
-		return routers;
-	}
+    public List<Router> getRouters() {
+        return routers;
+    }
 
-	public List<Device> getOtherDevices() {
-		return otherDevices;
-	}
+    public List<Device> getOtherDevices() {
+        return otherDevices;
+    }
 }
 
 /*

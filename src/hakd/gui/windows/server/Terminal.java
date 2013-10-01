@@ -10,8 +10,8 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import hakd.game.Command;
+import hakd.game.Internet;
 import hakd.gui.Assets;
-import hakd.internet.Internet;
 import hakd.networks.devices.Device;
 
 import java.io.File;

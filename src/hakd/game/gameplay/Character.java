@@ -1,27 +1,27 @@
 package hakd.game.gameplay;
 
-import hakd.networks.DefaultNetwork;
+import hakd.networks.Network;
 
 public final class Character {
 
-	int money = 0;
-	String name;            // does not really change
-	DefaultNetwork home;
+    int money = 0;
+    String name;            // does not really change
+    Network home;
 
-	public int getMoney() {
-		return money;
-	}
+    public int getMoney() {
+        return money;
+    }
 
-	public void setMoney(int money) {
-		this.money = money;
-	}
+    public void setMoney(int money) {
+        this.money = money;
+    }
 
-	public DefaultNetwork getHome() {
-		return home;
-	}
+    public Network getHome() {
+        return home;
+    }
 
-	public void setHome(DefaultNetwork home) {
-		this.home = home;
-	}
+    public void setHome(Network home) {
+        this.home = home;
+    }
 
 }
