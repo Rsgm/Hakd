@@ -8,11 +8,8 @@ import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import hakd.game.gameplay.Player;
 import hakd.gui.screens.GameScreen;
+import hakd.networks.Network;
 import hakd.networks.devices.Device;
-import hakd.networks.devices.Device.DeviceType;
-import hakd.networks.devices.Dns;
-import hakd.networks.devices.Router;
-import hakd.networks.devices.Server;
 import hakd.other.Util;
 
 import java.util.List;
@@ -20,10 +17,7 @@ import java.util.List;
 public final class Room {
     private Player player;
     private Network network;
-    private final List<Dns> dnss;
-    private final List<Server> servers;
-    private final List<Router> routers;
-    private final List<Device> otherDevices;
+    private final List<Device> devices;
 
     private TiledMap map;
     private Object[][] mapObjects;
@@ -40,10 +34,7 @@ public final class Room {
         this.player = player;
         network = player.getNetwork();
 
-        dnss = network.getDnss();
-        servers = network.getServers();
-        routers = network.getRouters();
-        otherDevices = network.getOtherDevices();
+        devices = network.getDevices();
 
         map = new TmxMapLoader().load("hakd/gui/resources/maps/" + roomMap.toString() + ".tmx");
 
@@ -56,9 +47,7 @@ public final class Room {
         int dnss = Integer.parseInt((String) map.getProperties().get("dnss"));
         int routers = Integer.parseInt((String) map.getProperties().get("routers"));
 
-        network.setServerLimit(servers);
-        network.setDnsLimit(dnss);
-        network.setRouterLimit(routers);
+        network.setDeviceLimit(routers);
 
         buildRoom();
 
@@ -79,41 +68,25 @@ public final class Room {
             i++;
         }
 
-        for (Dns d : dnss) {
-        }
-        for (Router r : routers) {
+        for (Device d : devices) {
+            d.setTile(new Sprite(Assets.nearestTextures.findRegion("d" + d.getLevel())));
+            d.getTile().setSize(d.getTile().getWidth() / GameScreen.tileSize, d.getTile().getHeight() / GameScreen.tileSize);
 
-        }
-        for (Server s : servers) {
-            s.setTile(new Sprite(Assets.nearestTextures.findRegion("s" + s.getLevel())));
-            s.getTile().setSize(s.getTile().getWidth() / GameScreen.tileSize, s.getTile().getHeight() / GameScreen.tileSize);
-
-            int[] isoPos = findDeviceCoords(s, DeviceType.SERVER); // position
+            int[] isoPos = findDeviceCoords(d); // position
             // in iso
             float[] ortho = Util.isoToOrtho(isoPos[0], isoPos[1], floor.getHeight());
 
-            s.getTile().setPosition(ortho[0], ortho[1]);
+            d.getTile().setPosition(ortho[0], ortho[1]);
         }
     }
 
     // returns the position of a device in isometric coordinates
-    public int[] findDeviceCoords(Device d, DeviceType type) {
-        int index;
-        switch (type) {
-            case DNS:
-                index = network.getDnss().indexOf(d);
-                break;
-            case ROUTER:
-                index = network.getRouters().indexOf(d);
-                break;
-            default:
-                index = network.getServers().indexOf(d);
-                break;
-        }
+    public int[] findDeviceCoords(Device d) {
+        int index = network.getDevices().indexOf(d);
 
         String s;
         for (Object[] o : mapObjects) {
-            s = ((String) o[0]).replace("ss", "");
+            s = ((String) o[0]).replace("device", "");
             if (Integer.parseInt(s) == index) {
                 return new int[]{(Integer) o[1], (Integer) o[2]};
             }
@@ -127,15 +100,9 @@ public final class Room {
         for (Object[] o : mapObjects) {
             if (o[1] == x && o[2] == y) {
                 String s = (String) o[0];
-                if (s.matches("ss.*")) {
-                    s = s.replace("ss", "");
-                    device = servers.get(Integer.parseInt(s));
-                } else if (s.matches("rs.*")) {
-                    s = s.replace("rs", "");
-                    device = routers.get(Integer.parseInt(s));
-                } else if (s.matches("ds.*")) {
-                    s = s.replace("ds", "");
-                    device = dnss.get(Integer.parseInt(s));
+                if (s.matches("device\\d{3}")) {
+                    s = s.replace("d", "");
+                    device = devices.get(Integer.parseInt(s));
                 }
                 break;
             }
@@ -226,20 +193,8 @@ public final class Room {
         this.objetcts = objetcts;
     }
 
-    public List<Dns> getDnss() {
-        return dnss;
-    }
-
-    public List<Server> getServers() {
-        return servers;
-    }
-
-    public List<Router> getRouters() {
-        return routers;
-    }
-
-    public List<Device> getOtherDevices() {
-        return otherDevices;
+    public List<Device> getDevices() {
+        return devices;
     }
 }
 

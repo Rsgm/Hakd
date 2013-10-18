@@ -1,39 +1,36 @@
 package hakd.networks;
 
-import hakd.connection.Port;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 import hakd.game.Internet;
-import hakd.game.Internet.Protocol;
-import hakd.networks.devices.Dns;
-import hakd.networks.devices.Router;
 
 /**
  * Provides internet access to networks.
  */
-public final class InternetProviderNetwork extends Network implements ProviderNetwork {
-    private Dns masterDns;
+public final class InternetProviderNetwork extends Network {
 
-    @Deprecated
-    @SuppressWarnings("deprecation")
     public InternetProviderNetwork(Internet internet) {
         super(NetworkType.ISP, internet); // this is ok
 
         this.owner = IspName.values()[(int) (Math.random() * IspName.values().length)].toString();
-        masterDns = dnss.get(0);
-
     }
 
-    @Override
-    public short[] register(Router router, int speed) {
-        Port p = new Port(Protocol.DNS.toString(), Protocol.DNS.portNumber, Protocol.DNS);
-        router.setSpeed(speed);
+    /**
+     * For non-provider networks.
+     */
+    public void register(Network network, int speed) {
+        network.setParent(this);
+        network.setSphereInstance(new ModelInstance(sphere));
 
-        router.openPort(p);
-        masterDns.openPort(p);
-        masterDns.Connect(router, p);
+        float regionSize = ispRegionSize;
+        final float x = parent.getSpherePosition().x + (float) ((Math.random() * regionSize) - regionSize / 2);
+        final float y = parent.getSpherePosition().y + (float) ((Math.random() * regionSize) - regionSize / 2);
+        final float z = parent.getSpherePosition().z + (float) ((Math.random() * regionSize) - regionSize / 2);
+        network.setSpherePosition(new Vector3(x, y, z));
 
-        router.getNode().connectBoth(masterDns.getParentRouter().getNode(), speed);
+        network.getSphereInstance().transform.setToTranslation(spherePosition);
 
-        return masterDns.assignIp();
+        network.setIp(internet.assignIp(this));
     }
 
     public void unregister() {
@@ -58,15 +55,5 @@ public final class InternetProviderNetwork extends Network implements ProviderNe
             // this.price = price;
             // this.level = level;
         }
-    }
-
-    @Override
-    public Dns getMasterDns() {
-        return masterDns;
-    }
-
-    @Override
-    public void setMasterDns(Dns masterDns) {
-        this.masterDns = masterDns;
     }
 }

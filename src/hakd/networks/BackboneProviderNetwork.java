@@ -1,50 +1,54 @@
 package hakd.networks;
 
-import hakd.connection.Port;
+import com.badlogic.gdx.graphics.g3d.Model;
+import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.math.Vector3;
 import hakd.game.Internet;
-import hakd.game.Internet.Protocol;
-import hakd.networks.devices.Dns;
-import hakd.networks.devices.Router;
 
 /**
  * Backbones are the infrastructure that make up the internet. Backbones connect
  * ISPs to the internet, as well as connecting other backboneProviderNetworks
  * together.
  */
-public final class BackboneProviderNetwork extends Network implements ProviderNetwork {
-    private Dns masterDns;
+public final class BackboneProviderNetwork extends Network {
 
-    @Deprecated
-    @SuppressWarnings("deprecation")
+    private Model[] connectionLine;
+    private ModelInstance[] connectionInstance;
+    private Vector3[] connectionPosition;
+
     public BackboneProviderNetwork(Internet internet) {
         super(NetworkType.BACKBONE, internet); // this is ok
 
         this.owner = BackboneName.values()[(int) (Math.random() * BackboneName.values().length)].toString();
-        masterDns = dnss.get(0);
+
+        parent = null;
+        parent = null;
+        ip = new short[]{internet.generateIpByte(ipRegion), internet.generateIpByte(IpRegion.none), internet.generateIpByte(IpRegion.none), 1};
+
+        spherePosition = new Vector3((float) ((Math.random() * worldSize) - worldSize / 2), (float) ((Math.random() * worldSize) - worldSize / 2), (float) ((Math.random() * worldSize) - worldSize / 2));
+
+        for (BackboneProviderNetwork b : internet.getBackboneProviderNetworks()) {
+            //TODO put gui connection line code here
+        }
     }
 
-    @Override
-    public short[] register(Router router, int speed) {
-        Port p = new Port(Protocol.DNS.toString(), Protocol.DNS.portNumber, Protocol.DNS);
-        router.setSpeed(speed);
+    /**
+     * For non-provider networks.
+     */
+    public void register(Network network, int speed) {
+        network.setParent(this);
 
-        router.openPort(p);
-        masterDns.openPort(p);
-        masterDns.Connect(router, p);
+        network.setSphereInstance(new ModelInstance(sphere));
 
-        router.getNode().connectBoth(masterDns.getParentRouter().getNode(), speed);
+        float regionSize = BackboneRegionSize;
+        final float x = parent.getSpherePosition().x + (float) ((Math.random() * regionSize) - regionSize / 2);
+        final float y = parent.getSpherePosition().y + (float) ((Math.random() * regionSize) - regionSize / 2);
+        final float z = parent.getSpherePosition().z + (float) ((Math.random() * regionSize) - regionSize / 2);
+        network.setSpherePosition(new Vector3(x, y, z));
 
-        return masterDns.assignIp();
-    }
+        network.getSphereInstance().transform.setToTranslation(spherePosition);
 
-    @Override
-    public Dns getMasterDns() {
-        return masterDns;
-    }
-
-    @Override
-    public void setMasterDns(Dns masterDns) {
-        this.masterDns = masterDns;
+        network.setIp(internet.assignIp(this));
     }
 
     public enum BackboneName { // these may change

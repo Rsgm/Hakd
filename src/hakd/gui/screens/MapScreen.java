@@ -14,7 +14,7 @@ import hakd.connection.Connection;
 import hakd.game.Internet;
 import hakd.gui.input.MapInput;
 import hakd.networks.Network;
-import hakd.networks.devices.Router;
+import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -54,13 +54,13 @@ public class MapScreen extends HakdScreen {
         lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
     }
 
-    private void drawMap() {
+    private void reDrawMap() {
         modelInstances = new ArrayList<ModelInstance>();
 
-        for (Network n : internet.getPublicNetworks()) {
-            modelInstances.add(n.getInstance());
-            for (Router r : n.getRouters()) {
-                for (Connection c : r.getConnections()) {
+        for (Network n : internet.getIpNetworkHashMap().values()) {
+            modelInstances.add(n.getSphereInstance());
+            for (Device d : n.getDevices()) {
+                for (Connection c : d.getConnections()) {
                     modelInstances.add(c.getInstance());
                 }
             }
@@ -79,7 +79,7 @@ public class MapScreen extends HakdScreen {
         cam.translate(focus);
         cam.lookAt(focus);
 
-        drawMap();
+        reDrawMap();
     }
 
     @Override
@@ -96,7 +96,7 @@ public class MapScreen extends HakdScreen {
 
         if (time >= 1) {
             time = 0;
-            drawMap();
+            reDrawMap();
         }
 
         modelBatch.begin(cam);

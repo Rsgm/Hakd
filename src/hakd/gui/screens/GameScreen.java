@@ -17,12 +17,10 @@ import hakd.gui.Room.RoomMap;
 import hakd.gui.input.GameInput;
 import hakd.gui.windows.WindowStage;
 import hakd.gui.windows.newdevice.NewServerWindow;
+import hakd.networks.Network;
 import hakd.networks.Network.NetworkType;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.Device.DeviceType;
-import hakd.networks.devices.Dns;
-import hakd.networks.devices.Router;
-import hakd.networks.devices.Server;
 
 public final class GameScreen extends HakdScreen {
     private Player player;
@@ -49,7 +47,7 @@ public final class GameScreen extends HakdScreen {
         super.show();
 
         for (short i = 1; i < 256; i++) {
-            Dns.ipNumbers.add(i);
+            Internet.ipNumbers.add(i);
         }
 
         internet = new Internet();
@@ -85,15 +83,8 @@ public final class GameScreen extends HakdScreen {
         renderer.render();
 
         rBatch.begin();
-        for (Router r : player.getNetwork().getRouters()) { // this needs
-            // graphics
-            // r.getTile().draw(rBatch);
-        }
-        for (Dns d : player.getNetwork().getDnss()) {
-            // d.getTile().draw(rBatch);
-        }
-        for (Server s : player.getNetwork().getServers()) {
-            s.getTile().draw(rBatch);
+        for (Device d : player.getNetwork().getDevices()) {
+            d.getTile().draw(rBatch);
         }
 
         if (openWindow == null) {
@@ -145,6 +136,8 @@ public final class GameScreen extends HakdScreen {
     public void dispose() {
         super.dispose();
         room.dispose();
+
+        Internet.getThread().interrupt();
     }
 
     @Override

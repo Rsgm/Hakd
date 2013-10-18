@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.gui.Assets;
 import hakd.gui.screens.GameScreen;
 import hakd.gui.windows.server.ServerWindowStage;
+import hakd.networks.Network;
 import hakd.other.Util;
 
 public final class Player {

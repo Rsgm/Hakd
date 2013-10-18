@@ -3,8 +3,6 @@ package hakd.networks.devices;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.connection.Connectable;
 import hakd.connection.Connection;
-import hakd.connection.Connection.ConnectionStatus;
-import hakd.connection.Packet;
 import hakd.connection.Port;
 import hakd.game.Internet;
 import hakd.game.Internet.Protocol;
@@ -20,25 +18,17 @@ import hakd.other.File.FileType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Device implements Connectable {
 
     // stats
     Network network;
     int level;
-    short[] ip = new short[4]; // all network variables will be in IP
-    // format
+    short[] ip = new short[4]; // all network variables will be in IP format
     String address;
-    Router parentRouter; // the router this device belongs to
-    // int webserver = 0; // 0 = 404, if portNumber 80 is open
-    final List<Port> ports = new ArrayList<Port>(); // portNumber, program /
-    // if its
-    // closed just
-    // delete it
-    File logs; // TODO make this a file instead connecting from and the
-    // action after that
+    // enum webserver = 0; // 0 = 404, if portNumber 80 is open
+    final List<Port> ports = new ArrayList<Port>(); // portNumber, program / if its closed just delete it
+    File logs; // TODO make this a file instead connecting from and the action after that
 
     Brand brand; // for example bell, or HQ
     Model model;
@@ -47,15 +37,11 @@ public class Device implements Connectable {
     int totalStorage; // in ???
 
     final List<Connection> connections = new ArrayList<Connection>();
-    final Queue<Packet> ConnectionDataBuffer = new ConcurrentLinkedQueue<Packet>();
 
     // objects
     final List<Part> parts = new ArrayList<Part>();
-    int cpuSockets; // easier than using a for loop to count the amount,
-    // just remember to
-    // change this portNumber
-    int memorySlots; // maybe have a maximum part number, so you can
-    // specialize a server
+    int cpuSockets; // easier than using a for loop to count the amount, just remember to change this portNumber
+    int memorySlots; // maybe have a maximum part number, so you can specialize a server
     int storageSlots;
     int gpuSlots;
     Storage masterStorage; // TODO where the os resides
@@ -70,19 +56,9 @@ public class Device implements Connectable {
      * @param level   - The level of the network, used to generate parts.
      * @param type    - The device type.
      */
-    public Device(Network network, int level, DeviceType type) { // idea:
-        // have
-        // random
-        // smartphone
-        // connections
-        // and
-        // disconnections
+    public Device(Network network, int level, DeviceType type) { // TODO: have random smartphone connections and disconnections
 
-        this.network = network; // idea: smartphones are like
-        // insects on a
-        // network,
-        // many types, random behavior, and there are
-        // lots of them
+        this.network = network; // TODO: smartphones are like insects on a network, many types, random behavior, and there are lots of them
 
         this.level = level;
         this.type = type;
@@ -199,8 +175,8 @@ public class Device implements Connectable {
         permission = client.Connect(this, port, true);
         if (permission == ConnectionStatus.OK) {
             List<Connection> connections = client.getConnections();
-            c.setSiblingConnection(connections.get(connections.size() - 1));
-            connections.get(connections.size() - 1).setSiblingConnection(c);
+//            c.setSiblingConnection(connections.get(connections.size() - 1));
+//            connections.get(connections.size() - 1).setSiblingConnection(c);
         } else {
             connections.remove(c);
         }
@@ -275,8 +251,8 @@ public class Device implements Connectable {
     public void log(Device client, String program, int port, Protocol protocol) {
         masterStorage.addFile(new File(0, "Log - " + Internet.ipToString(client.ip) + ".log", "Connecting with " + program + " through portNumber" + port + " using " + protocol + "\n" + program + ":" + port + ">" + protocol, FileType.LOG));
     /*
-	 * ---Example--- Log - 243.15.66.24 Connecting with half life 3 through
-	 * portNumber 28190 using LAMBDA half life 3:28190>LAMBDA
+     * ---Example--- Log - 243.15.66.24 Connecting with half life 3 through portNumber 28190 using LAMBDA
+	 * half life 3:28190>LAMBDA
 	 */
     }
 
@@ -374,10 +350,10 @@ public class Device implements Connectable {
             closePort(p);
         }
 
+        network.removeDevice(this);
         ip = null;
         address = null;
         network = null;
-        parentRouter = null;
     }
 
     public enum DeviceType {
@@ -535,13 +511,5 @@ public class Device implements Connectable {
 
     public List<Connection> getConnections() {
         return connections;
-    }
-
-    public Router getParentRouter() {
-        return parentRouter;
-    }
-
-    public void setParentRouter(Router parentRouter) {
-        this.parentRouter = parentRouter;
     }
 }

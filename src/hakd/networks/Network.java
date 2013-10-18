@@ -8,61 +8,57 @@ import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
 import com.badlogic.gdx.graphics.g3d.materials.Material;
 import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
-import hakd.connection.Port;
 import hakd.game.Internet;
-import hakd.game.Internet.Protocol;
 import hakd.game.gameplay.Player;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.Device.DeviceType;
 import hakd.networks.devices.Dns;
-import hakd.networks.devices.Router;
 import hakd.networks.devices.Server;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 /**
  * A network represents a collection of devices.
  */
 public class Network {
-    // stats
-    int level; // 0-7, 0 for player because you start with almost
-    // nothing
+    short[] ip = new short[4];
+    int level; // 0-7, 0 for player because you start with almost nothing
     String owner; // owner, company, player
     Player player;
-
-    int serverLimit; // amount of server objects to begin with and the
-    // limit
-    int dnsLimit; // same as serverLimit but for DNSs
-    int routerLimit;
-
-    Stance stance;
+    Stance stance; // TODO move this to npc class
     NetworkType type;
 
-    // children
-    final List<Device> otherDevices = new ArrayList<Device>();
-    final List<Server> servers = new ArrayList<Server>();
-    final List<Dns> dnss = new ArrayList<Dns>();
-    final List<Router> routers = new ArrayList<Router>();
+    // connection info
+    int speed; // in MB/s (megabytes per second)
+    Network parent; // parent network
 
-    // gui
+    // children device
+    final List<Device> devices = new ArrayList<Device>();
+    int deviceLimit; // The maximum allowable devices on the network, also the amount to generate is based on this value. This must be less than 255
+
+    // gui stuff
     Model sphere;
-    ModelInstance instance;
-    Vector3 position;
+    ModelInstance sphereInstance;
+    Vector3 spherePosition;
+    Model parentConnectionLine;
+    ModelInstance parentConnectionInstance;
+    Vector3 parentConnectionPosition;
+
     public static final float worldSize = 700;
     public static final float BackboneRegionSize = 150;
     public static final float ispRegionSize = 80;
     public static final float networkRegionSize = 100;
-    IpRegion ipRegion; // where the network is in the world, it helps find
-    // an ip
+    IpRegion ipRegion; // where the network is in the world, it helps find an ip
+
 
     Internet internet;
 
     /**
      * This should only be used at the beginning of the game. If you need to add
-     * networks use {@link Internet}.NewNetwork().
+     * networks use {@link hakd.game.Internet}.NewNetwork().
      */
-    @Deprecated
     public Network(NetworkType type, Internet internet) {
         level = (int) (Math.random() * 8);
         stance = Stance.NEUTRAL;
@@ -75,180 +71,146 @@ public class Network {
             case PLAYER:// new player // only happens at the start of the game
                 ipRegion = IpRegion.NA;
                 level = -1;
-                serverLimit = 1;
-                routerLimit = 1;
+                deviceLimit = 1;
                 stance = Stance.FRIENDLY;
                 sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.BLUE)), Usage.Position | Usage.Normal);
                 break;
             case NPC:
                 ipRegion = IpRegion.NA;
-                owner = "PyTest";
-                serverLimit = 4;
-                dnsLimit = 1;
-                routerLimit = 1;
+                owner = "NPC";
+                deviceLimit = 4;
                 stance = Stance.NEUTRAL;
                 sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), Usage.Position | Usage.Normal);
                 break;
             case TEST:
                 ipRegion = IpRegion.ASIA;
-                owner = "PyTest";
-                serverLimit = 32;
-                dnsLimit = 2;
-                routerLimit = 1; // for now just one
+                owner = "Test";
+                deviceLimit = 32;
                 level = 7;
                 stance = Stance.NEUTRAL;
                 sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Position | Usage.Normal);
                 break;
             case BUSINESS: // company // random company
                 ipRegion = IpRegion.BUSINESS;
-                serverLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
-                dnsLimit = (int) (level / 3.5);
-                routerLimit = 1;
+                deviceLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
                 owner = "company";
                 sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.ORANGE)), Usage.Position | Usage.Normal);
                 break;
             case ISP:
                 ipRegion = IpRegion.values()[internet.getInternetProviderNetworks().size() % IpRegion.values().length];
-                serverLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
+                deviceLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
                 level = (int) (Math.random() * 8);
-                dnsLimit = 1;
-                routerLimit = 1;
                 sphere = modelBuilder.createSphere(15f, 15f, 15f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.CYAN)), Usage.Position | Usage.Normal);
                 break;
             case BACKBONE:
                 ipRegion = IpRegion.values()[internet.getBackboneProviderNetworks().size() % IpRegion.values().length];
-                serverLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
+                deviceLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
                 level = (8);
-                dnsLimit = 1;
-                routerLimit = 1;
                 sphere = modelBuilder.createSphere(25f, 25f, 25f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Position | Usage.Normal);
                 break;
             default: // copied from the npc case
                 ipRegion = IpRegion.NA;
-                owner = "PyTest";
-                serverLimit = 4;
-                dnsLimit = 1;
-                routerLimit = 1;
+                owner = "Some Name";
+                deviceLimit = 4;
                 stance = Stance.NEUTRAL;
                 sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), Usage.Position | Usage.Normal);
                 break;
         }
 
-        // used to add randomness to the amount of servers to make given
-        // serverLimit
-        int s = (int) Math.round(serverLimit * (Math.random() * 0.35 + 0.65));
+        // used to add randomness to the amount of servers to make given serverLimit
+        int d = (int) Math.round(deviceLimit * (Math.random() * 0.35 + 0.65));
 
-        for (int i = 0; i < routerLimit; i++) { // create servers on the
-            // network
-            Router r = new Router(this, level);
-            routers.add(r);
-        }
-
-        Router router = routers.get(0);
-        registerPrimaryRouter(router);
-
-        for (int i = 0; i < s; i++) { // create servers on the network
+        for (int i = 0; i < d; i++) { // create servers on the network
             Server server = new Server(this, level);
-            router.register(server);
-            servers.add(server);
-        }
 
-        for (int i = 0; i < dnsLimit; i++) { // create DNSs on the
-            // network
-            Dns d = new Dns(this, level);
-            router.register(d);
-            dnss.add(d);
-        }
-
-        instance = new ModelInstance(sphere);
-        instance.transform.setToTranslation(position);
-    }
-
-    private void registerPrimaryRouter(Router router) {
-        switch (type) {
-            case BACKBONE:
-                router.setParentNetwork(null);
-                router.setParent(null);
-                router.setIp(new short[]{Dns.generateIpByte(ipRegion), Dns.generateIpByte(IpRegion.none), Dns.generateIpByte(IpRegion.none), 1});
-
-                position = new Vector3((float) ((Math.random() * worldSize) - worldSize / 2), (float) ((Math.random() * worldSize) - worldSize / 2), (float) ((Math.random() * worldSize) - worldSize / 2));
-
-                for (BackboneProviderNetwork b : internet.getBackboneProviderNetworks()) {
-                    b.getRouters().get(0).Connect(router, new Port(Protocol.DNS.name(), Protocol.DNS.portNumber, Protocol.DNS));
-                }
-                break;
-            case ISP:
-                router.setParentNetwork(internet.getBackboneProviderNetworks().get(internet.getInternetProviderNetworks().size() % internet.getBackboneProviderNetworks().size()));
-                router.setParent(router.getParentNetwork().getMasterDns());
-
-                position = new Vector3(router.getParentNetwork().getPosition().x + (float) ((Math.random() * BackboneRegionSize) - BackboneRegionSize / 2), router.getParentNetwork().getPosition().y + (float) ((Math.random() * BackboneRegionSize) - BackboneRegionSize / 2), (router.getParentNetwork()).getPosition().z + (float) ((Math.random() * BackboneRegionSize) - BackboneRegionSize / 2));
-
-                router.setIp(router.getParentNetwork().register(router, 1));
-                break;
-            default:
-                router.setParentNetwork(internet.getInternetProviderNetworks().get((int) (Math.random() * internet.getInternetProviderNetworks().size())));
-                router.setParent(router.getParentNetwork().getMasterDns());
-
-                position = new Vector3(router.getParentNetwork().getPosition().x + (float) ((Math.random() * ispRegionSize) - ispRegionSize / 2), router.getParentNetwork().getPosition().y + (float) ((Math.random() * ispRegionSize) - ispRegionSize / 2), router.getParentNetwork().getPosition().z + (float) ((Math.random() * ispRegionSize) - ispRegionSize / 2));
-
-                router.setIp(router.getParentNetwork().register(router, 1));
-                break;
         }
     }
 
-
-    public void removeDevice(Router r, Device d) {
-        servers.remove(d);
-        r.unregister(d);
+    /**
+     * Removes a device from the network, as well as disposes it, removing any
+     * connections.
+     */
+    public void removeDevice(Device d) {
+        devices.remove(d);
+        d.dispose();
         // TODO add a call to remove d from the room, or just use the lists here when redrawing
     }
 
-
-    public boolean addDevice(Router r, Device device) {
+    /**
+     * Registers a device on the netowrk.
+     */
+    public boolean addDevice(Device device) {
         DeviceType dType = device.getType();
+        short ip[] = assignIp();
 
         int total = 0;
-        for (Device d : servers) {
+        for (Device d : devices) {
             if (d.getType() == dType) {
                 total++;
             }
         }
 
-        boolean b = false;
-
-        if (total < dnsLimit && dType == DeviceType.DNS) {
-            Dns dns = (Dns) device;
-            dnss.add(dns);
-            b = true;
-        } else if (total < routerLimit && dType == DeviceType.ROUTER) {
-            Router router = (Router) device;
-            routers.add(router);
-            b = true;
-        } else if (total < serverLimit && dType == DeviceType.SERVER) {
-            Server server = (Server) device;
-            servers.add(server);
-            b = true;
+        if (total >= deviceLimit || ip == null) {
+            return false;
         }
+        Dns dns = (Dns) device;
+        devices.add(dns);
 
+        device.setIp(ip);
         device.setNetwork(this);
-        r.register(device);
-
-        return b;
+        return true;
     }
 
     /**
-     * these define how to generate a network
+     * Assigns an ip to an object that requests one, also checks it and adds it
+     * to the dns list. Note: This will return null if there are 25
      */
-    public enum NetworkType {
-        PLAYER(), BUSINESS(), TEST(), ISP(), NPC(), BACKBONE(), EDUCATION(), BANK(), MILITARY(), GOVERNMENT(),
-        RESEARCH();
+    private short[] assignIp() {
+        short[] ip = null;
 
-        NetworkType() {
+        if (devices.size() > 255) {
+            return null;
+        }
+
+        for (short i = 1; i < 256; i++) {
+            ip = new short[]{this.ip[0], this.ip[1], this.ip[2], i};
+            if (findDevice(ip) == null) {
+                break;
+            }
+        }
+        return ip;
+    }
+
+    /**
+     * Finds the device with the given ip connected to the dns.
+     */
+    public Device findDevice(short[] ip) {
+        for (Device d : devices) {
+            if (Arrays.equals(ip, d.getIp())) {
+                return d;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * These define how to generate a network.
+     */
+    public enum NetworkType { // TODO choose a random number between 0 and the probabilities added up, then go through a loop to check which to use
+        PLAYER(0, 0), BUSINESS(1, 10), TEST(1, 1), ISP(1, 1), NPC(20, 100), BACKBONE(1, 1), EDUCATION(1, 1), BANK(1, 1), MILITARY(1, 1), GOVERNMENT(1, 1),
+        RESEARCH(1, 1); // set to 0,0 to never be used in random generation
+
+        public final int probabilityMin; // 0 to 1000
+        public final int probabilityMax;
+
+        NetworkType(int probabilityMin, int probabilityMax) {
+            this.probabilityMin = probabilityMin;
+            this.probabilityMax = probabilityMax;
         }
     }
 
     public enum Stance {
-        FRIENDLY(), NEUTRAL(), ENEMY(); // TODO do I want to give the network or the npc a stance
+        FRIENDLY(), NEUTRAL(), ENEMY(); // TODO do I want to give the network or the npc a stance?
 
         Stance() {
         }
@@ -299,26 +261,6 @@ public class Network {
     }
 
 
-    public int getServerLimit() {
-        return serverLimit;
-    }
-
-
-    public void setServerLimit(int serverLimit) {
-        this.serverLimit = serverLimit;
-    }
-
-
-    public int getDnsLimit() {
-        return dnsLimit;
-    }
-
-
-    public void setDnsLimit(int dnsLimit) {
-        this.dnsLimit = dnsLimit;
-    }
-
-
     public Stance getStance() {
         return stance;
     }
@@ -338,17 +280,6 @@ public class Network {
         this.ipRegion = ipRegion;
     }
 
-
-    public int getRouterLimit() {
-        return routerLimit;
-    }
-
-
-    public void setRouterLimit(int routerLimit) {
-        this.routerLimit = routerLimit;
-    }
-
-
     public NetworkType getType() {
         return type;
     }
@@ -356,26 +287,6 @@ public class Network {
 
     public void setType(NetworkType type) {
         this.type = type;
-    }
-
-
-    public List<Device> getOtherDevices() {
-        return otherDevices;
-    }
-
-
-    public List<Server> getServers() {
-        return servers;
-    }
-
-
-    public List<Dns> getDnss() {
-        return dnss;
-    }
-
-
-    public List<Router> getRouters() {
-        return routers;
     }
 
 
@@ -409,13 +320,13 @@ public class Network {
     }
 
 
-    public Vector3 getPosition() {
-        return position;
+    public Vector3 getSpherePosition() {
+        return spherePosition;
     }
 
 
-    public void setPosition(Vector3 position) {
-        this.position = position;
+    public void setSpherePosition(Vector3 spherePosition) {
+        this.spherePosition = spherePosition;
     }
 
 
@@ -429,13 +340,13 @@ public class Network {
     }
 
 
-    public ModelInstance getInstance() {
-        return instance;
+    public ModelInstance getSphereInstance() {
+        return sphereInstance;
     }
 
 
-    public void setInstance(ModelInstance sphereInstance) {
-        this.instance = sphereInstance;
+    public void setSphereInstance(ModelInstance sphereInstance) {
+        this.sphereInstance = sphereInstance;
     }
 
     public IpRegion getIpRegion() {
@@ -444,5 +355,81 @@ public class Network {
 
     public void setIpRegion(IpRegion ipRegion) {
         this.ipRegion = ipRegion;
+    }
+
+    public short[] getIp() {
+        return ip;
+    }
+
+    public void setIp(short[] ip) {
+        this.ip = ip;
+    }
+
+    public int getSpeed() {
+        return speed;
+    }
+
+    public void setSpeed(int speed) {
+        this.speed = speed;
+    }
+
+    public Network getParent() {
+        return parent;
+    }
+
+    public void setParent(Network parent) {
+        this.parent = parent;
+    }
+
+    public List<Device> getDevices() {
+        return devices;
+    }
+
+    public int getDeviceLimit() {
+        return deviceLimit;
+    }
+
+    public void setDeviceLimit(int deviceLimit) {
+        this.deviceLimit = deviceLimit;
+    }
+
+    public Model getParentConnectionLine() {
+        return parentConnectionLine;
+    }
+
+    public void setParentConnectionLine(Model parentConnectionLine) {
+        this.parentConnectionLine = parentConnectionLine;
+    }
+
+    public ModelInstance getParentConnectionInstance() {
+        return parentConnectionInstance;
+    }
+
+    public void setParentConnectionInstance(ModelInstance parentConnectionInstance) {
+        this.parentConnectionInstance = parentConnectionInstance;
+    }
+
+    public Vector3 getParentConnectionPosition() {
+        return parentConnectionPosition;
+    }
+
+    public void setParentConnectionPosition(Vector3 parentConnectionPosition) {
+        this.parentConnectionPosition = parentConnectionPosition;
+    }
+
+    public static float getWorldSize() {
+        return worldSize;
+    }
+
+    public static float getBackboneRegionSize() {
+        return BackboneRegionSize;
+    }
+
+    public static float getIspRegionSize() {
+        return ispRegionSize;
+    }
+
+    public static float getNetworkRegionSize() {
+        return networkRegionSize;
     }
 }
