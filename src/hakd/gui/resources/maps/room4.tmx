@@ -31,7 +31,6 @@
   </data>
  </layer>
  <objectgroup name="bounds" width="12" height="12" opacity="0.99">
-  <object name="border" x="0" y="0" width="384" height="384"/>
   <object name="device000" x="256" y="192" width="32" height="32">
    <properties>
     <property name="x" value="8"/>
@@ -127,15 +126,6 @@
     <property name="x" value="1"/>
     <property name="y" value="11"/>
    </properties>
-  </object>
-  <object name="wall" x="160" y="256">
-   <polyline points="0,0 0,-32 -160,-32"/>
-  </object>
-  <object name="wall" x="224" y="32">
-   <polyline points="0,0 0,-32"/>
-  </object>
-  <object name="wall" x="256" y="32">
-   <polyline points="0,0 0,-32"/>
   </object>
  </objectgroup>
 </map>

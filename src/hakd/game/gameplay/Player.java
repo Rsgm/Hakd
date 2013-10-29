@@ -3,7 +3,7 @@ package hakd.game.gameplay;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.gui.Assets;
 import hakd.gui.screens.GameScreen;
-import hakd.gui.windows.server.ServerWindowStage;
+import hakd.gui.windows.deviceapps.ServerWindowStage;
 import hakd.networks.Network;
 import hakd.other.Util;
 
@@ -24,10 +24,8 @@ public final class Player {
     private ServerWindowStage openWindow;
 
     // --------methods--------
-    public Player(String name, Network n, GameScreen screen) {
+    public Player(String name, GameScreen screen) {
         this.name = name;
-        this.network = n;
-
         this.screen = screen;
 
         sprite = new Sprite(Assets.nearestTextures.findRegion("player0"));

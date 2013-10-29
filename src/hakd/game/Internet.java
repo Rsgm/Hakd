@@ -96,52 +96,51 @@ public final class Internet {
     private void generateBackbones(int amount) {
         // each ipRegion gets at least one backbone, possibly several
         for (int i = 0; i < amount; i++) {
-            BackboneProviderNetwork b = new BackboneProviderNetwork(this);
+            BackboneProviderNetwork backbone = NetworkFactory.createBackbone(this);
+            backbone.setIp(new short[]{generateIpByte(backbone.getIpRegion()), generateIpByte(Network.IpRegion.none), generateIpByte(Network.IpRegion.none), 1});
 
-            backboneProviderNetworks.add(b);
-            ipNetworkHashMap.put(b.getIp(), b);
+            backboneProviderNetworks.add(backbone);
+            ipNetworkHashMap.put(backbone.getIp(), backbone);
         }
     }
 
     private void generateIsps(int amount) {
         for (int i = 0; i < amount; i++) {
-            InternetProviderNetwork s = new InternetProviderNetwork(this);
+            InternetProviderNetwork isp = NetworkFactory.createISP(this);
 
             final int a = internetProviderNetworks.size() % backboneProviderNetworks.size();
-            backboneProviderNetworks.get(a).register(s, 1);
+            backboneProviderNetworks.get(a).registerAnIsp(isp, 1);
 
-            internetProviderNetworks.add(s);
-            ipNetworkHashMap.put(s.getIp(), s); // this may not be the best but lets see what happens
+            internetProviderNetworks.add(isp);
+            ipNetworkHashMap.put(isp.getIp(), isp); // this may not be the best but lets see what happens
         }
     }
 
     /**
-     * creates the initial game networks
+     * Creates the initial game networks.
      */
     private void generateNetworks(int amount) {
         for (int i = 0; i < amount; i++) {
             int random = (int) (Math.random() * 10);
             if (random < 7) { // chances of generating a certain network type
-                NewPublicNetwork(NetworkType.NPC);
+                addNetworkToInternet(NetworkFactory.createNetwork(NetworkType.NPC));
             } else if (random <= 8) {
-                NewPublicNetwork(NetworkType.BUSINESS);
+                addNetworkToInternet(NetworkFactory.createNetwork(NetworkType.BUSINESS));
             } else if (random == 9) {
-                NewPublicNetwork(NetworkType.BANK);
+                addNetworkToInternet(NetworkFactory.createNetwork(NetworkType.GOVERNMENT));
             }
         }
     }
 
     /**
-     * Creates a new network and adds it to the internet(network list).
+     * Adds a network to the internet(network list). Not for provider networks.
      */
-    public Network NewPublicNetwork(NetworkType type) {
-        Network n = new Network(type, this);
-
+    public void addNetworkToInternet(Network network) {
         final int a = (int) (Math.random() * internetProviderNetworks.size());
-        internetProviderNetworks.get(a).register(n, 1);
+        internetProviderNetworks.get(a).registerANetwork(network, 1);
 
-        ipNetworkHashMap.put(n.getIp(), n);
-        return n;
+        ipNetworkHashMap.put(network.getIp(), network);
+        network.setInternet(this);
     }
 
     /**
@@ -158,7 +157,7 @@ public final class Internet {
     }
 
     /**
-     * used to create a (somewhat) realistic, random ip loosely based on the
+     * Used to create a (somewhat) realistic, random ip loosely based on the
      * ipv4 internet map. This is used mostly with the assign ip method, but can
      * be useful for other things.
      */
@@ -202,7 +201,7 @@ public final class Internet {
      */
     public boolean addUrl(short[] ip, String address) {
         if (address.matches("^[\\d|\\w]{1,64}\\.\\w{2,3}$") && !addressIpHashMap.containsValue(address)) { // address regex
-            findDevice(ip).setAddress(address);
+            getDevice(ip).setAddress(address);
             return true; // "you have successfully registered the url " + url +
             // " for the ip " + ip;
         }
@@ -212,10 +211,10 @@ public final class Internet {
     /**
      * Searches for the device with the given ip on the public internet.
      */
-    public Device findDevice(short[] ip) {
-        short[] a = ip;
-        a[4] = 1;
-        return ipNetworkHashMap.get(a).findDevice(ip);
+    public Device getDevice(short[] ip) {
+        short[] a = ip; // used to search through the hashmap because it only lists networks, which always end in 1s
+        ip[4] = 1;
+        return ipNetworkHashMap.get(a).getDevice(ip);
     }
 
     /**

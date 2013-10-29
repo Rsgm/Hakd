@@ -1,3 +1,4 @@
+#@help:portScan [ip] - Scans for open ports on the specified device.
 from hakd.game.pythonapi import PyNetworking as net
 from hakd.game.pythonapi import PyDisplay as gfx
 from hakd.internet.Internet import Protocol

@@ -1,6 +1,6 @@
 package hakd.game;
 
-import hakd.gui.windows.server.Terminal;
+import hakd.gui.windows.deviceapps.Terminal;
 import hakd.networks.devices.Device;
 import org.python.util.PythonInterpreter;
 

@@ -4,14 +4,14 @@ import hakd.game.Internet;
 import hakd.gui.screens.GameScreen;
 import hakd.networks.devices.Device;
 
-public class PyNetworking {
+public final class PyNetworking {
 
     public static void newSocket() {
 
     }
 
     public static Device get_device(short[] ip) {
-        return GameScreen.internet.findDevice(ip);
+        return GameScreen.internet.getDevice(ip);
     }
 
     public static short[] ip_from_string(String ip) {

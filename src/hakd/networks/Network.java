@@ -1,19 +1,12 @@
 package hakd.networks;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes.Usage;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import hakd.game.Internet;
 import hakd.game.gameplay.Player;
+import hakd.gui.EmptyDeviceTile;
 import hakd.networks.devices.Device;
-import hakd.networks.devices.Device.DeviceType;
-import hakd.networks.devices.Dns;
-import hakd.networks.devices.Server;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -30,13 +23,14 @@ public class Network {
     Stance stance; // TODO move this to npc class
     NetworkType type;
 
-    // connection info
+    // provider connection info
     int speed; // in MB/s (megabytes per second)
     Network parent; // parent network
 
     // children device
     final List<Device> devices = new ArrayList<Device>();
     int deviceLimit; // The maximum allowable devices on the network, also the amount to generate is based on this value. This must be less than 255
+    List<EmptyDeviceTile> EmptyDeviceTiles;
 
     // gui stuff
     Model sphere;
@@ -44,86 +38,16 @@ public class Network {
     Vector3 spherePosition;
     Model parentConnectionLine;
     ModelInstance parentConnectionInstance;
-    Vector3 parentConnectionPosition;
 
-    public static final float worldSize = 700;
+    public static final float worldSize = 500;
     public static final float BackboneRegionSize = 150;
     public static final float ispRegionSize = 80;
     public static final float networkRegionSize = 100;
     IpRegion ipRegion; // where the network is in the world, it helps find an ip
 
-
     Internet internet;
 
-    /**
-     * This should only be used at the beginning of the game. If you need to add
-     * networks use {@link hakd.game.Internet}.NewNetwork().
-     */
-    public Network(NetworkType type, Internet internet) {
-        level = (int) (Math.random() * 8);
-        stance = Stance.NEUTRAL;
-        this.type = type;
-        this.setInternet(internet);
-
-        ModelBuilder modelBuilder = new ModelBuilder();
-
-        switch (type) { // I should really clean these up, meh, later
-            case PLAYER:// new player // only happens at the start of the game
-                ipRegion = IpRegion.NA;
-                level = -1;
-                deviceLimit = 1;
-                stance = Stance.FRIENDLY;
-                sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.BLUE)), Usage.Position | Usage.Normal);
-                break;
-            case NPC:
-                ipRegion = IpRegion.NA;
-                owner = "NPC";
-                deviceLimit = 4;
-                stance = Stance.NEUTRAL;
-                sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), Usage.Position | Usage.Normal);
-                break;
-            case TEST:
-                ipRegion = IpRegion.ASIA;
-                owner = "Test";
-                deviceLimit = 32;
-                level = 7;
-                stance = Stance.NEUTRAL;
-                sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Position | Usage.Normal);
-                break;
-            case BUSINESS: // company // random company
-                ipRegion = IpRegion.BUSINESS;
-                deviceLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
-                owner = "company";
-                sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.ORANGE)), Usage.Position | Usage.Normal);
-                break;
-            case ISP:
-                ipRegion = IpRegion.values()[internet.getInternetProviderNetworks().size() % IpRegion.values().length];
-                deviceLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
-                level = (int) (Math.random() * 8);
-                sphere = modelBuilder.createSphere(15f, 15f, 15f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.CYAN)), Usage.Position | Usage.Normal);
-                break;
-            case BACKBONE:
-                ipRegion = IpRegion.values()[internet.getBackboneProviderNetworks().size() % IpRegion.values().length];
-                deviceLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
-                level = (8);
-                sphere = modelBuilder.createSphere(25f, 25f, 25f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.RED)), Usage.Position | Usage.Normal);
-                break;
-            default: // copied from the npc case
-                ipRegion = IpRegion.NA;
-                owner = "Some Name";
-                deviceLimit = 4;
-                stance = Stance.NEUTRAL;
-                sphere = modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), Usage.Position | Usage.Normal);
-                break;
-        }
-
-        // used to add randomness to the amount of servers to make given serverLimit
-        int d = (int) Math.round(deviceLimit * (Math.random() * 0.35 + 0.65));
-
-        for (int i = 0; i < d; i++) { // create servers on the network
-            Server server = new Server(this, level);
-
-        }
+    public Network() {
     }
 
     /**
@@ -133,28 +57,19 @@ public class Network {
     public void removeDevice(Device d) {
         devices.remove(d);
         d.dispose();
-        // TODO add a call to remove d from the room, or just use the lists here when redrawing
     }
 
     /**
-     * Registers a device on the netowrk.
+     * Registers a device on the network.
      */
     public boolean addDevice(Device device) {
-        DeviceType dType = device.getType();
         short ip[] = assignIp();
 
-        int total = 0;
-        for (Device d : devices) {
-            if (d.getType() == dType) {
-                total++;
-            }
-        }
-
-        if (total >= deviceLimit || ip == null) {
+        if (devices.size() >= deviceLimit || ip == null) {
             return false;
         }
-        Dns dns = (Dns) device;
-        devices.add(dns);
+
+        devices.add(device);
 
         device.setIp(ip);
         device.setNetwork(this);
@@ -174,7 +89,7 @@ public class Network {
 
         for (short i = 1; i < 256; i++) {
             ip = new short[]{this.ip[0], this.ip[1], this.ip[2], i};
-            if (findDevice(ip) == null) {
+            if (getDevice(ip) == null) {
                 break;
             }
         }
@@ -184,7 +99,7 @@ public class Network {
     /**
      * Finds the device with the given ip connected to the dns.
      */
-    public Device findDevice(short[] ip) {
+    public Device getDevice(short[] ip) {
         for (Device d : devices) {
             if (Arrays.equals(ip, d.getIp())) {
                 return d;
@@ -409,14 +324,6 @@ public class Network {
         this.parentConnectionInstance = parentConnectionInstance;
     }
 
-    public Vector3 getParentConnectionPosition() {
-        return parentConnectionPosition;
-    }
-
-    public void setParentConnectionPosition(Vector3 parentConnectionPosition) {
-        this.parentConnectionPosition = parentConnectionPosition;
-    }
-
     public static float getWorldSize() {
         return worldSize;
     }
@@ -431,5 +338,13 @@ public class Network {
 
     public static float getNetworkRegionSize() {
         return networkRegionSize;
+    }
+
+    public List<EmptyDeviceTile> getEmptyDeviceTiles() {
+        return EmptyDeviceTiles;
+    }
+
+    public void setEmptyDeviceTiles(List<EmptyDeviceTile> emptyDeviceTiles) {
+        EmptyDeviceTiles = emptyDeviceTiles;
     }
 }

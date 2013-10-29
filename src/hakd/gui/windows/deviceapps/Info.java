@@ -1,4 +1,4 @@
-package hakd.gui.windows.server;
+package hakd.gui.windows.deviceapps;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
@@ -104,23 +104,20 @@ public final class Info implements ServerWindow {
         table.add("Device level:");
         table.add(device.getLevel() + "");
         table.row();
-        table.add("CPU Sockets:");
-        table.add(device.getCpuSockets() + "");
+        table.add("Part Limit:");
+        table.add(device.getPartLimit() + "");
         table.row();
-        table.add("Gpu Slots:");
-        table.add(device.getGpuSlots() + "");
+        table.add("Total CPU speed:");
+        table.add(device.getCpuSpeed() + "");
         table.row();
-        table.add("Memory Slots:");
-        table.add(device.getMemorySlots() + "");
-        table.row();
-        table.add("Storage Slots:");
-        table.add(device.getStorageSlots() + "");
+        table.add("Total GPU speed:");
+        table.add(device.getGpuSpeed() + "");
         table.row();
         table.add("Total Memory:");
-        table.add(device.getTotalMemory() + "");
+        table.add(device.getMemoryCapacity() + "");
         table.row();
         table.add("Total Storage:");
-        table.add(device.getTotalStorage() + "");
+        table.add(device.getStorageCapacity() + "");
         table.row();
         table.add("Open Ports:");
         table.add("[");

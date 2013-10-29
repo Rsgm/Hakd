@@ -10,27 +10,29 @@ import hakd.game.Internet;
 public final class InternetProviderNetwork extends Network {
 
     public InternetProviderNetwork(Internet internet) {
-        super(NetworkType.ISP, internet); // this is ok
+        super();
 
-        this.owner = IspName.values()[(int) (Math.random() * IspName.values().length)].toString();
+        this.internet = internet;
     }
 
     /**
      * For non-provider networks.
      */
-    public void register(Network network, int speed) {
+    public void registerANetwork(Network network, int speed) {
         network.setParent(this);
-        network.setSphereInstance(new ModelInstance(sphere));
+        network.setSphereInstance(new ModelInstance(network.getSphere()));
 
         float regionSize = ispRegionSize;
-        final float x = parent.getSpherePosition().x + (float) ((Math.random() * regionSize) - regionSize / 2);
-        final float y = parent.getSpherePosition().y + (float) ((Math.random() * regionSize) - regionSize / 2);
-        final float z = parent.getSpherePosition().z + (float) ((Math.random() * regionSize) - regionSize / 2);
+        final float x = spherePosition.x + (float) ((Math.random() * regionSize) - regionSize / 2);
+        final float y = spherePosition.y + (float) ((Math.random() * regionSize) - regionSize / 2);
+        final float z = spherePosition.z + (float) ((Math.random() * regionSize) - regionSize / 2);
         network.setSpherePosition(new Vector3(x, y, z));
 
-        network.getSphereInstance().transform.setToTranslation(spherePosition);
+        network.getSphereInstance().transform.setToTranslation(network.getSpherePosition());
 
         network.setIp(internet.assignIp(this));
+        network.setSpeed(speed);
+        network.setIpRegion(ipRegion);
     }
 
     public void unregister() {

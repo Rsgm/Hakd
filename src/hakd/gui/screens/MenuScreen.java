@@ -19,7 +19,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MenuScreen extends HakdScreen {
+public final class MenuScreen extends HakdScreen {
     private final Stage stage;
     private final Table canvas;
 

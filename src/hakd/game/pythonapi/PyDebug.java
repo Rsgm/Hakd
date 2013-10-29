@@ -1,5 +1,5 @@
 package hakd.game.pythonapi;
 
-public class PyDebug {
+public final class PyDebug {
 
 }

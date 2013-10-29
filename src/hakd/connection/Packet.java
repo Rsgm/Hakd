@@ -3,7 +3,7 @@ package hakd.connection;
 /**
  * Contains data being sent.
  */
-public class Packet {
+public final class Packet {
     private byte[] data;
 
     public Packet() {

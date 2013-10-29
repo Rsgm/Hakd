@@ -151,14 +151,14 @@
             <filename>graphics/black.png</filename>
             <filename>graphics/grey.png</filename>
             <filename>graphics/white.png</filename>
-            <filename>graphics/Servers/s0.png</filename>
-            <filename>graphics/Servers/s1.png</filename>
-            <filename>graphics/Servers/s2.png</filename>
-            <filename>graphics/Servers/s3.png</filename>
-            <filename>graphics/Servers/s4.png</filename>
-            <filename>graphics/Servers/s5.png</filename>
-            <filename>graphics/Servers/s6.png</filename>
-            <filename>graphics/Servers/s-1.png</filename>
+            <filename>graphics/Devices/d0.png</filename>
+            <filename>graphics/Devices/d1.png</filename>
+            <filename>graphics/Devices/d2.png</filename>
+            <filename>graphics/Devices/d3.png</filename>
+            <filename>graphics/Devices/d4.png</filename>
+            <filename>graphics/Devices/d5.png</filename>
+            <filename>graphics/Devices/d6.png</filename>
+            <filename>graphics/Devices/d-1.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

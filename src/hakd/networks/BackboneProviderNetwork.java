@@ -1,7 +1,12 @@
 package hakd.networks;
 
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.VertexAttributes;
 import com.badlogic.gdx.graphics.g3d.Model;
 import com.badlogic.gdx.graphics.g3d.ModelInstance;
+import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
+import com.badlogic.gdx.graphics.g3d.materials.Material;
+import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
 import com.badlogic.gdx.math.Vector3;
 import hakd.game.Internet;
 
@@ -17,13 +22,12 @@ public final class BackboneProviderNetwork extends Network {
     private Vector3[] connectionPosition;
 
     public BackboneProviderNetwork(Internet internet) {
-        super(NetworkType.BACKBONE, internet); // this is ok
+        super();
 
+        this.internet = internet;
         this.owner = BackboneName.values()[(int) (Math.random() * BackboneName.values().length)].toString();
 
         parent = null;
-        parent = null;
-        ip = new short[]{internet.generateIpByte(ipRegion), internet.generateIpByte(IpRegion.none), internet.generateIpByte(IpRegion.none), 1};
 
         spherePosition = new Vector3((float) ((Math.random() * worldSize) - worldSize / 2), (float) ((Math.random() * worldSize) - worldSize / 2), (float) ((Math.random() * worldSize) - worldSize / 2));
 
@@ -33,22 +37,40 @@ public final class BackboneProviderNetwork extends Network {
     }
 
     /**
-     * For non-provider networks.
+     * For ISP networks.
      */
-    public void register(Network network, int speed) {
-        network.setParent(this);
+    public void registerAnIsp(Network isp, int speed) {
+        isp.setParent(this);
 
-        network.setSphereInstance(new ModelInstance(sphere));
-
+        // isp's sphere for the 3d map
+        isp.setSphereInstance(new ModelInstance(isp.getSphere()));
         float regionSize = BackboneRegionSize;
-        final float x = parent.getSpherePosition().x + (float) ((Math.random() * regionSize) - regionSize / 2);
-        final float y = parent.getSpherePosition().y + (float) ((Math.random() * regionSize) - regionSize / 2);
-        final float z = parent.getSpherePosition().z + (float) ((Math.random() * regionSize) - regionSize / 2);
-        network.setSpherePosition(new Vector3(x, y, z));
+        final float x = spherePosition.x + (float) ((Math.random() * regionSize) - regionSize / 2);
+        final float y = spherePosition.y + (float) ((Math.random() * regionSize) - regionSize / 2);
+        final float z = spherePosition.z + (float) ((Math.random() * regionSize) - regionSize / 2);
+        isp.setSpherePosition(new Vector3(x, y, z));
+        isp.getSphereInstance().transform.setToTranslation(isp.getSpherePosition());
 
-        network.getSphereInstance().transform.setToTranslation(spherePosition);
+        // connection line between isp and backbone(this)
+        Vector3 v1 = this.getSpherePosition().cpy();
+        Vector3 v2 = isp.getSpherePosition().cpy();
+        float distance = v1.dst(v2);
 
-        network.setIp(internet.assignIp(this));
+        isp.setParentConnectionLine(new ModelBuilder().createCylinder(1.2f, distance, 1.2f, 5, new Material(ColorAttribute.createDiffuse(Color.YELLOW)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal));
+
+        isp.setParentConnectionInstance(new ModelInstance(isp.getParentConnectionLine()));
+
+        Vector3 v3 = v1.cpy().add(v2).scl(.5f);
+        Vector3 v4 = v2.cpy().sub(v3).nor();
+        Vector3 v5 = v4.cpy().nor().crs(Vector3.Y).nor();
+
+        final ModelInstance lineInstance = isp.getParentConnectionInstance();
+        lineInstance.transform.translate(v3);
+        lineInstance.transform.rotate(v5, -(float) Math.toDegrees(Math.acos(v4.dot(Vector3.Y))));
+
+
+        isp.setIp(internet.assignIp(isp));
+        isp.setSpeed(speed);
     }
 
     public enum BackboneName { // these may change
@@ -58,7 +80,7 @@ public final class BackboneProviderNetwork extends Network {
          * until I think of company names
          *
          * Lynk(), T1Com(), Spirit(), Wnetwork(), KableTown(), WalkerInc(),
-         * BlackHat;
+         * BlackHat();
          */
         Alpha(), Beta(), Gamma(), Delta(), Epsilon(), Zeta(), Eta(), Theta(), Iota(), Kappa(), Lambda(), Mu(), Nu(),
         Xi(), Omnicron(), Pi(), Rho(), Sigma(), Tau(), Upsilon(), Phi(), Chi(), Psi(), Omega();

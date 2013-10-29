@@ -12,12 +12,14 @@ import hakd.networks.Network;
 import hakd.networks.devices.Device;
 import hakd.other.Util;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public final class Room {
     private Player player;
     private Network network;
     private final List<Device> devices;
+    private final List<EmptyDeviceTile> emptyDeviceTiles;
 
     private TiledMap map;
     private Object[][] mapObjects;
@@ -35,6 +37,7 @@ public final class Room {
         network = player.getNetwork();
 
         devices = network.getDevices();
+        emptyDeviceTiles = new ArrayList<EmptyDeviceTile>();
 
         map = new TmxMapLoader().load("hakd/gui/resources/maps/" + roomMap.toString() + ".tmx");
 
@@ -43,14 +46,10 @@ public final class Room {
         bounds = map.getLayers().get("bounds");
         objetcts = (TiledMapTileLayer) map.getLayers().get("objects");
 
-        int servers = Integer.parseInt((String) map.getProperties().get("servers"));
-        int dnss = Integer.parseInt((String) map.getProperties().get("dnss"));
-        int routers = Integer.parseInt((String) map.getProperties().get("routers"));
-
-        network.setDeviceLimit(routers);
+        int deviceLimit = Integer.parseInt((String) map.getProperties().get("devices"));
+        network.setDeviceLimit(deviceLimit);
 
         buildRoom();
-
         gameScreen.changeMap(map);
     }
 
@@ -60,54 +59,69 @@ public final class Room {
         int i = 0;
         for (MapObject o : bounds.getObjects()) {
             mapObjects[i][0] = o.getName();
-
-            if (o.getName().matches("[rds]s.*")) {
-                mapObjects[i][1] = Integer.parseInt((String) o.getProperties().get("x"));
-                mapObjects[i][2] = Integer.parseInt((String) o.getProperties().get("y"));
-            }
+            mapObjects[i][1] = Integer.parseInt((String) o.getProperties().get("x"));
+            mapObjects[i][2] = Integer.parseInt((String) o.getProperties().get("y"));
             i++;
         }
 
+        // set sprites(tile) of network devices
         for (Device d : devices) {
             d.setTile(new Sprite(Assets.nearestTextures.findRegion("d" + d.getLevel())));
             d.getTile().setSize(d.getTile().getWidth() / GameScreen.tileSize, d.getTile().getHeight() / GameScreen.tileSize);
 
-            int[] isoPos = findDeviceCoords(d); // position
-            // in iso
-            float[] ortho = Util.isoToOrtho(isoPos[0], isoPos[1], floor.getHeight());
+            float[] ortho = Util.isoToOrtho(d.getIsoX(), d.getIsoY(), floor.getHeight());
 
             d.getTile().setPosition(ortho[0], ortho[1]);
         }
-    }
 
-    // returns the position of a device in isometric coordinates
-    public int[] findDeviceCoords(Device d) {
-        int index = network.getDevices().indexOf(d);
-
-        String s;
+        // create unused device spaces and set their sprite to "d-1"
         for (Object[] o : mapObjects) {
-            s = ((String) o[0]).replace("device", "");
-            if (Integer.parseInt(s) == index) {
-                return new int[]{(Integer) o[1], (Integer) o[2]};
-            }
-        }
-        return null;
-    }
+            if (o[0] instanceof String && o[1] instanceof Integer && o[2] instanceof Integer) {
 
-    public Device getDeviceAtTile(Object x, Object y) {
-        Device device = null;
+                if (((String) o[0]).matches("device") && getObjectAtTile(o[1], o[2]).equals("empty")) {
+                    EmptyDeviceTile emptyDeviceTile = new EmptyDeviceTile((Integer) o[1], (Integer) o[2]);
 
-        for (Object[] o : mapObjects) {
-            if (o[1] == x && o[2] == y) {
-                String s = (String) o[0];
-                if (s.matches("device\\d{3}")) {
-                    s = s.replace("d", "");
-                    device = devices.get(Integer.parseInt(s));
+                    emptyDeviceTile.setTile(new Sprite(Assets.nearestTextures.findRegion("d-1")));
+                    emptyDeviceTile.getTile().setSize(emptyDeviceTile.getTile().getWidth() / GameScreen.tileSize, emptyDeviceTile.getTile().getHeight() / GameScreen.tileSize);
+
+                    float[] ortho = Util.isoToOrtho((Integer) o[1], (Integer) o[2], floor.getHeight());
+
+                    emptyDeviceTile.getTile().setPosition(ortho[0], ortho[1]);
+
+                    emptyDeviceTiles.add(emptyDeviceTile);
                 }
-                break;
             }
         }
-        return device;
+        network.setEmptyDeviceTiles(emptyDeviceTiles);
+    }
+
+    /**
+     * Finds the device at the specified isometric coordinates.
+     *
+     * @return The device found.
+     *         The string "empty", if no device was found there.
+     *         Null if the tile in the map does not have an object.
+     */
+    public Object getObjectAtTile(Object x, Object y) {
+        for (Device d : devices) {
+            if (x.equals(d.getIsoX()) && y.equals(d.getIsoY())) {
+                return d;
+            }
+        }
+
+        for (EmptyDeviceTile e : emptyDeviceTiles) {
+            if (x.equals(e.getIsoX()) && y.equals(e.getIsoY())) {
+                return e;
+            }
+        }
+
+        for (Object[] o : mapObjects) {
+            if (o[0].equals("device") && o[1].equals(x) && o[2].equals(y)) {
+                return "empty";
+            }
+        }
+
+        return null;
     }
 
     public enum RoomMap {

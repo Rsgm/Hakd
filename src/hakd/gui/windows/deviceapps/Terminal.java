@@ -1,4 +1,4 @@
-package hakd.gui.windows.server;
+package hakd.gui.windows.deviceapps;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
@@ -57,7 +57,7 @@ public final class Terminal implements ServerWindow {
 
         display.setWrap(false);
         display.setAlignment(10, Align.left);
-        display.setText("Terminal [Version 0." + ((int) (Math.random() * 100)) / 10 + "]" + "\nroot @ " + Internet.ipToString(device.getIp()) + "\nMemory: " + device.getTotalMemory() + "MB\nStorage: " + device.getTotalStorage() + "GB");
+        display.setText("Terminal [Version 0." + ((int) (Math.random() * 100)) / 10 + "]" + "\nroot @ " + Internet.ipToString(device.getIp()) + "\nMemory: " + device.getMemoryCapacity() + "MB\nStorage: " + device.getStorageCapacity() + "GB");
 
         table.addListener(new InputListener() {
             @Override

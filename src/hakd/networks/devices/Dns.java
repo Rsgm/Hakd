@@ -1,24 +1,27 @@
 package hakd.networks.devices;
 
-import hakd.connection.Port;
-import hakd.game.Internet.Protocol;
-import hakd.networks.Network;
+import java.util.Map;
 
 public final class Dns extends Device {
-    public Dns(Network network, int level) {
-        super(network, level, DeviceType.DNS);
+    /**
+     * Contains all IPs and their registered addresses, if they have one. Should be a reference to the internet's hashmap.
+     */
+    private Map<String, short[]> addressIpHashMap;
 
-        openPort(new Port("Dns", Protocol.DNS.portNumber, Protocol.DNS));
-    }
-
-    public Dns(Network network, int level, DeviceType type, int cpuSockets, int gpuSlots, int memorySlots, int storageSlots) {
-        super(network, level, type, cpuSockets, gpuSlots, memorySlots, storageSlots);
-
-        openPort(new Port("Dns", Protocol.DNS.portNumber, Protocol.DNS));
+    public Dns() {
+        super();
     }
 
     int getRandomNumber() {
         return 4; // chosen by fair dice roll
         // guaranteed to be random
+    }
+
+    public Map<String, short[]> getAddressIpHashMap() {
+        return addressIpHashMap;
+    }
+
+    public void setAddressIpHashMap(Map<String, short[]> addressIpHashMap) {
+        this.addressIpHashMap = addressIpHashMap;
     }
 }

@@ -6,9 +6,8 @@ import hakd.connection.Connection;
 import hakd.connection.Port;
 import hakd.game.Internet;
 import hakd.game.Internet.Protocol;
-import hakd.gui.windows.server.ServerWindowStage;
+import hakd.gui.windows.deviceapps.ServerWindowStage;
 import hakd.networks.Network;
-import hakd.networks.Network.NetworkType;
 import hakd.networks.devices.parts.*;
 import hakd.networks.devices.parts.Part.Brand;
 import hakd.networks.devices.parts.Part.Model;
@@ -33,132 +32,27 @@ public class Device implements Connectable {
     Brand brand; // for example bell, or HQ
     Model model;
 
-    int totalMemory; // in MB
-    int totalStorage; // in ???
+    int memoryCapacity; // in MB, additive
+    int storageCapacity; // in ???, additive
+    int cpuSpeed; // in MHz, additive
+    int gpuSpeed; // in MHz, additive
 
     final List<Connection> connections = new ArrayList<Connection>();
 
     // objects
     final List<Part> parts = new ArrayList<Part>();
-    int cpuSockets; // easier than using a for loop to count the amount, just remember to change this portNumber
-    int memorySlots; // maybe have a maximum part number, so you can specialize a server
-    int storageSlots;
-    int gpuSlots;
+    int partLimit;
     Storage masterStorage; // TODO where the os resides
     DeviceType type;
 
-    // server gui
+    // gui
+    int isoX; // isoX and isoY are first set in EmptyDeviceTile on room creation, then transferred to a the new device when bought, and back to an EmptyDeviceTile when trashed
+    int isoY;
     ServerWindowStage window;
     Sprite tile;
 
-    /**
-     * @param network - The network This device belongs to.
-     * @param level   - The level of the network, used to generate parts.
-     * @param type    - The device type.
-     */
-    public Device(Network network, int level, DeviceType type) { // TODO: have random smartphone connections and disconnections
 
-        this.network = network; // TODO: smartphones are like insects on a network, many types, random behavior, and there are lots of them
-
-        this.level = level;
-        this.type = type;
-
-        switch (level) {
-            case -1:
-                cpuSockets = 0;
-                gpuSlots = 0;
-                memorySlots = 0;
-                storageSlots = 0;
-                break;
-            case 0:
-                cpuSockets = (int) (Math.random() * 2 + 1);
-                gpuSlots = 1; // TODO server part generation code
-                memorySlots = 1;
-                storageSlots = 1;
-                break;
-            case 7:
-                cpuSockets = (int) (Math.random() * 2 + 7);
-                gpuSlots = 1;
-                memorySlots = 1;
-                storageSlots = 1;
-                break;
-            default:
-                cpuSockets = (int) (Math.random() * 3 + level);
-                gpuSlots = 1;
-                memorySlots = 1;
-                storageSlots = 1;
-                break;
-        }
-
-        for (int i = 0; i < cpuSockets; i++) {
-            Cpu cpu = new Cpu(level, this);
-            parts.add(cpu);
-        }
-        for (int i = 0; i < gpuSlots; i++) {
-            Gpu gpu = new Gpu(level, this);
-            parts.add(gpu);
-        }
-        for (int i = 0; i < memorySlots; i++) {
-            Memory memory = new Memory(level, this);
-            parts.add(memory);
-            totalMemory += memory.getCapacity();
-        }
-        for (int i = 0; i < storageSlots; i++) {
-            Storage storage = new Storage(level, this);
-            parts.add(storage);
-            totalStorage += storage.getCapacity();
-        }
-
-        if (storageSlots > 0) {
-            masterStorage = (Storage) Part.findParts(parts, PartType.STORAGE).get(0);
-        }
-
-        switch (type) {
-            case DNS:
-
-                if (network.getType() == NetworkType.PLAYER) {
-                    window = new ServerWindowStage(this);
-                }
-                break;
-            case ROUTER:
-
-                if (network.getType() == NetworkType.PLAYER) {
-                }
-                break;
-            default:
-
-                if (network.getType() == NetworkType.PLAYER) {
-                    window = new ServerWindowStage(this);
-                }
-                break;
-        }
-
-    }
-
-    /**
-     * @param network      - The parent network.
-     * @param level        - The level of the network, used to generate parts.
-     * @param type         - The device type.
-     * @param cpuSockets   - The amount of CPU parts to make.
-     * @param gpuSlots     - The amount of GPU parts to make.
-     * @param memorySlots  - The amount of memory parts to make.
-     * @param storageSlots - The amount of storage parts to make.
-     */
-    public Device(Network network, int level, DeviceType type, int cpuSockets, int gpuSlots, int memorySlots, int storageSlots) {
-        this.network = network;
-        this.level = level;
-        this.cpuSockets = cpuSockets;
-        this.gpuSlots = gpuSlots;
-        this.memorySlots = memorySlots;
-        this.storageSlots = storageSlots;
-
-        this.type = type;
-
-        if (network.getType() == NetworkType.PLAYER) {
-            if (type == DeviceType.DNS || type == DeviceType.SERVER) {
-                window = new ServerWindowStage(this);
-            }
-        }
+    public Device() { // TODO: have random smartphone connections and disconnections. smartphones are like insects on a network, many types, random behavior, and there are lots of them
     }
 
     @Override
@@ -175,8 +69,8 @@ public class Device implements Connectable {
         permission = client.Connect(this, port, true);
         if (permission == ConnectionStatus.OK) {
             List<Connection> connections = client.getConnections();
-//            c.setSiblingConnection(connections.get(connections.size() - 1));
-//            connections.get(connections.size() - 1).setSiblingConnection(c);
+            //            c.setSiblingConnection(connections.get(connections.size() - 1));
+            //            connections.get(connections.size() - 1).setSiblingConnection(c);
         } else {
             connections.remove(c);
         }
@@ -251,93 +145,73 @@ public class Device implements Connectable {
     public void log(Device client, String program, int port, Protocol protocol) {
         masterStorage.addFile(new File(0, "Log - " + Internet.ipToString(client.ip) + ".log", "Connecting with " + program + " through portNumber" + port + " using " + protocol + "\n" + program + ":" + port + ">" + protocol, FileType.LOG));
     /*
-     * ---Example--- Log - 243.15.66.24 Connecting with half life 3 through portNumber 28190 using LAMBDA
+	 * ---Example--- Log - 243.15.66.24 Connecting with half life 3 through portNumber 28190 using LAMBDA
 	 * half life 3:28190>LAMBDA
 	 */
     }
 
-    public void addPart(PartType partType, int level, int a, int b, boolean c) {
+    public void addPart(PartType partType, Part p) {
+        if (partLimit <= parts.size()) {
+            return;
+        }
+        parts.add(p);
+        p.setDevice(this);
+
         switch (partType) {
             case CPU:
-                if (cpuSockets <= Part.findParts(parts, PartType.CPU).size()) {
-                    break;
+                Cpu cpu = (Cpu) p;
+                if (cpu.getCores() > 0) {
+                    cpuSpeed += cpu.getSpeed() * cpu.getCores() * 0.75; // CPU cores are .75 as efficient than CPUs
+                } else {
+                    cpuSpeed += cpu.getSpeed();
                 }
-
-                Cpu cpu = new Cpu(this, level, a, b);
-                parts.add(cpu);
                 break;
             case GPU:
-                if (cpuSockets <= Part.findParts(parts, PartType.GPU).size()) {
-                    break;
-                }
-
-                Gpu gpu = new Gpu(this, level, a, b);
-                parts.add(gpu);
+                Gpu gpu = (Gpu) p;
+                gpuSpeed += gpu.getSpeed();
                 break;
             case MEMORY:
-                if (cpuSockets <= Part.findParts(parts, PartType.MEMORY).size()) {
-                    break;
-                }
-
-                Memory memory = new Memory(this, level, a, b);
-                parts.add(memory);
-                totalMemory += memory.getCapacity();
+                Memory memory = (Memory) p;
+                this.memoryCapacity += memory.getCapacity();
                 break;
-            default: // storage
-                if (cpuSockets <= Part.findParts(parts, PartType.STORAGE).size()) {
-                    break;
-                }
-
-                Storage storage = new Storage(this, level, a, b, c);
-                parts.add(storage);
-                totalStorage += storage.getCapacity();
+            case PART:
+                Part part = p;
+                break;
+            case STORAGE:
+                Storage storage = (Storage) p;
+                this.storageCapacity += storage.getCapacity();
                 break;
         }
     }
 
-    public void addPart(PartType partType, Part p) {
+    public void removePart(PartType partType, Part p) {
+        if (!parts.remove(p)) {
+            return;
+        }
+
         switch (partType) {
             case CPU:
-                if (cpuSockets <= Part.findParts(parts, PartType.CPU).size()) {
-                    break;
-                }
-
                 Cpu cpu = (Cpu) p;
-                parts.add(cpu);
+                if (cpu.getCores() > 0) {
+                    cpuSpeed -= cpu.getSpeed() * cpu.getCores() * 0.75; // CPU cores are .75 as efficient than CPUs
+                } else {
+                    cpuSpeed -= cpu.getSpeed();
+                }
                 break;
             case GPU:
-                if (cpuSockets <= Part.findParts(parts, PartType.GPU).size()) {
-                    break;
-                }
-
                 Gpu gpu = (Gpu) p;
-                parts.add(gpu);
+                gpuSpeed -= gpu.getSpeed();
                 break;
             case MEMORY:
-                if (cpuSockets <= Part.findParts(parts, PartType.MEMORY).size()) {
-                    break;
-                }
-
                 Memory memory = (Memory) p;
-                parts.add(memory);
-                totalMemory += memory.getCapacity();
+                this.memoryCapacity -= memory.getCapacity();
                 break;
             case PART:
-                if (cpuSockets <= Part.findParts(parts, PartType.STORAGE).size()) {
-                    break;
-                }
-
                 Part part = p;
-                parts.add(part);
                 break;
             case STORAGE:
-                if (cpuSockets <= Part.findParts(parts, PartType.STORAGE).size()) {
-                    break;
-                }
-
                 Storage storage = (Storage) p;
-                parts.add(storage);
-                totalStorage += storage.getCapacity();
+                this.storageCapacity -= storage.getCapacity();
                 break;
         }
     }
@@ -357,7 +231,7 @@ public class Device implements Connectable {
     }
 
     public enum DeviceType {
-        DEVICE(), DNS(), ROUTER(), SERVER(); // more to come
+        DEVICE(), DNS(), SERVER(); // more to come
 
         private DeviceType() {
         }
@@ -371,38 +245,6 @@ public class Device implements Connectable {
 
     public void setLogs(File logs) {
         this.logs = logs;
-    }
-
-    public int getCpuSockets() {
-        return cpuSockets;
-    }
-
-    public void setCpuSockets(int cpuSockets) {
-        this.cpuSockets = cpuSockets;
-    }
-
-    public int getMemorySlots() {
-        return memorySlots;
-    }
-
-    public void setMemorySlots(int memorySlots) {
-        this.memorySlots = memorySlots;
-    }
-
-    public int getStorageSlots() {
-        return storageSlots;
-    }
-
-    public void setStorageSlots(int storageSlots) {
-        this.storageSlots = storageSlots;
-    }
-
-    public int getGpuSlots() {
-        return gpuSlots;
-    }
-
-    public void setGpuSlots(int gpuSlots) {
-        this.gpuSlots = gpuSlots;
     }
 
     public Network getNetwork() {
@@ -469,20 +311,20 @@ public class Device implements Connectable {
         this.window = window;
     }
 
-    public int getTotalMemory() {
-        return totalMemory;
+    public int getMemoryCapacity() {
+        return memoryCapacity;
     }
 
-    public void setTotalMemory(int totalMemory) {
-        this.totalMemory = totalMemory;
+    public void setMemoryCapacity(int memoryCapacity) {
+        this.memoryCapacity = memoryCapacity;
     }
 
-    public int getTotalStorage() {
-        return totalStorage;
+    public int getStorageCapacity() {
+        return storageCapacity;
     }
 
-    public void setTotalStorage(int totalStorage) {
-        this.totalStorage = totalStorage;
+    public void setStorageCapacity(int storageCapacity) {
+        this.storageCapacity = storageCapacity;
     }
 
     public Sprite getTile() {
@@ -511,5 +353,37 @@ public class Device implements Connectable {
 
     public List<Connection> getConnections() {
         return connections;
+    }
+
+    public int getCpuSpeed() {
+        return cpuSpeed;
+    }
+
+    public int getGpuSpeed() {
+        return gpuSpeed;
+    }
+
+    public int getPartLimit() {
+        return partLimit;
+    }
+
+    public void setPartLimit(int partLimit) {
+        this.partLimit = partLimit;
+    }
+
+    public int getIsoX() {
+        return isoX;
+    }
+
+    public void setIsoX(int isoX) {
+        this.isoX = isoX;
+    }
+
+    public int getIsoY() {
+        return isoY;
+    }
+
+    public void setIsoY(int isoY) {
+        this.isoY = isoY;
     }
 }

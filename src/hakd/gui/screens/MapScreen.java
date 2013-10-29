@@ -19,7 +19,7 @@ import hakd.networks.devices.Device;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MapScreen extends HakdScreen {
+public final class MapScreen extends HakdScreen {
     // private Player player;
     // private Network network;
     private final Internet internet;
@@ -59,6 +59,12 @@ public class MapScreen extends HakdScreen {
 
         for (Network n : internet.getIpNetworkHashMap().values()) {
             modelInstances.add(n.getSphereInstance());
+//			if(n.getType() != Network.NetworkType.BACKBONE) {
+            modelInstances.add(n.getSphereInstance());
+//			} else {
+
+//			}
+
             for (Device d : n.getDevices()) {
                 for (Connection c : d.getConnections()) {
                     modelInstances.add(c.getInstance());
@@ -95,6 +101,7 @@ public class MapScreen extends HakdScreen {
         super.render(delta);
 
         if (time >= 1) {
+            System.out.println("redraw");
             time = 0;
             reDrawMap();
         }

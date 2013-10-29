@@ -1,9 +1,9 @@
 package hakd.game.pythonapi;
 
 import com.badlogic.gdx.Gdx;
-import hakd.gui.windows.server.Terminal;
+import hakd.gui.windows.deviceapps.Terminal;
 
-public class PyDisplay {
+public final class PyDisplay {
 
     public static void write(final Terminal t, final String s) {
         Gdx.app.postRunnable(new Runnable() {

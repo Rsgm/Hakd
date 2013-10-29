@@ -10,25 +10,23 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import hakd.game.Internet;
+import hakd.game.NetworkFactory;
 import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
+import hakd.gui.EmptyDeviceTile;
 import hakd.gui.Room;
 import hakd.gui.Room.RoomMap;
 import hakd.gui.input.GameInput;
+import hakd.gui.windows.BuyDeviceWindow;
 import hakd.gui.windows.WindowStage;
-import hakd.gui.windows.newdevice.NewServerWindow;
 import hakd.networks.Network;
-import hakd.networks.Network.NetworkType;
 import hakd.networks.devices.Device;
-import hakd.networks.devices.Device.DeviceType;
 
 public final class GameScreen extends HakdScreen {
     private Player player;
-    // TODO Sometime make this an array and have other people in the game with
-    // different skills and personalities
-    // private int arraylist<npc> npcs = new arraylist<npc>(); maybe
+    // TODO Sometime make this an array and have other people in the game with different skills and personalities private int arraylist<npc> npcs = new arraylist<npc>(); maybe
 
-    public static Internet internet;
+    public static Internet internet = null;
     public static final float tileSize = 64;
 
     private String name;
@@ -46,30 +44,33 @@ public final class GameScreen extends HakdScreen {
     public void show() {
         super.show();
 
-        for (short i = 1; i < 256; i++) {
-            Internet.ipNumbers.add(i);
+        if (internet == null) {
+            for (short i = 1; i < 256; i++) {
+                Internet.ipNumbers.add(i);
+            }
+
+            internet = new Internet();
+
+            player = new Player(name, this);
+            Network n = NetworkFactory.createPlayerNetwork(player);
+            internet.addNetworkToInternet(n);
+
+            room = new Room(player, this, RoomMap.room1);
+
+            Sprite sprite = player.getSprite();
+            sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
+
+            cam = new OrthographicCamera();
+            ((OrthographicCamera) cam).setToOrtho(false, room.getFloor().getWidth(), room.getFloor().getHeight());
+            cam.update();
+
+            renderer.setView((OrthographicCamera) cam);
+
+            cam.position.x = room.getFloor().getWidth() / 2;
+            cam.position.y = 0;
+
+            map = new MapScreen(game, this, internet);
         }
-
-        internet = new Internet();
-        Network n = internet.NewPublicNetwork(NetworkType.PLAYER);
-
-        player = new Player(name, n, this);
-        room = new Room(player, this, RoomMap.room1);
-        n.setPlayer(player);
-
-        Sprite sprite = player.getSprite();
-        sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
-
-        cam = new OrthographicCamera();
-        ((OrthographicCamera) cam).setToOrtho(false, room.getFloor().getWidth(), room.getFloor().getHeight());
-        cam.update();
-
-        renderer.setView((OrthographicCamera) cam);
-
-        cam.position.x = room.getFloor().getWidth() / 2;
-        cam.position.y = 0;
-
-        map = new MapScreen(game, this, internet);
 
         Gdx.input.setInputProcessor(new GameInput(game, (OrthographicCamera) cam, player));
     }
@@ -85,6 +86,9 @@ public final class GameScreen extends HakdScreen {
         rBatch.begin();
         for (Device d : player.getNetwork().getDevices()) {
             d.getTile().draw(rBatch);
+        }
+        for (EmptyDeviceTile e : player.getNetwork().getEmptyDeviceTiles()) {
+            e.getTile().draw(rBatch);
         }
 
         if (openWindow == null) {
@@ -108,9 +112,17 @@ public final class GameScreen extends HakdScreen {
         int x = player.getIsoX();
         int y = player.getIsoY();
 
-        Device d = room.getDeviceAtTile(x, y - 1);
+        Object o = room.getObjectAtTile(x, y - 1);
 
-        if (d != null) {
+        if (o != null) {
+            Device d = null;
+            String code;
+            if (o instanceof Device) {
+                d = (Device) o;
+            } else if (o instanceof String) {
+                code = (String) o;
+            }
+
             Sprite s = new Sprite(Assets.linearTextures.findRegion("spaceBarIcon"));
             s.setPosition(player.getSprite().getX(), player.getSprite().getY() + 32 / tileSize);
             s.setSize(16 / tileSize, 16 / tileSize);
@@ -119,8 +131,8 @@ public final class GameScreen extends HakdScreen {
 
             if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
 
-                if (d.getCpuSockets() == 0 && d.getType() == DeviceType.SERVER) {
-                    openWindow = new NewServerWindow(d);
+                if (o instanceof EmptyDeviceTile) {
+                    openWindow = new BuyDeviceWindow(player.getNetwork(), 4, 0, Device.DeviceType.SERVER, (EmptyDeviceTile) o);
                     openWindow.setScreen(this);
                     openWindow.open();
                 } else {
