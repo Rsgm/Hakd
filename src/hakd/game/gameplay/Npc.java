@@ -4,45 +4,45 @@ import hakd.networks.Network;
 import hakd.other.Util;
 
 public final class Npc {
-    // hackers
+	// hackers
 
-    private int money;
-    private String name;
-    private Network home;
+	private int money;
+	private String name;
+	private Network home;
 
-    public Npc(Network n, String name, int money) {
-        this.money = money;
-        this.name = name;
-        this.home = n;
-    }
+	public Npc(Network n, String name, int money) {
+		this.money = money;
+		this.name = name;
+		this.home = n;
+	}
 
-    public Npc(Network n, int money) {
-        this.money = money;
-        this.name = Util.GanerateName() + " " + Util.GanerateName();
-        this.home = n;
-    }
+	public Npc(Network n, int money) {
+		this.money = money;
+		this.name = Util.GanerateName() + " " + Util.GanerateName();
+		this.home = n;
+	}
 
-    public int getMoney() {
-        return money;
-    }
+	public int getMoney() {
+		return money;
+	}
 
-    public void setMoney(int money) {
-        this.money = money;
-    }
+	public void setMoney(int money) {
+		this.money = money;
+	}
 
-    public String getName() {
-        return name;
-    }
+	public String getName() {
+		return name;
+	}
 
-    public void setName(String name) {
-        this.name = name;
-    }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-    public Network getHome() {
-        return home;
-    }
+	public Network getHome() {
+		return home;
+	}
 
-    public void setHome(Network home) {
-        this.home = home;
-    }
+	public void setHome(Network home) {
+		this.home = home;
+	}
 }
