@@ -50,9 +50,9 @@ public final class Internet {
 	 * This is only created at the start of the game.
 	 */
 	public Internet() {
-		int backbones = 1;// (int) (Math.random() * 3 + IpRegion.values().length);
-		int isps = 1; //(int) (Math.random() * 8 + 8);
-		int networks = 4;//(int) (Math.random() * 15 + 60);
+		int backbones = 4;// (int) (Math.random() * 3 + IpRegion.values().length);
+		int isps = 20; //(int) (Math.random() * 8 + 8);
+		int networks = 100;//(int) (Math.random() * 15 + 60);
 
 		backboneProviderNetworks = new ArrayList<BackboneProviderNetwork>(isps);
 		internetProviderNetworks = new ArrayList<InternetProviderNetwork>(backbones);

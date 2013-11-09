@@ -40,7 +40,7 @@ public final class InternetProviderNetwork extends Network {
 			int j = 0;
 			for(Network n : internet.getIpNetworkHashMap().values()) {
 				j++;
-				if(v.dst2(n.getMapIcon().getY(), n.getMapIcon().getY()) <= networkRegionSize * networkRegionSize && n != network) {
+				if(v.dst2(n.getMapIcon().getX(), n.getMapIcon().getY()) <= networkRegionSize * networkRegionSize && n != network) {
 					System.out.println("Network: too close to another");
 					break;
 				} else if(j >= internet.getIpNetworkHashMap().size()) {

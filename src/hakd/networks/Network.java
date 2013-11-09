@@ -36,7 +36,7 @@ public class Network {
 	public static final float worldSize = 1200;
 	public static final float BackboneRegionSize = 600;
 	public static final float ispRegionSize = 300;
-	public static final float networkRegionSize = 150;
+	public static final float networkRegionSize = 80;
 	IpRegion ipRegion; // where the network is in the world, it helps find an ip
 
 	Internet internet;

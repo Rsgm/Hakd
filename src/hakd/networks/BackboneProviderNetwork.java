@@ -38,7 +38,7 @@ public final class BackboneProviderNetwork extends Network {
 			int j = 0;
 			for(Network n : internet.getIpNetworkHashMap().values()) {
 				j++;
-				if(v.dst2(n.getMapIcon().getY(), n.getMapIcon().getY()) <= BackboneRegionSize * BackboneRegionSize && n != this) {
+				if(v.dst2(n.getMapIcon().getX(), n.getMapIcon().getY()) <= BackboneRegionSize * BackboneRegionSize && n != this) {
 					System.out.println("Backbone: too close to another");
 					break;
 				} else if(j >= internet.getIpNetworkHashMap().size()) {
@@ -82,7 +82,7 @@ public final class BackboneProviderNetwork extends Network {
 			int j = 0;
 			for(Network n : internet.getIpNetworkHashMap().values()) {
 				j++;
-				if(v.dst2(n.getMapIcon().getY(), n.getMapIcon().getY()) <= ispRegionSize * ispRegionSize && n != isp) {
+				if(v.dst2(n.getMapIcon().getX(), n.getMapIcon().getY()) <= ispRegionSize * ispRegionSize && n != isp) {
 					System.out.println("ISP: too close to another");
 					break;
 				} else if(j >= internet.getIpNetworkHashMap().size()) {
