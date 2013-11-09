@@ -5,6 +5,7 @@ import hakd.networks.BackboneProviderNetwork;
 import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
 import hakd.networks.Network.NetworkType;
+import hakd.networks.NetworkFactory;
 import hakd.networks.devices.Device;
 
 import java.io.IOException;
@@ -27,7 +28,7 @@ public final class Internet {
 	/**
 	 * Contains all networks with an IP.
 	 */
-	private final Map<short[], Network> ipNetworkHashMap;
+	private final Map<String, Network> ipNetworkHashMap;
 
 	/**
 	 * Contains all IPs and their registered addresses, if they have one.
@@ -37,7 +38,7 @@ public final class Internet {
 	/**
 	 * Used when generating IPs to find an unused, random ip.
 	 */
-	public static ArrayList<Short> ipNumbers = new ArrayList<Short>(255);
+	public static List<Short> ipNumbers = new ArrayList<Short>(255);
 
 	/**
 	 * Handles all of the device connections.
@@ -49,17 +50,20 @@ public final class Internet {
 	 * This is only created at the start of the game.
 	 */
 	public Internet() {
-		int backbones = 4;// (int) (Math.random() * 3 +
-		// IpRegion.values().length);
-		int isps = /* 24 */(int) (Math.random() * 8 + 8);
-		int networks = (int) (Math.random() * 15 + 60);
+		int backbones = 1;// (int) (Math.random() * 3 + IpRegion.values().length);
+		int isps = 1; //(int) (Math.random() * 8 + 8);
+		int networks = 4;//(int) (Math.random() * 15 + 60);
 
 		backboneProviderNetworks = new ArrayList<BackboneProviderNetwork>(isps);
 		internetProviderNetworks = new ArrayList<InternetProviderNetwork>(backbones);
-		ipNetworkHashMap = new HashMap<short[], Network>(networks + isps + backbones);
+		ipNetworkHashMap = new HashMap<String, Network>(networks + isps + backbones);
 		addressIpHashMap = new HashMap<String, short[]>(networks + isps + backbones);
 
 		startServer();
+
+		for(short i = 1; i <= 256; i++) {
+			ipNumbers.add(i);
+		}
 
 		generateBackbones(backbones);
 		generateIsps(isps);
@@ -97,7 +101,9 @@ public final class Internet {
 		// each ipRegion gets at least one backbone, possibly several
 		for(int i = 0; i < amount; i++) {
 			BackboneProviderNetwork backbone = NetworkFactory.createBackbone(this);
-			backbone.setIp(new short[]{generateIpByte(backbone.getIpRegion()), generateIpByte(Network.IpRegion.none), generateIpByte(Network.IpRegion.none), 1});
+
+			short[] ip = {generateIpByte(backbone.getIpRegion()), 1, 1, 1};
+			backbone.setIp(ipToString(ip));
 
 			backboneProviderNetworks.add(backbone);
 			ipNetworkHashMap.put(backbone.getIp(), backbone);
@@ -106,13 +112,16 @@ public final class Internet {
 
 	private void generateIsps(int amount) {
 		for(int i = 0; i < amount; i++) {
-			InternetProviderNetwork isp = NetworkFactory.createISP(this);
-
-			final int a = internetProviderNetworks.size() % backboneProviderNetworks.size();
-			backboneProviderNetworks.get(a).registerAnIsp(isp, 1);
-
-			internetProviderNetworks.add(isp);
-			ipNetworkHashMap.put(isp.getIp(), isp); // this may not be the best but lets see what happens
+			System.out.println("ISP - " + i);
+			int a = internetProviderNetworks.size() % backboneProviderNetworks.size();
+			if(backboneProviderNetworks.get(a).getIpChildNetworkHashMap().size() >= 256) {
+				System.out.println("ISP - No free backbone child spots");
+			} else {
+				InternetProviderNetwork isp = NetworkFactory.createISP(this);
+				backboneProviderNetworks.get(a).registerAnIsp(isp, 1);
+				internetProviderNetworks.add(isp);
+				ipNetworkHashMap.put(isp.getIp(), isp);
+			}
 		}
 	}
 
@@ -121,24 +130,36 @@ public final class Internet {
 	 */
 	private void generateNetworks(int amount) {
 		for(int i = 0; i < amount; i++) {
-			int random = (int) (Math.random() * 10);
-			if(random < 7) { // chances of generating a certain network type
-				addNetworkToInternet(NetworkFactory.createNetwork(NetworkType.NPC));
-			} else if(random <= 8) {
-				addNetworkToInternet(NetworkFactory.createNetwork(NetworkType.BUSINESS));
-			} else if(random == 9) {
-				addNetworkToInternet(NetworkFactory.createNetwork(NetworkType.GOVERNMENT));
+			System.out.println("NETWORK - " + i);
+			Network network;
+
+			int a;
+			for(int j = 0; j < internetProviderNetworks.size() * 2; j++) {
+				a = (int) (Math.random() * internetProviderNetworks.size());
+				if(internetProviderNetworks.get(a).getIpChildNetworkHashMap().size() >= 256) {
+					System.out.println("ISP - No free backbone child spots");
+				} else {
+					int random = (int) (Math.random() * 10);
+					if(random < 7) { // chances of generating a certain network type
+						network = NetworkFactory.createNetwork(NetworkType.NPC);
+					} else if(random <= 8) {
+						network = NetworkFactory.createNetwork(NetworkType.BUSINESS);
+					} else {
+						network = NetworkFactory.createNetwork(NetworkType.GOVERNMENT);
+					}
+
+					addNetworkToInternet(network, internetProviderNetworks.get(a));
+					break;
+				}
 			}
 		}
 	}
 
 	/**
-	 * Adds a network to the internet(network list). Not for provider networks.
+	 * Adds a network to the internet(network list) and the specified ISP. Not for provider networks.
 	 */
-	public void addNetworkToInternet(Network network) {
-		final int a = (int) (Math.random() * internetProviderNetworks.size());
-		internetProviderNetworks.get(a).registerANetwork(network, 1);
-
+	public void addNetworkToInternet(Network network, InternetProviderNetwork isp) {
+		isp.registerANetwork(network, 1);
 		ipNetworkHashMap.put(network.getIp(), network);
 		network.setInternet(this);
 	}
@@ -169,23 +190,21 @@ public final class Internet {
 	 * Returns an ip to an object that calls this, also checks it and adds it
 	 * to the dns list.
 	 */
-	public short[] assignIp(Network network) {
+	public String assignIp(Network network) {
 		short[] ip = null;
+		short[] parentIp = ipFromString(network.getParent().getIp());
 
-		for(short i = 1; i <= 256; i++) {
-			ipNumbers.add(i);
-		}
 		Collections.shuffle(ipNumbers);
 
 		for(short i = 0; i < 255; i++) {
 			// just randomly generate numbers for the isp, there are not enough to slow it down
 			switch(network.getType()) {
 				case ISP:
-					ip = new short[]{network.getParent().getIp()[0], ipNumbers.get(i), generateIpByte(Network.IpRegion.none), 1};
+					ip = new short[]{parentIp[0], ipNumbers.get(i), generateIpByte(Network.IpRegion.none), 1};
 					// networks always end in 1
 					break;
 				default:
-					ip = new short[]{network.getParent().getIp()[0], network.getParent().getIp()[1], ipNumbers.get(i), 1};
+					ip = new short[]{parentIp[0], parentIp[1], ipNumbers.get(i), 1};
 					break;
 			}
 
@@ -193,13 +212,13 @@ public final class Internet {
 				break;
 			}
 		}
-		return ip;
+		return ipToString(ip);
 	}
 
 	/**
 	 * Registers a url to an ip so that not everything is an IP, a player can buy an address.
 	 */
-	public boolean addUrl(short[] ip, String address) {
+	public boolean addUrl(String ip, String address) {
 		if(address.matches("^[\\d|\\w]{1,64}\\.\\w{2,3}$") && !addressIpHashMap.containsValue(address)) { // address regex
 			getDevice(ip).setAddress(address);
 			return true; // "you have successfully registered the url " + url +
@@ -211,10 +230,10 @@ public final class Internet {
 	/**
 	 * Searches for the device with the given ip on the public internet.
 	 */
-	public Device getDevice(short[] ip) {
-		short[] a = ip; // used to search through the hashmap because it only lists networks, which always end in 1s
-		ip[4] = 1;
-		return ipNetworkHashMap.get(a).getDevice(ip);
+	public Device getDevice(String ip) {
+		short[] a = ipFromString(ip); // used to search through the hashmap because it only lists networks, which always end in 1s
+		a[4] = 1;
+		return ipNetworkHashMap.get(ipFromString(ip)).getDevice(ipToString(a));
 	}
 
 	/**
@@ -283,7 +302,7 @@ public final class Internet {
 		return backboneProviderNetworks;
 	}
 
-	public Map<short[], Network> getIpNetworkHashMap() {
+	public Map<String, Network> getIpNetworkHashMap() {
 		return ipNetworkHashMap;
 	}
 
@@ -291,7 +310,7 @@ public final class Internet {
 		return addressIpHashMap;
 	}
 
-	public static ArrayList<Short> getIpNumbers() {
+	public static List<Short> getIpNumbers() {
 		return ipNumbers;
 	}
 

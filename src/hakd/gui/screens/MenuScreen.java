@@ -94,7 +94,8 @@ public final class MenuScreen extends HakdScreen {
 			terminalInfo += "\n    Drive[" + i + "]  " + (-File.listRoots()[i].getFreeSpace() + File.listRoots()[i].getTotalSpace()) / 1000000000 + "GB Used,  " + File.listRoots()[i].getTotalSpace() / 1000000000 + "GB Total";
 		}
 
-		display.setText(terminalInfo + "\n-----------------------------------------------------\n\nType help if you need help at any time.");
+		display.setText(terminalInfo + "\n-----------------------------------------------------");
+		input.setMessageText("Type 'help' here to get started.");
 
 		input.addListener(new InputListener() {
 			@Override

@@ -4,9 +4,16 @@ filter: Linear,Linear
 repeat: none
 player0
   rotate: false
-  xy: 137, 134
+  xy: 172, 134
   size: 16, 32
   orig: 16, 32
+  offset: 0, 0
+  index: -1
+dashedLine
+  rotate: false
+  xy: 134, 134
+  size: 33, 1
+  orig: 33, 1
   offset: 0, 0
   index: -1
 d0
@@ -60,7 +67,7 @@ d5
   index: -1
 grey
   rotate: false
-  xy: 134, 134
+  xy: 169, 134
   size: 1, 1
   orig: 1, 1
   offset: 0, 0
@@ -74,14 +81,14 @@ d6
   index: -1
 untitled
   rotate: false
-  xy: 155, 134
+  xy: 190, 134
   size: 4, 1
   orig: 4, 1
   offset: 0, 0
   index: -1
 white
   rotate: false
-  xy: 161, 134
+  xy: 196, 134
   size: 1, 1
   orig: 1, 1
   offset: 0, 0

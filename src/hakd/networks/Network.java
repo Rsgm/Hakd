@@ -1,22 +1,19 @@
 package hakd.networks;
 
-import com.badlogic.gdx.graphics.g3d.Model;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.game.Internet;
 import hakd.game.gameplay.Player;
 import hakd.gui.EmptyDeviceTile;
 import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
  * A network represents a collection of devices.
  */
 public class Network {
-	short[] ip = new short[4];
+	String ip = "";
 	int level; // 0-7, 0 for player because you start with almost nothing
 	String owner; // owner, company, player
 	Player player;
@@ -33,16 +30,13 @@ public class Network {
 	List<EmptyDeviceTile> EmptyDeviceTiles;
 
 	// gui stuff
-	Model sphere;
-	ModelInstance sphereInstance;
-	Vector3 spherePosition;
-	Model parentConnectionLine;
-	ModelInstance parentConnectionInstance;
+	Sprite mapIcon;
+	Sprite mapParentLine;
 
-	public static final float worldSize = 500;
-	public static final float BackboneRegionSize = 150;
-	public static final float ispRegionSize = 80;
-	public static final float networkRegionSize = 100;
+	public static final float worldSize = 1200;
+	public static final float BackboneRegionSize = 600;
+	public static final float ispRegionSize = 300;
+	public static final float networkRegionSize = 150;
 	IpRegion ipRegion; // where the network is in the world, it helps find an ip
 
 	Internet internet;
@@ -63,7 +57,7 @@ public class Network {
 	 * Registers a device on the network.
 	 */
 	public boolean addDevice(Device device) {
-		short ip[] = assignIp();
+		String ip = assignIp();
 
 		if(devices.size() >= deviceLimit || ip == null) {
 			return false;
@@ -77,31 +71,31 @@ public class Network {
 	}
 
 	/**
-	 * Assigns an ip to an object that requests one, also checks it and adds it
-	 * to the dns list. Note: This will return null if there are 25
+	 * Assigns an ip to a device. Note: This will return null if there are 255
 	 */
-	private short[] assignIp() {
-		short[] ip = null;
+	private String assignIp() {
+		short[] deviceIp = null;
+		short[] ip = Internet.ipFromString(this.ip);
 
 		if(devices.size() > 255) {
 			return null;
 		}
 
 		for(short i = 1; i < 256; i++) {
-			ip = new short[]{this.ip[0], this.ip[1], this.ip[2], i};
-			if(getDevice(ip) == null) {
+			deviceIp = new short[]{ip[0], ip[1], ip[2], i};
+			if(getDevice(Internet.ipToString(deviceIp)) == null) {
 				break;
 			}
 		}
-		return ip;
+		return Internet.ipToString(deviceIp);
 	}
 
 	/**
 	 * Finds the device with the given ip connected to the dns.
 	 */
-	public Device getDevice(short[] ip) {
+	public Device getDevice(String ip) {
 		for(Device d : devices) {
-			if(Arrays.equals(ip, d.getIp())) {
+			if(ip.equals(d.getIp())) {
 				return d;
 			}
 		}
@@ -225,46 +219,6 @@ public class Network {
 		this.internet = internet;
 	}
 
-
-	public Model getModel() {
-		return sphere;
-	}
-
-
-	public void setModel(Model model) {
-		this.sphere = model;
-	}
-
-
-	public Vector3 getSpherePosition() {
-		return spherePosition;
-	}
-
-
-	public void setSpherePosition(Vector3 spherePosition) {
-		this.spherePosition = spherePosition;
-	}
-
-
-	public Model getSphere() {
-		return sphere;
-	}
-
-
-	public void setSphere(Model sphere) {
-		this.sphere = sphere;
-	}
-
-
-	public ModelInstance getSphereInstance() {
-		return sphereInstance;
-	}
-
-
-	public void setSphereInstance(ModelInstance sphereInstance) {
-		this.sphereInstance = sphereInstance;
-	}
-
 	public IpRegion getIpRegion() {
 		return ipRegion;
 	}
@@ -273,11 +227,11 @@ public class Network {
 		this.ipRegion = ipRegion;
 	}
 
-	public short[] getIp() {
+	public String getIp() {
 		return ip;
 	}
 
-	public void setIp(short[] ip) {
+	public void setIp(String ip) {
 		this.ip = ip;
 	}
 
@@ -309,22 +263,6 @@ public class Network {
 		this.deviceLimit = deviceLimit;
 	}
 
-	public Model getParentConnectionLine() {
-		return parentConnectionLine;
-	}
-
-	public void setParentConnectionLine(Model parentConnectionLine) {
-		this.parentConnectionLine = parentConnectionLine;
-	}
-
-	public ModelInstance getParentConnectionInstance() {
-		return parentConnectionInstance;
-	}
-
-	public void setParentConnectionInstance(ModelInstance parentConnectionInstance) {
-		this.parentConnectionInstance = parentConnectionInstance;
-	}
-
 	public static float getWorldSize() {
 		return worldSize;
 	}
@@ -347,5 +285,21 @@ public class Network {
 
 	public void setEmptyDeviceTiles(List<EmptyDeviceTile> emptyDeviceTiles) {
 		EmptyDeviceTiles = emptyDeviceTiles;
+	}
+
+	public Sprite getMapIcon() {
+		return mapIcon;
+	}
+
+	public void setMapIcon(Sprite mapIcon) {
+		this.mapIcon = mapIcon;
+	}
+
+	public Sprite getMapParentLine() {
+		return mapParentLine;
+	}
+
+	public void setMapParentLine(Sprite mapParentLine) {
+		this.mapParentLine = mapParentLine;
 	}
 }

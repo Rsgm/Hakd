@@ -6,7 +6,6 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import hakd.connection.Port;
-import hakd.game.Internet;
 import hakd.gui.Assets;
 import hakd.networks.devices.Device;
 
@@ -90,7 +89,7 @@ public final class Info implements ServerWindow {
 
 	private void add() {
 		table.add("IP:");
-		table.add(Internet.ipToString(device.getIp()));
+		table.add(device.getIp());
 		table.row();
 		table.add("Brand:");
 		// table.add(device.getBrand().toString());

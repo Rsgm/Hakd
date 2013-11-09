@@ -1,17 +1,20 @@
 package hakd.networks;
 
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.math.Vector3;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import hakd.game.Internet;
+import hakd.gui.Assets;
+
+import java.util.HashMap;
 
 /**
  * Provides internet access to networks.
  */
 public final class InternetProviderNetwork extends Network {
+	final private HashMap<String, Network> ipChildNetworkHashMap = new HashMap<String, Network>(255);
 
 	public InternetProviderNetwork(Internet internet) {
 		super();
-
 		this.internet = internet;
 	}
 
@@ -20,19 +23,42 @@ public final class InternetProviderNetwork extends Network {
 	 */
 	public void registerANetwork(Network network, int speed) {
 		network.setParent(this);
-		network.setSphereInstance(new ModelInstance(network.getSphere()));
-
-		float regionSize = ispRegionSize;
-		final float x = spherePosition.x + (float) ((Math.random() * regionSize) - regionSize / 2);
-		final float y = spherePosition.y + (float) ((Math.random() * regionSize) - regionSize / 2);
-		final float z = spherePosition.z + (float) ((Math.random() * regionSize) - regionSize / 2);
-		network.setSpherePosition(new Vector3(x, y, z));
-
-		network.getSphereInstance().transform.setToTranslation(network.getSpherePosition());
-
-		network.setIp(internet.assignIp(this));
+		network.setIp(internet.assignIp(network));
 		network.setSpeed(speed);
-		network.setIpRegion(ipRegion);
+		ipChildNetworkHashMap.put(network.getIp(), network);
+
+
+		// network's mapIcon for the map
+		float regionSize = ispRegionSize;
+		positionLoop:
+		for(int i = 0; i < internet.getIpNetworkHashMap().size() * 2; i++) {
+			Vector2 v = new Vector2();
+			v.x = mapIcon.getX() + (float) ((Math.random() * regionSize) - regionSize / 2);
+			v.y = mapIcon.getY() + (float) ((Math.random() * regionSize) - regionSize / 2);
+			network.getMapIcon().setPosition(v.x, v.y);
+
+			int j = 0;
+			for(Network n : internet.getIpNetworkHashMap().values()) {
+				j++;
+				if(v.dst2(n.getMapIcon().getY(), n.getMapIcon().getY()) <= networkRegionSize * networkRegionSize && n != network) {
+					System.out.println("Network: too close to another");
+					break;
+				} else if(j >= internet.getIpNetworkHashMap().size()) {
+					System.out.println("Network: Found an open spot");
+					break positionLoop;
+				}
+			}
+		}
+
+		// connection line between isp and backbone(this)
+		Vector2 v1 = new Vector2(mapIcon.getX() + (mapIcon.getWidth() / 2), mapIcon.getY() + (mapIcon.getHeight() / 2));
+		Vector2 v2 = new Vector2(network.mapIcon.getX() + (network.mapIcon.getWidth() / 2), network.mapIcon.getY() + (network.mapIcon.getHeight() / 2));
+		Sprite line = Assets.nearestTextures.createSprite("dashedLine");
+		line.setOrigin(0, 0);
+		line.setSize(v1.dst(v2), 1);
+		line.setPosition(v1.x, v1.y);
+		line.setRotation(v1.sub(v2).scl(-1).angle());
+		network.setMapParentLine(line);
 	}
 
 	public void unregister() {
@@ -57,5 +83,9 @@ public final class InternetProviderNetwork extends Network {
 			// this.price = price;
 			// this.level = level;
 		}
+	}
+
+	public HashMap<String, Network> getIpChildNetworkHashMap() {
+		return ipChildNetworkHashMap;
 	}
 }

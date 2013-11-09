@@ -10,7 +10,7 @@ public final class PyNetworking {
 
 	}
 
-	public static Device get_device(short[] ip) {
+	public static Device get_device(String ip) {
 		return GameScreen.internet.getDevice(ip);
 	}
 

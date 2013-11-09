@@ -7,7 +7,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import hakd.game.DeviceFactory;
 import hakd.gui.Assets;
 import hakd.gui.EmptyDeviceTile;
 import hakd.gui.input.GameInput;
@@ -15,6 +14,7 @@ import hakd.gui.screens.GameScreen;
 import hakd.gui.windows.actors.BuyDeviceButton;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
+import hakd.networks.devices.DeviceFactory;
 
 public final class BuyDeviceWindow implements WindowStage {
 	private GameScreen screen;

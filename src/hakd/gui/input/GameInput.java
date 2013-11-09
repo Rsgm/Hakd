@@ -36,6 +36,7 @@ public final class GameInput implements InputProcessor {
 	public boolean keyUp(int keycode) {
 		if(keycode == Keys.TAB) {
 			game.setScreen(screen.getMap());
+
 		}
 		return true;
 	}
@@ -63,7 +64,7 @@ public final class GameInput implements InputProcessor {
 		float deltaX = (lastMouseX - screenX) / (Gdx.graphics.getWidth() / width) * cam.zoom;
 		float deltaY = (screenY - lastMouseY) / (Gdx.graphics.getHeight() / height) * cam.zoom;
 
-		System.out.println(deltaX + "	" + deltaY + "	" + cam.position.x + "	" + cam.position.y);
+		//		System.out.println(deltaX + "	" + deltaY + "	" + cam.position.x + "	" + cam.position.y);
 
 		cam.translate(deltaX, deltaY);
 

@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.connection.Connectable;
 import hakd.connection.Connection;
 import hakd.connection.Port;
-import hakd.game.Internet;
 import hakd.game.Internet.Protocol;
 import hakd.gui.windows.deviceapps.ServerWindowStage;
 import hakd.networks.Network;
@@ -23,7 +22,7 @@ public class Device implements Connectable {
 	// stats
 	Network network;
 	int level;
-	short[] ip = new short[4]; // all network variables will be in IP format
+	String ip = ""; // all network variables will be in IP format
 	String address;
 	// enum webserver = 0; // 0 = 404, if portNumber 80 is open
 	final List<Port> ports = new ArrayList<Port>(); // portNumber, program / if its closed just delete it
@@ -143,21 +142,21 @@ public class Device implements Connectable {
 
 	@Override
 	public void log(Device client, String program, int port, Protocol protocol) {
-		masterStorage.addFile(new File(0, "Log - " + Internet.ipToString(client.ip) + ".log", "Connecting with " + program + " through portNumber" + port + " using " + protocol + "\n" + program + ":" + port + ">" + protocol, FileType.LOG));
+		masterStorage.addFile(new File(0, "Log - " + client.ip + ".log", "Connecting with " + program + " through portNumber" + port + " using " + protocol + "\n" + program + ":" + port + ">" + protocol, FileType.LOG));
 	/*
 	 * ---Example--- Log - 243.15.66.24 Connecting with half life 3 through portNumber 28190 using LAMBDA
 	 * half life 3:28190>LAMBDA
 	 */
 	}
 
-	public void addPart(PartType partType, Part p) {
+	public void addPart(Part p) {
 		if(partLimit <= parts.size()) {
 			return;
 		}
 		parts.add(p);
 		p.setDevice(this);
 
-		switch(partType) {
+		switch(p.getType()) {
 			case CPU:
 				Cpu cpu = (Cpu) p;
 				if(cpu.getCores() > 0) {
@@ -335,11 +334,11 @@ public class Device implements Connectable {
 		this.tile = tile;
 	}
 
-	public short[] getIp() {
+	public String getIp() {
 		return ip;
 	}
 
-	public void setIp(short[] ip) {
+	public void setIp(String ip) {
 		this.ip = ip;
 	}
 

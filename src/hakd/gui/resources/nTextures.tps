@@ -159,6 +159,7 @@
             <filename>graphics/Devices/d5.png</filename>
             <filename>graphics/Devices/d6.png</filename>
             <filename>graphics/Devices/d-1.png</filename>
+            <filename>graphics/dashedLine.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -1,11 +1,10 @@
-package hakd.game;
+package hakd.networks.devices;
 
 import hakd.gui.windows.deviceapps.ServerWindowStage;
 import hakd.networks.Network;
-import hakd.networks.devices.Device;
-import hakd.networks.devices.Dns;
-import hakd.networks.devices.Server;
-import hakd.networks.devices.parts.*;
+import hakd.networks.devices.parts.Part;
+import hakd.networks.devices.parts.PartFactory;
+import hakd.networks.devices.parts.Storage;
 
 public final class DeviceFactory {
 
@@ -22,9 +21,6 @@ public final class DeviceFactory {
 		d.setType(type);
 
 		switch(level) {
-			case -1:
-				d.setPartLimit(0);
-				break;
 			case 0:
 				d.setPartLimit(4); // TODO server part generation code
 				break;
@@ -37,10 +33,10 @@ public final class DeviceFactory {
 		}
 
 		for(int i = 0; i < d.getPartLimit(); i += 4) {
-			d.getParts().add(new Cpu(level, d));
-			d.getParts().add(new Gpu(level, d));
-			d.getParts().add(new Memory(level, d));
-			d.getParts().add(new Storage(level, d));
+			d.addPart(PartFactory.createCpu(level));
+			d.addPart(PartFactory.createGpu(level));
+			d.addPart(PartFactory.createMemory(level));
+			d.addPart(PartFactory.createStorage(level, false));
 		}
 
 		if(d.getPartLimit() > 4) {
@@ -69,7 +65,7 @@ public final class DeviceFactory {
 	}
 
 	/**
-	 * Create a device,
+	 * Create a device.
 	 *
 	 * @param network   - The parent network.
 	 * @param level     - The level of the network, used to generate parts.
@@ -93,23 +89,18 @@ public final class DeviceFactory {
 	}
 
 	/**
-	 * Most basic constructor
+	 * Most basic constructor.
 	 *
 	 * @param type - The type of device to create.
 	 */
 	public static Device createDevice(Device.DeviceType type) {
-		Device d;
 		switch(type) {
 			default:
-				d = new Device();
-				break;
+				return new Device();
 			case DNS:
-				d = new Dns();
-				break;
+				return new Dns();
 			case SERVER:
-				d = new Server();
-				break;
+				return new Server();
 		}
-		return d;
 	}
 }

@@ -2,37 +2,32 @@ package hakd.gui.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input.Buttons;
-import com.badlogic.gdx.InputProcessor;
-import com.badlogic.gdx.graphics.PerspectiveCamera;
-import com.badlogic.gdx.graphics.g3d.ModelBatch;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.lights.DirectionalLight;
-import com.badlogic.gdx.graphics.g3d.lights.Lights;
-import com.badlogic.gdx.math.Vector3;
-import hakd.connection.Connection;
+import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.game.Internet;
+import hakd.game.gameplay.Player;
 import hakd.gui.input.MapInput;
+import hakd.networks.BackboneProviderNetwork;
+import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
-import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public final class MapScreen extends HakdScreen {
-	// private Player player;
-	// private Network network;
+	private Player player;
+	private Network network;
 	private final Internet internet;
 
 	private final GameScreen gameScreen;
+	private final MapInput input;
 	private float time = 0;
-	private InputProcessor tempInputProcessor = null;
 
-	private final ModelBatch modelBatch;
-	private List<ModelInstance> modelInstances;
-	private final Lights lights;
-	private MapInput mapInput;
-	private Vector3 focus;
+	private ArrayList<Sprite> networkSprites;
+	private ArrayList<Sprite> ispSprites;
+	private ArrayList<Sprite> backboneSprites;
+	private ArrayList<Sprite> connectionLineSprites;
+	private ArrayList<Sprite> parentLineSprites;
+	private ArrayList<Sprite> backboneLineSprites;
 
 	public MapScreen(Game game, GameScreen gameScreen, Internet internet) {
 		super(game);
@@ -40,77 +35,91 @@ public final class MapScreen extends HakdScreen {
 		this.internet = internet;
 		this.gameScreen = gameScreen;
 
-		cam = new PerspectiveCamera(67, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
-		cam.position.set(10f, 10f, 10f);
-		cam.lookAt(0, 0, 0);
-		cam.near = 0.1f;
-		cam.far = 3000f;
-		cam.update();
+		networkSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
+		ispSprites = new ArrayList<Sprite>(internet.getInternetProviderNetworks().size());
+		backboneSprites = new ArrayList<Sprite>(internet.getBackboneProviderNetworks().size());
+		connectionLineSprites = new ArrayList<Sprite>(100);
+		parentLineSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
+		backboneLineSprites = new ArrayList<Sprite>(internet.getBackboneProviderNetworks().size());
 
-		modelBatch = new ModelBatch();
+		cam = new OrthographicCamera();
+		((OrthographicCamera) cam).setToOrtho(false, width, height);
 
-		lights = new Lights();
-		lights.ambientLight.set(0.4f, 0.4f, 0.4f, 1f);
-		lights.add(new DirectionalLight().set(0.8f, 0.8f, 0.8f, -1f, -0.8f, -0.2f));
-	}
-
-	private void reDrawMap() {
-		modelInstances = new ArrayList<ModelInstance>();
-
-		for(Network n : internet.getIpNetworkHashMap().values()) {
-			modelInstances.add(n.getSphereInstance());
-			//			if(n.getType() != Network.NetworkType.BACKBONE) {
-			modelInstances.add(n.getSphereInstance());
-			//			} else {
-
-			//			}
-
-			for(Device d : n.getDevices()) {
-				for(Connection c : d.getConnections()) {
-					modelInstances.add(c.getInstance());
-				}
-			}
-		}
+		input = new MapInput(this);
 	}
 
 	@Override
 	public void show() {
 		super.show();
-		mapInput = new MapInput(this);
 
-		tempInputProcessor = Gdx.input.getInputProcessor();
-		Gdx.input.setInputProcessor(mapInput);
+		cam.position.x = 0;
+		cam.position.y = 0;
+		cam.update();
 
-		focus = new Vector3(0, 0, 0);
-		cam.translate(focus);
-		cam.lookAt(focus);
+		reloadSprites();
 
-		reDrawMap();
+		Gdx.gl.glClearColor(1, 1, 1, 1);
+		Gdx.input.setInputProcessor(input);
 	}
 
 	@Override
 	public void render(float delta) {
-		System.out.println((int) (1 / delta));
-		time += delta;
-
-		if(!Gdx.input.isButtonPressed(Buttons.LEFT)) {
-			cam.rotateAround(focus, new Vector3(0, 1, 0), .08f);
-		}
-
-		Gdx.gl.glViewport(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
 		super.render(delta);
 
+		//System.out.println((int) (1 / delta));
+		time += delta;
 		if(time >= 1) {
-			System.out.println("redraw");
-			time = 0;
-			reDrawMap();
+			reloadSprites();
 		}
 
-		modelBatch.begin(cam);
-		for(ModelInstance i : modelInstances) {
-			modelBatch.render(i, lights);
+		batch.setProjectionMatrix(cam.combined);
+		batch.begin();
+		for(Sprite s : backboneLineSprites) {
+			s.draw(batch);
 		}
-		modelBatch.end();
+		for(Sprite s : parentLineSprites) {
+			s.draw(batch);
+		}
+		for(Sprite s : backboneSprites) {
+			s.draw(batch);
+		}
+		for(Sprite s : ispSprites) {
+			s.draw(batch);
+		}
+		for(Sprite s : networkSprites) {
+			s.draw(batch);
+		}
+		for(Sprite s : connectionLineSprites) {
+			s.draw(batch);
+		}
+		batch.end();
+	}
+
+	private void reloadSprites() {
+		networkSprites.clear();
+		ispSprites.clear();
+		backboneSprites.clear();
+		connectionLineSprites.clear();
+		parentLineSprites.clear();
+		backboneLineSprites.clear();
+
+		for(Network n : internet.getIpNetworkHashMap().values()) {
+			if(n instanceof BackboneProviderNetwork) {
+				backboneSprites.add(n.getMapIcon());
+				backboneLineSprites.addAll(((BackboneProviderNetwork) n).getBackboneConnectionLines());
+			} else if(n instanceof InternetProviderNetwork) {
+				ispSprites.add(n.getMapIcon());
+				parentLineSprites.add(n.getMapParentLine());
+			} else {
+				networkSprites.add(n.getMapIcon());
+				parentLineSprites.add(n.getMapParentLine());
+			}
+
+			//			for(Connection c : n.getconnections) {
+			//			    connectionLineSprites.addc.getLine();
+			//			}
+
+		}
 	}
 
 	@Override
@@ -120,17 +129,8 @@ public final class MapScreen extends HakdScreen {
 
 	@Override
 	public void hide() {
-		Gdx.input.setInputProcessor(tempInputProcessor);
-		tempInputProcessor = null;
+		Gdx.input.setInputProcessor(gameScreen.getInput());
 		time = 0;
-	}
-
-	public Vector3 getFocus() {
-		return focus;
-	}
-
-	public void setFocus(Vector3 focus) {
-		this.focus = focus;
 	}
 
 	public GameScreen getGameScreen() {

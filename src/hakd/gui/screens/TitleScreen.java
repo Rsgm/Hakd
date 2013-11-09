@@ -51,10 +51,8 @@ public final class TitleScreen extends HakdScreen {
 
 		font.setColor(0f, 0f, 0f, 0f);
 		creditFont.setColor(0.0f, 1f, 0.0f, 0.18f);
-		random = (int) (Math.random() * 8 + 8); // just your standard pass
-		// lengths
-		randomTime = (float) (Math.random() * 1 + .3); // used for the loading
-		// circle timeout
+		random = (int) (Math.random() * 8 + 8); // just your standard pass lengths
+		randomTime = (float) (Math.random() * 1 + .3); // used for the loading circle timeout
 
 		keyClick = Gdx.audio.newSound(Gdx.files.internal("hakd/gui/resources/sounds/KeyClick.ogg"));
 		loadingsSprite = new Sprite(Assets.linearTextures.findRegion("loading"));
@@ -65,7 +63,7 @@ public final class TitleScreen extends HakdScreen {
 
 		Gdx.input.setInputProcessor(new TitleInput(game));
 
-		// initializes jython, so there is no startup lag later on
+		// this should initialize jython, so there is no startup lag later on
 		new Thread(new Runnable() {
 			@Override
 			public void run() {

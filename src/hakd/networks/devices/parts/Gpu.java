@@ -1,26 +1,18 @@
 package hakd.networks.devices.parts;
 
-import hakd.networks.devices.Device;
-
 public final class Gpu extends Part {
+	int speed; // either MHz or MB/s(megabyte/s, not megabit/s) depending on the part cpu also has core modifier speed = speed (1.8*cores)
 
-	public Gpu(int level, Device device) {
-		super(level, device);
+	public Gpu() {
+		super();
 		type = PartType.GPU;
-
-		switch(level) {
-			case 0:
-				speed = (int) (Math.random() * 200 + 100);
-				break;
-			default:
-				speed = (level + 1) * 150 + (int) (Math.random() * 400 - 200);
-				break;
-		}
 	}
 
-	public Gpu(Device device, int level, int speed, int b) {
-		super(level, device);
+	public int getSpeed() {
+		return speed;
+	}
 
+	public void setSpeed(int speed) {
 		this.speed = speed;
 	}
 }

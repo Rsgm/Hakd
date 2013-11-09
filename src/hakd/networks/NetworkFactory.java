@@ -1,16 +1,11 @@
-package hakd.game;
+package hakd.networks;
 
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.VertexAttributes;
-import com.badlogic.gdx.graphics.g3d.ModelInstance;
-import com.badlogic.gdx.graphics.g3d.materials.ColorAttribute;
-import com.badlogic.gdx.graphics.g3d.materials.Material;
-import com.badlogic.gdx.graphics.g3d.utils.ModelBuilder;
+import com.badlogic.gdx.graphics.g2d.Sprite;
+import hakd.game.Internet;
 import hakd.game.gameplay.Player;
-import hakd.networks.BackboneProviderNetwork;
-import hakd.networks.InternetProviderNetwork;
-import hakd.networks.Network;
+import hakd.gui.Assets;
 import hakd.networks.devices.Device;
+import hakd.networks.devices.DeviceFactory;
 import hakd.networks.devices.Server;
 
 public class NetworkFactory {
@@ -24,8 +19,6 @@ public class NetworkFactory {
 		network.setStance(Network.Stance.NEUTRAL); // TODO move stances to the npc/player classes
 		network.setType(type);
 
-		ModelBuilder modelBuilder = new ModelBuilder();
-
 		// used to add randomness to the amount of servers to make given serverLimit
 		int d = -1;
 
@@ -35,27 +28,31 @@ public class NetworkFactory {
 				network.setOwner("NPC");
 				network.setDeviceLimit(4);
 				network.setStance(Network.Stance.NEUTRAL);
-				network.setSphere(modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal));
+				network.setMapIcon(Assets.linearTextures.createSprite("network"));
+				network.getMapIcon().setSize(15, 15);
 				break;
 			case TEST:
 				network.setIpRegion(Network.IpRegion.ASIA);
 				network.setOwner("Test");
 				network.setDeviceLimit(32);
 				network.setStance(Network.Stance.NEUTRAL);
-				network.setSphere(modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal));
+				network.setMapIcon(Assets.linearTextures.createSprite("network"));
+				network.getMapIcon().setSize(15, 15);
 				break;
 			case BUSINESS: // company // random company
 				network.setIpRegion(Network.IpRegion.BUSINESS);
 				network.setDeviceLimit((int) ((network.getLevel() + 1) * (Math.random() * 3 + 1)));
 				network.setOwner("company");
-				network.setSphere(modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.ORANGE)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal));
+				network.setMapIcon(Assets.linearTextures.createSprite("network"));
+				network.getMapIcon().setSize(15, 15);
 				break;
 			default: // copied from the npc case
 				network.setIpRegion(Network.IpRegion.NA);
 				network.setOwner("some name");
 				network.setDeviceLimit(4);
 				network.setStance(Network.Stance.NEUTRAL);
-				network.setSphere(modelBuilder.createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.LIGHT_GRAY)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal));
+				network.setMapIcon(Assets.linearTextures.createSprite("network"));
+				network.getMapIcon().setSize(15, 15);
 				break;
 		}
 
@@ -82,7 +79,10 @@ public class NetworkFactory {
 		network.setType(Network.NetworkType.PLAYER);
 		network.setLevel(0);
 		network.setStance(Network.Stance.FRIENDLY);
-		network.setSphere(new ModelBuilder().createSphere(5f, 5f, 5f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.BLUE)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal));
+
+		Sprite s = Assets.linearTextures.createSprite("playerNetwork");
+		network.setMapIcon(s);
+		network.getMapIcon().setSize(15, 15);
 
 		network.setPlayer(player);
 		player.setNetwork(network);
@@ -107,8 +107,11 @@ public class NetworkFactory {
 		isp.setLevel((int) (Math.random() * 3 + 5));
 		isp.setIpRegion(Network.IpRegion.values()[internet.getInternetProviderNetworks().size() % Network.IpRegion.values().length]);
 		isp.setDeviceLimit((int) ((isp.getLevel() + 1) * (Math.random() * 3 + 1)));
-		isp.setOwner(InternetProviderNetwork.IspName.values()[(int) (Math.random() * InternetProviderNetwork.IspName.values().length)].toString());
-		isp.setSphere(new ModelBuilder().createSphere(15f, 15f, 15f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.CYAN)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal));
+		//		isp.setOwner(InternetProviderNetwork.IspName.values()[(int) (Math.random() * InternetProviderNetwork.IspName.values().length)].toString());
+
+		Sprite s = Assets.linearTextures.createSprite("ispNetwork");
+		isp.setMapIcon(s);
+		isp.getMapIcon().setSize(15, 15);
 
 		return isp;
 	}
@@ -123,10 +126,6 @@ public class NetworkFactory {
 		backbone.setIpRegion(Network.IpRegion.values()[internet.getBackboneProviderNetworks().size() % Network.IpRegion.values().length]);
 		backbone.setDeviceLimit((int) ((backbone.getLevel() + 1) * (Math.random() * 3 + 1)));
 		backbone.setLevel(7);
-		backbone.setSphere(new ModelBuilder().createSphere(25f, 25f, 25f, 20, 10, new Material(ColorAttribute.createDiffuse(Color.RED)), VertexAttributes.Usage.Position | VertexAttributes.Usage.Normal));
-
-		backbone.setSphereInstance(new ModelInstance(backbone.getSphere()));
-		backbone.getSphereInstance().transform.setToTranslation(backbone.getSpherePosition());
 
 		return backbone;
 	}

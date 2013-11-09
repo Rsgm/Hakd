@@ -1,31 +1,20 @@
 package hakd.networks.devices.parts;
 
-import hakd.networks.Network;
 import hakd.networks.devices.Device;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class Part {
-
-	// stats
-	Network network;
-	Device device;
 	PartType type;
-
+	Device device;
 	int level;
-	int speed; // either MHz or MB/s(megabyte/s, not megabit/s)
-	// depending on the part // cpu also has core modifier
-	// speed = speed
-	// (1.8*cores)
 
 	String brand;
 	String model;
 
-	public Part(int level, Device device) {
-		this.level = level;
-		this.network = device.getNetwork();
-		this.device = device;
+	public Part() {
+		type = PartType.PART;
 	}
 
 	// finds all of the parts in the list of that type
@@ -59,14 +48,6 @@ public class Part {
 
 	}
 
-	public Network getNetwork() {
-		return network;
-	}
-
-	public void setNetwork(Network network) {
-		this.network = network;
-	}
-
 	public Device getDevice() {
 		return device;
 	}
@@ -81,14 +62,6 @@ public class Part {
 
 	public void setLevel(int level) {
 		this.level = level;
-	}
-
-	public int getSpeed() {
-		return speed;
-	}
-
-	public void setSpeed(int speed) {
-		this.speed = speed;
 	}
 
 	public String getBrand() {
@@ -109,9 +82,5 @@ public class Part {
 
 	public PartType getType() {
 		return type;
-	}
-
-	public void setType(PartType type) {
-		this.type = type;
 	}
 }

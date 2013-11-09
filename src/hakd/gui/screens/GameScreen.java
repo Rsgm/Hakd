@@ -10,7 +10,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import hakd.game.Internet;
-import hakd.game.NetworkFactory;
 import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
 import hakd.gui.EmptyDeviceTile;
@@ -20,11 +19,11 @@ import hakd.gui.input.GameInput;
 import hakd.gui.windows.BuyDeviceWindow;
 import hakd.gui.windows.WindowStage;
 import hakd.networks.Network;
+import hakd.networks.NetworkFactory;
 import hakd.networks.devices.Device;
 
 public final class GameScreen extends HakdScreen {
-	private Player player;
-	// TODO Sometime make this an array and have other people in the game with different skills and personalities private int arraylist<npc> npcs = new arraylist<npc>(); maybe
+	private Player player; // TODO Sometime make this an array and have other people in the game with different skills and personalities private int arraylist<npc> npcs = new arraylist<npc>(); maybe
 
 	public static Internet internet = null;
 	public static final float tileSize = 64;
@@ -34,6 +33,7 @@ public final class GameScreen extends HakdScreen {
 	private WindowStage openWindow = null;
 	private MapScreen map;
 	private IsometricTiledMapRenderer renderer; // it says this is experimental, but it was an old article
+	private GameInput input;
 
 	public GameScreen(Game game, String name) {
 		super(game);
@@ -53,7 +53,7 @@ public final class GameScreen extends HakdScreen {
 
 			player = new Player(name, this);
 			Network n = NetworkFactory.createPlayerNetwork(player);
-			internet.addNetworkToInternet(n);
+			internet.addNetworkToInternet(n, internet.getInternetProviderNetworks().get((int) (Math.random() * internet.getInternetProviderNetworks().size())));
 
 			room = new Room(player, this, RoomMap.room1);
 
@@ -70,9 +70,10 @@ public final class GameScreen extends HakdScreen {
 			cam.position.y = 0;
 
 			map = new MapScreen(game, this, internet);
+			input = new GameInput(game, (OrthographicCamera) cam, player);
+			Gdx.input.setInputProcessor(input);
 		}
-
-		Gdx.input.setInputProcessor(new GameInput(game, (OrthographicCamera) cam, player));
+		Gdx.gl.glClearColor(0, 0, 0, 0);
 	}
 
 	@Override
@@ -135,7 +136,7 @@ public final class GameScreen extends HakdScreen {
 					openWindow = new BuyDeviceWindow(player.getNetwork(), 4, 0, Device.DeviceType.SERVER, (EmptyDeviceTile) o);
 					openWindow.setScreen(this);
 					openWindow.open();
-				} else {
+				} else if(o instanceof Device) {
 					d.getWindow().setScreen(this);
 					openWindow = d.getWindow();
 					d.getWindow().open();
@@ -227,5 +228,13 @@ public final class GameScreen extends HakdScreen {
 
 	public MapScreen getMap() {
 		return map;
+	}
+
+	public GameInput getInput() {
+		return input;
+	}
+
+	public void setInput(GameInput input) {
+		this.input = input;
 	}
 }

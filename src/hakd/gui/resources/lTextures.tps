@@ -158,6 +158,10 @@
             <filename>graphics/console1Up.png</filename>
             <filename>graphics/console2Up.png</filename>
             <filename>graphics/console3Up.png</filename>
+            <filename>graphics/backboneNetwork.png</filename>
+            <filename>graphics/ispNetwork.png</filename>
+            <filename>graphics/playerNetwork.png</filename>
+            <filename>graphics/network.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -78,7 +78,7 @@ public final class Room {
 		for(Object[] o : mapObjects) {
 			if(o[0] instanceof String && o[1] instanceof Integer && o[2] instanceof Integer) {
 
-				if(((String) o[0]).matches("device") && getObjectAtTile(o[1], o[2]).equals("empty")) {
+				if(((String) o[0]).matches("device") && getObjectAtTile((Integer) o[1], (Integer) o[2]).equals("empty")) {
 					EmptyDeviceTile emptyDeviceTile = new EmptyDeviceTile((Integer) o[1], (Integer) o[2]);
 
 					emptyDeviceTile.setTile(new Sprite(Assets.nearestTextures.findRegion("d-1")));
@@ -99,25 +99,29 @@ public final class Room {
 	 * Finds the device at the specified isometric coordinates.
 	 *
 	 * @return The device found.
-	 *         The string "empty", if no device was found there.
+	 *         The string "other", if no device was found there.
 	 *         Null if the tile in the map does not have an object.
 	 */
-	public Object getObjectAtTile(Object x, Object y) {
+	public Object getObjectAtTile(int x, int y) {
 		for(Device d : devices) {
-			if(x.equals(d.getIsoX()) && y.equals(d.getIsoY())) {
+			if(x == d.getIsoX() && y == d.getIsoY()) {
 				return d;
 			}
 		}
 
 		for(EmptyDeviceTile e : emptyDeviceTiles) {
-			if(x.equals(e.getIsoX()) && y.equals(e.getIsoY())) {
+			if(x == e.getIsoX() && y == e.getIsoY()) {
 				return e;
 			}
 		}
 
 		for(Object[] o : mapObjects) {
-			if(o[0].equals("device") && o[1].equals(x) && o[2].equals(y)) {
-				return "empty";
+			if(((Integer) o[1]) == x && ((Integer) o[2]) == y) {
+				if(o[0].equals("device")) {
+					return "empty";
+				} else {
+					return "other";
+				}
 			}
 		}
 

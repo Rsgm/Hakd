@@ -1,6 +1,5 @@
 package hakd.networks.devices.parts;
 
-import hakd.networks.devices.Device;
 import hakd.other.File;
 import hakd.other.File.FileType;
 
@@ -10,53 +9,17 @@ import java.util.List;
 public final class Storage extends Part {
 	private boolean ssd; // doubles the speed
 	private int capacity; // in GB
+	int speed; // either MHz or MB/s(megabyte/s, not megabit/s) depending on the part cpu also has core modifier speed = speed (1.8*cores)
 
 	// storage ArrayLists
-	private List<File> osFiles = new ArrayList<File>(); // operating system
-	// files, !FUN!
-	private List<File> userFiles = new ArrayList<File>(); // random files people
-	// save
-	private List<File> programFiles = new ArrayList<File>(); // (python)programs
-	// able to run, is
-	// this
-	// copywritten,
-	// will Microsoft
-	// sue?
-	private List<File> logFiles = new ArrayList<File>(); // these log arrays
-	// have infinite
-	// storage, thanks to a
-	// new leap in quantum
-	// physics
+	private List<File> osFiles = new ArrayList<File>(); // operating system files, !FUN!
+	private List<File> userFiles = new ArrayList<File>(); // random files people save
+	private List<File> programFiles = new ArrayList<File>(); // (python)programs able to run, is this copywritten, will Microsoft sue?
+	private List<File> logFiles = new ArrayList<File>(); // these log arrays have infinite storage, thanks to a new leap in quantum physics
 
-	public Storage(int level, Device device) {
-		super(level, device);
-		setType(PartType.STORAGE);
-
-		switch(level) {
-			case 0:
-				speed = (level + 1) * 30 + (int) (Math.random() * 30);
-				capacity = (int) Math.pow(2, (level + 4) + (int) (Math.random() * 3 - 1));
-			default:
-				speed = (level + 1) * 30 + ((int) (Math.random() * 60 - 30));
-				capacity = (int) Math.pow(2, (level + 4) + (int) (Math.random() * 3 + 1) - 2); // start at 16 GB at
-				// level 1 and make
-				// sure the OS takes
-				// up 15 GB
-				if(1 == (int) ((Math.random() * 30) + 1)) {
-					ssd = true;
-					speed *= 2;
-					capacity /= 2;
-				}
-		}
-
-	}
-
-	public Storage(Device device, int level, int speed, int capacity, boolean ssd) {
-		super(level, device);
-
-		this.speed = speed;
-		this.capacity = capacity;
-		this.ssd = ssd;
+	public Storage() {
+		super();
+		type = PartType.STORAGE;
 	}
 
 	// adds a file to the end of one of the arraylists
@@ -76,8 +39,7 @@ public final class Storage extends Part {
 		}
 	}
 
-	// removes the first file with the specified company from the specified
-	// directory
+	// removes the first file with the specified name from the specified directory
 	public void removeFile(FileType type, String name) {
 		switch(type) {
 			case OS:
@@ -110,8 +72,7 @@ public final class Storage extends Part {
 		}
 	}
 
-	// removes the first file with the specified company from the specified
-	// directory
+	// removes the first file with the specified name from the specified directory
 	public File getFile(FileType type, String name) {
 		switch(type) {
 			case OS:
@@ -191,5 +152,13 @@ public final class Storage extends Part {
 
 	public void setLogFiles(List<File> logFiles) {
 		this.logFiles = logFiles;
+	}
+
+	public int getSpeed() {
+		return speed;
+	}
+
+	public void setSpeed(int speed) {
+		this.speed = speed;
 	}
 }

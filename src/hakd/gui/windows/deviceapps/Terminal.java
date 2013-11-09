@@ -10,7 +10,6 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import hakd.game.Command;
-import hakd.game.Internet;
 import hakd.gui.Assets;
 import hakd.networks.devices.Device;
 
@@ -32,7 +31,7 @@ public final class Terminal implements ServerWindow {
 	private int tabIndex;
 	private final List<String> history; // command history
 	private int line = 0; // holds the position of the history
-	private final Device device;
+	public final Device device; // TODO change this back to private, it is only being used for the addNetwork script to get the internet
 	private Command command;
 
 	private final Terminal terminal;
@@ -57,7 +56,7 @@ public final class Terminal implements ServerWindow {
 
 		display.setWrap(false);
 		display.setAlignment(10, Align.left);
-		display.setText("Terminal [Version 0." + ((int) (Math.random() * 100)) / 10 + "]" + "\nroot @ " + Internet.ipToString(device.getIp()) + "\nMemory: " + device.getMemoryCapacity() + "MB\nStorage: " + device.getStorageCapacity() + "GB");
+		display.setText("Terminal [Version 0." + ((int) (Math.random() * 100)) / 10 + "]" + "\nroot @ " + device.getIp() + "\nMemory: " + device.getMemoryCapacity() + "MB\nStorage: " + device.getStorageCapacity() + "GB");
 
 		table.addListener(new InputListener() {
 			@Override
@@ -103,7 +102,7 @@ public final class Terminal implements ServerWindow {
 			public boolean keyDown(InputEvent event, int keycode) {
 				if(keycode == Keys.ENTER && command == null) {
 					System.out.println(input.getText());
-					display.setText(display.getText() + "\n\nroot @ " + Internet.ipToString(device.getIp()) + "\n>" + input.getText());
+					display.setText(display.getText() + "\n\nroot @ " + device.getIp() + "\n>" + input.getText());
 					history.add(input.getText());
 					command = new Command(input.getText(), device, terminal);
 
