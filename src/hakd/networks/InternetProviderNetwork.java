@@ -31,7 +31,7 @@ public final class InternetProviderNetwork extends Network {
 		// network's mapIcon for the map
 		float regionSize = ispRegionSize;
 		positionLoop:
-		for(int i = 0; i < internet.getIpNetworkHashMap().size() * 2; i++) {
+		for(int i = 0; i < 5000; i++) {
 			Vector2 v = new Vector2();
 			v.x = mapIcon.getX() + (float) ((Math.random() * regionSize) - regionSize / 2);
 			v.y = mapIcon.getY() + (float) ((Math.random() * regionSize) - regionSize / 2);
@@ -55,7 +55,7 @@ public final class InternetProviderNetwork extends Network {
 		Vector2 v2 = new Vector2(network.mapIcon.getX() + (network.mapIcon.getWidth() / 2), network.mapIcon.getY() + (network.mapIcon.getHeight() / 2));
 		Sprite line = Assets.nearestTextures.createSprite("dashedLine");
 		line.setOrigin(0, 0);
-		line.setSize(v1.dst(v2), 1);
+		line.setSize(v1.dst(v2), 3);
 		line.setPosition(v1.x, v1.y);
 		line.setRotation(v1.sub(v2).scl(-1).angle());
 		network.setMapParentLine(line);

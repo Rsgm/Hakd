@@ -49,10 +49,10 @@ public final class Internet {
 	/**
 	 * This is only created at the start of the game.
 	 */
-	public Internet() {
-		int backbones = 4;// (int) (Math.random() * 3 + IpRegion.values().length);
-		int isps = 20; //(int) (Math.random() * 8 + 8);
-		int networks = 100;//(int) (Math.random() * 15 + 60);
+	public Internet() { // maximum is about 1:6:270 (backbones:isps:networks)
+		int backbones = 6;//(int) (Math.random() * 3 + Network.IpRegion.values().length);
+		int isps = 22;//(int) (Math.random() * 8 + 8);
+		int networks = 500;//(int) (Math.random() * 30 + 60);
 
 		backboneProviderNetworks = new ArrayList<BackboneProviderNetwork>(isps);
 		internetProviderNetworks = new ArrayList<InternetProviderNetwork>(backbones);
@@ -100,6 +100,7 @@ public final class Internet {
 	private void generateBackbones(int amount) {
 		// each ipRegion gets at least one backbone, possibly several
 		for(int i = 0; i < amount; i++) {
+			System.out.println("Backbone - " + i);
 			BackboneProviderNetwork backbone = NetworkFactory.createBackbone(this);
 
 			short[] ip = {generateIpByte(backbone.getIpRegion()), 1, 1, 1};

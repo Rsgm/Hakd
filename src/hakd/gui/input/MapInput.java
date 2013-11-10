@@ -73,8 +73,8 @@ public final class MapInput implements InputProcessor {
 	@Override
 	public boolean scrolled(int amount) {
 		float zoom;
-		if((cam.zoom > 0.1 && amount < 0) || (cam.zoom < 3 && amount > 0)) {
-			zoom = cam.zoom + amount / 20f;
+		if((cam.zoom > 0.5 && amount < 0) || (cam.zoom < 10 && amount > 0)) {
+			zoom = cam.zoom + amount / 5f;
 			cam.zoom = Math.round(zoom * 100) / 100f; // round the zoom to the hundredths place
 		}
 		return true;

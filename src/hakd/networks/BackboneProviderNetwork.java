@@ -25,27 +25,37 @@ public final class BackboneProviderNetwork extends Network {
 
 		parent = null;
 		mapIcon = Assets.linearTextures.createSprite("backboneNetwork");
-		mapIcon.setSize(15, 15);
+		mapIcon.setSize(100, 100);
 		backboneConnectionLines = new ArrayList<Sprite>();
 
 		// find open area
+		float regionSize = 250;
 		positionLoop:
-		for(int i = 0; i < internet.getIpNetworkHashMap().size() * 2; i++) {
-			Vector2 v = new Vector2();
-			v.x = mapIcon.getX() + (float) ((Math.random() * worldSize) - worldSize / 2);
-			v.y = mapIcon.getY() + (float) ((Math.random() * worldSize) - worldSize / 2);
-			mapIcon.setPosition(v.x, v.y);
-			int j = 0;
-			for(Network n : internet.getIpNetworkHashMap().values()) {
-				j++;
-				if(v.dst2(n.getMapIcon().getX(), n.getMapIcon().getY()) <= BackboneRegionSize * BackboneRegionSize && n != this) {
-					System.out.println("Backbone: too close to another");
-					break;
-				} else if(j >= internet.getIpNetworkHashMap().size()) {
-					System.out.println("Backbone: Found an open spot");
+		for(int k = 0; k < 30; k++) {
+			for(int i = 0; i < 10; i++) {
+				Vector2 v = new Vector2();
+				v.x = mapIcon.getX() + (float) ((Math.random() * regionSize) - regionSize / 2);
+				v.y = mapIcon.getY() + (float) ((Math.random() * regionSize) - regionSize / 2);
+				mapIcon.setPosition(v.x, v.y);
+
+				if(internet.getIpNetworkHashMap().values().size() == 0) {
 					break positionLoop;
 				}
+
+				int j = 0;
+				for(Network n : internet.getIpNetworkHashMap().values()) {
+					j++;
+					if(v.dst2(n.getMapIcon().getX(), n.getMapIcon().getY()) <= BackboneRegionSize * BackboneRegionSize && n != this) {
+						System.out.println("Backbone: too close to another");
+						break;
+					} else if(j >= internet.getIpNetworkHashMap().size()) {
+						System.out.println("Backbone: Found an open spot");
+						break positionLoop;
+					}
+				}
 			}
+
+			regionSize += 250;
 		}
 
 		// create backbone lines
@@ -54,7 +64,7 @@ public final class BackboneProviderNetwork extends Network {
 			Vector2 v2 = new Vector2(b.mapIcon.getX() + (b.mapIcon.getWidth() / 2), b.mapIcon.getY() + (b.mapIcon.getHeight() / 2));
 			Sprite line = Assets.nearestTextures.createSprite("dashedLine");
 			line.setOrigin(0, 0);
-			line.setSize(v1.dst(v2), 1);
+			line.setSize(v1.dst(v2), 3);
 			line.setPosition(v1.x, v1.y);
 			line.setRotation(v1.sub(v2).scl(-1).angle()); // I am proud of this
 			backboneConnectionLines.add(line);
@@ -73,7 +83,7 @@ public final class BackboneProviderNetwork extends Network {
 		// isp's mapIcon for the map
 		float regionSize = BackboneRegionSize;
 		positionLoop:
-		for(int i = 0; i < internet.getIpNetworkHashMap().size() * 2; i++) {
+		for(int i = 0; i < 1000; i++) {
 			Vector2 v = new Vector2();
 			v.x = mapIcon.getX() + (float) ((Math.random() * regionSize) - regionSize / 2);
 			v.y = mapIcon.getY() + (float) ((Math.random() * regionSize) - regionSize / 2);
@@ -97,7 +107,7 @@ public final class BackboneProviderNetwork extends Network {
 		Vector2 v2 = new Vector2(isp.mapIcon.getX() + (isp.mapIcon.getWidth() / 2), isp.mapIcon.getY() + (isp.mapIcon.getHeight() / 2));
 		Sprite line = Assets.nearestTextures.createSprite("dashedLine");
 		line.setOrigin(0, 0);
-		line.setSize(v1.dst(v2), 1);
+		line.setSize(v1.dst(v2), 3);
 		line.setPosition(v1.x, v1.y);
 		line.setRotation(v1.sub(v2).scl(-1).angle());
 		isp.setMapParentLine(line);

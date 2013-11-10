@@ -33,10 +33,9 @@ public class Network {
 	Sprite mapIcon;
 	Sprite mapParentLine;
 
-	public static final float worldSize = 1200;
-	public static final float BackboneRegionSize = 600;
-	public static final float ispRegionSize = 300;
-	public static final float networkRegionSize = 80;
+	public static final float BackboneRegionSize = 2000;
+	public static final float ispRegionSize = 800;
+	public static final float networkRegionSize = 100;
 	IpRegion ipRegion; // where the network is in the world, it helps find an ip
 
 	Internet internet;
@@ -261,22 +260,6 @@ public class Network {
 
 	public void setDeviceLimit(int deviceLimit) {
 		this.deviceLimit = deviceLimit;
-	}
-
-	public static float getWorldSize() {
-		return worldSize;
-	}
-
-	public static float getBackboneRegionSize() {
-		return BackboneRegionSize;
-	}
-
-	public static float getIspRegionSize() {
-		return ispRegionSize;
-	}
-
-	public static float getNetworkRegionSize() {
-		return networkRegionSize;
 	}
 
 	public List<EmptyDeviceTile> getEmptyDeviceTiles() {

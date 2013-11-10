@@ -54,6 +54,7 @@ public final class MapScreen extends HakdScreen {
 
 		cam.position.x = 0;
 		cam.position.y = 0;
+		((OrthographicCamera) cam).zoom = 2;
 		cam.update();
 
 		reloadSprites();

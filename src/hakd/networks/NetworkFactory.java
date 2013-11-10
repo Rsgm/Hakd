@@ -29,7 +29,7 @@ public class NetworkFactory {
 				network.setDeviceLimit(4);
 				network.setStance(Network.Stance.NEUTRAL);
 				network.setMapIcon(Assets.linearTextures.createSprite("network"));
-				network.getMapIcon().setSize(15, 15);
+				network.getMapIcon().setSize(50, 50);
 				break;
 			case TEST:
 				network.setIpRegion(Network.IpRegion.ASIA);
@@ -37,14 +37,14 @@ public class NetworkFactory {
 				network.setDeviceLimit(32);
 				network.setStance(Network.Stance.NEUTRAL);
 				network.setMapIcon(Assets.linearTextures.createSprite("network"));
-				network.getMapIcon().setSize(15, 15);
+				network.getMapIcon().setSize(50, 50);
 				break;
 			case BUSINESS: // company // random company
 				network.setIpRegion(Network.IpRegion.BUSINESS);
 				network.setDeviceLimit((int) ((network.getLevel() + 1) * (Math.random() * 3 + 1)));
 				network.setOwner("company");
 				network.setMapIcon(Assets.linearTextures.createSprite("network"));
-				network.getMapIcon().setSize(15, 15);
+				network.getMapIcon().setSize(50, 50);
 				break;
 			default: // copied from the npc case
 				network.setIpRegion(Network.IpRegion.NA);
@@ -52,7 +52,7 @@ public class NetworkFactory {
 				network.setDeviceLimit(4);
 				network.setStance(Network.Stance.NEUTRAL);
 				network.setMapIcon(Assets.linearTextures.createSprite("network"));
-				network.getMapIcon().setSize(15, 15);
+				network.getMapIcon().setSize(50, 50);
 				break;
 		}
 
@@ -82,7 +82,7 @@ public class NetworkFactory {
 
 		Sprite s = Assets.linearTextures.createSprite("playerNetwork");
 		network.setMapIcon(s);
-		network.getMapIcon().setSize(15, 15);
+		network.getMapIcon().setSize(50, 50);
 
 		network.setPlayer(player);
 		player.setNetwork(network);
@@ -111,7 +111,7 @@ public class NetworkFactory {
 
 		Sprite s = Assets.linearTextures.createSprite("ispNetwork");
 		isp.setMapIcon(s);
-		isp.getMapIcon().setSize(15, 15);
+		isp.getMapIcon().setSize(75, 75);
 
 		return isp;
 	}
