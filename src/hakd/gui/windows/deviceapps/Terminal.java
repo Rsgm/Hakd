@@ -244,4 +244,12 @@ public final class Terminal implements ServerWindow {
 	public void setCommand(Command command) {
 		this.command = command;
 	}
+
+	public List<String> getHistory() {
+		return history;
+	}
+
+	public void setLine(int line) {
+		this.line = line;
+	}
 }
