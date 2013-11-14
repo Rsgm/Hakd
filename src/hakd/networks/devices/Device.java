@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.connection.Connectable;
 import hakd.connection.Connection;
 import hakd.connection.Port;
+import hakd.game.Internet;
 import hakd.game.Internet.Protocol;
 import hakd.gui.windows.deviceapps.ServerWindowStage;
 import hakd.networks.Network;
@@ -14,6 +15,7 @@ import hakd.networks.devices.parts.Part.PartType;
 import hakd.other.File;
 import hakd.other.File.FileType;
 
+import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -58,33 +60,14 @@ public class Device implements Connectable {
 	public ConnectionStatus Connect(Device client, Port port) {
 		ConnectionStatus permission = hasPermission(port);
 
-		Connection c = new Connection(this, client, port);
 		if(permission == ConnectionStatus.OK) {
+			Socket sClient = new Socket();
+			Socket sHost = Internet.connectSocket(sClient);
+
+			Connection c = new Connection(this, client, port, sClient, sHost);
 			connections.add(c);
-		} else {
-			return permission;
-		}
 
-		permission = client.Connect(this, port, true);
-		if(permission == ConnectionStatus.OK) {
-			List<Connection> connections = client.getConnections();
-			//            c.setSiblingConnection(connections.get(connections.size() - 1));
-			//            connections.get(connections.size() - 1).setSiblingConnection(c);
-		} else {
-			connections.remove(c);
-		}
-
-		// if player, connect to server program()
-
-		return permission;
-	}
-
-	private ConnectionStatus Connect(Device client, Port port, boolean twoWay) {
-		ConnectionStatus permission = hasPermission(port);
-
-		Connection c = new Connection(this, client, port);
-		if(permission == ConnectionStatus.OK) {
-			connections.add(c);
+			client.getConnections().add(c);
 		} else {
 			return permission;
 		}
@@ -142,10 +125,10 @@ public class Device implements Connectable {
 
 	@Override
 	public void log(Device client, String program, int port, Protocol protocol) {
-		masterStorage.addFile(new File(0, "Log - " + client.ip + ".log", "Connecting with " + program + " through portNumber" + port + " using " + protocol + "\n" + program + ":" + port + ">" + protocol, FileType.LOG));
+		masterStorage.addFile(new File(0, "Log - " + client.ip + ".log", "Connecting with " + program + " through portNumber" + port + " using " + protocol + "\n" + program + ":" + port + "->" + protocol, FileType.LOG));
 	/*
 	 * ---Example--- Log - 243.15.66.24 Connecting with half life 3 through portNumber 28190 using LAMBDA
-	 * half life 3:28190>LAMBDA
+	 * half life 3:28190->LAMBDA
 	 */
 	}
 

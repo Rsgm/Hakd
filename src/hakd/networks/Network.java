@@ -80,7 +80,7 @@ public class Network {
 			return null;
 		}
 
-		for(short i = 1; i < 256; i++) {
+		for(short i = 2; i < 256; i++) {
 			deviceIp = new short[]{ip[0], ip[1], ip[2], i};
 			if(getDevice(Internet.ipToString(deviceIp)) == null) {
 				break;

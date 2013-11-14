@@ -22,9 +22,9 @@ public final class Hakd extends Game {
 
 		prefs = Gdx.app.getPreferences("hakd-prefs");
 
-		// if (!prefs.getBoolean("played-before")) {
-		newPrefs();
-		// }
+		if(!prefs.getBoolean("played-before")) {
+			newPrefs();
+		}
 
 		width = prefs.getInteger("width");
 		height = prefs.getInteger("height");
@@ -46,7 +46,7 @@ public final class Hakd extends Game {
 	 * tested mac yet
 	 */
 
-		prefs.putBoolean("played-before", true);
+		prefs.putBoolean("played-before", false);
 		prefs.putInteger("width", 800);
 		prefs.putInteger("height", 600);
 		prefs.putBoolean("fullscreen", false);

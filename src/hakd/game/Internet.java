@@ -11,6 +11,7 @@ import hakd.networks.devices.Device;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
 
 public final class Internet {
@@ -50,9 +51,9 @@ public final class Internet {
 	 * This is only created at the start of the game.
 	 */
 	public Internet() { // maximum is about 1:6:270 (backbones:isps:networks)
-		int backbones = 6;//(int) (Math.random() * 3 + Network.IpRegion.values().length);
-		int isps = 22;//(int) (Math.random() * 8 + 8);
-		int networks = 500;//(int) (Math.random() * 30 + 60);
+		int backbones = 1;//(int) (Math.random() * 3 + Network.IpRegion.values().length);
+		int isps = 1;//(int) (Math.random() * 8 + 8);
+		int networks = 3;//(int) (Math.random() * 30 + 60);
 
 		backboneProviderNetworks = new ArrayList<BackboneProviderNetwork>(isps);
 		internetProviderNetworks = new ArrayList<InternetProviderNetwork>(backbones);
@@ -233,8 +234,9 @@ public final class Internet {
 	 */
 	public Device getDevice(String ip) {
 		short[] a = ipFromString(ip); // used to search through the hashmap because it only lists networks, which always end in 1s
-		a[4] = 1;
-		return ipNetworkHashMap.get(ipFromString(ip)).getDevice(ipToString(a));
+		a[3] = 1;
+		System.out.println(ipNetworkHashMap.containsKey(ipToString(a)));
+		return ipNetworkHashMap.get(ipToString(a)).getDevice(ip);
 	}
 
 	/**
@@ -275,6 +277,34 @@ public final class Internet {
 		return array;
 	}
 
+	public static synchronized Socket connectSocket(Socket sClient) {
+		final Socket[] connectedSocket = new Socket[1];
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				try {
+					connectedSocket[0] = serverSocket.accept();
+				} catch(IOException e) {
+					e.printStackTrace();
+				}
+			}
+		}).start();
+
+		try {
+			Thread.sleep(1); // only to make sure accept was called
+		} catch(InterruptedException e) {
+			e.printStackTrace();
+		}
+
+		try {
+			sClient.connect(serverSocket.getLocalSocketAddress());
+		} catch(IOException e) {
+			e.printStackTrace();
+		}
+
+		return connectedSocket[0];
+	}
+
 	public enum Protocol {
 		FTP(21), SSH(22), SMTP(25), WHOIS(43), DNS(53), HTTP(80), HTTPS(443), STEAM(1725), XBOX(3074), MYSQL(3306),
 		RDP(3389), WOW(3724), UPUP(5000), IRC(6667), TORRENT(6881), LAMBDA(27015), COD(28960), LEET(31337);
@@ -313,10 +343,6 @@ public final class Internet {
 
 	public static List<Short> getIpNumbers() {
 		return ipNumbers;
-	}
-
-	public static ServerSocket getServerSocket() {
-		return serverSocket;
 	}
 
 	public static Thread getThread() {
