@@ -1,6 +1,5 @@
 package hakd.game;
 
-import com.badlogic.gdx.Gdx;
 import hakd.networks.BackboneProviderNetwork;
 import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
@@ -78,21 +77,6 @@ public final class Internet {
 		try {
 			serverSocket = new ServerSocket();
 			serverSocket.bind(new InetSocketAddress((int) (Math.random() * 10000 + 40000))); // this could cause (hilarious) problems if you run more than one instance of the two games share a server
-
-			thread = new Thread(new Runnable() {
-				@Override
-				public void run() {
-					while(Gdx.app.getApplicationListener() != null) { // better than while(true){}
-						try {
-							serverSocket.accept();
-						} catch(IOException e) {
-							e.printStackTrace();
-						}
-					}
-				}
-			});
-			thread.start();
-
 		} catch(IOException e) {
 			e.printStackTrace();
 		}
