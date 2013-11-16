@@ -6,15 +6,15 @@ import hakd.networks.devices.Device;
 
 public final class PyNetworking {
 
-	public static void newSocket() {
+    public static void newSocket() {
 
-	}
+    }
 
-	public static Device get_device(String ip) {
-		return GameScreen.internet.getDevice(ip);
-	}
+    public static Device get_device(String ip) {
+        return GameScreen.internet.getDevice(ip);
+    }
 
-	public static short[] ip_from_string(String ip) {
-		return Internet.ipFromString(ip);
-	}
+    public static short[] ip_from_string(String ip) {
+        return Internet.ipFromString(ip);
+    }
 }

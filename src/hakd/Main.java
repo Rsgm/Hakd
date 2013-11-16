@@ -6,10 +6,10 @@ import hakd.game.Hakd;
 
 public final class Main {
 
-	public static void main(String[] args) {
-		LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
-		config.resizable = false;
-		config.title = "Hak'd";
-		new LwjglApplication(new Hakd(), config);
-	}
+    public static void main(String[] args) {
+        LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
+        config.resizable = false;
+        config.title = "Hak'd";
+        new LwjglApplication(new Hakd(), config);
+    }
 }

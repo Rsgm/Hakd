@@ -6,81 +6,81 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Part {
-	PartType type;
-	Device device;
-	int level;
+    PartType type;
+    Device device;
+    int level;
 
-	String brand;
-	String model;
+    String brand;
+    String model;
 
-	public Part() {
-		type = PartType.PART;
-	}
+    public Part() {
+        type = PartType.PART;
+    }
 
-	// finds all of the parts in the list of that type
-	public static List<Part> findParts(List<Part> parts, PartType type) {
-		List<Part> returnParts = new ArrayList<Part>();
-		for(Part p : parts) {
-			if(p.getType() == type) {
-				returnParts.add(p);
-			}
-		}
-		return returnParts;
-	}
+    // finds all of the parts in the list of that type
+    public static List<Part> findParts(List<Part> parts, PartType type) {
+        List<Part> returnParts = new ArrayList<Part>();
+        for (Part p : parts) {
+            if (p.getType() == type) {
+                returnParts.add(p);
+            }
+        }
+        return returnParts;
+    }
 
-	public enum PartType {
-		PART(), CPU(), GPU(), MEMORY(), STORAGE; // more to come
+    public enum PartType {
+        PART(), CPU(), GPU(), MEMORY(), STORAGE; // more to come
 
-		private PartType() {
-		}
-	}
+        private PartType() {
+        }
+    }
 
-	public enum Brand {
-		INTELLIGENCE("Intelligence");
-		public final String brand;
+    public enum Brand {
+        INTELLIGENCE("Intelligence");
+        public final String brand;
 
-		Brand(String brand) {
-			this.brand = brand;
-		}
-	}
+        Brand(String brand) {
+            this.brand = brand;
+        }
+    }
 
-	public enum Model {
+    public enum Model {
 
-	}
+    }
 
-	public Device getDevice() {
-		return device;
-	}
+    public Device getDevice() {
+        return device;
+    }
 
-	public void setDevice(Device device) {
-		this.device = device;
-	}
+    public void setDevice(Device device) {
+        this.device = device;
+    }
 
-	public int getLevel() {
-		return level;
-	}
+    public int getLevel() {
+        return level;
+    }
 
-	public void setLevel(int level) {
-		this.level = level;
-	}
+    public void setLevel(int level) {
+        this.level = level;
+    }
 
-	public String getBrand() {
-		return brand;
-	}
+    public String getBrand() {
+        return brand;
+    }
 
-	public void setBrand(String brand) {
-		this.brand = brand;
-	}
+    public void setBrand(String brand) {
+        this.brand = brand;
+    }
 
-	public String getModel() {
-		return model;
-	}
+    public String getModel() {
+        return model;
+    }
 
-	public void setModel(String model) {
-		this.model = model;
-	}
+    public void setModel(String model) {
+        this.model = model;
+    }
 
-	public PartType getType() {
-		return type;
-	}
+    public PartType getType() {
+        return type;
+    }
 }

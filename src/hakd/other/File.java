@@ -2,55 +2,55 @@ package hakd.other;
 
 public final class File { // TODO file hashes!
 
-	// data
-	private int size;
-	private String name;
-	private String data;
-	private FileType type;
+    // data
+    private int size;
+    private String name;
+    private String data;
+    private FileType type;
 
-	public File(int size, String name, String data, FileType type) {
-		this.size = size;
-		this.name = name;
-		this.data = data;
-		this.type = type;
-	}
+    public File(int size, String name, String data, FileType type) {
+        this.size = size;
+        this.name = name;
+        this.data = data;
+        this.type = type;
+    }
 
-	public enum FileType {
-		OS, USER, PROGRAM, LOG;
+    public enum FileType {
+        OS, USER, PROGRAM, LOG;
 
-		private FileType() {
-		}
-	}
+        private FileType() {
+        }
+    }
 
-	public int getSize() {
-		return size;
-	}
+    public int getSize() {
+        return size;
+    }
 
-	public void setSize(int size) {
-		this.size = size;
-	}
+    public void setSize(int size) {
+        this.size = size;
+    }
 
-	public String getName() {
-		return name;
-	}
+    public String getName() {
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public String getData() {
-		return data;
-	}
+    public String getData() {
+        return data;
+    }
 
-	public void setData(String data) {
-		this.data = data;
-	}
+    public void setData(String data) {
+        this.data = data;
+    }
 
-	public FileType getType() {
-		return type;
-	}
+    public FileType getType() {
+        return type;
+    }
 
-	public void setType(FileType type) {
-		this.type = type;
-	}
+    public void setType(FileType type) {
+        this.type = type;
+    }
 }

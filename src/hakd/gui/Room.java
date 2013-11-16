@@ -16,204 +16,204 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Room {
-	private Player player;
-	private Network network;
-	private final List<Device> devices;
-	private final List<EmptyDeviceTile> emptyDeviceTiles;
+    private Player player;
+    private Network network;
+    private final List<Device> devices;
+    private final List<EmptyDeviceTile> emptyDeviceTiles;
 
-	private TiledMap map;
-	private Object[][] mapObjects;
+    private TiledMap map;
+    private Object[][] mapObjects;
 
-	private TiledMapTileLayer floor;
-	private TiledMapTileLayer wall;
-	private MapLayer bounds; // if it matters, maybe rename this to
-	// wall/boundary layer
-	private TiledMapTileLayer objetcts; // Intractable tiles
+    private TiledMapTileLayer floor;
+    private TiledMapTileLayer wall;
+    private MapLayer bounds; // if it matters, maybe rename this to
+    // wall/boundary layer
+    private TiledMapTileLayer objetcts; // Intractable tiles
 
-	private GameScreen gameScreen;
+    private GameScreen gameScreen;
 
-	public Room(Player player, GameScreen gameScreen, RoomMap roomMap) {
-		this.player = player;
-		network = player.getNetwork();
+    public Room(Player player, GameScreen gameScreen, RoomMap roomMap) {
+        this.player = player;
+        network = player.getNetwork();
 
-		devices = network.getDevices();
-		emptyDeviceTiles = new ArrayList<EmptyDeviceTile>();
+        devices = network.getDevices();
+        emptyDeviceTiles = new ArrayList<EmptyDeviceTile>();
 
-		map = new TmxMapLoader().load("hakd/gui/resources/maps/" + roomMap.toString() + ".tmx");
+        map = new TmxMapLoader().load("hakd/gui/resources/maps/" + roomMap.toString() + ".tmx");
 
-		floor = (TiledMapTileLayer) map.getLayers().get("floor");
-		floor = (TiledMapTileLayer) map.getLayers().get("wall");
-		bounds = map.getLayers().get("bounds");
-		objetcts = (TiledMapTileLayer) map.getLayers().get("objects");
+        floor = (TiledMapTileLayer) map.getLayers().get("floor");
+        floor = (TiledMapTileLayer) map.getLayers().get("wall");
+        bounds = map.getLayers().get("bounds");
+        objetcts = (TiledMapTileLayer) map.getLayers().get("objects");
 
-		int deviceLimit = Integer.parseInt((String) map.getProperties().get("devices"));
-		network.setDeviceLimit(deviceLimit);
+        int deviceLimit = Integer.parseInt((String) map.getProperties().get("devices"));
+        network.setDeviceLimit(deviceLimit);
 
-		buildRoom();
-		gameScreen.changeMap(map);
-	}
+        buildRoom();
+        gameScreen.changeMap(map);
+    }
 
-	private void buildRoom() {
-		mapObjects = new Object[bounds.getObjects().getCount()][3];
+    private void buildRoom() {
+        mapObjects = new Object[bounds.getObjects().getCount()][3];
 
-		int i = 0;
-		for(MapObject o : bounds.getObjects()) {
-			mapObjects[i][0] = o.getName();
-			mapObjects[i][1] = Integer.parseInt((String) o.getProperties().get("x"));
-			mapObjects[i][2] = Integer.parseInt((String) o.getProperties().get("y"));
-			i++;
-		}
+        int i = 0;
+        for (MapObject o : bounds.getObjects()) {
+            mapObjects[i][0] = o.getName();
+            mapObjects[i][1] = Integer.parseInt((String) o.getProperties().get("x"));
+            mapObjects[i][2] = Integer.parseInt((String) o.getProperties().get("y"));
+            i++;
+        }
 
-		// set sprites(tile) of network devices
-		for(Device d : devices) {
-			d.setTile(new Sprite(Assets.nearestTextures.findRegion("d" + d.getLevel())));
-			d.getTile().setSize(d.getTile().getWidth() / GameScreen.tileSize, d.getTile().getHeight() / GameScreen.tileSize);
+        // set sprites(tile) of network devices
+        for (Device d : devices) {
+            d.setTile(new Sprite(Assets.nearestTextures.findRegion("d" + d.getLevel())));
+            d.getTile().setSize(d.getTile().getWidth() / GameScreen.tileSize, d.getTile().getHeight() / GameScreen.tileSize);
 
-			float[] ortho = Util.isoToOrtho(d.getIsoX(), d.getIsoY(), floor.getHeight());
+            float[] ortho = Util.isoToOrtho(d.getIsoX(), d.getIsoY(), floor.getHeight());
 
-			d.getTile().setPosition(ortho[0], ortho[1]);
-		}
+            d.getTile().setPosition(ortho[0], ortho[1]);
+        }
 
-		// create unused device spaces and set their sprite to "d-1"
-		for(Object[] o : mapObjects) {
-			if(o[0] instanceof String && o[1] instanceof Integer && o[2] instanceof Integer) {
+        // create unused device spaces and set their sprite to "d-1"
+        for (Object[] o : mapObjects) {
+            if (o[0] instanceof String && o[1] instanceof Integer && o[2] instanceof Integer) {
 
-				if(((String) o[0]).matches("device") && getObjectAtTile((Integer) o[1], (Integer) o[2]).equals("empty")) {
-					EmptyDeviceTile emptyDeviceTile = new EmptyDeviceTile((Integer) o[1], (Integer) o[2]);
+                if (((String) o[0]).matches("device") && getObjectAtTile((Integer) o[1], (Integer) o[2]).equals("empty")) {
+                    EmptyDeviceTile emptyDeviceTile = new EmptyDeviceTile((Integer) o[1], (Integer) o[2]);
 
-					emptyDeviceTile.setTile(new Sprite(Assets.nearestTextures.findRegion("d-1")));
-					emptyDeviceTile.getTile().setSize(emptyDeviceTile.getTile().getWidth() / GameScreen.tileSize, emptyDeviceTile.getTile().getHeight() / GameScreen.tileSize);
+                    emptyDeviceTile.setTile(new Sprite(Assets.nearestTextures.findRegion("d-1")));
+                    emptyDeviceTile.getTile().setSize(emptyDeviceTile.getTile().getWidth() / GameScreen.tileSize, emptyDeviceTile.getTile().getHeight() / GameScreen.tileSize);
 
-					float[] ortho = Util.isoToOrtho((Integer) o[1], (Integer) o[2], floor.getHeight());
+                    float[] ortho = Util.isoToOrtho((Integer) o[1], (Integer) o[2], floor.getHeight());
 
-					emptyDeviceTile.getTile().setPosition(ortho[0], ortho[1]);
+                    emptyDeviceTile.getTile().setPosition(ortho[0], ortho[1]);
 
-					emptyDeviceTiles.add(emptyDeviceTile);
-				}
-			}
-		}
-		network.setEmptyDeviceTiles(emptyDeviceTiles);
-	}
+                    emptyDeviceTiles.add(emptyDeviceTile);
+                }
+            }
+        }
+        network.setEmptyDeviceTiles(emptyDeviceTiles);
+    }
 
-	/**
-	 * Finds the device at the specified isometric coordinates.
-	 *
-	 * @return The device found.
-	 *         The string "other", if no device was found there.
-	 *         Null if the tile in the map does not have an object.
-	 */
-	public Object getObjectAtTile(int x, int y) {
-		for(Device d : devices) {
-			if(x == d.getIsoX() && y == d.getIsoY()) {
-				return d;
-			}
-		}
+    /**
+     * Finds the device at the specified isometric coordinates.
+     *
+     * @return The device found.
+     *         The string "other", if no device was found there.
+     *         Null if the tile in the map does not have an object.
+     */
+    public Object getObjectAtTile(int x, int y) {
+        for (Device d : devices) {
+            if (x == d.getIsoX() && y == d.getIsoY()) {
+                return d;
+            }
+        }
 
-		for(EmptyDeviceTile e : emptyDeviceTiles) {
-			if(x == e.getIsoX() && y == e.getIsoY()) {
-				return e;
-			}
-		}
+        for (EmptyDeviceTile e : emptyDeviceTiles) {
+            if (x == e.getIsoX() && y == e.getIsoY()) {
+                return e;
+            }
+        }
 
-		for(Object[] o : mapObjects) {
-			if(((Integer) o[1]) == x && ((Integer) o[2]) == y) {
-				if(o[0].equals("device")) {
-					return "empty";
-				} else {
-					return "other";
-				}
-			}
-		}
+        for (Object[] o : mapObjects) {
+            if (((Integer) o[1]) == x && ((Integer) o[2]) == y) {
+                if (o[0].equals("device")) {
+                    return "empty";
+                } else {
+                    return "other";
+                }
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public enum RoomMap {
-		room1(), room2(), room3(), room4(), room5(), room6();
+    public enum RoomMap {
+        room1(), room2(), room3(), room4(), room5(), room6();
 
-		private RoomMap() {
-		}
-	}
+        private RoomMap() {
+        }
+    }
 
-	public void dispose() {
-		map.dispose();
-	}
+    public void dispose() {
+        map.dispose();
+    }
 
-	public Player getPlayer() {
-		return player;
-	}
+    public Player getPlayer() {
+        return player;
+    }
 
-	public void setPlayer(Player player) {
-		this.player = player;
-	}
+    public void setPlayer(Player player) {
+        this.player = player;
+    }
 
-	public Network getNetwork() {
-		return network;
-	}
+    public Network getNetwork() {
+        return network;
+    }
 
-	public void setNetwork(Network network) {
-		this.network = network;
-	}
+    public void setNetwork(Network network) {
+        this.network = network;
+    }
 
-	public TiledMap getMap() {
-		return map;
-	}
+    public TiledMap getMap() {
+        return map;
+    }
 
-	public void setMap(TiledMap map) {
-		this.map = map;
-	}
+    public void setMap(TiledMap map) {
+        this.map = map;
+    }
 
-	public TiledMapTileLayer getFloor() {
-		return floor;
-	}
+    public TiledMapTileLayer getFloor() {
+        return floor;
+    }
 
-	public void setFloor(TiledMapTileLayer floor) {
-		this.floor = floor;
-	}
+    public void setFloor(TiledMapTileLayer floor) {
+        this.floor = floor;
+    }
 
-	public GameScreen getGameScreen() {
-		return gameScreen;
-	}
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
 
-	public void setGameScreen(GameScreen gameScreen) {
-		this.gameScreen = gameScreen;
-	}
+    public void setGameScreen(GameScreen gameScreen) {
+        this.gameScreen = gameScreen;
+    }
 
-	public Object[][] getMapObjects() {
-		return mapObjects;
-	}
+    public Object[][] getMapObjects() {
+        return mapObjects;
+    }
 
-	public void setMapObjects(Object[][] mapObjects) {
-		this.mapObjects = mapObjects;
-	}
+    public void setMapObjects(Object[][] mapObjects) {
+        this.mapObjects = mapObjects;
+    }
 
-	public TiledMapTileLayer getWall() {
-		return wall;
-	}
+    public TiledMapTileLayer getWall() {
+        return wall;
+    }
 
-	public void setWall(TiledMapTileLayer wall) {
-		this.wall = wall;
-	}
+    public void setWall(TiledMapTileLayer wall) {
+        this.wall = wall;
+    }
 
-	public MapLayer getBounds() {
-		return bounds;
-	}
+    public MapLayer getBounds() {
+        return bounds;
+    }
 
-	public void setBounds(MapLayer bounds) {
-		this.bounds = bounds;
-	}
+    public void setBounds(MapLayer bounds) {
+        this.bounds = bounds;
+    }
 
-	public TiledMapTileLayer getObjetcts() {
-		return objetcts;
-	}
+    public TiledMapTileLayer getObjetcts() {
+        return objetcts;
+    }
 
-	public void setObjetcts(TiledMapTileLayer objetcts) {
-		this.objetcts = objetcts;
-	}
+    public void setObjetcts(TiledMapTileLayer objetcts) {
+        this.objetcts = objetcts;
+    }
 
-	public List<Device> getDevices() {
-		return devices;
-	}
+    public List<Device> getDevices() {
+        return devices;
+    }
 }
 
 /*

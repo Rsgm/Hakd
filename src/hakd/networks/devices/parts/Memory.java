@@ -1,18 +1,18 @@
 package hakd.networks.devices.parts;
 
 public final class Memory extends Part {
-	private int capacity;
+    private int capacity;
 
-	public Memory() {
-		super();
-		type = PartType.MEMORY;
-	}
+    public Memory() {
+        super();
+        type = PartType.MEMORY;
+    }
 
-	public int getCapacity() {
-		return capacity;
-	}
+    public int getCapacity() {
+        return capacity;
+    }
 
-	public void setCapacity(int capacity) {
-		this.capacity = capacity;
-	}
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
 }

@@ -14,127 +14,127 @@ import hakd.networks.Network;
 import java.util.ArrayList;
 
 public final class MapScreen extends HakdScreen {
-	private Player player;
-	private Network network;
-	private final Internet internet;
+    private Player player;
+    private Network network;
+    private final Internet internet;
 
-	private final GameScreen gameScreen;
-	private final MapInput input;
-	private float time = 0;
+    private final GameScreen gameScreen;
+    private final MapInput input;
+    private float time = 0;
 
-	private ArrayList<Sprite> networkSprites;
-	private ArrayList<Sprite> ispSprites;
-	private ArrayList<Sprite> backboneSprites;
-	private ArrayList<Sprite> connectionLineSprites;
-	private ArrayList<Sprite> parentLineSprites;
-	private ArrayList<Sprite> backboneLineSprites;
+    private ArrayList<Sprite> networkSprites;
+    private ArrayList<Sprite> ispSprites;
+    private ArrayList<Sprite> backboneSprites;
+    private ArrayList<Sprite> connectionLineSprites;
+    private ArrayList<Sprite> parentLineSprites;
+    private ArrayList<Sprite> backboneLineSprites;
 
-	public MapScreen(Game game, GameScreen gameScreen, Internet internet) {
-		super(game);
+    public MapScreen(Game game, GameScreen gameScreen, Internet internet) {
+        super(game);
 
-		this.internet = internet;
-		this.gameScreen = gameScreen;
+        this.internet = internet;
+        this.gameScreen = gameScreen;
 
-		networkSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
-		ispSprites = new ArrayList<Sprite>(internet.getInternetProviderNetworks().size());
-		backboneSprites = new ArrayList<Sprite>(internet.getBackboneProviderNetworks().size());
-		connectionLineSprites = new ArrayList<Sprite>(100);
-		parentLineSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
-		backboneLineSprites = new ArrayList<Sprite>(internet.getBackboneProviderNetworks().size());
+        networkSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
+        ispSprites = new ArrayList<Sprite>(internet.getInternetProviderNetworks().size());
+        backboneSprites = new ArrayList<Sprite>(internet.getBackboneProviderNetworks().size());
+        connectionLineSprites = new ArrayList<Sprite>(100);
+        parentLineSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
+        backboneLineSprites = new ArrayList<Sprite>(internet.getBackboneProviderNetworks().size());
 
-		cam = new OrthographicCamera();
-		((OrthographicCamera) cam).setToOrtho(false, width, height);
+        cam = new OrthographicCamera();
+        ((OrthographicCamera) cam).setToOrtho(false, width, height);
 
-		input = new MapInput(this);
-	}
+        input = new MapInput(this);
+    }
 
-	@Override
-	public void show() {
-		super.show();
+    @Override
+    public void show() {
+        super.show();
 
-		cam.position.x = 0;
-		cam.position.y = 0;
-		((OrthographicCamera) cam).zoom = 2;
-		cam.update();
+        cam.position.x = 0;
+        cam.position.y = 0;
+        ((OrthographicCamera) cam).zoom = 2;
+        cam.update();
 
-		reloadSprites();
+        reloadSprites();
 
-		Gdx.gl.glClearColor(1, 1, 1, 1);
-		Gdx.input.setInputProcessor(input);
-	}
+        Gdx.gl.glClearColor(1, 1, 1, 1);
+        Gdx.input.setInputProcessor(input);
+    }
 
-	@Override
-	public void render(float delta) {
-		super.render(delta);
+    @Override
+    public void render(float delta) {
+        super.render(delta);
 
-		//System.out.println((int) (1 / delta));
-		time += delta;
-		if(time >= 1) {
-			reloadSprites();
-		}
+        //System.out.println((int) (1 / delta));
+        time += delta;
+        if (time >= 1) {
+            reloadSprites();
+        }
 
-		batch.setProjectionMatrix(cam.combined);
-		batch.begin();
-		for(Sprite s : backboneLineSprites) {
-			s.draw(batch);
-		}
-		for(Sprite s : parentLineSprites) {
-			s.draw(batch);
-		}
-		for(Sprite s : backboneSprites) {
-			s.draw(batch);
-		}
-		for(Sprite s : ispSprites) {
-			s.draw(batch);
-		}
-		for(Sprite s : networkSprites) {
-			s.draw(batch);
-		}
-		for(Sprite s : connectionLineSprites) {
-			s.draw(batch);
-		}
-		batch.end();
-	}
+        batch.setProjectionMatrix(cam.combined);
+        batch.begin();
+        for (Sprite s : backboneLineSprites) {
+            s.draw(batch);
+        }
+        for (Sprite s : parentLineSprites) {
+            s.draw(batch);
+        }
+        for (Sprite s : backboneSprites) {
+            s.draw(batch);
+        }
+        for (Sprite s : ispSprites) {
+            s.draw(batch);
+        }
+        for (Sprite s : networkSprites) {
+            s.draw(batch);
+        }
+        for (Sprite s : connectionLineSprites) {
+            s.draw(batch);
+        }
+        batch.end();
+    }
 
-	private void reloadSprites() {
-		networkSprites.clear();
-		ispSprites.clear();
-		backboneSprites.clear();
-		connectionLineSprites.clear();
-		parentLineSprites.clear();
-		backboneLineSprites.clear();
+    private void reloadSprites() {
+        networkSprites.clear();
+        ispSprites.clear();
+        backboneSprites.clear();
+        connectionLineSprites.clear();
+        parentLineSprites.clear();
+        backboneLineSprites.clear();
 
-		for(Network n : internet.getIpNetworkHashMap().values()) {
-			if(n instanceof BackboneProviderNetwork) {
-				backboneSprites.add(n.getMapIcon());
-				backboneLineSprites.addAll(((BackboneProviderNetwork) n).getBackboneConnectionLines());
-			} else if(n instanceof InternetProviderNetwork) {
-				ispSprites.add(n.getMapIcon());
-				parentLineSprites.add(n.getMapParentLine());
-			} else {
-				networkSprites.add(n.getMapIcon());
-				parentLineSprites.add(n.getMapParentLine());
-			}
+        for (Network n : internet.getIpNetworkHashMap().values()) {
+            if (n instanceof BackboneProviderNetwork) {
+                backboneSprites.add(n.getMapIcon());
+                backboneLineSprites.addAll(((BackboneProviderNetwork) n).getBackboneConnectionLines());
+            } else if (n instanceof InternetProviderNetwork) {
+                ispSprites.add(n.getMapIcon());
+                parentLineSprites.add(n.getMapParentLine());
+            } else {
+                networkSprites.add(n.getMapIcon());
+                parentLineSprites.add(n.getMapParentLine());
+            }
 
-			//			for(Connection c : n.getconnections) {
-			//			    connectionLineSprites.addc.getLine();
-			//			}
+            //			for(Connection c : n.getconnections) {
+            //			    connectionLineSprites.addc.getLine();
+            //			}
 
-		}
-	}
+        }
+    }
 
-	@Override
-	public void dispose() {
-		super.dispose();
-	}
+    @Override
+    public void dispose() {
+        super.dispose();
+    }
 
-	@Override
-	public void hide() {
-		Gdx.input.setInputProcessor(gameScreen.getInput());
-		time = 0;
-	}
+    @Override
+    public void hide() {
+        Gdx.input.setInputProcessor(gameScreen.getInput());
+        time = 0;
+    }
 
-	public GameScreen getGameScreen() {
-		return gameScreen;
-	}
+    public GameScreen getGameScreen() {
+        return gameScreen;
+    }
 }
