@@ -5,7 +5,6 @@ import hakd.connection.Connectable;
 import hakd.connection.Connection;
 import hakd.connection.Port;
 import hakd.game.Internet;
-import hakd.game.Internet.Protocol;
 import hakd.gui.windows.deviceapps.ServerWindowStage;
 import hakd.networks.Network;
 import hakd.networks.devices.parts.*;
@@ -17,6 +16,7 @@ import hakd.other.File.FileType;
 
 import java.net.Socket;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class Device implements Connectable {
@@ -38,7 +38,7 @@ public class Device implements Connectable {
     int cpuSpeed; // in MHz, additive
     int gpuSpeed; // in MHz, additive
 
-    final List<Connection> connections = new ArrayList<Connection>();
+    final HashMap<String, Connection> connections = new HashMap<String, Connection>();
 
     // objects
     final List<Part> parts = new ArrayList<Part>();
@@ -57,7 +57,7 @@ public class Device implements Connectable {
     }
 
     @Override
-    public ConnectionStatus Connect(Device client, Port port) {
+    public ConnectionStatus connect(Device client, Port port) {
         ConnectionStatus permission = hasPermission(port);
 
         if (permission == ConnectionStatus.OK) {
@@ -65,20 +65,22 @@ public class Device implements Connectable {
             Socket sHost = Internet.connectSocket(sClient);
 
             Connection c = new Connection(this, client, port, sClient, sHost);
-            connections.add(c);
+            connections.put(client.getIp(), c);
 
-            client.getConnections().add(c);
+            client.getConnections().put(ip, c);
         } else {
+            log(client, port.getProgram(), port.getPortNumber(), port.getProtocol());
             return permission;
         }
 
         // if player, connect to server program()
 
+
         return permission;
     }
 
     /**
-     * if it has permission to connect
+     * Checks if it has permission to make the connection.
      *
      * @return True if it is allowed.
      */
@@ -89,12 +91,12 @@ public class Device implements Connectable {
     }
 
     @Override
-    public boolean Disconnect(Connection c) {
-        return c.close();
+    public void disconnect(Connection c) {
+        c.close();
     }
 
     @Override
-    public boolean openPort(String program, int portNumber, Protocol protocol) {
+    public boolean openPort(String program, int portNumber, String protocol) {
         if (Port.checkPort(ports, portNumber) == Port.PortStatus.CLOSED) {
             ports.add(new Port(program, portNumber, protocol));
             return true;
@@ -113,7 +115,7 @@ public class Device implements Connectable {
 
     @Override
     public boolean closePort(Port port) {
-        for (Connection c : connections) {
+        for (Connection c : connections.values()) {
             if (c.getClientPort() == port) {
                 c.close();// you may have to close these from a for loop with a
                 // temporary array
@@ -124,10 +126,11 @@ public class Device implements Connectable {
     }
 
     @Override
-    public void log(Device client, String program, int port, Protocol protocol) {
+    public void log(Device client, String program, int port, String protocol) {
         masterStorage.addFile(new File(0, "Log - " + client.ip + ".log", "Connecting with " + program + " through portNumber" + port + " using " + protocol + "\n" + program + ":" + port + "->" + protocol, FileType.LOG));
     /*
-     * ---Example--- Log - 243.15.66.24 Connecting with half life 3 through portNumber 28190 using LAMBDA
+     * ---Example---
+	 * Log - 243.15.66.24 Connecting with half life 3 through portNumber 28190 using LAMBDA
 	 * half life 3:28190->LAMBDA
 	 */
     }
@@ -199,8 +202,8 @@ public class Device implements Connectable {
     }
 
     public void dispose() {
-        for (Connection c : connections) {
-            Disconnect(c);
+        for (Connection c : connections.values()) {
+            disconnect(c);
         }
         for (Port p : ports) {
             closePort(p);
@@ -333,7 +336,7 @@ public class Device implements Connectable {
         this.address = address;
     }
 
-    public List<Connection> getConnections() {
+    public HashMap<String, Connection> getConnections() {
         return connections;
     }
 

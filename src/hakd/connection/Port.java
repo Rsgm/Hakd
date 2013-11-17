@@ -11,18 +11,18 @@ import java.util.List;
 public final class Port {
     private String program;
     private int portNumber;
-    private Protocol protocol;
+    private String protocol;
 
-    public Port(String program, int portNumber, Protocol protocol) {
+    public Port(String program, int portNumber, String protocol) {
         this.program = program;
         this.portNumber = portNumber;
-        this.protocol = protocol;
+        this.protocol = protocol.toUpperCase();
     }
 
     public Port(Protocol protocol) {
         this.program = protocol.name();
         this.portNumber = protocol.portNumber;
-        this.protocol = protocol;
+        this.protocol = protocol.name().toUpperCase();
     }
 
     /**
@@ -76,11 +76,11 @@ public final class Port {
         this.portNumber = portNumber;
     }
 
-    public Protocol getProtocol() {
+    public String getProtocol() {
         return protocol;
     }
 
-    public void setProtocol(Protocol protocol) {
-        this.protocol = protocol;
+    public void setProtocol(String protocol) {
+        this.protocol = protocol.toUpperCase();
     }
 }

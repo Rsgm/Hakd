@@ -14,8 +14,8 @@ public final class Connection {
     private Device client;
     private Port clientPort;
 
-    private Socket hostSocket;
     private Socket clientSocket;
+    private Socket hostSocket;
 
     // other info
     private int speed;
@@ -32,11 +32,9 @@ public final class Connection {
         hostSocket = sHost;
     }
 
-    public boolean close() {
-        boolean test = host.getConnections().remove(this) || client.getConnections().remove(this);
-        System.out.println("Connection closed:" + test);
-
-        return test;
+    public void close() {
+        host.getConnections().remove(client.getIp());
+        client.getConnections().remove(host.getIp());
     }
 
     public Device getHost() {

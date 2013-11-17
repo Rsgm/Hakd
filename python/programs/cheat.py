@@ -1,24 +1,38 @@
 #@help:cheat {program} [arguments] - A script full of cheaty debug tools.
 from hakd.game.pythonapi import PyDisplay
 from hakd.game.pythonapi import PyNetworking
-from hakd.game.Internet import Protocol
 from hakd.connection import Port
-import random
 
 def help():
 	PyDisplay.write(terminal, 'Programs available:' +
-	'\n   open_port {target IP} {target port} - opens the specified port of the device' +
-	'\n   connect {target IP} {target port} - connects to the specified device on the port')
+	'\n   open_port {target IP} {program} {port} {protocol} - opens a port on the device' +
+	'\n   connect {target IP} {program} {port} {protocol} - connects to the device')
 
 def open_port():
-	ip = parameters[0]
-	port = parameters[1]
-	
-	d = PyNetworking.get_device(ip_short)
-	device.openPort(Port(Protocol.values()[]))
+	if len(parameters) < 4:
+		PyDisplay.write(terminal, 'Missing arguments.')
+	else:
+		ip = parameters[0]
+		program = parameters[1]
+		port = int(parameters[2])
+		protocol = parameters[3]
+		
+		d = PyNetworking.get_device(ip)
+		d.openPort(Port(program, port, protocol))
 
-def connect()
-	
+def connect():
+	if len(parameters) < 2:
+		PyDisplay.write(terminal, 'Missing arguments.')
+	else:
+		ip = parameters[0]
+		program = parameters[1]
+		port = int(parameters[2])
+		protocol = parameters[3]
+		
+		d = PyNetworking.get_device(ip)
+		d.connect(terminal.device, Port(program, port, protocol))
+		
+		
 
 
 try:
@@ -35,4 +49,4 @@ else:
 	elif p == 'open_port':
 		open_port()
 	elif p == 'connect':
-		print 0
+		connect()

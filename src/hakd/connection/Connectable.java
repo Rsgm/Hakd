@@ -1,24 +1,23 @@
 package hakd.connection;
 
-import hakd.game.Internet.Protocol;
 import hakd.networks.devices.Device;
 
 public interface Connectable {
 
     /**
-     * connects to a specified host on the specified portNumber
+     * Connects to the host on the specified portNumber.
      */
-    public ConnectionStatus Connect(Device client, Port port);
+    public ConnectionStatus connect(Device client, Port port);
 
     /**
-     * disconnects from the network
+     * Disconnects from the network.
      */
-    public boolean Disconnect(Connection c);
+    public void disconnect(Connection c);
 
     /**
      * Creates a new portNumber with specified information.
      */
-    public boolean openPort(String program, int portNumber, Protocol protocol);
+    public boolean openPort(String program, int portNumber, String protocol);
 
     /**
      * A variant of openPort(String, int, Protocol) in which it uses an already
@@ -32,7 +31,7 @@ public interface Connectable {
     /**
      * Creates a log of the event
      */
-    public void log(Device client, String program, int port, Protocol protocol);
+    public void log(Device client, String program, int port, String protocol);
 
     /**
      * Connection request responses. These tell if a connection was successful
