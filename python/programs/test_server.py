@@ -5,20 +5,21 @@ import time
 import random
 
 device = terminal.device
-connections = device.getConnections()
+device.openPort(Port('ftp server', 21, 'ftp'))
 
-while 1==1 :
-	time.sleep(1)
-	
-#	new = list(device.getConnections().values() - connections.values())
-	print 'newlist'
-#	for c in new:
-#		print c
-#		PyDisplay.write(terminal, 'New connection from: ' + c)
-	connections = device.getConnections()
-	print connections.values()
-	
-	for c in connections.values():
-		out = c.getHostSocket().getOutputStream()
-		out.write(random.randint(0, 255))
-		out.flush()
+while 1==1:
+	connections = device.getConnections().values()	
+	print len(connections)
+	while len(connections) > 0 :
+		time.sleep(1)
+		
+		#new = list(device.getConnections().values() - connections.values())
+		print 'newlist'
+		#for c in new:
+		#	print c
+		#	PyDisplay.write(terminal, 'New connection from: ' + c)
+		connections = device.getConnections().values()
+		print connections
+		
+		for c in connections:
+			c.getHostPort().write(random.randint(0, 255))

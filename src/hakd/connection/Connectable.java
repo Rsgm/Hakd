@@ -2,12 +2,14 @@ package hakd.connection;
 
 import hakd.networks.devices.Device;
 
+import java.io.IOException;
+
 public interface Connectable {
 
     /**
      * Connects to the host on the specified portNumber.
      */
-    public ConnectionStatus connect(Device client, Port port);
+    public boolean connect(Device client, Port clientPort, int port) throws IOException;
 
     /**
      * Disconnects from the network.
@@ -15,18 +17,14 @@ public interface Connectable {
     public void disconnect(Connection c);
 
     /**
-     * Creates a new portNumber with specified information.
-     */
-    public boolean openPort(String program, int portNumber, String protocol);
-
-    /**
-     * A variant of openPort(String, int, Protocol) in which it uses an already
-     * made port.
+     * Opens the given port on the device.
      */
     boolean openPort(Port port);
 
-    /** */
-    public boolean closePort(Port port);
+    /**
+     * Closes the given port on the devide, and any connections using it.
+     */
+    public boolean closePort(int port);
 
     /**
      * Creates a log of the event

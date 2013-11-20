@@ -149,8 +149,6 @@ public final class GameScreen extends HakdScreen {
     public void dispose() {
         super.dispose();
         room.dispose();
-
-        Internet.getThread().interrupt();
     }
 
     @Override

@@ -7,10 +7,6 @@ import hakd.networks.Network.NetworkType;
 import hakd.networks.NetworkFactory;
 import hakd.networks.devices.Device;
 
-import java.io.IOException;
-import java.net.InetSocketAddress;
-import java.net.ServerSocket;
-import java.net.Socket;
 import java.util.*;
 
 public final class Internet {
@@ -41,12 +37,6 @@ public final class Internet {
     public static List<Short> ipNumbers = new ArrayList<Short>(255);
 
     /**
-     * Handles all of the device connections.
-     */
-    private static ServerSocket serverSocket;
-    private static Thread thread;
-
-    /**
      * This is only created at the start of the game.
      */
     public Internet() { // maximum is about 1:6:270 (backbones:isps:networks)
@@ -59,8 +49,6 @@ public final class Internet {
         ipNetworkHashMap = new HashMap<String, Network>(networks + isps + backbones);
         addressIpHashMap = new HashMap<String, short[]>(networks + isps + backbones);
 
-        startServer();
-
         for (short i = 1; i <= 256; i++) {
             ipNumbers.add(i);
         }
@@ -68,18 +56,6 @@ public final class Internet {
         generateBackbones(backbones);
         generateIsps(isps);
         generateNetworks(networks);
-    }
-
-    /**
-     * Called on internet creation.
-     */
-    private static void startServer() {
-        try {
-            serverSocket = new ServerSocket();
-            serverSocket.bind(new InetSocketAddress((int) (Math.random() * 10000 + 40000))); // this could cause (hilarious) problems if you run more than one instance of the two games share a server
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     private void generateBackbones(int amount) {
@@ -261,34 +237,6 @@ public final class Internet {
         return array;
     }
 
-    public static synchronized Socket connectSocket(Socket sClient) {
-        final Socket[] connectedSocket = new Socket[1];
-        new Thread(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    connectedSocket[0] = serverSocket.accept();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }).start();
-
-        try {
-            Thread.sleep(1); // only to make sure accept was called
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        try {
-            sClient.connect(serverSocket.getLocalSocketAddress());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return connectedSocket[0];
-    }
-
     /**
      * Protocols tell how to encode and decode a connection data stream. Protocols have default ports, but they can be used on other ports.
      */
@@ -330,9 +278,5 @@ public final class Internet {
 
     public static List<Short> getIpNumbers() {
         return ipNumbers;
-    }
-
-    public static Thread getThread() {
-        return thread;
     }
 }

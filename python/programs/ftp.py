@@ -13,13 +13,16 @@ else:
 	ip = parameters[0]
 	server = PyNetworking.get_device(ip)
 	
-	server.connect(terminal.device, Port('ftp', 21, 'ftp'))
+	port = Port('ftp', 21)
+	terminal.device.openPort(port)
+	
+	server.connect(terminal.device, port, 21)
 	connection = terminal.device.getConnections().get(ip)
-	input_stream = connection.getClientSocket().getInputStream()
+	port = connection.getClientPort()
 	
 	for i in range(15):
 		time.sleep(1)
-		data = input_stream.read()
+		data = port.read()
 		PyDisplay.write(terminal, str(data))
 	
 	print 'done'

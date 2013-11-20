@@ -5,7 +5,6 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import hakd.connection.Port;
 import hakd.gui.Assets;
 import hakd.networks.devices.Device;
 
@@ -120,8 +119,8 @@ public final class Info implements ServerWindow {
         table.row();
         table.add("Open Ports:");
         table.add("[");
-        for (Port p : device.getPorts()) {
-            table.add(p.getPortNumber() + ", ");
+        for (int p : device.getPorts().keySet()) {
+            table.add(p + ", ");
         }
         table.add("]");
         table.row();

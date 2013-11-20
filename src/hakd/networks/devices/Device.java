@@ -4,7 +4,6 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.connection.Connectable;
 import hakd.connection.Connection;
 import hakd.connection.Port;
-import hakd.game.Internet;
 import hakd.gui.windows.deviceapps.ServerWindowStage;
 import hakd.networks.Network;
 import hakd.networks.devices.parts.*;
@@ -14,7 +13,7 @@ import hakd.networks.devices.parts.Part.PartType;
 import hakd.other.File;
 import hakd.other.File.FileType;
 
-import java.net.Socket;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -26,8 +25,9 @@ public class Device implements Connectable {
     int level;
     String ip = ""; // all network variables will be in IP format
     String address;
-    // enum webserver = 0; // 0 = 404, if portNumber 80 is open
-    final List<Port> ports = new ArrayList<Port>(); // portNumber, program / if its closed just delete it
+
+    final HashMap<String, Connection> connections = new HashMap<String, Connection>();
+    final HashMap<Integer, Port> ports = new HashMap<Integer, Port>(); // portNumber, program / if its closed just delete it
     File logs; // TODO make this a file instead connecting from and the action after that
 
     Brand brand; // for example bell, or HQ
@@ -38,7 +38,6 @@ public class Device implements Connectable {
     int cpuSpeed; // in MHz, additive
     int gpuSpeed; // in MHz, additive
 
-    final HashMap<String, Connection> connections = new HashMap<String, Connection>();
 
     // objects
     final List<Part> parts = new ArrayList<Part>();
@@ -57,26 +56,39 @@ public class Device implements Connectable {
     }
 
     @Override
-    public ConnectionStatus connect(Device client, Port port) {
-        ConnectionStatus permission = hasPermission(port);
+    public boolean connect(Device client, Port clientPort, int port) throws IOException {
+        ConnectionStatus permission = hasPermission(clientPort, port);
 
         if (permission == ConnectionStatus.OK) {
-            Socket sClient = new Socket();
-            Socket sHost = Internet.connectSocket(sClient);
+            int i;
+            do {
+                i = (int) (Math.random() * 25536 + 40000); // 2^16 = 65536, 65536 - 40000 = 25536
+            } while (ports.containsKey(i));
 
-            Connection c = new Connection(this, client, port, sClient, sHost);
+            Port defaultServerPort = ports.get(port);
+            Port hostPort = new Port(defaultServerPort.getProgram(), i, defaultServerPort.getProtocol());
+
+            if (hostPort == null) {
+                throw new IOException(ConnectionStatus.Internal_Server_Error.toString());
+            }
+
+            try {
+                hostPort.connect(clientPort);
+            } catch (IOException e) {
+                e.printStackTrace();
+                throw new IOException(ConnectionStatus.Service_Unavailable.toString());
+            }
+
+            Connection c = new Connection(this, client, clientPort, hostPort);
+
             connections.put(client.getIp(), c);
-
             client.getConnections().put(ip, c);
+
+            return true;
         } else {
-            log(client, port.getProgram(), port.getPortNumber(), port.getProtocol());
-            return permission;
+            log(client, clientPort.getProgram(), clientPort.getPortNumber(), clientPort.getProtocol());
+            throw new IOException(permission.toString());
         }
-
-        // if player, connect to server program()
-
-
-        return permission;
     }
 
     /**
@@ -84,7 +96,10 @@ public class Device implements Connectable {
      *
      * @return True if it is allowed.
      */
-    ConnectionStatus hasPermission(Port port) {
+    ConnectionStatus hasPermission(Port port, int hostPort) {
+        if (!ports.containsKey(hostPort)) {
+            return ConnectionStatus.Internal_Server_Error;
+        }
 
         // TODO check server firewall settings, inbound/outbound
         return ConnectionStatus.OK;
@@ -96,33 +111,34 @@ public class Device implements Connectable {
     }
 
     @Override
-    public boolean openPort(String program, int portNumber, String protocol) {
-        if (Port.checkPort(ports, portNumber) == Port.PortStatus.CLOSED) {
-            ports.add(new Port(program, portNumber, protocol));
-            return true;
-        }
-        return false;
-    }
-
-    @Override
     public boolean openPort(Port port) {
-        if (Port.checkPort(ports, port.getPortNumber()) == Port.PortStatus.CLOSED) {
-            ports.add(port);
+        if (!ports.containsKey(port.getPortNumber())) {
+            ports.put(port.getPortNumber(), port);
             return true;
         }
         return false;
     }
 
     @Override
-    public boolean closePort(Port port) {
-        for (Connection c : connections.values()) {
-            if (c.getClientPort() == port) {
-                c.close();// you may have to close these from a for loop with a
-                // temporary array
+    public boolean closePort(int port) {
+        if (!ports.containsKey(port)) {
+            return false;
+        }
+
+        for (Connection c : connections.values()) { // close connections on the port to be closed.
+            if (c.getClient() == this && c.getClientPort() == ports.get(port)) {
+                c.getClientPort().disconnect();
+                c.getClientPort().disconnect();
+                c.close();
+            } else if (c.getHost() == this && c.getHostPort() == ports.get(port)) {
+                c.getClientPort().disconnect();
+                c.getClientPort().disconnect();
+                c.close();
             }
         }
 
-        return ports.remove(port);
+        ports.remove(port);
+        return true;
     }
 
     @Override
@@ -205,8 +221,8 @@ public class Device implements Connectable {
         for (Connection c : connections.values()) {
             disconnect(c);
         }
-        for (Port p : ports) {
-            closePort(p);
+        for (Port p : ports.values()) {
+            closePort(p.getPortNumber());
         }
 
         network.removeDevice(this);
@@ -240,7 +256,7 @@ public class Device implements Connectable {
         return level;
     }
 
-    public List<Port> getPorts() {
+    public HashMap<Integer, Port> getPorts() {
         return ports;
     }
 

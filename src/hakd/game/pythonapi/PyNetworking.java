@@ -6,10 +6,6 @@ import hakd.networks.devices.Device;
 
 public final class PyNetworking {
 
-    public static void newSocket() {
-
-    }
-
     public static Device get_device(String ip) {
         return GameScreen.internet.getDevice(ip);
     }
