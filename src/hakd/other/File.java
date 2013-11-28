@@ -1,18 +1,31 @@
 package hakd.other;
 
+import hakd.networks.devices.Device;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+
 public final class File { // TODO file hashes!
 
     // data
-    private int size;
-    private String name;
+    private final String name;
     private String data;
-    private FileType type;
+    private final FileType type;
+    private final String owner;
+    private String time;
+    private long timeMs;
 
-    public File(int size, String name, String data, FileType type) {
-        this.size = size;
+    public File(String name, String data, FileType type, Device d) {
         this.name = name;
         this.data = data;
         this.type = type;
+
+        owner = d.getNetwork().getOwner();
+
+        SimpleDateFormat f = new SimpleDateFormat("MM-dd HH:mm:ss");
+        Date date = new Date();
+        timeMs = date.getTime();
+        time = f.format(date);
     }
 
     public enum FileType {
@@ -22,35 +35,52 @@ public final class File { // TODO file hashes!
         }
     }
 
-    public int getSize() {
-        return size;
+    /**
+     * Change the byte into text and add it to the end of the file.
+     */
+    public void addDataByte(int b) {
+        data += String.valueOf(b);
+
+        SimpleDateFormat f = new SimpleDateFormat("MM-dd HH:mm:ss");
+        Date date = new Date();
+        timeMs = date.getTime();
+        time = f.format(date);
     }
 
-    public void setSize(int size) {
-        this.size = size;
+    /**
+     * Add the char to the end of the file.
+     */
+    public void addDataChar(char c) {
+        data += c;
+
+        SimpleDateFormat f = new SimpleDateFormat("MM-dd HH:mm:ss");
+        Date date = new Date();
+        timeMs = date.getTime();
+        time = f.format(date);
+    }
+
+    public void setData(String s) {
+        data = s;
+
+        SimpleDateFormat f = new SimpleDateFormat("MM-dd HH:mm:ss");
+        Date date = new Date();
+        timeMs = date.getTime();
+        time = f.format(date);
+    }
+
+    public int getSize() { // TODO balance this a bit better
+        return data.length();
     }
 
     public String getName() {
         return name;
     }
 
-    public void setName(String name) {
-        this.name = name;
-    }
-
     public String getData() {
         return data;
     }
 
-    public void setData(String data) {
-        this.data = data;
-    }
-
     public FileType getType() {
         return type;
-    }
-
-    public void setType(FileType type) {
-        this.type = type;
     }
 }

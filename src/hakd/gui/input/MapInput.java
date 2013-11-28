@@ -53,6 +53,11 @@ public final class MapInput implements InputProcessor {
         float width = screen.getWidth();
         float height = screen.getHeight();
 
+        if (Math.abs(lastMouseX - screenX) >= 20 || Math.abs(lastMouseY - screenY) >= 20) {
+            lastMouseX = screenX;
+            lastMouseY = screenY;
+        }
+
         float deltaX = (lastMouseX - screenX) / (Gdx.graphics.getWidth() / width) * cam.zoom;
         float deltaY = (screenY - lastMouseY) / (Gdx.graphics.getHeight() / height) * cam.zoom;
 

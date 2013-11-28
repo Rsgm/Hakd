@@ -101,7 +101,6 @@ public final class Terminal implements ServerWindow {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Keys.ENTER && command == null) {
-                    System.out.println(input.getText());
                     display.setText(display.getText() + "\n\nroot @ " + device.getIp() + "\n>" + input.getText());
                     history.add(input.getText());
                     command = new Command(input.getText(), device, terminal);

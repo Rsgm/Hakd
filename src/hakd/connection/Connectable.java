@@ -19,17 +19,17 @@ public interface Connectable {
     /**
      * Opens the given port on the device.
      */
-    boolean openPort(Port port);
+    void openPort(Port port) throws IOException;
 
     /**
      * Closes the given port on the devide, and any connections using it.
      */
-    public boolean closePort(int port);
+    public void closePort(int port) throws IOException;
 
     /**
-     * Creates a log of the event
+     * Creates a log file and adds it to the log directory.
      */
-    public void log(Device client, String program, int port, String protocol);
+    public void log(String name, String data);
 
     /**
      * Connection request responses. These tell if a connection was successful

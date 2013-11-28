@@ -14,8 +14,6 @@ import org.python.util.PythonInterpreter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,7 +32,6 @@ public final class MenuScreen extends HakdScreen {
     private int line = 0; // holds the position of the history
     private boolean commandRunning = false;
 
-    private PrintWriter commandLog;
     private Thread t;
 
     public MenuScreen(Game game) {
@@ -110,7 +107,6 @@ public final class MenuScreen extends HakdScreen {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ENTER && !commandRunning) {
-                    System.out.println(input.getText());
                     display.setText(display.getText() + "\n\n" + System.getProperty("user.name") + "@127.0.0.1" + "\n>" + input.getText());
                     history.add(input.getText());
                     Command(input.getText());
@@ -228,17 +224,6 @@ public final class MenuScreen extends HakdScreen {
     }
 
     private void Command(String s) {
-        File f = new File("python/MenuLog.txt");
-        if (!f.exists()) {
-            try {
-                if (!f.createNewFile()) {
-                    throw new IOException();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         run(s);
     }
 
@@ -249,11 +234,6 @@ public final class MenuScreen extends HakdScreen {
             @Override
             public void run() {
                 List<String> parameters = new ArrayList<String>();
-                try {
-                    commandLog = new PrintWriter(new File("python/MenuLog.txt"));
-                } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
-                }
 
                 while (in.matches("\\s*[(?:\".*?\")|\\S+].*")) {
                     if (in.startsWith(" ")) {
@@ -268,19 +248,14 @@ public final class MenuScreen extends HakdScreen {
                     parameters.add(next);
                 }
 
-                System.out.println(parameters.toString());
-                commandLog.println(parameters.toString());
+                Gdx.app.debug("Menu Command", s + parameters.toString());
                 if (!parameters.isEmpty()) {
                     try {
                         runPython(parameters);
                     } catch (FileNotFoundException e) {
-                        System.out.println("Error: FileNotFound");
-                        commandLog.println("Error: FileNotFound");
+                        Gdx.app.debug("Menu Info", "FileNotFound");
                     }
                 }
-                commandLog.println();
-                commandLog.flush();
-                commandLog.close();
 
                 commandRunning = false;
                 input.setText("");
@@ -306,7 +281,7 @@ public final class MenuScreen extends HakdScreen {
         if (file == null || !file.exists()) {
             throw new FileNotFoundException();
         }
-        System.out.println(file.getPath());
+        Gdx.app.debug("Menu Info", "python file: " + file.getPath());
 
         parameters.remove(0); // first parameter is always the command
         pi.set("parameters", parameters);
@@ -319,7 +294,6 @@ public final class MenuScreen extends HakdScreen {
     @SuppressWarnings("deprecation")
     private void stop() {
         input.setText("");
-        commandLog.close();
         t.stop();
         commandRunning = false;
     }

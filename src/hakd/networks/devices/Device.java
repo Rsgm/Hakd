@@ -19,7 +19,6 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Device implements Connectable {
-
     // stats
     Network network;
     int level;
@@ -57,6 +56,10 @@ public class Device implements Connectable {
 
     @Override
     public boolean connect(Device client, Port clientPort, int port) throws IOException {
+        if (client == this && clientPort.getPortNumber() == port) {
+            throw new IOException("Can't connect a port to its self.");
+        }
+
         ConnectionStatus permission = hasPermission(clientPort, port);
 
         if (permission == ConnectionStatus.OK) {
@@ -86,7 +89,7 @@ public class Device implements Connectable {
 
             return true;
         } else {
-            log(client, clientPort.getProgram(), clientPort.getPortNumber(), clientPort.getProtocol());
+            log("Connection falure", "Connection from: " + client.getIp() + ", to port: " + port);
             throw new IOException(permission.toString());
         }
     }
@@ -111,18 +114,19 @@ public class Device implements Connectable {
     }
 
     @Override
-    public boolean openPort(Port port) {
+    public void openPort(Port port) throws IOException {
         if (!ports.containsKey(port.getPortNumber())) {
             ports.put(port.getPortNumber(), port);
-            return true;
+            return;
         }
-        return false;
+
+        throw new IOException("Port already exists.");
     }
 
     @Override
-    public boolean closePort(int port) {
+    public void closePort(int port) throws IOException {
         if (!ports.containsKey(port)) {
-            return false;
+            throw new IOException("Port does not exist.");
         }
 
         for (Connection c : connections.values()) { // close connections on the port to be closed.
@@ -138,17 +142,16 @@ public class Device implements Connectable {
         }
 
         ports.remove(port);
-        return true;
+        return;
     }
 
     @Override
-    public void log(Device client, String program, int port, String protocol) {
-        masterStorage.addFile(new File(0, "Log - " + client.ip + ".log", "Connecting with " + program + " through portNumber" + port + " using " + protocol + "\n" + program + ":" + port + "->" + protocol, FileType.LOG));
-    /*
-     * ---Example---
-	 * Log - 243.15.66.24 Connecting with half life 3 through portNumber 28190 using LAMBDA
-	 * half life 3:28190->LAMBDA
-	 */
+    public void log(String name, String data) {
+        try {
+            masterStorage.addFile(new File(name + ".log", data, FileType.LOG, this));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     public void addPart(Part p) {
@@ -222,7 +225,11 @@ public class Device implements Connectable {
             disconnect(c);
         }
         for (Port p : ports.values()) {
-            closePort(p.getPortNumber());
+            try {
+                closePort(p.getPortNumber());
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
 
         network.removeDevice(this);

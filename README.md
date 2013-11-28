@@ -18,7 +18,7 @@ but I will leave that up to you to figure out.
 
 
 ###Required libraries
- - [libgdx](http://libgdx.badlogicgames.com/) [found in ./lib/libgdx]
+ - [libgdx](http://libgdx.badlogicgames.com/) [under lib/libgdx/]
    * gdx.jar
    * gdx-backend-lwjgl.jar
    * gdx-backend-lwjgl-natives.jar
@@ -26,4 +26,4 @@ but I will leave that up to you to figure out.
    * gdx-freetype.jar
    * gdx-freetype-natives.jar
 
-* [Jython](http://www.jython.org/) - jython-standalone-2.5.4-rc1.jar
+* [Jython](http://www.jython.org/) - jython-standalone-2.7-b1.jar

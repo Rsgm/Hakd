@@ -22,30 +22,46 @@ public final class Storage extends Part {
         type = PartType.STORAGE;
     }
 
-    // adds a file to the end of one of the arraylists
-    public void addFile(File file) {
+    /**
+     * Add a file to the specified directory.
+     */
+    public void addFile(File file) throws Exception {
         switch (file.getType()) {
             case OS:
-                osFiles.add(file);
-                break;
-            case USER:
-                osFiles.add(file);
+                if (!osFiles.contains(file)) {
+                    osFiles.add(file);
+                    return;
+                }
                 break;
             case PROGRAM:
-                osFiles.add(file);
+                if (!programFiles.contains(file)) {
+                    programFiles.add(file);
+                    return;
+                }
                 break;
-            default: // user
+            case LOG:
+                logFiles.add(file);
+                return;
+            default:
+                if (!userFiles.contains(file)) {
+                    userFiles.add(file);
+                    return;
+                }
                 break;
         }
+        throw new Exception("File already exists");
     }
 
-    // removes the first file with the specified name from the specified directory
+    /**
+     * Removes the first file with the specified name from the specified directory.
+     */
     public void removeFile(FileType type, String name) {
         switch (type) {
             case OS:
                 for (File f : osFiles) {
                     if (f.getName().equals(name)) {
                         osFiles.remove(f);
+                        return;
                     }
                 }
                 break;
@@ -53,6 +69,7 @@ public final class Storage extends Part {
                 for (File f : userFiles) {
                     if (f.getName().equals(name)) {
                         userFiles.remove(f);
+                        return;
                     }
                 }
                 break;
@@ -60,6 +77,7 @@ public final class Storage extends Part {
                 for (File f : programFiles) {
                     if (f.getName().equals(name)) {
                         programFiles.remove(f);
+                        return;
                     }
                 }
                 break;
@@ -67,10 +85,32 @@ public final class Storage extends Part {
                 for (File f : logFiles) {
                     if (f.getName().equals(name)) {
                         logFiles.remove(f);
+                        return;
                     }
                 }
         }
     }
+
+    /**
+     * Removes the file from the storage part, if it exists.
+     */
+    public void removeFile(File file) {
+        switch (file.getType()) {
+            case OS:
+                osFiles.remove(file);
+                return;
+            default:
+                userFiles.remove(file);
+                return;
+            case PROGRAM:
+                programFiles.remove(file);
+                return;
+            case LOG:
+                logFiles.remove(file);
+                return;
+        }
+    }
+
 
     // removes the first file with the specified name from the specified directory
     public File getFile(FileType type, String name) {

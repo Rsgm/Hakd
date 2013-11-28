@@ -88,8 +88,8 @@ public final class Port {
         in = null;
         remotePort.in = null;
 
-        remotePort = null;
         remotePort.remotePort = null;
+        remotePort = null;
     }
 
     public String getProgram() {

@@ -5,35 +5,32 @@ from hakd.connection import Port
 
 def help():
 	PyDisplay.write(terminal, 'Programs available:' +
-	'\n   open_port {target IP} {program} {port} {protocol} - opens a port on the device' +
-	'\n   connect {target IP} {program} {port} {protocol} - connects to the device')
+	'\n   open_port {target IP} {program} {port} - opens a port on the device' +
+	'\n   close_port {target IP} {port} - connects to the device')
 
 def open_port():
-	if len(parameters) < 4:
+	if len(parameters) != 3:
 		PyDisplay.write(terminal, 'Missing arguments.')
 	else:
 		ip = parameters[0]
 		program = parameters[1]
 		port = int(parameters[2])
-		protocol = parameters[3]
 		
 		d = PyNetworking.get_device(ip)
-		d.openPort(Port(program, port, protocol))
+		d.openPort(Port(program, port))
 
-def connect():
-	if len(parameters) < 2:
+def close_port():
+	if len(parameters) != 2:
 		PyDisplay.write(terminal, 'Missing arguments.')
 	else:
 		ip = parameters[0]
-		program = parameters[1]
-		port = int(parameters[2])
-		protocol = parameters[3]
+		port = int(parameters[1])
 		
 		d = PyNetworking.get_device(ip)
-		d.connect(terminal.device, Port(program, port, protocol))
-		
-		
-
+		try:
+			d.closePort(port)
+		except IOError:
+			PyDisplay.write(terminal, 'Port does not exist.')
 
 try:
 	parameters
@@ -48,5 +45,5 @@ else:
 		help()
 	elif p == 'open_port':
 		open_port()
-	elif p == 'connect':
-		connect()
+	elif p == 'close_port':
+		close_port()

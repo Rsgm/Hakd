@@ -1,24 +1,22 @@
 package hakd.game;
 
+import com.badlogic.gdx.Gdx;
 import hakd.gui.windows.deviceapps.Terminal;
 import hakd.networks.devices.Device;
+import org.python.core.PyException;
 import org.python.util.PythonInterpreter;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Scanner;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class Command {
-    private String input;
+    private final String input;
     private final Device device;
     private final Terminal terminal;
-    private PrintWriter commandLog;
     private Thread t;
     private final Queue<Integer> userInputBuffer;
 
@@ -34,17 +32,6 @@ public final class Command {
 
         userInputBuffer = new ConcurrentLinkedQueue<Integer>();
 
-        File f = new File("python/TerminalLog.txt");
-        if (!f.exists()) {
-            try {
-                if (!f.createNewFile()) {
-                    throw new IOException();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
         run();
     }
 
@@ -53,41 +40,32 @@ public final class Command {
             @Override
             public void run() {
                 List<String> parameters = new ArrayList<String>();
-                try {
-                    commandLog = new PrintWriter(new File("python/TerminalLog.txt"));
-                } catch (FileNotFoundException e1) {
-                    e1.printStackTrace();
-                }
 
-                while (input.matches("\\s*[(?:\".*?\")|\\S+].*")) {
-                    if (input.startsWith(" ")) {
-                        input = input.replaceFirst("\\s+", "");
+                String s = input;
+
+                while (s.matches("\\s*[(?:\".*?\")|\\S+].*")) {
+                    if (s.startsWith(" ")) {
+                        s = s.replaceFirst("\\s+", "");
                     }
 
-                    String inputTemp = input;
-                    input = input.replaceFirst("(?:\".*?\")|\\S+", "");
-                    int l = input.length();
+                    String inputTemp = s;
+                    s = s.replaceFirst("(?:\".*?\")|\\S+", "");
+                    int l = s.length();
 
                     String next = inputTemp.substring(0, inputTemp.length() - l);
                     parameters.add(next);
                 }
 
-                System.out.println(parameters.toString());
-                commandLog.println(parameters.toString());
+                Gdx.app.debug("Terminal Command", input + parameters.toString());
                 if (!parameters.isEmpty()) {
                     try {
                         runPython(parameters);
                     } catch (FileNotFoundException e) {
-                        System.out.println("Error: FileNotFound");
-                        commandLog.println("Error: FileNotFound");
-
-                        // } catch (PyException e) {
-                        // System.out.println("python had an error");
+                        Gdx.app.debug("Terminal Info", "FileNotFound");
+                    } catch (PyException e) {
+                        Gdx.app.error("Terminal Error", e.getMessage(), e);
                     }
                 }
-                commandLog.println();
-                commandLog.flush();
-                commandLog.close();
 
                 terminal.setCommand(null);
             }
@@ -104,7 +82,6 @@ public final class Command {
      */
     @SuppressWarnings("deprecation")
     public void stop() {
-        commandLog.close();
         t.stop();
         terminal.setCommand(null);
     }
@@ -125,7 +102,7 @@ public final class Command {
         if (file == null || !file.exists()) {
             throw new FileNotFoundException();
         }
-        System.out.println(file.getPath());
+        Gdx.app.debug("Terminal Info", "python file: " + file.getPath());
 
         if (parameters.size() > 1) {
             parameters.remove(0); // first parameter is always the command
@@ -139,28 +116,6 @@ public final class Command {
         // }
 
         pi.execfile(file.getPath());
-    }
-
-    private boolean checkPythonForCheats(File file) {
-        Scanner s;
-        try {
-            s = new Scanner(file);
-
-            String line;
-            while (s.hasNext("from")) {
-                line = s.nextLine();
-
-                // this may not work for device.addPart and other device methods
-                if (line.startsWith("from hakd") && !line.matches("^from hakd\\.game\\.pythonapi.+")) {
-                    return false;
-                }
-            }
-
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        return true;
     }
 
     public Queue<Integer> getUserInputBuffer() {

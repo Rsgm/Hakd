@@ -27,14 +27,28 @@ public final class Connection {
         this.hostPort = hostPort;
 
         clientPort.setProtocol(hostPort.getProtocol());
+
+        host.log("Connection - " + client.getIp(), "Using " + clientPort.getProgram() + " through portNumber" + clientPort.getPortNumber() + " using " + clientPort.getProtocol() + "\n" + clientPort.getProgram() + ":" + clientPort.getPortNumber() + "->" + clientPort.getProtocol());
+        client.log("Connection - " + host.getIp(), "Using " + hostPort.getProgram() + " through portNumber" + hostPort.getPortNumber() + " using " + hostPort.getProtocol() + "\n" + hostPort.getProgram() + ":" + hostPort.getPortNumber() + "->" + hostPort.getProtocol());
     }
 
     public void close() {
+        host.log("Disconnection - " + client.getIp(), "Using " + clientPort.getProgram() + " through portNumber" + clientPort.getPortNumber() + " using " + clientPort.getProtocol() + "\n" + clientPort.getProgram() + ":" + clientPort.getPortNumber() + "->" + clientPort.getProtocol());
+        client.log("Disconnection - " + host.getIp(), "Using " + hostPort.getProgram() + " through portNumber" + hostPort.getPortNumber() + " using " + hostPort.getProtocol() + "\n" + hostPort.getProgram() + ":" + hostPort.getPortNumber() + "->" + hostPort.getProtocol());
+
         host.getConnections().remove(client.getIp());
         client.getConnections().remove(host.getIp());
         clientPort.disconnect();
         clientPort.setProtocol(null);
     }
+
+    /*
+     * ---Example Connection Log--- 
+     * Log 243.15.66.24.log
+	 * Connecting with half life 3 through portNumber 28190 using LAMBDA
+	 * half life 3:28190->LAMBDA
+	 * 11-21 18:56:20
+	 */
 
     public Device getHost() {
         return host;

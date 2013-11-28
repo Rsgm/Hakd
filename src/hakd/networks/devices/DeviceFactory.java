@@ -2,9 +2,7 @@ package hakd.networks.devices;
 
 import hakd.gui.windows.deviceapps.ServerWindowStage;
 import hakd.networks.Network;
-import hakd.networks.devices.parts.Part;
 import hakd.networks.devices.parts.PartFactory;
-import hakd.networks.devices.parts.Storage;
 
 public final class DeviceFactory {
 
@@ -36,11 +34,9 @@ public final class DeviceFactory {
             d.addPart(PartFactory.createCpu(level));
             d.addPart(PartFactory.createGpu(level));
             d.addPart(PartFactory.createMemory(level));
-            d.addPart(PartFactory.createStorage(level, false));
-        }
 
-        if (d.getPartLimit() > 4) {
-            d.setMasterStorage((Storage) Part.findParts(d.getParts(), Part.PartType.STORAGE).get(0));
+            d.setMasterStorage(PartFactory.createStorage(level, false));
+            d.addPart(d.getMasterStorage());
         }
 
         return d;

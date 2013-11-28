@@ -102,13 +102,13 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="library" name="jython-standalone-2.5.4-rc1" level="project" />
     <orderEntry type="library" name="gdx-backend-lwjgl-natives" level="project" />
     <orderEntry type="library" name="gdx-backend-lwjgl" level="project" />
     <orderEntry type="library" name="gdx-freetype-natives" level="project" />
     <orderEntry type="library" name="gdx-freetype" level="project" />
     <orderEntry type="library" name="gdx-natives" level="project" />
     <orderEntry type="library" name="gdx" level="project" />
+    <orderEntry type="library" name="jython-standalone-2.7-b1" level="project" />
   </component>
 </module>
 
