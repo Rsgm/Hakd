@@ -162,6 +162,7 @@
             <filename>graphics/ispNetwork.png</filename>
             <filename>graphics/playerNetwork.png</filename>
             <filename>graphics/network.png</filename>
+            <filename>graphics/circle.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

@@ -26,8 +26,7 @@ public final class Room {
 
     private TiledMapTileLayer floor;
     private TiledMapTileLayer wall;
-    private MapLayer bounds; // if it matters, maybe rename this to
-    // wall/boundary layer
+    private MapLayer bounds; // if it matters, maybe rename this to wall/boundary layer
     private TiledMapTileLayer objetcts; // Intractable tiles
 
     private GameScreen gameScreen;
@@ -99,8 +98,8 @@ public final class Room {
      * Finds the device at the specified isometric coordinates.
      *
      * @return The device found.
-     *         The string "other", if no device was found there.
-     *         Null if the tile in the map does not have an object.
+     * The string "other", if no device was found there.
+     * Null if the tile in the map does not have an object.
      */
     public Object getObjectAtTile(int x, int y) {
         for (Device d : devices) {

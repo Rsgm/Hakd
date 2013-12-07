@@ -4,14 +4,17 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import hakd.game.Internet;
 import hakd.game.gameplay.Player;
+import hakd.gui.Assets;
 import hakd.gui.input.MapInput;
 import hakd.networks.BackboneProviderNetwork;
 import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
 
 import java.util.ArrayList;
+import java.util.List;
 
 public final class MapScreen extends HakdScreen {
     private Player player;
@@ -22,12 +25,15 @@ public final class MapScreen extends HakdScreen {
     private final MapInput input;
     private float time = 0;
 
-    private ArrayList<Sprite> networkSprites;
-    private ArrayList<Sprite> ispSprites;
-    private ArrayList<Sprite> backboneSprites;
-    private ArrayList<Sprite> connectionLineSprites;
-    private ArrayList<Sprite> parentLineSprites;
-    private ArrayList<Sprite> backboneLineSprites;
+    private final SpriteBatch territoryBatch;
+
+    private final List<Sprite> networkSprites;
+    private final List<Sprite> ispSprites;
+    private final List<Sprite> territorySprites;
+    private final List<Sprite> backboneSprites;
+    private final List<Sprite> connectionLineSprites;
+    private final List<Sprite> parentLineSprites;
+    private final List<Sprite> backboneLineSprites;
 
     public MapScreen(Game game, GameScreen gameScreen, Internet internet) {
         super(game);
@@ -35,10 +41,14 @@ public final class MapScreen extends HakdScreen {
         this.internet = internet;
         this.gameScreen = gameScreen;
 
+        territoryBatch = new SpriteBatch();
+        territoryBatch.setShader(Assets.shaders.get(Assets.Shader.TERRITORY));
+
         networkSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
         ispSprites = new ArrayList<Sprite>(internet.getInternetProviderNetworks().size());
+        territorySprites = new ArrayList<Sprite>(internet.getInternetProviderNetworks().size());
         backboneSprites = new ArrayList<Sprite>(internet.getBackboneProviderNetworks().size());
-        connectionLineSprites = new ArrayList<Sprite>(100);
+        connectionLineSprites = new ArrayList<Sprite>(50);
         parentLineSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
         backboneLineSprites = new ArrayList<Sprite>(internet.getBackboneProviderNetworks().size());
 
@@ -67,14 +77,22 @@ public final class MapScreen extends HakdScreen {
     public void render(float delta) {
         super.render(delta);
 
-        //System.out.println((int) (1 / delta));
+//        System.out.println((int) (1 / delta));
         time += delta;
         if (time >= 1) {
             reloadSprites();
         }
 
+        territoryBatch.setProjectionMatrix(cam.combined);
+        territoryBatch.begin();
+        for (Sprite s : territorySprites) {
+            s.draw(territoryBatch);
+        }
+        territoryBatch.end();
+
         batch.setProjectionMatrix(cam.combined);
         batch.begin();
+
         for (Sprite s : backboneLineSprites) {
             s.draw(batch);
         }
@@ -99,6 +117,7 @@ public final class MapScreen extends HakdScreen {
     private void reloadSprites() {
         networkSprites.clear();
         ispSprites.clear();
+        territorySprites.clear();
         backboneSprites.clear();
         connectionLineSprites.clear();
         parentLineSprites.clear();
@@ -111,6 +130,7 @@ public final class MapScreen extends HakdScreen {
             } else if (n instanceof InternetProviderNetwork) {
                 ispSprites.add(n.getMapIcon());
                 parentLineSprites.add(n.getMapParentLine());
+                territorySprites.add(((InternetProviderNetwork) n).getTerritory());
             } else {
                 networkSprites.add(n.getMapIcon());
                 parentLineSprites.add(n.getMapParentLine());

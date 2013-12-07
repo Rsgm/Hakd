@@ -40,9 +40,9 @@ public final class Internet {
      * This is only created at the start of the game.
      */
     public Internet() { // maximum is about 1:6:270 (backbones:isps:networks)
-        int backbones = 1;//(int) (Math.random() * 3 + Network.IpRegion.values().length);
-        int isps = 1;//(int) (Math.random() * 8 + 8);
-        int networks = 3;//(int) (Math.random() * 30 + 60);
+        int backbones = 4;//(int) (Math.random() * 3 + Network.IpRegion.values().length);
+        int isps = 10;//(int) (Math.random() * 8 + 8);
+        int networks = 20;//(int) (Math.random() * 30 + 60);
 
         backboneProviderNetworks = new ArrayList<BackboneProviderNetwork>(isps);
         internetProviderNetworks = new ArrayList<InternetProviderNetwork>(backbones);
@@ -61,7 +61,6 @@ public final class Internet {
     private void generateBackbones(int amount) {
         // each ipRegion gets at least one backbone, possibly several
         for (int i = 0; i < amount; i++) {
-            System.out.println("Backbone - " + i);
             BackboneProviderNetwork backbone = NetworkFactory.createBackbone(this);
 
             short[] ip = {generateIpByte(backbone.getIpRegion()), 1, 1, 1};
@@ -74,11 +73,8 @@ public final class Internet {
 
     private void generateIsps(int amount) {
         for (int i = 0; i < amount; i++) {
-            System.out.println("ISP - " + i);
             int a = internetProviderNetworks.size() % backboneProviderNetworks.size();
-            if (backboneProviderNetworks.get(a).getIpChildNetworkHashMap().size() >= 256) {
-                System.out.println("ISP - No free backbone child spots");
-            } else {
+            if (backboneProviderNetworks.get(a).getIpChildNetworkHashMap().size() < 256) {
                 InternetProviderNetwork isp = NetworkFactory.createISP(this);
                 backboneProviderNetworks.get(a).registerAnIsp(isp, 1);
                 internetProviderNetworks.add(isp);
@@ -92,15 +88,12 @@ public final class Internet {
      */
     private void generateNetworks(int amount) {
         for (int i = 0; i < amount; i++) {
-            System.out.println("NETWORK - " + i);
             Network network;
 
             int a;
             for (int j = 0; j < internetProviderNetworks.size() * 2; j++) {
                 a = (int) (Math.random() * internetProviderNetworks.size());
-                if (internetProviderNetworks.get(a).getIpChildNetworkHashMap().size() >= 256) {
-                    System.out.println("ISP - No free backbone child spots");
-                } else {
+                if (internetProviderNetworks.get(a).getIpChildNetworkHashMap().size() < 256) {
                     int random = (int) (Math.random() * 10);
                     if (random < 7) { // chances of generating a certain network type
                         network = NetworkFactory.createNetwork(NetworkType.NPC);

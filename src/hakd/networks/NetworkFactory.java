@@ -1,12 +1,16 @@
 package hakd.networks;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.game.Internet;
+import hakd.game.gameplay.Character;
+import hakd.game.gameplay.Company;
 import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.DeviceFactory;
 import hakd.networks.devices.Server;
+import hakd.other.Util;
 
 public class NetworkFactory {
 
@@ -14,18 +18,16 @@ public class NetworkFactory {
      * Create a network, and populate it, based on the type
      */
     public static Network createNetwork(Network.NetworkType type) {
+        Gdx.app.debug("Network Added", "Normal");
         Network network = createNetwork();
         network.setLevel((int) (Math.random() * 8));
         network.setStance(Network.Stance.NEUTRAL); // TODO move stances to the npc/player classes
         network.setType(type);
 
-        // used to add randomness to the amount of servers to make given serverLimit
-        int d = -1;
-
         switch (type) {
             case NPC:
                 network.setIpRegion(Network.IpRegion.NA);
-                network.setOwner("NPC");
+                network.setOwner(new Character(network, Util.GanerateName()));
                 network.setDeviceLimit(4);
                 network.setStance(Network.Stance.NEUTRAL);
                 network.setMapIcon(Assets.linearTextures.createSprite("network"));
@@ -33,7 +35,7 @@ public class NetworkFactory {
                 break;
             case TEST:
                 network.setIpRegion(Network.IpRegion.ASIA);
-                network.setOwner("Test");
+                network.setOwner(new Character(network, Util.GanerateName()));
                 network.setDeviceLimit(32);
                 network.setStance(Network.Stance.NEUTRAL);
                 network.setMapIcon(Assets.linearTextures.createSprite("network"));
@@ -42,13 +44,13 @@ public class NetworkFactory {
             case BUSINESS: // company // random company
                 network.setIpRegion(Network.IpRegion.BUSINESS);
                 network.setDeviceLimit((int) ((network.getLevel() + 1) * (Math.random() * 3 + 1)));
-                network.setOwner("company");
+                network.setOwner(new Company(network, Util.GanerateName()));
                 network.setMapIcon(Assets.linearTextures.createSprite("network"));
                 network.getMapIcon().setSize(50, 50);
                 break;
             default: // copied from the npc case
                 network.setIpRegion(Network.IpRegion.NA);
-                network.setOwner("some name");
+                network.setOwner(new Character(network, Util.GanerateName()));
                 network.setDeviceLimit(4);
                 network.setStance(Network.Stance.NEUTRAL);
                 network.setMapIcon(Assets.linearTextures.createSprite("network"));
@@ -56,7 +58,8 @@ public class NetworkFactory {
                 break;
         }
 
-        d = (int) Math.round(network.getDeviceLimit() * (Math.random() * 0.35 + 0.65));
+        // used to add randomness to the amount of servers to make given serverLimit
+        int d = (int) Math.round(network.getDeviceLimit() * (Math.random() * 0.35 + 0.65));
 
         for (int i = 0; i < d; i++) { // create servers on the network
             Server server = (Server) DeviceFactory.createDevice(Device.DeviceType.SERVER);
@@ -74,6 +77,7 @@ public class NetworkFactory {
      * @param player - The player to assign the network to.
      */
     public static Network createPlayerNetwork(Player player) {
+        Gdx.app.debug("Network Added", "Player");
         Network network = createNetwork();
 
         network.setType(Network.NetworkType.PLAYER);
@@ -84,9 +88,8 @@ public class NetworkFactory {
         network.setMapIcon(s);
         network.getMapIcon().setSize(50, 50);
 
-        network.setPlayer(player);
+        network.setOwner(player);
         player.setNetwork(network);
-
         return network;
     }
 
@@ -101,7 +104,10 @@ public class NetworkFactory {
      * Most basic ISP constructor.
      */
     public static InternetProviderNetwork createISP(Internet internet) {
+        Gdx.app.debug("Network Added", "ISP");
         InternetProviderNetwork isp = new InternetProviderNetwork(internet);
+
+        isp.setOwner(new Company(isp, "ISP"));
 
         isp.setType(Network.NetworkType.ISP);
         isp.setLevel((int) (Math.random() * 3 + 5));
@@ -112,7 +118,6 @@ public class NetworkFactory {
         Sprite s = Assets.linearTextures.createSprite("ispNetwork");
         isp.setMapIcon(s);
         isp.getMapIcon().setSize(75, 75);
-
         return isp;
     }
 
@@ -120,7 +125,10 @@ public class NetworkFactory {
      * Most basic backbone constructor.
      */
     public static BackboneProviderNetwork createBackbone(Internet internet) {
+        Gdx.app.debug("Network Added", "Backbone");
         BackboneProviderNetwork backbone = new BackboneProviderNetwork(internet);
+
+        backbone.setOwner(new Company(backbone, "Backbone"));
 
         backbone.setType(Network.NetworkType.BACKBONE);
         backbone.setIpRegion(Network.IpRegion.values()[internet.getBackboneProviderNetworks().size() % Network.IpRegion.values().length]);

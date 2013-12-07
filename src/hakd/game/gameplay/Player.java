@@ -7,24 +7,16 @@ import hakd.gui.windows.deviceapps.ServerWindowStage;
 import hakd.networks.Network;
 import hakd.other.Util;
 
-public final class Player {
-    // player stats
-    private int money; // in $ //add redundancy to money // triple redundancy
-    // with voting, maybe some rudimentary encryption, or no
-    // redundancy with strong encryption
-    private final String name;
-    private Network network; // meant to be used as the players network base
-
+public final class Player extends Character {
+    private ServerWindowStage openWindow;
     private final GameScreen screen;
-
     private Sprite sprite;
     private int isoX;
     private int isoY;
 
-    private ServerWindowStage openWindow;
-
     // --------methods--------
     public Player(String name, GameScreen screen) {
+        super(null, name);
         this.name = name;
         this.screen = screen;
 

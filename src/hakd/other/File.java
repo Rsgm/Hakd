@@ -20,7 +20,7 @@ public final class File { // TODO file hashes!
         this.data = data;
         this.type = type;
 
-        owner = d.getNetwork().getOwner();
+        owner = d.getNetwork().getOwner().getName();
 
         SimpleDateFormat f = new SimpleDateFormat("MM-dd HH:mm:ss");
         Date date = new Date();

@@ -4,63 +4,63 @@ filter: Linear,Linear
 repeat: none
 ispNetwork
   rotate: false
-  xy: 714, 2
+  xy: 972, 2
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 console0Up
   rotate: false
-  xy: 280, 2
+  xy: 538, 2
   size: 90, 90
   orig: 90, 90
   offset: 0, 0
   index: -1
 loading
   rotate: false
-  xy: 972, 2
+  xy: 1230, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
   index: -1
 close
   rotate: false
-  xy: 260, 2
+  xy: 518, 2
   size: 18, 18
   orig: 18, 18
   offset: 0, 0
   index: -1
 console1Up
   rotate: false
-  xy: 372, 2
+  xy: 630, 2
   size: 90, 90
   orig: 90, 90
   offset: 0, 0
   index: -1
 playerNetwork
   rotate: false
-  xy: 1426, 2
+  xy: 1684, 2
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 console2Up
   rotate: false
-  xy: 464, 2
+  xy: 722, 2
   size: 90, 90
   orig: 90, 90
   offset: 0, 0
   index: -1
 infoUp
   rotate: false
-  xy: 648, 2
+  xy: 906, 2
   size: 64, 64
   orig: 64, 64
   offset: 0, 0
   index: -1
 loadingbackground
   rotate: false
-  xy: 1070, 2
+  xy: 1328, 2
   size: 96, 96
   orig: 96, 96
   offset: 0, 0
@@ -81,35 +81,42 @@ backboneNetwork
   index: -1
 network
   rotate: false
-  xy: 1168, 2
+  xy: 1426, 2
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
   index: -1
 title
   rotate: false
-  xy: 2, 260
+  xy: 36, 260
   size: 800, 210
   orig: 800, 210
   offset: 0, 0
   index: -1
+circle
+  rotate: false
+  xy: 260, 2
+  size: 256, 256
+  orig: 256, 256
+  offset: 0, 0
+  index: -1
 spaceBarIcon
   rotate: false
-  xy: 1779, 2
+  xy: 2, 260
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 shutdownUp
   rotate: false
-  xy: 1684, 2
+  xy: 1942, 2
   size: 93, 102
   orig: 93, 102
   offset: 0, 0
   index: -1
 console3Up
   rotate: false
-  xy: 556, 2
+  xy: 814, 2
   size: 90, 90
   orig: 90, 90
   offset: 0, 0

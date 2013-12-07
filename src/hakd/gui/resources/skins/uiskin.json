@@ -1,18 +1,34 @@
 {
-com.badlogic.gdx.graphics.g2d.BitmapFont: { default-font: { file: default.fnt } },
-com.badlogic.gdx.graphics.Color: {
-	green: { a: 1, b: 0, g: 1, r: 0 },
-	white: { a: 1, b: 1, g: 1, r: 1 },
-	red: { a: 1, b: 0, g: 0, r: 1 },
-	black: { a: 1, b: 0, g: 0, r: 0 }
+
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+    default-font: { file: default.fnt }
 },
-com.badlogic.gdx.graphics.g2d.BitmapFont: { console-font: { file: ubuntu_mono.fnt } },
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+    console-font-0: { file: Dejavu_Sans_Mono.fnt }
+},
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+    console-font-1: { file: Droid_Sans_Mono.fnt }
+},
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+    console-font-2: { file: Free_Mono.fnt }
+},
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+    console-font-3: { file: Ubuntu_Mono.fnt }
+},
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+    console-font-4: { file: White_Rabbit.fnt }
+},
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+    console-font: console-font-0
+},
+
 com.badlogic.gdx.graphics.Color: {
 	green: { a: 1, b: 0, g: 0.7, r: 0 },
 	white: { a: 1, b: 1, g: 1, r: 1 },
 	red: { a: 1, b: 0, g: 0, r: 1 },
 	black: { a: 1, b: 0, g: 0, r: 0 }
 },
+
 com.badlogic.gdx.scenes.scene2d.ui.Skin$TintedDrawable: {
 	dialogDim: { name: white, color: { r: 0, g: 0, b: 0, a: 0.45 } }
 },

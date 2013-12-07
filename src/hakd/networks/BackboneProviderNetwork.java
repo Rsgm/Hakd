@@ -1,6 +1,8 @@
 package hakd.networks;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import hakd.game.Internet;
 import hakd.gui.Assets;
@@ -33,9 +35,14 @@ public final class BackboneProviderNetwork extends Network {
         positionLoop:
         for (int k = 0; k < 30; k++) {
             for (int i = 0; i < 10; i++) {
+                Circle c = new Circle(0, 0, regionSize / 2);
                 Vector2 v = new Vector2();
-                v.x = mapIcon.getX() + (float) ((Math.random() * regionSize) - regionSize / 2);
-                v.y = mapIcon.getY() + (float) ((Math.random() * regionSize) - regionSize / 2);
+                do {
+                    v.x = (float) ((Math.random() * regionSize) - regionSize / 2);
+                    v.y = (float) ((Math.random() * regionSize) - regionSize / 2);
+                } while (!c.contains(v));
+                v.x += mapIcon.getX();
+                v.y += mapIcon.getY();
                 mapIcon.setPosition(v.x, v.y);
 
                 if (internet.getIpNetworkHashMap().values().size() == 0) {
@@ -46,10 +53,9 @@ public final class BackboneProviderNetwork extends Network {
                 for (Network n : internet.getIpNetworkHashMap().values()) {
                     j++;
                     if (v.dst2(n.getMapIcon().getX(), n.getMapIcon().getY()) <= BackboneRegionSize * BackboneRegionSize && n != this) {
-                        System.out.println("Backbone: too close to another");
                         break;
                     } else if (j >= internet.getIpNetworkHashMap().size()) {
-                        System.out.println("Backbone: Found an open spot");
+                        Gdx.app.debug("Network added", "Found an open spot");
                         break positionLoop;
                     }
                 }
@@ -84,9 +90,14 @@ public final class BackboneProviderNetwork extends Network {
         float regionSize = BackboneRegionSize;
         positionLoop:
         for (int i = 0; i < 1000; i++) {
+            Circle c = new Circle(0, 0, regionSize / 2);
             Vector2 v = new Vector2();
-            v.x = mapIcon.getX() + (float) ((Math.random() * regionSize) - regionSize / 2);
-            v.y = mapIcon.getY() + (float) ((Math.random() * regionSize) - regionSize / 2);
+            do {
+                v.x = (float) ((Math.random() * regionSize) - regionSize / 2);
+                v.y = (float) ((Math.random() * regionSize) - regionSize / 2);
+            } while (!c.contains(v));
+            v.x += mapIcon.getX();
+            v.y += mapIcon.getY();
             isp.getMapIcon().setPosition(v.x, v.y);
 
             int j = 0;
@@ -101,6 +112,13 @@ public final class BackboneProviderNetwork extends Network {
                 }
             }
         }
+
+        Sprite t = Assets.linearTextures.createSprite("circle");
+//        t.setColor(0, 0, 1, 1);
+        t.setSize(Network.ispRegionSize * 1.1f, Network.ispRegionSize * 1.1f);
+        t.setPosition(isp.getMapIcon().getX() + isp.getMapIcon().getWidth() / 2 - t.getWidth() / 2, isp.getMapIcon().getY() + isp.getMapIcon().getHeight() / 2 - t.getHeight() / 2);
+        isp.setTerritory(t);
+
 
         // connection line between isp and backbone(this)
         Vector2 v1 = new Vector2(mapIcon.getX() + (mapIcon.getWidth() / 2), mapIcon.getY() + (mapIcon.getHeight() / 2));

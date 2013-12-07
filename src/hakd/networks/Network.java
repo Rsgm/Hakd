@@ -2,7 +2,7 @@ package hakd.networks;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.game.Internet;
-import hakd.game.gameplay.Player;
+import hakd.game.gameplay.Character;
 import hakd.gui.EmptyDeviceTile;
 import hakd.networks.devices.Device;
 
@@ -15,8 +15,7 @@ import java.util.List;
 public class Network {
     String ip = "";
     int level; // 0-7, 0 for player because you start with almost nothing
-    String owner; // owner, company, player
-    Player player;
+    Character owner; // owner, company, player
     Stance stance; // TODO move this to npc class
     NetworkType type;
 
@@ -33,7 +32,7 @@ public class Network {
     Sprite mapIcon;
     Sprite mapParentLine;
 
-    public static final float BackboneRegionSize = 2000;
+    public static final float BackboneRegionSize = 2000; // diameter of the circle
     public static final float ispRegionSize = 800;
     public static final float networkRegionSize = 100;
     IpRegion ipRegion; // where the network is in the world, it helps find an ip
@@ -160,12 +159,12 @@ public class Network {
     }
 
 
-    public String getOwner() {
+    public hakd.game.gameplay.Character getOwner() {
         return owner;
     }
 
 
-    public void setOwner(String owner) {
+    public void setOwner(Character owner) {
         this.owner = owner;
     }
 
@@ -193,26 +192,13 @@ public class Network {
         return type;
     }
 
-
     public void setType(NetworkType type) {
         this.type = type;
     }
 
-
-    public Player getPlayer() {
-        return player;
-    }
-
-
-    public void setPlayer(Player player) {
-        this.player = player;
-    }
-
-
     public Internet getInternet() {
         return internet;
     }
-
 
     public void setInternet(Internet internet) {
         this.internet = internet;

@@ -65,6 +65,7 @@ public final class GameScreen extends HakdScreen {
             cam.update();
 
             renderer.setView((OrthographicCamera) cam);
+            renderer.getSpriteBatch().setShader(gdxShader);
 
             cam.position.x = room.getFloor().getWidth() / 2;
             cam.position.y = 0;

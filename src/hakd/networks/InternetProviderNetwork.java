@@ -1,6 +1,8 @@
 package hakd.networks;
 
+import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import hakd.game.Internet;
 import hakd.gui.Assets;
@@ -11,7 +13,9 @@ import java.util.HashMap;
  * Provides internet access to networks.
  */
 public final class InternetProviderNetwork extends Network {
-    final private HashMap<String, Network> ipChildNetworkHashMap = new HashMap<String, Network>(255);
+    private final HashMap<String, Network> ipChildNetworkHashMap = new HashMap<String, Network>(255);
+
+    private Sprite territory;
 
     public InternetProviderNetwork(Internet internet) {
         super();
@@ -32,19 +36,23 @@ public final class InternetProviderNetwork extends Network {
         float regionSize = ispRegionSize;
         positionLoop:
         for (int i = 0; i < 5000; i++) {
+            Circle c = new Circle(0, 0, regionSize / 2);
             Vector2 v = new Vector2();
-            v.x = mapIcon.getX() + (float) ((Math.random() * regionSize) - regionSize / 2);
-            v.y = mapIcon.getY() + (float) ((Math.random() * regionSize) - regionSize / 2);
+            do {
+                v.x = (float) ((Math.random() * regionSize) - regionSize / 2);
+                v.y = (float) ((Math.random() * regionSize) - regionSize / 2);
+            } while (!c.contains(v));
+            v.x += mapIcon.getX();
+            v.y += mapIcon.getY();
             network.getMapIcon().setPosition(v.x, v.y);
 
             int j = 0;
             for (Network n : internet.getIpNetworkHashMap().values()) {
                 j++;
                 if (v.dst2(n.getMapIcon().getX(), n.getMapIcon().getY()) <= networkRegionSize * networkRegionSize && n != network) {
-                    System.out.println("Network: too close to another");
                     break;
                 } else if (j >= internet.getIpNetworkHashMap().size()) {
-                    System.out.println("Network: Found an open spot");
+                    Gdx.app.debug("Network added", "Found an open spot");
                     break positionLoop;
                 }
             }
@@ -87,5 +95,13 @@ public final class InternetProviderNetwork extends Network {
 
     public HashMap<String, Network> getIpChildNetworkHashMap() {
         return ipChildNetworkHashMap;
+    }
+
+    public Sprite getTerritory() {
+        return territory;
+    }
+
+    public void setTerritory(Sprite territory) {
+        this.territory = territory;
     }
 }

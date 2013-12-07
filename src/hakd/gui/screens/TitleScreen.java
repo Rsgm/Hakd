@@ -6,7 +6,6 @@ import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.graphics.g2d.freetype.FreeTypeFontGenerator;
 import hakd.gui.Assets;
 import hakd.gui.input.TitleInput;
 import org.python.util.PythonInterpreter;
@@ -44,10 +43,8 @@ public final class TitleScreen extends HakdScreen {
     public void show() {
         // game.setScreen(new MenuScreen(game)); // uncomment to skip title
 
-        FreeTypeFontGenerator generator = new FreeTypeFontGenerator(Gdx.files.internal("hakd/gui/resources/fonts/whitrabt.ttf"));
-        font = generator.generateFont(16);
-        creditFont = generator.generateFont(14);
-        generator.dispose();
+        font = Assets.consoleFont;
+        creditFont = Assets.font;
 
         font.setColor(0f, 0f, 0f, 0f);
         creditFont.setColor(0.0f, 1f, 0.0f, 0.18f);
@@ -67,7 +64,7 @@ public final class TitleScreen extends HakdScreen {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                new PythonInterpreter().exec("");
+                new PythonInterpreter().exec("print \'Starting Jython\'");
             }
         }).start();
     }
@@ -79,7 +76,7 @@ public final class TitleScreen extends HakdScreen {
 
         batch.begin();
         title.draw(batch);
-        creditFont.draw(batch, "Created by Ryan Mirman", 2, 14);
+        creditFont.draw(batch, "Created by Ryan Mirman", 2, 14); // TODO replace this with a credits page if more people help out
 
         login();
         batch.end();

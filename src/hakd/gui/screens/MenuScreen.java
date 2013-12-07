@@ -42,6 +42,7 @@ public final class MenuScreen extends HakdScreen {
         cam.update();
 
         stage = new Stage();
+        stage.getSpriteBatch().setShader(Assets.shaders.get(Assets.Shader.DEFAULT));
         canvas = new Table();
         stage.addActor(canvas);
         canvas.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -54,7 +55,7 @@ public final class MenuScreen extends HakdScreen {
         Gdx.input.setInputProcessor(stage);
         stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 
-        Terminal();
+        StartTerminal();
     }
 
     @Override
@@ -73,7 +74,7 @@ public final class MenuScreen extends HakdScreen {
         }
     }
 
-    private void Terminal() {
+    private void StartTerminal() {
         Skin skin = Assets.skin;
         history = new ArrayList<String>();
 

@@ -2,11 +2,16 @@ package hakd.game.gameplay;
 
 import hakd.networks.Network;
 
-public final class Character {
+public class Character {
 
-    int money = 0;
+    int money = 0;       // in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or no redundancy with strong encryption
     String name;            // does not really change
-    Network home;
+    Network network; // meant to be used as the players network base
+
+    public Character(Network network, String name) {
+        this.network = network;
+        this.name = name;
+    }
 
     public int getMoney() {
         return money;
@@ -16,12 +21,19 @@ public final class Character {
         this.money = money;
     }
 
-    public Network getHome() {
-        return home;
+    public String getName() {
+        return name;
     }
 
-    public void setHome(Network home) {
-        this.home = home;
+    public void setName(String name) {
+        this.name = name;
     }
 
+    public Network getNetwork() {
+        return network;
+    }
+
+    public void setNetwork(Network network) {
+        this.network = network;
+    }
 }

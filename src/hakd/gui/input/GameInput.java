@@ -64,7 +64,7 @@ public final class GameInput implements InputProcessor {
         float deltaX = (lastMouseX - screenX) / (Gdx.graphics.getWidth() / width) * cam.zoom;
         float deltaY = (screenY - lastMouseY) / (Gdx.graphics.getHeight() / height) * cam.zoom;
 
-        //		System.out.println(deltaX + "	" + deltaY + "	" + cam.position.x + "	" + cam.position.y);
+//        System.out.println(deltaX + "	" + deltaY + "	" + cam.position.x + "	" + cam.position.y);
 
         cam.translate(deltaX, deltaY);
 
@@ -88,7 +88,7 @@ public final class GameInput implements InputProcessor {
             cam.zoom = Math.round(zoom * 100) / 100f; // round the zoom to the
             // hundredths place
         }
-        System.out.println(cam.zoom);
+//        System.out.println(cam.zoom);
         return true;
     }
 }
