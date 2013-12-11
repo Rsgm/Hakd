@@ -8,21 +8,21 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import hakd.game.Hakd;
 import hakd.gui.Assets;
 
 public class HakdScreen implements Screen {
     int width = Gdx.graphics.getWidth();
     int height = Gdx.graphics.getHeight();
 
-
-    Game game;
+    Hakd game;
 
     Camera cam;
     SpriteBatch batch;
     ShaderProgram gdxShader;
 
     public HakdScreen(Game game) {
-        this.game = game;
+        this.game = (Hakd) game;
 
         gdxShader = Assets.shaders.get(Assets.Shader.GDX_DEFAULT);
 
@@ -87,7 +87,7 @@ public class HakdScreen implements Screen {
     }
 
     public void setGame(Game game) {
-        this.game = game;
+        this.game = (Hakd) game;
     }
 
     public SpriteBatch getBatch() {

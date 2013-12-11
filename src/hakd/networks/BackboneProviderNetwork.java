@@ -23,8 +23,6 @@ public final class BackboneProviderNetwork extends Network {
         super();
 
         this.internet = internet;
-        //		owner = BackboneName.values()[(int) (Math.random() * BackboneName.values().length)].toString();
-
         parent = null;
         mapIcon = Assets.linearTextures.createSprite("backboneNetwork");
         mapIcon.setSize(100, 100);

@@ -128,7 +128,7 @@ public class NetworkFactory {
         Gdx.app.debug("Network Added", "Backbone");
         BackboneProviderNetwork backbone = new BackboneProviderNetwork(internet);
 
-        backbone.setOwner(new Company(backbone, "Backbone"));
+        backbone.setOwner(new Company(backbone, BackboneProviderNetwork.BackboneName.values()[(int) (Math.random() * BackboneProviderNetwork.BackboneName.values().length)].toString()));
 
         backbone.setType(Network.NetworkType.BACKBONE);
         backbone.setIpRegion(Network.IpRegion.values()[internet.getBackboneProviderNetworks().size() % Network.IpRegion.values().length]);

@@ -4,18 +4,15 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
+import hakd.game.gameplay.GamePlay;
 import hakd.gui.Assets;
 import hakd.gui.screens.TitleScreen;
 
 public final class Hakd extends Game {
-    private int width;
-    private int height;
-    private boolean fullscreen;
-    private boolean vsync;
-
     private Preferences prefs;
+    // private static Preferences save1; // save this for later // Use kryo
 
-    // private static Preferences save1; // save this for later
+    private GamePlay gamePlay;
 
     @Override
     public void create() {
@@ -27,10 +24,10 @@ public final class Hakd extends Game {
             newPrefs();
         }
 
-        width = prefs.getInteger("width");
-        height = prefs.getInteger("height");
-        fullscreen = prefs.getBoolean("fullscreen");
-        vsync = prefs.getBoolean("vsync");
+        int width = prefs.getInteger("width");
+        int height = prefs.getInteger("height");
+        boolean fullscreen = prefs.getBoolean("fullscreen");
+        boolean vsync = prefs.getBoolean("vsync");
 
         Gdx.graphics.setDisplayMode(width, height, fullscreen);
         Gdx.graphics.setVSync(vsync); // because no one needs to render 4000 frames per second, but then again it keeps the room warm
@@ -48,7 +45,7 @@ public final class Hakd extends Game {
 	 */
 
         prefs.putBoolean("played-before", false);
-        prefs.putInteger("width", 800);//800);
+        prefs.putInteger("width", 800);
         prefs.putInteger("height", 600);
         prefs.putBoolean("fullscreen", false);
         prefs.putBoolean("vsync", true);
@@ -59,5 +56,13 @@ public final class Hakd extends Game {
         // unfortunately this makes this game non-portable, kind of
 
         // TODO ask user if they want the game to save anything, including settings and game save. Maybe ask in the settings and default to no saving
+    }
+
+    public GamePlay getGamePlay() {
+        return gamePlay;
+    }
+
+    public void setGamePlay(GamePlay gamePlay) {
+        this.gamePlay = gamePlay;
     }
 }

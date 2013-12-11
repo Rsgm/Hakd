@@ -10,6 +10,7 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import hakd.game.Internet;
+import hakd.game.gameplay.GamePlay;
 import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
 import hakd.gui.EmptyDeviceTile;
@@ -57,6 +58,8 @@ public final class GameScreen extends HakdScreen {
 
             room = new Room(player, this, RoomMap.room1);
 
+            game.setGamePlay(new GamePlay(internet));
+
             Sprite sprite = player.getSprite();
             sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
 
@@ -97,10 +100,6 @@ public final class GameScreen extends HakdScreen {
             updateMovement();
             checkPosition(rBatch);
         }
-
-        // update display();
-        // update game
-        // update other, I don't know
 
         player.getSprite().draw(rBatch);
         rBatch.end();
@@ -184,8 +183,7 @@ public final class GameScreen extends HakdScreen {
         }
 
         player.move(1.41f * x / tileSize, y / tileSize / 1.41f);
-        // these were at1.5f each, they may need to be changed to account for
-        // screen size
+        // these were at 1.5f each, they may need to be changed to account for screen size
     }
 
     public void changeMap(TiledMap map) { // TODO make a transition effect

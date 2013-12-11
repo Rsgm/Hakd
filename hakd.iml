@@ -84,24 +84,6 @@
         <SOURCES />
       </library>
     </orderEntry>
-    <orderEntry type="module-library">
-      <library name="ai_path.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/ai_path.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
-    <orderEntry type="module-library">
-      <library name="jython-standalone-2.5.4-rc1.jar">
-        <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/jython-standalone-2.5.4-rc1.jar!/" />
-        </CLASSES>
-        <JAVADOC />
-        <SOURCES />
-      </library>
-    </orderEntry>
     <orderEntry type="library" name="gdx-backend-lwjgl-natives" level="project" />
     <orderEntry type="library" name="gdx-backend-lwjgl" level="project" />
     <orderEntry type="library" name="gdx-freetype-natives" level="project" />
