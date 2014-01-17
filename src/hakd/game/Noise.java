@@ -149,6 +149,7 @@ public final class Noise {
         try {
             Clamp clamp = new Clamp(new Const());
             clamp.setBounds(0, 1);
+            return clamp;
         } catch (ExceptionInvalidParam exceptionInvalidParam) {
             exceptionInvalidParam.printStackTrace();
         }
@@ -159,6 +160,7 @@ public final class Noise {
         try {
             Clamp clamp = new Clamp(new Const());
             clamp.setBounds(0, 1);
+            return clamp;
         } catch (ExceptionInvalidParam exceptionInvalidParam) {
             exceptionInvalidParam.printStackTrace();
         }
