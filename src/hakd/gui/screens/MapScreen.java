@@ -2,16 +2,27 @@ package hakd.gui.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.graphics.Pixmap;
+import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import hakd.game.Internet;
+import hakd.game.Noise;
+import hakd.game.gameplay.City;
 import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
 import hakd.gui.input.MapInput;
 import hakd.networks.BackboneProviderNetwork;
 import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
+import libnoiseforjava.exception.ExceptionInvalidParam;
+import libnoiseforjava.module.ModuleBase;
+import libnoiseforjava.util.ColorCafe;
+import libnoiseforjava.util.ImageCafe;
+import libnoiseforjava.util.NoiseMap;
+import libnoiseforjava.util.RendererImage;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,15 +46,27 @@ public final class MapScreen extends HakdScreen {
     private final List<Sprite> parentLineSprites;
     private final List<Sprite> backboneLineSprites;
 
-    public MapScreen(Game game, GameScreen gameScreen, Internet internet) {
+    private Texture land;
+    private Texture density;
+    private Texture politics;
+    private Texture ethics;
+    private Texture country;
+    private Texture income;
+    private Texture crime;
+
+    private Noise.NoiseType currentBackground;
+
+    public static final int NOISE_GENERATION_SIZE = 800; // how many points to draw. default: 800, best quality would be around 2500
+    public static final int NOISE_DISPLAY_SIZE = 50000; // how large of an area to spread the points out on. default: 50000
+
+    public MapScreen(Game game, Internet internet) {
         super(game);
 
         this.internet = internet;
-        this.gameScreen = gameScreen;
+        this.gameScreen = (GameScreen) game.getScreen();
 
         territoryBatch = new SpriteBatch();
         territoryBatch.setShader(Assets.shaders.get(Assets.Shader.TERRITORY));
-
         networkSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
         ispSprites = new ArrayList<Sprite>(internet.getInternetProviderNetworks().size());
         territorySprites = new ArrayList<Sprite>(internet.getInternetProviderNetworks().size());
@@ -51,6 +74,19 @@ public final class MapScreen extends HakdScreen {
         connectionLineSprites = new ArrayList<Sprite>(50);
         parentLineSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
         backboneLineSprites = new ArrayList<Sprite>(internet.getBackboneProviderNetworks().size());
+
+        try {
+            generateNoiseTexture(Noise.NoiseType.TERRAIN);
+            generateNoiseTexture(Noise.NoiseType.DENSITY);
+            generateNoiseTexture(Noise.NoiseType.COUNTRY);
+            generateNoiseTexture(Noise.NoiseType.ETHICS);
+            generateNoiseTexture(Noise.NoiseType.POLITICS);
+            generateNoiseTexture(Noise.NoiseType.INCOME);
+            generateNoiseTexture(Noise.NoiseType.CRIME);
+        } catch (ExceptionInvalidParam exceptionInvalidParam) {
+            exceptionInvalidParam.printStackTrace();
+        }
+        currentBackground = Noise.NoiseType.TERRAIN;
 
         cam = new OrthographicCamera();
         ((OrthographicCamera) cam).setToOrtho(false, width, height);
@@ -85,14 +121,32 @@ public final class MapScreen extends HakdScreen {
 
         territoryBatch.setProjectionMatrix(cam.combined);
         territoryBatch.begin();
-        for (Sprite s : territorySprites) {
-            s.draw(territoryBatch);
+        switch (currentBackground) {
+            case TERRAIN:
+                territoryBatch.draw(land, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
+                break;
+            case DENSITY:
+                territoryBatch.draw(density, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
+                break;
+            case POLITICS:
+                territoryBatch.draw(politics, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
+                break;
+            case ETHICS:
+                territoryBatch.draw(ethics, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
+                break;
+            case COUNTRY:
+                territoryBatch.draw(country, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
+                break;
+            case INCOME:
+                territoryBatch.draw(income, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
         }
         territoryBatch.end();
 
         batch.setProjectionMatrix(cam.combined);
         batch.begin();
-
+//        for (Sprite s : territorySprites) {
+//            s.draw(batch);
+//        }
         for (Sprite s : backboneLineSprites) {
             s.draw(batch);
         }
@@ -110,6 +164,11 @@ public final class MapScreen extends HakdScreen {
         }
         for (Sprite s : connectionLineSprites) {
             s.draw(batch);
+        }
+
+        for (City c : game.getGamePlay().getCityList()) {
+            c.getIcon().draw(batch);
+            Assets.font.draw(batch, c.getName(), c.getPosition().x, c.getPosition().y + 80);
         }
         batch.end();
     }
@@ -143,6 +202,146 @@ public final class MapScreen extends HakdScreen {
         }
     }
 
+    private void generateNoiseTexture(Noise.NoiseType type) throws ExceptionInvalidParam {
+        ModuleBase noise = null;
+        RendererImage renderer = new RendererImage();
+        double[][] noiseArray = new double[NOISE_GENERATION_SIZE][NOISE_GENERATION_SIZE];
+
+        switch (type) {
+            case TERRAIN:
+                if (land != null) {
+                    return;
+                }
+                noise = Noise.TERRAIN;
+                renderer.clearGradient();
+                renderer.addGradientPoint(-1, new ColorCafe(10, 10, 255, 255));
+                renderer.addGradientPoint(0, new ColorCafe(39, 140, 255, 255));
+                renderer.addGradientPoint(.25, new ColorCafe(240, 240, 88, 255));
+                renderer.addGradientPoint(.5, new ColorCafe(0, 140, 0, 255));
+                renderer.addGradientPoint(.73, new ColorCafe(127, 51, 0, 255));
+                renderer.addGradientPoint(.75, new ColorCafe(120, 120, 120, 255));
+                renderer.addGradientPoint(1, new ColorCafe(234, 234, 234, 255));
+                break;
+            case DENSITY:
+                if (density != null) {
+                    return;
+                }
+                noise = Noise.DENSITY;
+                renderer.clearGradient();
+                renderer.clearGradient();
+                renderer.addGradientPoint(-1, new ColorCafe(0, 0, 0, 255));
+                renderer.addGradientPoint(1, new ColorCafe(50, 50, 255, 255));
+                break;
+            case COUNTRY:
+                if (country != null) {
+                    return;
+                }
+                noise = Noise.COUNTRY;
+                renderer.clearGradient();
+                renderer.clearGradient();
+                renderer.addGradientPoint(-1, new ColorCafe(0, 0, 0, 255));
+                renderer.addGradientPoint(1, new ColorCafe(0, 0, 0, 255));
+                break;
+            case POLITICS:
+                if (politics != null) {
+                    return;
+                }
+                noise = Noise.POLITICS;
+                renderer.clearGradient();
+                renderer.clearGradient();
+                renderer.addGradientPoint(-1, new ColorCafe(0, 0, 0, 255));
+                renderer.addGradientPoint(1, new ColorCafe(255, 0, 0, 255));
+                break;
+            case ETHICS:
+                if (ethics != null) {
+                    return;
+                }
+                noise = Noise.ETHICS;
+                renderer.clearGradient();
+                renderer.clearGradient();
+                renderer.addGradientPoint(-1, new ColorCafe(0, 0, 0, 255));
+                renderer.addGradientPoint(1, new ColorCafe(255, 255, 255, 255));
+                break;
+            case INCOME:
+                if (income != null) {
+                    return;
+                }
+                noise = Noise.INCOME;
+                renderer.clearGradient();
+                renderer.clearGradient();
+                renderer.addGradientPoint(-1, new ColorCafe(0, 0, 0, 255));
+                renderer.addGradientPoint(1, new ColorCafe(0, 255, 0, 255));
+                break;
+            case CRIME:
+                if (income != null) {
+                    return;
+                }
+                noise = Noise.INCOME;
+                renderer.clearGradient();
+                renderer.clearGradient();
+                renderer.addGradientPoint(-1, new ColorCafe(0, 0, 0, 255));
+                renderer.addGradientPoint(1, new ColorCafe(255, 160, 80, 255));
+                break;
+        }
+
+        for (int y = 0; y < NOISE_GENERATION_SIZE; y++) {
+            for (int x = 0; x < NOISE_GENERATION_SIZE; x++) { // maybe use separate threads to get the values and set them to arrays. e.g. float[250][5000] ten times
+                float f = (float) noise.getValue((x - NOISE_GENERATION_SIZE / 2) * NOISE_DISPLAY_SIZE / NOISE_GENERATION_SIZE, 0, (y - NOISE_GENERATION_SIZE / 2) * NOISE_DISPLAY_SIZE / NOISE_GENERATION_SIZE);
+                noiseArray[x][NOISE_GENERATION_SIZE - y - 1] = f;
+            }
+            Gdx.app.debug("Filling Noise Array", (float) y / NOISE_GENERATION_SIZE * 100 + "% done");
+        }
+
+        Pixmap pixmap = new Pixmap(NOISE_GENERATION_SIZE, NOISE_GENERATION_SIZE, Pixmap.Format.RGBA8888);
+        NoiseMap noiseMap = new NoiseMap(NOISE_GENERATION_SIZE, NOISE_GENERATION_SIZE);
+        noiseMap.setNoiseMap(noiseArray);
+        ImageCafe imageCafe = new ImageCafe(NOISE_GENERATION_SIZE, NOISE_GENERATION_SIZE);
+        renderer.setSourceNoiseMap(noiseMap);
+        renderer.setDestImage(imageCafe);
+        renderer.render();
+
+        for (int y = 0; y < NOISE_GENERATION_SIZE; y++) {
+            for (int x = 0; x < NOISE_GENERATION_SIZE; x++) { // maybe use separate threads to get the values and set them to arrays. e.g. float[250][5000] ten times
+                ColorCafe color = imageCafe.getValue(x, y);
+                int c = Color.rgba8888((float) color.getRed() / 255f, (float) color.getGreen() / 255f, (float) color.getBlue() / 255f, (float) color.getAlpha() / 255f);
+                pixmap.drawPixel(x, y, c);
+            }
+            Gdx.app.debug("Filling Pixmap", (float) y / NOISE_GENERATION_SIZE * 100 + "% done");
+        }
+
+        switch (type) {
+            case TERRAIN:
+                land = new Texture(pixmap);
+                land.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+                break;
+            case DENSITY:
+                density = new Texture(pixmap);
+                density.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+                break;
+            case COUNTRY:
+                country = new Texture(pixmap);
+                country.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+                break;
+            case POLITICS:
+                politics = new Texture(pixmap);
+                politics.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+                break;
+            case ETHICS:
+                ethics = new Texture(pixmap);
+                ethics.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+                break;
+            case INCOME:
+                income = new Texture(pixmap);
+                income.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+                break;
+            case CRIME:
+                income = new Texture(pixmap);
+                income.setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+                break;
+        }
+        pixmap.dispose();
+    }
+
     @Override
     public void dispose() {
         super.dispose();
@@ -156,5 +355,13 @@ public final class MapScreen extends HakdScreen {
 
     public GameScreen getGameScreen() {
         return gameScreen;
+    }
+
+    public Noise.NoiseType getCurrentBackground() {
+        return currentBackground;
+    }
+
+    public void setCurrentBackground(Noise.NoiseType currentBackground) {
+        this.currentBackground = currentBackground;
     }
 }

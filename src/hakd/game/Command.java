@@ -3,10 +3,12 @@ package hakd.game;
 import com.badlogic.gdx.Gdx;
 import hakd.gui.windows.deviceapps.Terminal;
 import hakd.networks.devices.Device;
+import hakd.networks.devices.parts.Part;
+import hakd.networks.devices.parts.Storage;
+import hakd.other.File;
 import org.python.core.PyException;
 import org.python.util.PythonInterpreter;
 
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
@@ -56,7 +58,7 @@ public final class Command {
                     parameters.add(next);
                 }
 
-                Gdx.app.debug("Terminal Command", input + parameters.toString());
+                Gdx.app.debug("Terminal Command", input + "   " + parameters.toString());
                 if (!parameters.isEmpty()) {
                     try {
                         runPython(parameters);
@@ -89,20 +91,18 @@ public final class Command {
     private void runPython(List<String> parameters) throws FileNotFoundException {
         PythonInterpreter pi = new PythonInterpreter();
 
-        File[] files = new File("python/programs/").listFiles();
-        File file = null;
-
-        assert files != null;
-        for (File f : files) {
-            if (f.getName().equals(parameters.get(0) + ".py")) {
-                file = f;
+        hakd.other.File file = null;
+        for (Part p : device.getParts()) {
+            if (p instanceof Storage) {
+                file = ((Storage) p).getFile(File.FileType.PROGRAM, "parameters.get(0)" + ".py");
+                break;
             }
         }
 
-        if (file == null || !file.exists()) {
+        if (file == null) {
             throw new FileNotFoundException();
         }
-        Gdx.app.debug("Terminal Info", "python file: " + file.getPath());
+        Gdx.app.debug("Terminal Info", "python file: " + file.getName()); //TODO file.getPath()); maybe use SDa,b,c... for drive paths
 
         if (parameters.size() > 1) {
             parameters.remove(0); // first parameter is always the command
@@ -115,7 +115,7 @@ public final class Command {
         // return;
         // }
 
-        pi.execfile(file.getPath());
+        pi.exec(file.getData());
     }
 
     public Queue<Integer> getUserInputBuffer() {

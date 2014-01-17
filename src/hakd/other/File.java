@@ -1,6 +1,6 @@
 package hakd.other;
 
-import hakd.networks.devices.Device;
+import hakd.networks.devices.parts.Storage;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -14,13 +14,15 @@ public final class File { // TODO file hashes!
     private final String owner;
     private String time;
     private long timeMs;
+    private Storage storage;
 
-    public File(String name, String data, FileType type, Device d) {
+    public File(String name, String data, FileType type, Storage s) {
         this.name = name;
         this.data = data;
         this.type = type;
 
-        owner = d.getNetwork().getOwner().getName();
+        owner = s.getDevice().getNetwork().getOwner().getName();
+        storage = s;
 
         SimpleDateFormat f = new SimpleDateFormat("MM-dd HH:mm:ss");
         Date date = new Date();

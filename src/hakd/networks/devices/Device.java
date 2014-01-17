@@ -55,7 +55,7 @@ public class Device implements Connectable {
     }
 
     @Override
-    public boolean connect(Device client, Port clientPort, int port) throws IOException {
+    public final boolean connect(Device client, Port clientPort, int port) throws IOException {
         if (client == this && clientPort.getPortNumber() == port) {
             throw new IOException("Can't connect a port to its self.");
         }
@@ -109,12 +109,12 @@ public class Device implements Connectable {
     }
 
     @Override
-    public void disconnect(Connection c) {
+    public final void disconnect(Connection c) {
         c.close();
     }
 
     @Override
-    public void openPort(Port port) throws IOException {
+    public final void openPort(Port port) throws IOException {
         if (!ports.containsKey(port.getPortNumber())) {
             ports.put(port.getPortNumber(), port);
             return;
@@ -124,7 +124,7 @@ public class Device implements Connectable {
     }
 
     @Override
-    public void closePort(int port) throws IOException {
+    public final void closePort(int port) throws IOException {
         if (!ports.containsKey(port)) {
             throw new IOException("Port does not exist.");
         }
@@ -146,15 +146,15 @@ public class Device implements Connectable {
     }
 
     @Override
-    public void log(String name, String data) {
+    public final void log(String name, String data) {
         try {
-            masterStorage.addFile(new File(name + ".log", data, FileType.LOG, this));
+            masterStorage.addFile(new File(name + ".log", data, FileType.LOG, masterStorage));
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-    public void addPart(Part p) {
+    public final void addPart(Part p) {
         if (partLimit <= parts.size()) {
             return;
         }
@@ -188,7 +188,7 @@ public class Device implements Connectable {
         }
     }
 
-    public void removePart(PartType partType, Part p) {
+    public final void removePart(PartType partType, Part p) {
         if (!parts.remove(p)) {
             return;
         }
@@ -220,7 +220,7 @@ public class Device implements Connectable {
         }
     }
 
-    public void dispose() {
+    public final void dispose() {
         for (Connection c : connections.values()) {
             disconnect(c);
         }

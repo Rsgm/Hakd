@@ -3,22 +3,17 @@ package hakd.game.gameplay;
 import hakd.networks.Network;
 
 public class Character {
-
-    int money = 0;       // in $ //add redundancy to money // triple redundancy with voting, maybe some rudimentary encryption, or no redundancy with strong encryption
     String name;            // does not really change
     Network network; // meant to be used as the players network base
+    City city;
 
-    public Character(Network network, String name) {
+    public Character(Network network, String name, City city) {
         this.network = network;
         this.name = name;
+        this.city = city;
     }
 
-    public int getMoney() {
-        return money;
-    }
-
-    public void setMoney(int money) {
-        this.money = money;
+    public void update() { // updates the character and runs its AI
     }
 
     public String getName() {

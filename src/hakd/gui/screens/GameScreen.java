@@ -9,8 +9,9 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import hakd.game.GamePlay;
+import hakd.game.Hakd;
 import hakd.game.Internet;
-import hakd.game.gameplay.GamePlay;
 import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
 import hakd.gui.EmptyDeviceTile;
@@ -19,46 +20,45 @@ import hakd.gui.Room.RoomMap;
 import hakd.gui.input.GameInput;
 import hakd.gui.windows.BuyDeviceWindow;
 import hakd.gui.windows.WindowStage;
-import hakd.networks.Network;
-import hakd.networks.NetworkFactory;
 import hakd.networks.devices.Device;
 
 public final class GameScreen extends HakdScreen {
     private Player player; // TODO Sometime make this an array and have other people in the game with different skills and personalities private int arraylist<npc> npcs = new arraylist<npc>(); maybe
 
-    public static Internet internet = null;
     public static final float tileSize = 64;
 
-    private String name;
+    private String playerName;
     private Room room;
     private WindowStage openWindow = null;
     private MapScreen map;
     private IsometricTiledMapRenderer renderer; // it says this is experimental, but it was an old article
     private GameInput input;
 
-    public GameScreen(Game game, String name) {
+    private boolean firstTimeShown = true;
+
+    public GameScreen(Game game, String playerName) {
         super(game);
-        this.name = name;
+        this.playerName = playerName;
     }
 
     @Override
     public void show() {
         super.show();
 
-        if (internet == null) {
+        // this should all be in the constructor,
+        // but there is a bug where the top right 1/4th of the screen is white and all textures are white
+        // this somehow works
+        if (firstTimeShown) {
+            firstTimeShown = false;
+
             for (short i = 1; i < 256; i++) {
                 Internet.ipNumbers.add(i);
             }
 
-            internet = new Internet();
-
-            player = new Player(name, this);
-            Network n = NetworkFactory.createPlayerNetwork(player);
-            internet.addNetworkToInternet(n, internet.getInternetProviderNetworks().get((int) (Math.random() * internet.getInternetProviderNetworks().size())));
+            GamePlay gamePlay = new GamePlay(this, playerName);
+            ((Hakd) game).setGamePlay(gamePlay);
 
             room = new Room(player, this, RoomMap.room1);
-
-            game.setGamePlay(new GamePlay(internet));
 
             Sprite sprite = player.getSprite();
             sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
@@ -73,8 +73,9 @@ public final class GameScreen extends HakdScreen {
             cam.position.x = room.getFloor().getWidth() / 2;
             cam.position.y = 0;
 
-            map = new MapScreen(game, this, internet);
+            map = new MapScreen(game, gamePlay.getInternet());
             input = new GameInput(game, (OrthographicCamera) cam, player);
+
             Gdx.input.setInputProcessor(input);
         }
         Gdx.gl.glClearColor(0, 0, 0, 0);
@@ -149,6 +150,8 @@ public final class GameScreen extends HakdScreen {
     public void dispose() {
         super.dispose();
         room.dispose();
+        game.getGamePlay().dispose();
+        game.setGamePlay(null);
     }
 
     @Override

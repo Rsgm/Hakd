@@ -4,7 +4,6 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import hakd.game.gameplay.GamePlay;
 import hakd.gui.Assets;
 import hakd.gui.screens.TitleScreen;
 
@@ -56,6 +55,14 @@ public final class Hakd extends Game {
         // unfortunately this makes this game non-portable, kind of
 
         // TODO ask user if they want the game to save anything, including settings and game save. Maybe ask in the settings and default to no saving
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+
+        gamePlay.dispose();
+        Assets.dispose();
     }
 
     public GamePlay getGamePlay() {

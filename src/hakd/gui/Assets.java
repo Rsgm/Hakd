@@ -9,7 +9,10 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import com.badlogic.gdx.utils.Disposable;
 
+import java.lang.reflect.Field;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public final class Assets {
@@ -69,8 +72,24 @@ public final class Assets {
         shaders.put(Shader.GDX_DEFAULT, SpriteBatch.createDefaultShader());
     }
 
+    public static void dispose() {
+        Field[] Fields = Assets.class.getFields();
+        for (Field f : Fields) {
+            if (Arrays.asList(f.getType().getGenericInterfaces()).contains(Disposable.class)) {
+                try {
+                    ((Disposable) f.get(Disposable.class)).dispose();
+                } catch (IllegalAccessException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+        for (ShaderProgram s : shaders.values()) {
+            s.dispose();
+        }
+    }
+
     public enum Shader {
         GDX_DEFAULT, DEFAULT, TERRITORY;
     }
-
 }

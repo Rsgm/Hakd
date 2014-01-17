@@ -1,8 +1,12 @@
 package hakd.networks;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Circle;
+import com.badlogic.gdx.math.Vector2;
 import hakd.game.Internet;
+import hakd.game.Noise;
 import hakd.game.gameplay.Character;
+import hakd.game.gameplay.City;
 import hakd.gui.EmptyDeviceTile;
 import hakd.networks.devices.Device;
 
@@ -18,6 +22,7 @@ public class Network {
     Character owner; // owner, company, player
     Stance stance; // TODO move this to npc class
     NetworkType type;
+    City city;
 
     // provider connection info
     int speed; // in MB/s (megabytes per second)
@@ -31,10 +36,11 @@ public class Network {
     // gui stuff
     Sprite mapIcon;
     Sprite mapParentLine;
+    Vector2 pos; // holds the position of the center of the sprite
 
-    public static final float BackboneRegionSize = 2000; // diameter of the circle
-    public static final float ispRegionSize = 800;
-    public static final float networkRegionSize = 100;
+    public static final int backboneRegionSize = 2000; // diameter of the circle
+    public static final int ispRegionSize = 200; // diameter of the circle
+    public static final int networkRegionSize = 100;
     IpRegion ipRegion; // where the network is in the world, it helps find an ip
 
     Internet internet;
@@ -46,7 +52,7 @@ public class Network {
      * Removes a device from the network, as well as disposes it, removing any
      * connections.
      */
-    public void removeDevice(Device d) {
+    public final void removeDevice(Device d) {
         devices.remove(d);
         d.dispose();
     }
@@ -54,7 +60,7 @@ public class Network {
     /**
      * Registers a device on the network.
      */
-    public boolean addDevice(Device device) {
+    public final boolean addDevice(Device device) {
         String ip = assignIp();
 
         if (devices.size() >= deviceLimit || ip == null) {
@@ -71,7 +77,7 @@ public class Network {
     /**
      * Assigns an ip to a device. Note: This will return null if there are 255
      */
-    private String assignIp() {
+    private final String assignIp() {
         short[] deviceIp = null;
         short[] ip = Internet.ipFromString(this.ip);
 
@@ -91,7 +97,7 @@ public class Network {
     /**
      * Finds the device with the given ip connected to the dns.
      */
-    public Device getDevice(String ip) {
+    public final Device getDevice(String ip) {
         for (Device d : devices) {
             if (ip.equals(d.getIp())) {
                 return d;
@@ -100,33 +106,82 @@ public class Network {
         return null;
     }
 
+    void placeNetwork(float regionSize) {
+        float iconWidth = mapIcon.getWidth() / 2;
+        float iconHeight = mapIcon.getHeight() / 2;
+        Circle c = new Circle(city.getPosition().x, city.getPosition().y, 1);
+        Vector2 v = new Vector2();
+
+        l1:
+        for (int i = (int) ((city.getDensity() + 1) / 2 * 2500); i < 5000; i += 250) {
+            c.setRadius(i / 2);
+
+            for (int k = 0; k < 50; k++) {
+                float random = (float) (Math.random() * 2 - 1);
+                v.x = (float) ((Math.random() * i) - i / 2) + iconWidth;
+                v.y = (float) ((Math.random() * i) - i / 2) + iconHeight;
+                v.add(city.getPosition());
+
+                if (c.contains(v)) {
+                    double land = Noise.getLand().getValue(v.x, 0, v.y);
+                    double density = Noise.DENSITY.getValue(v.x, 0, v.y);
+                    if (land > 0 && density >= random) {
+                        break;
+                    }
+                }
+
+                if (k >= 50) {
+                    continue l1;
+                }
+            }
+            pos = v;
+            mapIcon.setPosition(v.x - iconWidth, v.y - iconHeight);
+
+            if (v.dst2(city.getPosition()) <= City.height * City.height) {
+                continue;
+            }
+
+            if (internet.getIpNetworkHashMap() == null || internet.getIpNetworkHashMap().isEmpty()) {
+                break;
+            }
+
+            int j = 0;
+            for (Network n : internet.getIpNetworkHashMap().values()) {
+                j++;
+                if (v.dst2(n.getMapIcon().getX(), n.getMapIcon().getY()) <= regionSize * regionSize && n != this) {
+                    continue l1;
+                } else if (j >= internet.getIpNetworkHashMap().size()) {
+                    break l1;
+                }
+            }
+        }
+    }
+
     /**
      * These define how to generate a network.
      */
-    public enum NetworkType { // TODO choose a random number between 0 and the probabilities added up, then go through a loop to check which to use
-        PLAYER(0, 0), BUSINESS(1, 10), TEST(1, 1), ISP(1, 1), NPC(20, 100), BACKBONE(1, 1), EDUCATION(1, 1), BANK(1, 1),
-        MILITARY(1, 1), GOVERNMENT(1, 1),
-        RESEARCH(1, 1); // set to 0,0 to never be used in random generation
+    public enum NetworkType {
+        PLAYER(0, IpRegion.PRIVATE), BUSINESS(0, IpRegion.BUSINESS), TEST(0, IpRegion.none),
+        ISP(0, IpRegion.BUSINESS), NPC(0, IpRegion.PRIVATE), BACKBONE(0, IpRegion.BUSINESS),
+        EDUCATION(0, IpRegion.EDUCATION), BANK(0, IpRegion.BUSINESS), MILITARY(0, IpRegion.MILITARY),
+        GOVERNMENT(0, IpRegion.GOVERNMENT), RESEARCH(0, IpRegion.GOVERNMENT);
 
-        public final int probabilityMin; // 0 to 1000
-        public final int probabilityMax;
+        public final float noiseLevel;
+        public final IpRegion ipRegion;
 
-        NetworkType(int probabilityMin, int probabilityMax) {
-            this.probabilityMin = probabilityMin;
-            this.probabilityMax = probabilityMax;
+        NetworkType(float noiseLevel, IpRegion ipRegion) {
+            this.noiseLevel = noiseLevel;
+            this.ipRegion = ipRegion;
         }
     }
 
     public enum Stance {
-        FRIENDLY(), NEUTRAL(), ENEMY(); // TODO do I want to give the network or the npc a stance?
-
-        Stance() {
-        }
+        FRIENDLY, NEUTRAL, ENEMY; // TODO do I want to give the network or the npc a stance?
     }
 
     public enum IpRegion {
-        BUSINESS(1, 56), SA(57, 62), NA(63, 76), EUROPE(77, 91), ASIA(92, 114), AFRICA(115, 126), PRIVATE(128, 172),
-        EDUCATION(173, 182), GOVERNMENT(214, 220), MILITARY(220, 255), none(1, 255);
+        BUSINESS(1, 56), PRIVATE(57, 126), EDUCATION(173, 182), GOVERNMENT(214, 220), MILITARY(220, 255),
+        none(1, 255);
 
         public final int min; // min backbone ip range
         public final int max; // max ip range
@@ -153,36 +208,29 @@ public class Network {
         return level;
     }
 
-
     public void setLevel(int level) {
         this.level = level;
     }
-
 
     public hakd.game.gameplay.Character getOwner() {
         return owner;
     }
 
-
     public void setOwner(Character owner) {
         this.owner = owner;
     }
-
 
     public Stance getStance() {
         return stance;
     }
 
-
     public void setStance(Stance stance) {
         this.stance = stance;
     }
 
-
     public IpRegion getRegion() {
         return ipRegion;
     }
-
 
     public void setRegion(IpRegion ipRegion) {
         this.ipRegion = ipRegion;
@@ -270,5 +318,21 @@ public class Network {
 
     public void setMapParentLine(Sprite mapParentLine) {
         this.mapParentLine = mapParentLine;
+    }
+
+    public Vector2 getPos() {
+        return pos;
+    }
+
+    public void setPos(Vector2 pos) {
+        this.pos = pos;
+    }
+
+    public City getCity() {
+        return city;
+    }
+
+    public void setCity(City city) {
+        this.city = city;
     }
 }

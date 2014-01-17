@@ -2,6 +2,11 @@ package hakd.other;
 
 import org.python.util.PythonInterpreter;
 
+import java.io.*;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
 public final class Util {
 
     /**
@@ -50,9 +55,113 @@ public final class Util {
         // http://www.java-gaming.org/topics/isometric-screen-space/27698/view.html
     }
 
-    public static String GanerateName() {
+    public static String ganerateName() {
+        String[] names = new String[]{"Adara", "Adena", "Adrianne", "Alarice", "Alvita", "Amara", "Ambika", "Antonia", "Araceli", "Balandria", "Basha",
+                "Beryl", "Bryn", "Callia", "Caryssa", "Cassandra", "Casondrah", "Chatha", "Ciara", "Cynara", "Cytheria", "Dabria", "Darcei",
+                "Deandra", "Deirdre", "Delores", "Desdomna", "Devi", "Dominique", "Drucilla", "Duvessa", "Ebony", "Fantine", "Fuscienne",
+                "Gabi", "Gallia", "Hanna", "Hedda", "Jerica", "Jetta", "Joby", "Kacila", "Kagami", "Kala", "Kallie", "Keelia", "Kerry",
+                "Kerry-Ann", "Kimberly", "Killian", "Kory", "Lilith", "Lucretia", "Lysha", "Mercedes", "Mia", "Maura", "Perdita", "Quella",
+                "Riona", "Ryan", "Safiya", "Salina", "Severin", "Sidonia", "Sirena", "Solita", "Tempest", "Thea", "Treva", "Trista", "Vala", "Winta"};
+
         PythonInterpreter pi = new PythonInterpreter();
+        pi.set("PLACES", names);
         pi.execfile("src/hakd/other/NameGenerator.py");
         return pi.get("name").toString();
+    }
+
+    public static String ganerateCityName() {
+        String[] names = new String[]{"Bangkok", "Beijing", "Buenos Aires", "Cairo", "Delhi", "Dhaka", "Guangzhou", "Hong Kong", "Istanbul", "Jakarta",
+                "Karachi", "Kinshasa", "Kolkata", "Lagos", "Lima", "London", "Los Angeles", "Manila", "Mexico City", "Moscow", "Mumbai",
+                "New York City", "Osaka", "Rio de Janeiro", "São Paulo", "Seoul", "Shanghai", "Tehran", "Tianjin", "Tokyo"
+        };
+
+        PythonInterpreter pi = new PythonInterpreter();
+        pi.set("PLACES", names);
+        pi.execfile("src/hakd/other/NameGenerator.py");
+        String name = pi.get("name").toString();
+        System.out.println(name);
+        return name;
+    }
+
+    public static String ganerateCountryName() {
+        String[] names = new String[]{};
+
+        PythonInterpreter pi = new PythonInterpreter();
+        pi.set("PLACES", names);
+        pi.execfile("src/hakd/other/NameGenerator.py");
+        return pi.get("name").toString();
+    }
+
+    public static String getProgramData(String name) {
+        List<File> fileList = listFiles(new File("python/programs/"));
+        File file = null;
+
+        for (File f : fileList) {
+            if (f.getName().equals(name + ".py")) {
+                file = f;
+                break;
+            }
+        }
+
+        if (file == null) {
+            return "";
+        }
+
+        String data = "";
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+        try {
+            while (true) {
+                String s = reader.readLine();
+                if (s == null) {
+                    break;
+                }
+                data += s;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
+    public static List<File> listFiles(File file) {
+        List<File> files = new ArrayList<File>();
+        for (File f : file.listFiles()) {
+            if (f.isDirectory()) {
+                files.addAll(listFiles(f));
+            } else {
+                files.add(f);
+            }
+        }
+
+        return files;
+    }
+
+    public static String tutorialText(int pos) {
+        String text = "";
+
+        String data = "";
+        BufferedReader reader = new BufferedReader(new InputStreamReader(Util.class.getResourceAsStream("/hakd/gui/resources/tutorial" + pos + ".txt")));
+
+        try {
+            while (true) {
+                String s = reader.readLine();
+                if (s == null) {
+                    break;
+                }
+                text += s;
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return text;
     }
 }

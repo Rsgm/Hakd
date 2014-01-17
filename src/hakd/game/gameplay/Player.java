@@ -15,8 +15,8 @@ public final class Player extends Character {
     private int isoY;
 
     // --------methods--------
-    public Player(String name, GameScreen screen) {
-        super(null, name);
+    public Player(String name, GameScreen screen, City city) {
+        super(null, name, city);
         this.name = name;
         this.screen = screen;
 
@@ -32,13 +32,8 @@ public final class Player extends Character {
         isoY = coords[1];
     }
 
-    // --------getters/setters--------
-    public int getMoney() {
-        return money;
-    }
-
-    public void setMoney(int money) {
-        this.money = money;
+    @Override
+    public void update() {
     }
 
     public Network getNetwork() {

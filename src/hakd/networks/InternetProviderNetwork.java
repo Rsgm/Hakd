@@ -1,8 +1,6 @@
 package hakd.networks;
 
-import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
-import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import hakd.game.Internet;
 import hakd.gui.Assets;
@@ -14,49 +12,22 @@ import java.util.HashMap;
  */
 public final class InternetProviderNetwork extends Network {
     private final HashMap<String, Network> ipChildNetworkHashMap = new HashMap<String, Network>(255);
-
     private Sprite territory;
 
+    public static final int MaxDistance = 1000;
+
     public InternetProviderNetwork(Internet internet) {
-        super();
         this.internet = internet;
     }
 
     /**
      * For non-provider networks.
      */
-    public void registerANetwork(Network network, int speed) {
+    public void registerNewNetwork(Network network, int speed) {
         network.setParent(this);
         network.setIp(internet.assignIp(network));
         network.setSpeed(speed);
         ipChildNetworkHashMap.put(network.getIp(), network);
-
-
-        // network's mapIcon for the map
-        float regionSize = ispRegionSize;
-        positionLoop:
-        for (int i = 0; i < 5000; i++) {
-            Circle c = new Circle(0, 0, regionSize / 2);
-            Vector2 v = new Vector2();
-            do {
-                v.x = (float) ((Math.random() * regionSize) - regionSize / 2);
-                v.y = (float) ((Math.random() * regionSize) - regionSize / 2);
-            } while (!c.contains(v));
-            v.x += mapIcon.getX();
-            v.y += mapIcon.getY();
-            network.getMapIcon().setPosition(v.x, v.y);
-
-            int j = 0;
-            for (Network n : internet.getIpNetworkHashMap().values()) {
-                j++;
-                if (v.dst2(n.getMapIcon().getX(), n.getMapIcon().getY()) <= networkRegionSize * networkRegionSize && n != network) {
-                    break;
-                } else if (j >= internet.getIpNetworkHashMap().size()) {
-                    Gdx.app.debug("Network added", "Found an open spot");
-                    break positionLoop;
-                }
-            }
-        }
 
         // connection line between isp and backbone(this)
         Vector2 v1 = new Vector2(mapIcon.getX() + (mapIcon.getWidth() / 2), mapIcon.getY() + (mapIcon.getHeight() / 2));

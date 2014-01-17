@@ -1,5 +1,6 @@
 package hakd.game;
 
+import hakd.game.gameplay.City;
 import hakd.networks.BackboneProviderNetwork;
 import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
@@ -39,10 +40,10 @@ public final class Internet {
     /**
      * This is only created at the start of the game.
      */
-    public Internet() { // maximum is about 1:6:270 (backbones:isps:networks)
-        int backbones = 4;//(int) (Math.random() * 3 + Network.IpRegion.values().length);
-        int isps = 10;//(int) (Math.random() * 8 + 8);
-        int networks = 20;//(int) (Math.random() * 30 + 60);
+    public Internet(List<City> cities) {
+        int backbones = cities.size(); // (int) (Math.random() * 3 + Network.IpRegion.values().length);
+        int isps = (int) (backbones * (Math.random() * 2 + 2));
+        int networks = (int) (isps * (Math.random() * 3 + 10));
 
         backboneProviderNetworks = new ArrayList<BackboneProviderNetwork>(isps);
         internetProviderNetworks = new ArrayList<InternetProviderNetwork>(backbones);
@@ -53,32 +54,81 @@ public final class Internet {
             ipNumbers.add(i);
         }
 
-        generateBackbones(backbones);
-        generateIsps(isps);
-        generateNetworks(networks);
+        generateBackbones(backbones, cities);
+        generateIsps(isps, cities);
+        generateNetworks(networks, cities);
     }
 
-    private void generateBackbones(int amount) {
+    private void generateBackbones(int amount, List<City> cities) {
         // each ipRegion gets at least one backbone, possibly several
         for (int i = 0; i < amount; i++) {
-            BackboneProviderNetwork backbone = NetworkFactory.createBackbone(this);
+            City city = cities.get(i % cities.size());
+
+            BackboneProviderNetwork backbone = NetworkFactory.createBackbone(this, city);
 
             short[] ip = {generateIpByte(backbone.getIpRegion()), 1, 1, 1};
             backbone.setIp(ipToString(ip));
 
             backboneProviderNetworks.add(backbone);
             ipNetworkHashMap.put(backbone.getIp(), backbone);
+
+            city.addNetwork(backbone);
         }
+
+
+        // create backbone lines
+//        List<Vector2> positions = new ArrayList<Vector2>(backboneProviderNetworks.size());
+//        for (BackboneProviderNetwork b : backboneProviderNetworks) {
+//            positions.add(b.getPos());
+//
+//            TODO I guess use Delaunay Triangulation https://github.com/irstv/jdelaunay/wiki
+//        }
+//        if (!isIntersected) {
+//            Vector2 v1 = new Vector2(b1.getPos());
+//            Vector2 v2 = new Vector2(b2.getPos());
+//            Sprite line = Assets.nearestTextures.createSprite("dashedLine");
+//            line.setOrigin(0, 0);
+//            line.setSize(v1.dst(v2), 3);
+//            line.setPosition(v1.x, v1.y);
+//            line.setRotation(v1.sub(v2).scl(-1).angle());
+//            b1.getBackboneConnectionLines().add(line);
+//            b2.getBackboneConnectionLines().add(line);
+// }
     }
 
-    private void generateIsps(int amount) {
+    private void generateIsps(int amount, List<City> cities) {
+        List<City> citiesShuffled = new ArrayList<City>(cities.size());
+        citiesShuffled.addAll(cities);
+
         for (int i = 0; i < amount; i++) {
-            int a = internetProviderNetworks.size() % backboneProviderNetworks.size();
-            if (backboneProviderNetworks.get(a).getIpChildNetworkHashMap().size() < 256) {
-                InternetProviderNetwork isp = NetworkFactory.createISP(this);
-                backboneProviderNetworks.get(a).registerAnIsp(isp, 1);
-                internetProviderNetworks.add(isp);
-                ipNetworkHashMap.put(isp.getIp(), isp);
+            float random = (float) (Math.random() * 2 - 1);
+            Collections.shuffle(citiesShuffled);
+
+            for (City c : citiesShuffled) {
+                if (c.getDensity() >= random) {
+                    List<BackboneProviderNetwork> cityBackbones = new ArrayList<BackboneProviderNetwork>();
+                    for (Network n : c.getNetworks()) {
+                        if (n instanceof BackboneProviderNetwork) {
+                            cityBackbones.add((BackboneProviderNetwork) n);
+                        }
+                    }
+
+                    if (cityBackbones.isEmpty()) {
+                        continue;
+                    }
+
+                    BackboneProviderNetwork b = cityBackbones.get((int) (Math.random() * cityBackbones.size()));
+
+                    if (b.getIpChildNetworkHashMap().size() < 256) {
+                        InternetProviderNetwork isp = NetworkFactory.createISP(this, c);
+                        b.registerNewIsp(isp, 1);
+                        internetProviderNetworks.add(isp);
+                        ipNetworkHashMap.put(isp.getIp(), isp);
+                        c.addNetwork(isp);
+
+                        break;
+                    }
+                }
             }
         }
     }
@@ -86,35 +136,48 @@ public final class Internet {
     /**
      * Creates the initial game networks.
      */
-    private void generateNetworks(int amount) {
-        for (int i = 0; i < amount; i++) {
-            Network network;
+    private void generateNetworks(int amount, List<City> cities) {
+        List<City> citiesShuffled = new ArrayList<City>(cities.size());
+        citiesShuffled.addAll(cities);
 
-            int a;
-            for (int j = 0; j < internetProviderNetworks.size() * 2; j++) {
-                a = (int) (Math.random() * internetProviderNetworks.size());
-                if (internetProviderNetworks.get(a).getIpChildNetworkHashMap().size() < 256) {
-                    int random = (int) (Math.random() * 10);
-                    if (random < 7) { // chances of generating a certain network type
-                        network = NetworkFactory.createNetwork(NetworkType.NPC);
-                    } else if (random <= 8) {
-                        network = NetworkFactory.createNetwork(NetworkType.BUSINESS);
-                    } else {
-                        network = NetworkFactory.createNetwork(NetworkType.GOVERNMENT);
+        for (int i = 0; i < amount; i++) {
+            float random = (float) (Math.random() * 2 - 1);
+            Collections.shuffle(citiesShuffled);
+
+            for (City c : citiesShuffled) {
+                if (c.getDensity() >= random) {
+                    List<InternetProviderNetwork> cityISPs = new ArrayList<InternetProviderNetwork>();
+                    for (Network n : c.getNetworks()) {
+                        if (n instanceof InternetProviderNetwork) {
+                            cityISPs.add((InternetProviderNetwork) n);
+                        }
                     }
 
-                    addNetworkToInternet(network, internetProviderNetworks.get(a));
-                    break;
+                    if (cityISPs.isEmpty()) {
+                        continue;
+                    }
+
+                    InternetProviderNetwork isp = cityISPs.get((int) (Math.random() * cityISPs.size()));
+
+                    if (isp.getIpChildNetworkHashMap().size() < 256) {
+                        Network network = NetworkFactory.createNetwork(NetworkType.NPC, c, this);
+                        addNetworkToInternet(network, isp);
+                        c.addNetwork(network);
+
+                        break;
+                    }
                 }
             }
         }
+
+
     }
 
     /**
      * Adds a network to the internet(network list) and the specified ISP. Not for provider networks.
      */
     public void addNetworkToInternet(Network network, InternetProviderNetwork isp) {
-        isp.registerANetwork(network, 1);
+        isp.registerNewNetwork(network, 1);
         ipNetworkHashMap.put(network.getIp(), network);
         network.setInternet(this);
     }
@@ -196,7 +259,7 @@ public final class Internet {
      * Public dns ip request, gets the ip of a server at that address.
      */
     public short[] getIp(String address) {
-        if (!addressIpHashMap.containsValue(address)) {
+        if (!addressIpHashMap.containsKey(address)) {
             return null;
         }
         return addressIpHashMap.get(address);
@@ -208,7 +271,7 @@ public final class Internet {
      * remove, or use the network privately.
      */
     public void removePublicNetwork(Network network) {
-        ipNetworkHashMap.remove(network);
+        ipNetworkHashMap.remove(network.getIp());
         // TODO remove graphical data, or put that in a better spot to be more modular
     }
 
