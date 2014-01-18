@@ -107,6 +107,7 @@ public class NetworkFactory {
         Sprite s = Assets.linearTextures.createSprite("playerNetwork");
         network.setMapIcon(s);
         network.getMapIcon().setSize(50, 50);
+        network.placeNetwork(Network.networkRegionSize);
 
         network.setOwner(player);
         player.setNetwork(network);

@@ -7,6 +7,7 @@ public class Character {
     Network network; // meant to be used as the players network base
     City city;
 
+
     public Character(Network network, String name, City city) {
         this.network = network;
         this.name = name;

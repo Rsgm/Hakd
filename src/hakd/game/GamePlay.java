@@ -8,6 +8,7 @@ import hakd.game.gameplay.Player;
 import hakd.gui.screens.GameScreen;
 import hakd.gui.screens.MapScreen;
 import hakd.gui.windows.TutorialWindow;
+import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
 import hakd.networks.NetworkFactory;
 
@@ -16,7 +17,7 @@ import java.util.List;
 
 public final class GamePlay {
     private final Internet internet;
-    private final Player player;
+    private Player player;
     private final GameScreen screen;
 
     private final List<hakd.game.gameplay.Character> characterList;
@@ -43,12 +44,7 @@ public final class GamePlay {
         makeCompanies();
         makeAgencies();
         makeHackers();
-
-        City playerCity = cityList.get((int) (Math.random() * cityList.size()));
-        player = new Player(name, screen, playerCity);
-        Network n = NetworkFactory.createPlayerNetwork(player, playerCity, internet);
-        internet.addNetworkToInternet(n, internet.getInternetProviderNetworks().get((int) (Math.random() * internet.getInternetProviderNetworks().size())));
-        screen.setPlayer(player);
+        makePlayer(name);
 
         startCharacterUpdateTrhead();
     }
@@ -63,6 +59,34 @@ public final class GamePlay {
 
     private void makeHackers() {
 
+    }
+
+    private void makePlayer(String name) {
+        City playerCity = cityList.get(0);
+        List<InternetProviderNetwork> isps = new ArrayList<InternetProviderNetwork>(5);
+
+        for (int i = 0; i < cityList.size() * 4; i++) {
+            playerCity = cityList.get((int) (Math.random() * cityList.size()));
+
+            isps.clear();
+            for (Network n : playerCity.getNetworks()) {
+                if (n instanceof InternetProviderNetwork) {
+                    isps.add((InternetProviderNetwork) n);
+                }
+            }
+
+            if (!isps.isEmpty()) {
+                break;
+            }
+        }
+
+        player = new Player(name, screen, playerCity);
+        Network n = NetworkFactory.createPlayerNetwork(player, playerCity, internet);
+
+        final InternetProviderNetwork isp = isps.get((int) (Math.random() * isps.size()));
+        internet.addNetworkToInternet(n, isp);
+        playerCity.addNetwork(n);
+        screen.setPlayer(player);
     }
 
     private void startCharacterUpdateTrhead() {

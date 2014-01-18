@@ -11,7 +11,6 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import hakd.game.Internet;
 import hakd.game.Noise;
 import hakd.game.gameplay.City;
-import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
 import hakd.gui.input.MapInput;
 import hakd.networks.BackboneProviderNetwork;
@@ -28,8 +27,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class MapScreen extends HakdScreen {
-    private Player player;
-    private Network network;
     private final Internet internet;
 
     private final GameScreen gameScreen;
@@ -98,8 +95,7 @@ public final class MapScreen extends HakdScreen {
     public void show() {
         super.show();
 
-        cam.position.x = 0;
-        cam.position.y = 0;
+        cam.position.set(gameScreen.getPlayer().getNetwork().getPos(), 0);
         ((OrthographicCamera) cam).zoom = 2;
         cam.update();
 
