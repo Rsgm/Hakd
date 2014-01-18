@@ -123,23 +123,17 @@ public final class GamePlay {
     }
 
     private void update() {
-        if (characterList == null) {
-            return;
-        }
-
         for (Character c : characterList) {
             c.update();
         }
     }
 
     private void updateCharacterList() {
-
         characterList.clear();
         for (Network n : internet.getIpNetworkHashMap().values()) {
             Character c = n.getOwner();
             characterList.add(c);
         }
-
     }
 
     private void makeCities(float minDensity, int minDist) {
@@ -147,13 +141,12 @@ public final class GamePlay {
         float h = City.height / 2;
         int density = 500; // how close to gether to pick the possible city generation points (this should be smaller than the map density)
 
-        l1:
         for (int y = 0; y < density; y++) {
-            l2:
+            l:
             for (int x = 0; x < density; x++) { // maybe use separate threads to get the values and set them to arrays. e.g. float[250][5000] ten times
                 final Vector2 pos = new Vector2();
-                pos.x = (x - density / 2) * MapScreen.NOISE_DISPLAY_SIZE / density + w;
-                pos.y = (y - density / 2) * MapScreen.NOISE_DISPLAY_SIZE / density + h;
+                pos.x = (x - density / 2) * (MapScreen.NOISE_DISPLAY_SIZE - 5000) / density + w;
+                pos.y = (y - density / 2) * (MapScreen.NOISE_DISPLAY_SIZE - 5000) / density + h;
                 float f = (float) Noise.DENSITY.getValue(pos.x, 0, pos.y);
 
                 if (f < minDensity) {
@@ -162,7 +155,7 @@ public final class GamePlay {
 
                 for (City c : cityList) {
                     if (c.getPosition().dst(pos) < minDist) {
-                        continue l2;
+                        continue l;
                     }
                 }
 
