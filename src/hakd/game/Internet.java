@@ -43,7 +43,7 @@ public final class Internet {
     public Internet(List<City> cities) {
         int backbones = cities.size(); // (int) (Math.random() * 3 + Network.IpRegion.values().length);
         int isps = (int) (backbones * (Math.random() * 2 + 2));
-        int networks = (int) (isps * (Math.random() * 3 + 10));
+        int networks = (int) (isps * (Math.random() * 2 + 10));
 
         backboneProviderNetworks = new ArrayList<BackboneProviderNetwork>(isps);
         internetProviderNetworks = new ArrayList<InternetProviderNetwork>(backbones);
@@ -131,7 +131,35 @@ public final class Internet {
                 }
             }
         }
+
+        // check for cities without isps
+        for (City c : cities) {
+            BackboneProviderNetwork b = null;
+            boolean hasIsp = false;
+
+            for (Network n : c.getNetworks()) {
+                if (n instanceof BackboneProviderNetwork) {
+                    b = (BackboneProviderNetwork) n;
+                } else if (n instanceof InternetProviderNetwork) {
+                    hasIsp = true;
+                    break;
+                }
+            }
+
+            if (b == null || hasIsp) {
+                continue;
+            }
+
+            if (b.getIpChildNetworkHashMap().size() < 256) {
+                InternetProviderNetwork isp = NetworkFactory.createISP(this, c);
+                b.registerNewIsp(isp, 1);
+                internetProviderNetworks.add(isp);
+                ipNetworkHashMap.put(isp.getIp(), isp);
+                c.addNetwork(isp);
+            }
+        }
     }
+
 
     /**
      * Creates the initial game networks.

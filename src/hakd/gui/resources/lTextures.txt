@@ -39,7 +39,7 @@ console1Up
   index: -1
 playerNetwork
   rotate: false
-  xy: 1684, 2
+  xy: 1578, 2
   size: 256, 256
   orig: 256, 256
   offset: 0, 0
@@ -82,13 +82,13 @@ backboneNetwork
 network
   rotate: false
   xy: 1426, 2
-  size: 256, 256
-  orig: 256, 256
+  size: 150, 150
+  orig: 150, 150
   offset: 0, 0
   index: -1
 title
   rotate: false
-  xy: 36, 260
+  xy: 2, 260
   size: 800, 210
   orig: 800, 210
   offset: 0, 0
@@ -102,14 +102,14 @@ circle
   index: -1
 spaceBarIcon
   rotate: false
-  xy: 2, 260
+  xy: 1931, 2
   size: 32, 32
   orig: 32, 32
   offset: 0, 0
   index: -1
 shutdownUp
   rotate: false
-  xy: 1942, 2
+  xy: 1836, 2
   size: 93, 102
   orig: 93, 102
   offset: 0, 0

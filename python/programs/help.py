@@ -16,6 +16,11 @@ def help(path):
                 PyDisplay.write(terminal, message)
         elif os.path.isdir(url):
             help(url)
+            
+def help(path):
+    storage_list = device.getstoragedrives()
+    for storage in storage_list:
+        file_list = storage.getbin
 
 help('./python/programs')
 

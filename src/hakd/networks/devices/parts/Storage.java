@@ -9,13 +9,13 @@ import java.util.List;
 public final class Storage extends Part {
     private boolean ssd; // doubles the speed
     private int capacity; // in GB
-    int speed; // either MHz or MB/s(megabyte/s, not megabit/s) depending on the part cpu also has core modifier speed = speed (1.8*cores)
+    private int speed; // either MHz or MB/s(megabyte/s, not megabit/s) depending on the part cpu also has core modifier speed = speed (1.8*cores)
 
     // storage ArrayLists
-    private List<File> osFiles = new ArrayList<File>(); // operating system files, !FUN!
-    private List<File> userFiles = new ArrayList<File>(); // random files people save
-    private List<File> programFiles = new ArrayList<File>(); // (python)programs able to run, is this copywritten, will Microsoft sue?
-    private List<File> logFiles = new ArrayList<File>(); // these log arrays have infinite storage, thanks to a new leap in quantum physics
+    private List<File> sys = new ArrayList<File>(); // operating system files, !FUN!
+    private List<File> home = new ArrayList<File>(); // random files people save
+    private List<File> bin = new ArrayList<File>(); // (python)programs able to run, is this copywritten, will Microsoft sue?
+    private List<File> log = new ArrayList<File>(); // these log arrays have infinite storage, thanks to a new leap in quantum physics
 
     public Storage() {
         super();
@@ -28,23 +28,23 @@ public final class Storage extends Part {
     public void addFile(File file) throws Exception {
         switch (file.getType()) {
             case OS:
-                if (!osFiles.contains(file)) {
-                    osFiles.add(file);
+                if (!sys.contains(file)) {
+                    sys.add(file);
                     return;
                 }
                 break;
             case PROGRAM:
-                if (!programFiles.contains(file)) {
-                    programFiles.add(file);
+                if (!bin.contains(file)) {
+                    bin.add(file);
                     return;
                 }
                 break;
             case LOG:
-                logFiles.add(file);
+                log.add(file);
                 return;
             default:
-                if (!userFiles.contains(file)) {
-                    userFiles.add(file);
+                if (!home.contains(file)) {
+                    home.add(file);
                     return;
                 }
                 break;
@@ -58,33 +58,33 @@ public final class Storage extends Part {
     public void removeFile(FileType type, String name) {
         switch (type) {
             case OS:
-                for (File f : osFiles) {
+                for (File f : sys) {
                     if (f.getName().equals(name)) {
-                        osFiles.remove(f);
+                        sys.remove(f);
                         return;
                     }
                 }
                 break;
             default:
-                for (File f : userFiles) {
+                for (File f : home) {
                     if (f.getName().equals(name)) {
-                        userFiles.remove(f);
+                        home.remove(f);
                         return;
                     }
                 }
                 break;
             case PROGRAM:
-                for (File f : programFiles) {
+                for (File f : bin) {
                     if (f.getName().equals(name)) {
-                        programFiles.remove(f);
+                        bin.remove(f);
                         return;
                     }
                 }
                 break;
             case LOG:
-                for (File f : logFiles) {
+                for (File f : log) {
                     if (f.getName().equals(name)) {
-                        logFiles.remove(f);
+                        log.remove(f);
                         return;
                     }
                 }
@@ -97,16 +97,16 @@ public final class Storage extends Part {
     public void removeFile(File file) {
         switch (file.getType()) {
             case OS:
-                osFiles.remove(file);
+                sys.remove(file);
                 return;
             default:
-                userFiles.remove(file);
+                home.remove(file);
                 return;
             case PROGRAM:
-                programFiles.remove(file);
+                bin.remove(file);
                 return;
             case LOG:
-                logFiles.remove(file);
+                log.remove(file);
                 return;
         }
     }
@@ -116,30 +116,30 @@ public final class Storage extends Part {
     public File getFile(FileType type, String name) {
         switch (type) {
             case OS:
-                for (File f : osFiles) {
+                for (File f : sys) {
                     if (f.getName().equals(name)) {
-                        return osFiles.get(osFiles.indexOf(f));
+                        return sys.get(sys.indexOf(f));
                     }
                 }
                 break;
             default:
-                for (File f : userFiles) {
+                for (File f : home) {
                     if (f.getName().equals(name)) {
-                        return userFiles.get(userFiles.indexOf(f));
+                        return home.get(home.indexOf(f));
                     }
                 }
                 break;
             case PROGRAM:
-                for (File f : programFiles) {
+                for (File f : bin) {
                     if (f.getName().equals(name)) {
-                        return programFiles.get(programFiles.indexOf(f));
+                        return bin.get(bin.indexOf(f));
                     }
                 }
                 break;
             case LOG:
-                for (File f : logFiles) {
+                for (File f : log) {
                     if (f.getName().equals(name)) {
-                        return logFiles.get(logFiles.indexOf(f));
+                        return log.get(log.indexOf(f));
                     }
                 }
         }
@@ -162,36 +162,36 @@ public final class Storage extends Part {
         this.capacity = capacity;
     }
 
-    public List<File> getOsFiles() {
-        return osFiles;
+    public List<File> getSys() {
+        return sys;
     }
 
-    public void setOsFiles(List<File> osFiles) {
-        this.osFiles = osFiles;
+    public void setSys(List<File> sys) {
+        this.sys = sys;
     }
 
-    public List<File> getUserFiles() {
-        return userFiles;
+    public List<File> getHome() {
+        return home;
     }
 
-    public void setUserFiles(List<File> userFiles) {
-        this.userFiles = userFiles;
+    public void setHome(List<File> home) {
+        this.home = home;
     }
 
-    public List<File> getProgramFiles() {
-        return programFiles;
+    public List<File> getBin() {
+        return bin;
     }
 
-    public void setProgramFiles(List<File> programFiles) {
-        this.programFiles = programFiles;
+    public void setBin(List<File> bin) {
+        this.bin = bin;
     }
 
-    public List<File> getLogFiles() {
-        return logFiles;
+    public List<File> getLog() {
+        return log;
     }
 
-    public void setLogFiles(List<File> logFiles) {
-        this.logFiles = logFiles;
+    public void setLog(List<File> log) {
+        this.log = log;
     }
 
     public int getSpeed() {

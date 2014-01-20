@@ -36,6 +36,7 @@ public final class Noise {
             Perlin terrainType;
             ScaleBias terrainTypeScaleBias;
             Select finalTerrain;
+            Select landSelector;
 
             land1 = new Perlin();
             land1.setNoiseQuality(NoiseGen.NoiseQuality.QUALITY_BEST);
@@ -94,8 +95,7 @@ public final class Noise {
             finalTerrain.setBounds(.7, 10);
             finalTerrain.setEdgeFalloff(.05);
 
-
-            Select landSelector = new Select(new Const(0), finalTerrain, land);
+            landSelector = new Select(new Const(0), finalTerrain, land);
             landSelector.setBounds(0, 10); // -0.3, 1
             landSelector.setEdgeFalloff(.2);
 

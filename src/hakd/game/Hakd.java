@@ -61,7 +61,9 @@ public final class Hakd extends Game {
     public void dispose() {
         super.dispose();
 
-        gamePlay.dispose();
+        if (gamePlay != null) {
+            gamePlay.dispose();
+        }
         Assets.dispose();
     }
 
