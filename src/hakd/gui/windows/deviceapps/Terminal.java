@@ -12,8 +12,8 @@ import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import hakd.game.Command;
 import hakd.gui.Assets;
 import hakd.networks.devices.Device;
+import hakd.other.File;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -26,13 +26,11 @@ public final class Terminal implements ServerWindow {
     private final Label display;
     private final ScrollPane scroll;
 
-    private boolean firstTab = true;
-    private String tabString = "";
-    private int tabIndex;
     private final List<String> history; // command history
     private int line = 0; // holds the position of the history
-    public final Device device; // TODO change this back to private, it is only being used for the addNetwork script to get the internet
+    private final Device device;
     private Command command;
+    private File directory;
 
     private final Terminal terminal;
 
@@ -40,6 +38,7 @@ public final class Terminal implements ServerWindow {
         terminal = this;
         window = w;
         device = window.getDevice();
+        directory = device.getMasterStorage().getHome();
 
         Skin skin = Assets.skin;
         history = new ArrayList<String>();
@@ -54,7 +53,7 @@ public final class Terminal implements ServerWindow {
         display = new Label("", skin.get("console", LabelStyle.class));
         scroll = new ScrollPane(display, skin);
 
-        display.setWrap(false);
+        display.setWrap(false); // this being true would mess up text line insertion
         display.setAlignment(10, Align.left);
         display.setText("Terminal [Version 0." + ((int) (Math.random() * 100)) / 10 + "]" + "\nroot @ " + device.getIp() + "\nMemory: " + device.getMemoryCapacity() + "MB\nStorage: " + device.getStorageCapacity() + "GB");
 
@@ -111,45 +110,7 @@ public final class Terminal implements ServerWindow {
                     addText("Program Stopped");
                     command.stop();
                 } else if (keycode == Keys.TAB && command == null) {
-                    String s = "<";
-                    File[] files = new File("python/programs/").listFiles();
-                    List<File> filesFiltered = new ArrayList<File>();
-
-                    if (firstTab) {
-                        tabString = input.getText();
-                    }
-
-                    assert files != null;
-                    for (File f : files) {
-                        if (f.getName().startsWith(tabString) && f.getName().endsWith(".py")) {
-                            filesFiltered.add(f);
-                        }
-                    }
-
-                    for (File f : filesFiltered) {
-                        s += f.getName().substring(0, f.getName().length() - 3);
-                        if (filesFiltered.lastIndexOf(f) != filesFiltered.size() - 1) {
-                            s += ", ";
-                        }
-                    }
-                    if (!filesFiltered.isEmpty()) {
-                        if (firstTab) {
-                            addText(s + ">");
-                            firstTab = false;
-                        }
-
-                        String name = filesFiltered.get(tabIndex).getName();
-                        input.setText(name.substring(0, name.length() - 3));
-                        input.setCursorPosition(input.getText().length());
-                        // TODO change this to insert text for completion of parameters, instead of overwriting the input box
-                    } else {
-                        addText("<There are no programs with that name>");
-                    }
-
-                    tabIndex++;
-                    if (tabIndex >= filesFiltered.size()) {
-                        tabIndex = 0;
-                    }
+                    tab(); // this was getting way too long
                 } else if (keycode == Keys.DOWN && line < history.size() - 1) {
                     line++;
                     input.setText(history.get(line));
@@ -158,12 +119,6 @@ public final class Terminal implements ServerWindow {
                     line--;
                     input.setText(history.get(line));
                     input.setCursorPosition(input.getText().length());
-                }
-
-                if (keycode != Keys.TAB && keycode != Keys.LEFT && keycode != Keys.RIGHT) {
-                    tabIndex = 0;
-                    tabString = "";
-                    firstTab = true;
                 }
 
                 if (command != null) {
@@ -218,6 +173,137 @@ public final class Terminal implements ServerWindow {
         scroll.setScrollY(display.getHeight());
     }
 
+    /**
+     * Tab completion.
+     */
+    private void tab() {
+        File tempDirectory = directory;
+        List<String> parameters = new ArrayList<String>();
+        int currentParameter = 0;
+        int cursorPosition = input.getCursorPosition();
+
+        // parse input into parameters of text and space
+        if (!input.getText().isEmpty()) {
+            boolean isSpace = input.getText().charAt(0) == ' ';
+            String tempString = "";
+            for (int i = 0; i < input.getText().length(); i++) {
+                if (isSpace != (input.getText().charAt(i) == ' ')) {
+                    parameters.add(tempString);
+                    tempString = "";
+                    isSpace = !isSpace;
+                }
+
+                tempString += input.getText().charAt(i);
+            }
+            parameters.add(tempString);
+
+            for (String p : parameters) {
+                if (cursorPosition <= p.length() && p.matches("\\S+")) {
+                    currentParameter = parameters.indexOf(p);
+                    break;
+                }
+
+                cursorPosition -= p.length();
+            }
+
+            if (currentParameter == 0 || cursorPosition <= 0) {
+                cursorPosition = input.getCursorPosition();
+                for (String p : parameters) {
+                    if (cursorPosition <= p.length()) {
+                        currentParameter = parameters.indexOf(p);
+                        break;
+                    }
+
+                    cursorPosition -= p.length();
+                }
+            }
+        } else {
+            parameters.add("");
+        }
+        String currentParameterText = parameters.get(currentParameter);
+
+        // arrays to hold possible options of text completion
+        List<hakd.other.File> files = new ArrayList<hakd.other.File>();
+        List<hakd.other.File> filesCopy = new ArrayList<hakd.other.File>();
+
+        String completedText = ""; // make a string containing the text of the current parameter, before the cursor, to manipulate into the finished parameter
+        if (!currentParameterText.matches("^\\s+$")) {
+            completedText = currentParameterText;
+            completedText = completedText.substring(0, cursorPosition);
+        }
+
+        // fill the arrays with executable files in /bin as well as all the files in the current directory
+        files.addAll(device.getMasterStorage().getBin().listFilesRecursive(device.getMasterStorage().getBin()));
+        if (currentParameter > 0) {
+            files.addAll(directory.listFiles());
+        }
+
+        // exclude files that don't start with the current parameter before the cursor
+        filesCopy.addAll(files);
+        for (hakd.other.File f : filesCopy) {
+            if (!f.getName().startsWith(completedText)) {
+                files.remove(f);
+            }
+        }
+
+        int totalLength = 0;
+        if (files.size() > 1) { // show the list of possible options and set the manipulated parameter to the common beginning text of that list
+            addText("");
+            for (File f : files) {
+                String availableFiles = f.getName();
+                if (f.isDirectory()) {
+                    availableFiles += "/";
+                }
+                addText(availableFiles);
+            }
+
+            if (currentParameterText.matches("^\\s+$")) {
+                return;
+            }
+
+            int lastSameCharacter = 0; // cut the loops down by setting this to cursorposition, but I don't want to risk creating bugs
+            l1:
+            for (int i = 0; i < files.get(0).getName().length(); i++) {
+                char character = files.get(0).getName().charAt(i);
+                for (File f : files) {
+                    if (f.getName().charAt(i) != character) {
+                        lastSameCharacter = i;
+                        break l1;
+                    }
+                }
+            }
+            completedText = files.get(0).getName().substring(0, lastSameCharacter) + currentParameterText.substring(cursorPosition);
+            parameters.set(currentParameter, completedText);
+            totalLength = lastSameCharacter;
+        } else if (files.size() == 1) { // set the manipulated text to this parameter, adding any extra text after the cursor to the end
+            if (cursorPosition == files.get(0).getName().length()) {
+                return;
+            }
+
+            completedText = files.get(0).getName();
+            totalLength = completedText.length() + 1;
+            completedText += " " + currentParameterText.substring(cursorPosition);
+            parameters.set(currentParameter, completedText);
+        } else { // there are no matches
+            return;
+        }
+
+        // fill a string with each parameter to make the new input text
+        String s = "";
+        for (String parameter : parameters) {
+            s += parameter;
+        }
+
+        // find the total length up to the end of the new parameter, and set the cursor to it
+        for (int i = 0; i < currentParameter; i++) {
+            totalLength += parameters.get(i).length();
+        }
+
+        input.setText(s);
+        input.setCursorPosition(totalLength);
+        directory = tempDirectory;
+    }
+
     @Override
     public void open() {
         window.getCanvas().addActor(table);
@@ -250,5 +336,13 @@ public final class Terminal implements ServerWindow {
 
     public void setLine(int line) {
         this.line = line;
+    }
+
+    public Device getDevice() {
+        return device;
+    }
+
+    public File getDirectory() {
+        return directory;
     }
 }

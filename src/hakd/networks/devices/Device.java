@@ -11,7 +11,6 @@ import hakd.networks.devices.parts.Part.Brand;
 import hakd.networks.devices.parts.Part.Model;
 import hakd.networks.devices.parts.Part.PartType;
 import hakd.other.File;
-import hakd.other.File.FileType;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -148,7 +147,7 @@ public class Device implements Connectable {
     @Override
     public final void log(String name, String data) {
         try {
-            masterStorage.addFile(new File(name + ".log", data, FileType.LOG, masterStorage));
+            masterStorage.getLog().addFile(new File(name + ".log", data, masterStorage.getLog(), masterStorage));
         } catch (Exception e) {
             e.printStackTrace();
         }

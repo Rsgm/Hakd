@@ -185,7 +185,6 @@ public final class MapScreen extends HakdScreen {
             } else if (n instanceof InternetProviderNetwork) {
                 ispSprites.add(n.getMapIcon());
                 parentLineSprites.add(n.getMapParentLine());
-                territorySprites.add(((InternetProviderNetwork) n).getTerritory());
             } else {
                 networkSprites.add(n.getMapIcon());
                 parentLineSprites.add(n.getMapParentLine());
@@ -196,6 +195,16 @@ public final class MapScreen extends HakdScreen {
             //			}
 
         }
+
+//        for (InternetProviderNetwork n : internet.getInternetProviderNetworks()) {
+//            ispSprites.add(n.getMapIcon());
+//            parentLineSprites.add(n.getMapParentLine());
+//        }
+//
+//        for (Network n : internet.getBackboneProviderNetworks()) {
+//            backboneSprites.add(n.getMapIcon());
+//            backboneLineSprites.addAll(((BackboneProviderNetwork) n).getBackboneConnectionLines());
+//        }
     }
 
     private void generateNoiseTexture(Noise.NoiseType type) throws ExceptionInvalidParam {

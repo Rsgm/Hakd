@@ -3,9 +3,6 @@ package hakd.game;
 import com.badlogic.gdx.Gdx;
 import hakd.gui.windows.deviceapps.Terminal;
 import hakd.networks.devices.Device;
-import hakd.networks.devices.parts.Part;
-import hakd.networks.devices.parts.Storage;
-import hakd.other.File;
 import org.python.core.PyException;
 import org.python.util.PythonInterpreter;
 
@@ -91,23 +88,25 @@ public final class Command {
     private void runPython(List<String> parameters) throws FileNotFoundException {
         PythonInterpreter pi = new PythonInterpreter();
 
-        hakd.other.File file = null;
-        for (Part p : device.getParts()) {
-            if (p instanceof Storage) {
-                file = ((Storage) p).getFile(File.FileType.PROGRAM, "parameters.get(0)" + ".py");
-                break;
-            }
-        }
+        hakd.other.File file;
+        file = terminal.getDevice().getMasterStorage().getBin().getFile("parameters.get(0)" + ".py"); // executable files may only be run if they are in the bin directory
 
-        if (file == null) {
+
+        if (file == null)
+
+        {
             throw new FileNotFoundException();
         }
+
         Gdx.app.debug("Terminal Info", "python file: " + file.getName()); //TODO file.getPath()); maybe use SDa,b,c... for drive paths
 
-        if (parameters.size() > 1) {
+        if (parameters.size() > 1)
+
+        {
             parameters.remove(0); // first parameter is always the command
             pi.set("parameters", parameters);
         }
+
         pi.set("terminal", terminal);
 
         // there really is no good way of doing this

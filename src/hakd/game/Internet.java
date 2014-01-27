@@ -42,8 +42,8 @@ public final class Internet {
      */
     public Internet(List<City> cities) {
         int backbones = cities.size(); // (int) (Math.random() * 3 + Network.IpRegion.values().length);
-        int isps = (int) (backbones * (Math.random() * 2 + 2));
-        int networks = (int) (isps * (Math.random() * 2 + 10));
+        int isps = (int) (backbones * (Math.random() * 2 + 1));
+        int networks = (int) (isps * (Math.random() * 4 + 2));
 
         backboneProviderNetworks = new ArrayList<BackboneProviderNetwork>(isps);
         internetProviderNetworks = new ArrayList<InternetProviderNetwork>(backbones);
@@ -66,7 +66,10 @@ public final class Internet {
 
             BackboneProviderNetwork backbone = NetworkFactory.createBackbone(this, city);
 
-            short[] ip = {generateIpByte(backbone.getIpRegion()), 1, 1, 1};
+            short[] ip = {0, 1, 1, 1};
+            do {
+                ip[0] = generateIpByte(backbone.getIpRegion());
+            } while (ipNetworkHashMap.containsKey(ipToString(ip)) && ipNetworkHashMap.size() < 256);
             backbone.setIp(ipToString(ip));
 
             backboneProviderNetworks.add(backbone);
@@ -107,13 +110,16 @@ public final class Internet {
             for (City c : citiesShuffled) {
                 if (c.getDensity() >= random) {
                     List<BackboneProviderNetwork> cityBackbones = new ArrayList<BackboneProviderNetwork>();
+                    int isps = 0;
                     for (Network n : c.getNetworks()) {
                         if (n instanceof BackboneProviderNetwork) {
                             cityBackbones.add((BackboneProviderNetwork) n);
+                        } else if (n instanceof InternetProviderNetwork) {
+                            isps++;
                         }
                     }
 
-                    if (cityBackbones.isEmpty()) {
+                    if (cityBackbones.isEmpty() || isps > 5) {
                         continue;
                     }
 
@@ -254,7 +260,7 @@ public final class Internet {
                     break;
             }
 
-            if (!addressIpHashMap.containsValue(ip) && !ipNetworkHashMap.containsKey(ip)) {
+            if (!addressIpHashMap.containsValue(ip) && !ipNetworkHashMap.containsKey(ipToString(ip))) {
                 break;
             }
         }

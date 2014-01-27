@@ -135,6 +135,7 @@ public final class Noise {
 
             Select select = new Select(new Const(-1), new Max(scale1, scale2), land);
             select.setBounds(0, 1);
+            select.setEdgeFalloff(.2);
 
             Clamp clamp = new Clamp(select);
             clamp.setBounds(-1, 1);

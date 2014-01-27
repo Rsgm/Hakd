@@ -12,9 +12,8 @@ import java.util.HashMap;
  */
 public final class InternetProviderNetwork extends Network {
     private final HashMap<String, Network> ipChildNetworkHashMap = new HashMap<String, Network>(255);
-    private Sprite territory;
 
-    public static final int MaxDistance = 1000;
+    public static final int MAX_DISTANCE = 1000;
 
     public InternetProviderNetwork(Internet internet) {
         this.internet = internet;
@@ -66,13 +65,5 @@ public final class InternetProviderNetwork extends Network {
 
     public HashMap<String, Network> getIpChildNetworkHashMap() {
         return ipChildNetworkHashMap;
-    }
-
-    public Sprite getTerritory() {
-        return territory;
-    }
-
-    public void setTerritory(Sprite territory) {
-        this.territory = territory;
     }
 }

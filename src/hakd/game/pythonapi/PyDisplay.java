@@ -24,7 +24,7 @@ public final class PyDisplay {
     }
 
     public static void clear(Terminal t) {
-        t.getDisplay().setText("root @ " + t.device.getIp() + "\n>");
+        t.getDisplay().setText("root @ " + t.getDevice().getIp() + "\n>");
     }
 
 }

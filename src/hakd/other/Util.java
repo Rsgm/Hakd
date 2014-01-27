@@ -8,6 +8,35 @@ import java.util.ArrayList;
 import java.util.List;
 
 public final class Util {
+    public static int FILE_ENTRY_SIZE;
+
+    static {
+        String data = "";
+        BufferedReader reader = null;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("src/hakd/gui/resources/filedata/bash.org.txt"))));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        while (true) {
+            String s = "";
+            try {
+                if (reader != null) {
+                    s = reader.readLine();
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            if (s == null) {
+                break;
+            } else if (s.matches("^#@entry.*")) {
+                FILE_ENTRY_SIZE++;
+            }
+        }
+    }
+
 
     /**
      * Converts float x and y orthogonal screen coordinates into int x and y
@@ -92,12 +121,55 @@ public final class Util {
         return pi.get("name").toString();
     }
 
+    public static String getFileData(int entry) {
+        String data = "";
+        BufferedReader reader;
+        try {
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("src/hakd/gui/resources/filedata/bash.org.txt"))));
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return "";
+        }
+
+        try {
+            String s;
+
+            for (int i = 0; i < FILE_ENTRY_SIZE; ) {
+                s = reader.readLine();
+
+                if (s == null) {
+                    break;
+                } else if (s.matches("^#@entry.*")) {
+                    i++;
+                }
+
+                if (i == entry) {
+                    break;
+                }
+            }
+
+            while (true) {
+                s = reader.readLine();
+
+                if (s == null || s.matches("^#@entry.*")) {
+                    break;
+                }
+                data += s + "\n";
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return data;
+    }
+
+
     public static String getProgramData(String name) {
         List<File> fileList = listFiles(new File("python/programs/"));
         File file = null;
 
         for (File f : fileList) {
-            if (f.getName().equals(name + ".py")) {
+            if (f.getName().equals(name)) {
                 file = f;
                 break;
             }

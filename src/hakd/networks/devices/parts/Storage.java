@@ -1,9 +1,8 @@
 package hakd.networks.devices.parts;
 
 import hakd.other.File;
-import hakd.other.File.FileType;
+import hakd.other.Util;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public final class Storage extends Part {
@@ -12,138 +11,31 @@ public final class Storage extends Part {
     private int speed; // either MHz or MB/s(megabyte/s, not megabit/s) depending on the part cpu also has core modifier speed = speed (1.8*cores)
 
     // storage ArrayLists
-    private List<File> sys = new ArrayList<File>(); // operating system files, !FUN!
-    private List<File> home = new ArrayList<File>(); // random files people save
-    private List<File> bin = new ArrayList<File>(); // (python)programs able to run, is this copywritten, will Microsoft sue?
-    private List<File> log = new ArrayList<File>(); // these log arrays have infinite storage, thanks to a new leap in quantum physics
+    private final File root = new File("root", null, null, this); // root directory of the storage filesystem, rm -rf /
+    private File sys = new File("sys", null, root, this); // operating system files, !FUN!
+    private File home = new File("home", null, root, this); // random files people save
+    private File bin = new File("bin", null, root, this); // (python)programs able to run
+    private File log = new File("log", null, root, this); // these log arrays have infinite storage, thanks to a new leap in quantum physics
 
     public Storage() {
         super();
         type = PartType.STORAGE;
-    }
 
-    /**
-     * Add a file to the specified directory.
-     */
-    public void addFile(File file) throws Exception {
-        switch (file.getType()) {
-            case OS:
-                if (!sys.contains(file)) {
-                    sys.add(file);
-                    return;
-                }
-                break;
-            case PROGRAM:
-                if (!bin.contains(file)) {
-                    bin.add(file);
-                    return;
-                }
-                break;
-            case LOG:
-                log.add(file);
-                return;
-            default:
-                if (!home.contains(file)) {
-                    home.add(file);
-                    return;
-                }
-                break;
+
+        try {
+            for (int i = 0; i < 3; i++) {
+                home.addFile(new File("test file.txt", Util.getFileData((int) (Util.FILE_ENTRY_SIZE * Math.random())), home, this));
+
+            }
+
+            List<java.io.File> fileList = Util.listFiles(new java.io.File("python/programs/"));
+            for (java.io.File f : fileList) {
+                bin.addFile(new File(f.getName(), Util.getProgramData(f.getName()), bin, this));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-        throw new Exception("File already exists");
-    }
-
-    /**
-     * Removes the first file with the specified name from the specified directory.
-     */
-    public void removeFile(FileType type, String name) {
-        switch (type) {
-            case OS:
-                for (File f : sys) {
-                    if (f.getName().equals(name)) {
-                        sys.remove(f);
-                        return;
-                    }
-                }
-                break;
-            default:
-                for (File f : home) {
-                    if (f.getName().equals(name)) {
-                        home.remove(f);
-                        return;
-                    }
-                }
-                break;
-            case PROGRAM:
-                for (File f : bin) {
-                    if (f.getName().equals(name)) {
-                        bin.remove(f);
-                        return;
-                    }
-                }
-                break;
-            case LOG:
-                for (File f : log) {
-                    if (f.getName().equals(name)) {
-                        log.remove(f);
-                        return;
-                    }
-                }
-        }
-    }
-
-    /**
-     * Removes the file from the storage part, if it exists.
-     */
-    public void removeFile(File file) {
-        switch (file.getType()) {
-            case OS:
-                sys.remove(file);
-                return;
-            default:
-                home.remove(file);
-                return;
-            case PROGRAM:
-                bin.remove(file);
-                return;
-            case LOG:
-                log.remove(file);
-                return;
-        }
-    }
-
-
-    // removes the first file with the specified name from the specified directory
-    public File getFile(FileType type, String name) {
-        switch (type) {
-            case OS:
-                for (File f : sys) {
-                    if (f.getName().equals(name)) {
-                        return sys.get(sys.indexOf(f));
-                    }
-                }
-                break;
-            default:
-                for (File f : home) {
-                    if (f.getName().equals(name)) {
-                        return home.get(home.indexOf(f));
-                    }
-                }
-                break;
-            case PROGRAM:
-                for (File f : bin) {
-                    if (f.getName().equals(name)) {
-                        return bin.get(bin.indexOf(f));
-                    }
-                }
-                break;
-            case LOG:
-                for (File f : log) {
-                    if (f.getName().equals(name)) {
-                        return log.get(log.indexOf(f));
-                    }
-                }
-        }
-        return null;
     }
 
     public boolean isSsd() {
@@ -162,43 +54,31 @@ public final class Storage extends Part {
         this.capacity = capacity;
     }
 
-    public List<File> getSys() {
-        return sys;
-    }
-
-    public void setSys(List<File> sys) {
-        this.sys = sys;
-    }
-
-    public List<File> getHome() {
-        return home;
-    }
-
-    public void setHome(List<File> home) {
-        this.home = home;
-    }
-
-    public List<File> getBin() {
-        return bin;
-    }
-
-    public void setBin(List<File> bin) {
-        this.bin = bin;
-    }
-
-    public List<File> getLog() {
-        return log;
-    }
-
-    public void setLog(List<File> log) {
-        this.log = log;
-    }
-
     public int getSpeed() {
         return speed;
     }
 
     public void setSpeed(int speed) {
         this.speed = speed;
+    }
+
+    public File getRoot() {
+        return root;
+    }
+
+    public File getSys() {
+        return sys;
+    }
+
+    public File getHome() {
+        return home;
+    }
+
+    public File getBin() {
+        return bin;
+    }
+
+    public File getLog() {
+        return log;
     }
 }

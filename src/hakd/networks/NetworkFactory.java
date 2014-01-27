@@ -26,7 +26,7 @@ public class NetworkFactory {
         Network network = createNetwork();
         int level = (int) (Math.random() * 8);
         Network.IpRegion ipRegion;
-        Character owner = null;
+        Character owner;
         int deviceLimit;
         Network.Stance stance = Network.Stance.NEUTRAL; // TODO move stances to the npc/player classes
         Sprite mapIcon;
