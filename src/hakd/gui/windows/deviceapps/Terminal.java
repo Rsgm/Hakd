@@ -38,7 +38,7 @@ public final class Terminal implements ServerWindow {
         terminal = this;
         window = w;
         device = window.getDevice();
-        directory = device.getMasterStorage().getHome();
+        directory = device.getHome();
 
         Skin skin = Assets.skin;
         history = new ArrayList<String>();
@@ -233,7 +233,7 @@ public final class Terminal implements ServerWindow {
         }
 
         // fill the arrays with executable files in /bin as well as all the files in the current directory
-        files.addAll(device.getMasterStorage().getBin().listFilesRecursive(device.getMasterStorage().getBin()));
+        files.addAll(device.getBin().listFilesRecursive(device.getBin()));
         if (currentParameter > 0) {
             files.addAll(directory.listFiles());
         }

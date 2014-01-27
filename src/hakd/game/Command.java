@@ -89,7 +89,7 @@ public final class Command {
         PythonInterpreter pi = new PythonInterpreter();
 
         hakd.other.File file;
-        file = terminal.getDevice().getMasterStorage().getBin().getFile("parameters.get(0)" + ".py"); // executable files may only be run if they are in the bin directory
+        file = terminal.getDevice().getBin().getFile("parameters.get(0)" + ".py"); // executable files may only be run if they are in the bin directory
 
 
         if (file == null)

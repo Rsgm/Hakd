@@ -1,6 +1,6 @@
 package hakd.other;
 
-import hakd.networks.devices.parts.Storage;
+import hakd.networks.devices.Device;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -15,13 +15,13 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     //    private final String owner;
     private String time;
     private long timeMs;
-    private final Storage storage;
+    private final Device device;
 
     private boolean isDirectory;
     private List<File> fileList;
 
 
-    public File(String name, String data, File directory, Storage s) {
+    public File(String name, String data, File directory, Device d) {
         this.name = name;
         this.data = data;
         this.parentDirectory = directory;
@@ -31,8 +31,8 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
             fileList = new ArrayList<File>();
         }
 
-//        owner = s.getDevice().getNetwork().getOwner().getName();
-        storage = s;
+//        owner = d.getDevice().getNetwork().getOwner().getName();
+        device = d;
 
         SimpleDateFormat f = new SimpleDateFormat("MM-dd HH:mm:ss");
         Date date = new Date();
@@ -176,8 +176,8 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
         this.isDirectory = isDirectory;
     }
 
-    public Storage getStorage() {
-        return storage;
+    public Device getDevice() {
+        return device;
     }
 
 //    public String getOwner() {

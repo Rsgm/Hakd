@@ -11,6 +11,7 @@ import hakd.networks.devices.parts.Part.Brand;
 import hakd.networks.devices.parts.Part.Model;
 import hakd.networks.devices.parts.Part.PartType;
 import hakd.other.File;
+import hakd.other.Util;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -49,8 +50,27 @@ public class Device implements Connectable {
     ServerWindowStage window;
     Sprite tile;
 
+    // storage ArrayLists
+    private final File root = new File("root", null, null, this); // root directory of the storage filesystem, rm -rf /
+    private File sys = new File("sys", null, root, this); // operating system files, !FUN!
+    private File home = new File("home", null, root, this); // random files people save
+    private File bin = new File("bin", null, root, this); // (python)programs able to run
+    private File log = new File("log", null, root, this); // these log arrays have infinite storage, thanks to a new leap in quantum physics
 
     public Device() { // TODO: have random smartphone connections and disconnections. smartphones are like insects on a network, many types, random behavior, and there are lots of them
+        try {
+            for (int i = 0; i < 3; i++) {
+                home.addFile(new File("test file.txt", Util.getFileData((int) (Util.FILE_ENTRY_SIZE * Math.random())), home, this));
+            }
+
+            List<java.io.File> fileList = Util.listFiles(new java.io.File("python/programs/"));
+            for (java.io.File f : fileList) {
+                bin.addFile(new File(f.getName(), Util.getProgramData(f.getName()), bin, this));
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
@@ -147,7 +167,7 @@ public class Device implements Connectable {
     @Override
     public final void log(String name, String data) {
         try {
-            masterStorage.getLog().addFile(new File(name + ".log", data, masterStorage.getLog(), masterStorage));
+            log.addFile(new File(name + ".log", data, log, this));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -392,5 +412,25 @@ public class Device implements Connectable {
 
     public void setIsoY(int isoY) {
         this.isoY = isoY;
+    }
+
+    public File getRoot() {
+        return root;
+    }
+
+    public File getSys() {
+        return sys;
+    }
+
+    public File getHome() {
+        return home;
+    }
+
+    public File getBin() {
+        return bin;
+    }
+
+    public File getLog() {
+        return log;
     }
 }
