@@ -1,40 +1,33 @@
 package hakd.other;
 
+import com.badlogic.gdx.Gdx;
 import org.python.util.PythonInterpreter;
 
 import java.io.*;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 public final class Util {
-    public static int FILE_ENTRY_SIZE;
+    public static final Map<String, File> TEXT_FILES; // this allows text to be mod friendly, because you don't have to change this class
+    public static final Map<String, File> PROGRAMS; // this allows text to be mod friendly, because you don't have to change this class
 
     static {
-        String data = "";
-        BufferedReader reader = null;
-        try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("src/hakd/gui/resources/filedata/bash.org.txt"))));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-
-        while (true) {
-            String s = "";
-            try {
-                if (reader != null) {
-                    s = reader.readLine();
-                }
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-
-            if (s == null) {
-                break;
-            } else if (s.matches("^#@entry.*")) {
-                FILE_ENTRY_SIZE++;
+        Map<String, File> files = new HashMap<String, File>();
+        for (File f : new File("src/hakd/gui/resources/textfiles/").listFiles()) {
+            if (f.isDirectory()) {
+                files.put(f.getName(), f);
             }
         }
+        TEXT_FILES = Collections.unmodifiableMap(files);
+
+        Map<String, File> programs = new HashMap<String, File>();
+        for (File f : listFiles(new File("python/programs/"))) {
+            if (!f.isDirectory()) {
+                programs.put(f.getName(), f);
+            }
+        }
+
+        PROGRAMS = Collections.unmodifiableMap(programs);
     }
 
 
@@ -121,43 +114,43 @@ public final class Util {
         return pi.get("name").toString();
     }
 
-    public static String getFileData(int entry) {
+    public static String getFileData(String directory, String fileName) {
         String data = "";
         BufferedReader reader;
+        File file = null;
+        File dir = TEXT_FILES.get(directory);
+
+        for (File f : dir.listFiles()) {
+            if (f.getName().equals(fileName)) {
+                file = f;
+                break;
+            }
+        }
+
+        if (file == null) {
+            return ""; // I should probably throw an error here
+        }
+
         try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(new File("src/hakd/gui/resources/filedata/bash.org.txt"))));
+            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return "";
         }
 
-        try {
-            String s;
-
-            for (int i = 0; i < FILE_ENTRY_SIZE; ) {
+        String s;
+        while (true) {
+            try {
                 s = reader.readLine();
-
-                if (s == null) {
-                    break;
-                } else if (s.matches("^#@entry.*")) {
-                    i++;
-                }
-
-                if (i == entry) {
-                    break;
-                }
+            } catch (IOException e) {
+                Gdx.app.error("IO exception", "", e);
+                break;
             }
 
-            while (true) {
-                s = reader.readLine();
-
-                if (s == null || s.matches("^#@entry.*")) {
-                    break;
-                }
-                data += s + "\n";
+            if (s == null) {
+                break;
             }
-        } catch (IOException e) {
-            e.printStackTrace();
+            data += s + "\n";
         }
 
         return data;
@@ -194,7 +187,7 @@ public final class Util {
                 if (s == null) {
                     break;
                 }
-                data += s;
+                data += s; // might need + "\n"
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -203,6 +196,12 @@ public final class Util {
         return data;
     }
 
+    /**
+     * Recursively list all of the (java.io)files in a directory.
+     *
+     * @param file is the starting directory
+     * @return the list of fies in that directory
+     */
     public static List<File> listFiles(File file) {
         List<File> files = new ArrayList<File>();
         for (File f : file.listFiles()) {

@@ -9,16 +9,16 @@ import java.util.Date;
 import java.util.List;
 
 public final class File { // TODO file hashes! maybe just run an md5 hash on the java object hashcode, or just convert a random int/short to hex
-    private String name;
-    private String data;
-    private File parentDirectory;
-    //    private final String owner;
-    private String time;
-    private long timeMs;
-    private final Device device;
+    String name;
+    String data;
+    File parentDirectory;
+    // final String owner;
+    String time;
+    long timeMs;
+    Device device;
 
-    private boolean isDirectory;
-    private List<File> fileList;
+    boolean isDirectory;
+    List<File> fileList;
 
 
     public File(String name, String data, File directory, Device d) {
@@ -107,6 +107,7 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
             }
         }
         fileList.add(file);
+        file.parentDirectory = this;
     }
 
     public void removeFile(File file) {
@@ -143,6 +144,36 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
         return files;
     }
 
+    public String getPath() {
+        File file = this;
+        String path = "";
+
+        do {
+            if (file.isDirectory) {
+                path = "/" + path;
+            }
+            path = file.getName() + path;
+            file = file.parentDirectory;
+        } while (file.parentDirectory != null);
+
+        path = "/" + path;
+        return path;
+    }
+
+    public File copy() {
+        File file = new File(name, data, null, device);
+        file.isDirectory = isDirectory;
+
+        if (isDirectory) { // if it is a directory, copy its subfiles
+            file.fileList = new ArrayList<File>();
+            for (File f : fileList) {
+                file.addFile(f.copy()); // copy recursively
+            }
+        }
+
+        return file;
+    }
+
     @Override
     public String toString() {
         return name;
@@ -153,6 +184,9 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     }
 
     public void setName(String name) {
+        if (name.matches(".*[~*/\\\\\"\']+.*")) { // don't allow the use of the characters (space) ~ * / \ " '
+            return;
+        }
         this.name = name;
     }
 
@@ -170,10 +204,6 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
 
     public boolean isDirectory() {
         return isDirectory;
-    }
-
-    public void setDirectory(boolean isDirectory) {
-        this.isDirectory = isDirectory;
     }
 
     public Device getDevice() {

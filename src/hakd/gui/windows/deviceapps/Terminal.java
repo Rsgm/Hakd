@@ -32,10 +32,7 @@ public final class Terminal implements ServerWindow {
     private Command command;
     private File directory;
 
-    private final Terminal terminal;
-
     public Terminal(ServerWindowStage w) {
-        terminal = this;
         window = w;
         device = window.getDevice();
         directory = device.getHome();
@@ -102,7 +99,7 @@ public final class Terminal implements ServerWindow {
                 if (keycode == Keys.ENTER && command == null) {
                     display.setText(display.getText() + "\n\nroot @ " + device.getIp() + "\n>" + input.getText());
                     history.add(input.getText());
-                    command = new Command(input.getText(), device, terminal);
+                    command = new Command(input.getText(), device, Terminal.this);
 
                     line = history.size();
                     input.setText("");

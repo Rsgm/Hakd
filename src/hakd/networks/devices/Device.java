@@ -51,6 +51,7 @@ public class Device implements Connectable {
     Sprite tile;
 
     // storage ArrayLists
+//    private final FileSystem fileSystem = new HakdFileSystem(provider);
     private final File root = new File("root", null, null, this); // root directory of the storage filesystem, rm -rf /
     private File sys = new File("sys", null, root, this); // operating system files, !FUN!
     private File home = new File("home", null, root, this); // random files people save
@@ -60,14 +61,12 @@ public class Device implements Connectable {
     public Device() { // TODO: have random smartphone connections and disconnections. smartphones are like insects on a network, many types, random behavior, and there are lots of them
         try {
             for (int i = 0; i < 3; i++) {
-                home.addFile(new File("test file.txt", Util.getFileData((int) (Util.FILE_ENTRY_SIZE * Math.random())), home, this));
+                home.addFile(new File("bash " + (int) (Math.random() * 8) + ".txt", Util.getFileData("bash", (int) (Math.random() * 8) + ""), home, this));
             }
 
-            List<java.io.File> fileList = Util.listFiles(new java.io.File("python/programs/"));
-            for (java.io.File f : fileList) {
+            for (java.io.File f : Util.PROGRAMS.values()) {
                 bin.addFile(new File(f.getName(), Util.getProgramData(f.getName()), bin, this));
             }
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -237,6 +236,26 @@ public class Device implements Connectable {
                 this.storageCapacity -= storage.getCapacity();
                 break;
         }
+    }
+
+    public File getFile(String path) {
+        if (path.isEmpty() || !path.matches("^/.+?/$")) {
+            return null;
+        }
+
+        File file = root;
+        String[] splitPath = path.split("/");
+
+        for (String s : splitPath) {
+            File f = file.getFile(s);
+            if (f != null) {
+                file = f;
+            } else {
+                return null;
+            }
+        }
+
+        return file;
     }
 
     public final void dispose() {
