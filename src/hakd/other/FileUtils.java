@@ -63,19 +63,24 @@ public class FileUtils {
         return Files;
     }
 
-    public String cp(String options, String source, String target) throws IOException {
+    public List<String> cp(String options, String source, String target) throws IOException {
+        List<String> returnText = new ArrayList<String>();
         if (options.contains("h")) {
-            return "cp [-hor] sourcefile targetfile\n" +
-                    "Copy the sourcefile to the target file\n" +
-                    "sourcefile is the file(s) or directory to be copied\n" +
-                    "targetfile is the file or directory to copy to\n\n" +
-                    "Use a * as a wildcard for specifying multiple source files\n\n" +
-                    "Options:\n" +
-                    "  -h   shows this help text\n" +
-                    "  -o   overwrites all matching files\n" +
-                    "  -r   recursively find sourcefiles in the sourcefile directory";
+            returnText.add("cp [-hor] sourcefile targetfile");
+            returnText.add("Copy the sourcefile to the target file");
+            returnText.add("sourcefile is the file(s) or directory to be copied");
+            returnText.add("targetfile is the file or directory to copy to");
+            returnText.add("");
+            returnText.add("Use a * as a wildcard for specifying multiple source files");
+            returnText.add("");
+            returnText.add("Options:");
+            returnText.add("  -h   shows this help text");
+            returnText.add("  -o   overwrites all matching files");
+            returnText.add("  -r   recursively find sourcefiles in the sourcefile directory");
+            return returnText;
         } else if (source.isEmpty() || target.isEmpty()) {
-            return "cp [-hor] sourcefile targetfile";
+            returnText.add("cp [-hor] sourcefile targetfile");
+            return returnText;
         } else if (source.startsWith("./")) {
             source = terminal.getDirectory().getPath() + source.substring(2);
         } else if (target.startsWith("./")) {
@@ -92,11 +97,13 @@ public class FileUtils {
         if (sourceFiles.size() == 1) {
             File sourceFile = sourceFiles.get(0);
             if (sourceFile.isDirectory && !options.contains("r")) {
-                return "Please include -r to copy a directory";
+                returnText.add("Please include -r to copy a directory");
+                return returnText;
             } else if (targetFile.isDirectory) {
                 if (targetFile.getFile(sourceFile.getName()) == null || options.contains("o")) {
                     targetFile.addFile(sourceFile.copy());
-                    return "";
+                    returnText.clear();
+                    return returnText;
                 } else {
                     throw new IOException("File already exists");
                 }
@@ -120,16 +127,18 @@ public class FileUtils {
             }
 
             if (notAllCopied) {
-                return "Not all files could be copied";
+                returnText.add("Not all files could be copied");
+                return returnText;
             } else {
-                return "";
+                return returnText;
             }
 
         } else {
             throw new IOException("Could not copied");
         }
 
-        return "";
+        returnText.clear();
+        return returnText;
     }
 
 }
