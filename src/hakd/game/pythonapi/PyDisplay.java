@@ -23,8 +23,17 @@ public final class PyDisplay {
         });
     }
 
-    public static void clear(Terminal t) {
-        t.getDisplay().setText("root @ " + t.getDevice().getIp() + "\n>");
+    public static void clear(final Terminal t) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                t.getDisplay().setText("root @ " + t.getDevice().getIp() + "\n>");
+            }
+        });
+    }
+
+    public static String input(Terminal terminal, String display) {
+        return terminal.input(display);
     }
 
 }

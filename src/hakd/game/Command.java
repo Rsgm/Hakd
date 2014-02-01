@@ -9,15 +9,12 @@ import org.python.util.PythonInterpreter;
 import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Queue;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class Command {
     private final String input;
     private final Device device;
     private final Terminal terminal;
     private Thread t;
-    private final Queue<Integer> userInputBuffer;
 
     /**
      * Runs the desired command on a separate thread. Not that any program would
@@ -28,8 +25,6 @@ public final class Command {
         this.input = input;
         this.device = device;
         this.terminal = terminal;
-
-        userInputBuffer = new ConcurrentLinkedQueue<Integer>();
 
         run();
     }
@@ -89,20 +84,16 @@ public final class Command {
         PythonInterpreter pi = new PythonInterpreter();
 
         hakd.other.File file;
-        file = terminal.getDevice().getBin().getFile("parameters.get(0)" + ".py"); // executable files may only be run if they are in the bin directory
+        file = terminal.getDevice().getBin().getFile(parameters.get(0)); // executable files may only be run if they are in the bin directory
 
 
-        if (file == null)
-
-        {
+        if (file == null) {
             throw new FileNotFoundException();
         }
 
-        Gdx.app.debug("Terminal Info", "python file: " + file.getName()); //TODO file.getPath()); maybe use SDa,b,c... for drive paths
+        Gdx.app.debug("Terminal Info", "python file: " + file.getName());
 
-        if (parameters.size() > 1)
-
-        {
+        if (parameters.size() > 1) {
             parameters.remove(0); // first parameter is always the command
             pi.set("parameters", parameters);
         }
@@ -117,7 +108,4 @@ public final class Command {
         pi.exec(file.getData());
     }
 
-    public Queue<Integer> getUserInputBuffer() {
-        return userInputBuffer;
-    }
 }

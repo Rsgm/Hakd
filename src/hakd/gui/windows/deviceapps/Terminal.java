@@ -16,6 +16,8 @@ import hakd.other.File;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class Terminal implements ServerWindow {
     private final ServerWindowStage window;
@@ -31,6 +33,8 @@ public final class Terminal implements ServerWindow {
     private final Device device;
     private Command command;
     private File directory;
+    private final Queue<Character> userInputBuffer;
+    private String userInputString;
 
     public Terminal(ServerWindowStage w) {
         window = w;
@@ -53,6 +57,8 @@ public final class Terminal implements ServerWindow {
         display.setWrap(false); // this being true would mess up text line insertion
         display.setAlignment(10, Align.left);
         display.setText("Terminal [Version 0." + ((int) (Math.random() * 100)) / 10 + "]" + "\nroot @ " + device.getIp() + "\nMemory: " + device.getMemoryCapacity() + "MB\nStorage: " + device.getStorageCapacity() + "GB");
+
+        userInputBuffer = new ConcurrentLinkedQueue<Character>();
 
         table.addListener(new InputListener() {
             @Override
@@ -116,10 +122,12 @@ public final class Terminal implements ServerWindow {
                     line--;
                     input.setText(history.get(line));
                     input.setCursorPosition(input.getText().length());
-                }
-
-                if (command != null) {
-                    command.getUserInputBuffer().offer(keycode);
+                } else if (command != null) {
+                    if (keycode == Keys.ENTER) {
+                        userInputString = input.getText();
+                        input.setText("");
+                    }
+                    userInputBuffer.offer(event.getCharacter());
                 }
                 return true;
             }
@@ -127,7 +135,7 @@ public final class Terminal implements ServerWindow {
             @Override
             public boolean keyUp(InputEvent event, int keycode) {
                 if (keycode == Keys.ENTER || (keycode == Keys.C && (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && command != null)) {
-                    scroll.setScrollY(display.getHeight());
+                    scroll.setScrollY(scroll.getMaxY());
                 }
                 return super.keyUp(event, keycode);
             }
@@ -142,7 +150,7 @@ public final class Terminal implements ServerWindow {
 
     public void addText(String text) {
         display.setText(display.getText() + "\n   " + text);
-        scroll.setScrollY(display.getHeight());
+        scroll.setScrollY(scroll.getMaxY());
         // I doubt that set text is thread safe, although only two threads, that
         // I know of, can access it; the main and command threads.
     }
@@ -167,7 +175,7 @@ public final class Terminal implements ServerWindow {
         s += t.substring(m, t.length());
 
         display.setText(s);
-        scroll.setScrollY(display.getHeight());
+        scroll.setScrollY(scroll.getMaxY());
     }
 
     /**
@@ -301,6 +309,28 @@ public final class Terminal implements ServerWindow {
         directory = tempDirectory;
     }
 
+    public String input(final String display) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                addText(display);
+            }
+        });
+
+        userInputString = null;
+        while (userInputString == null) {
+            try {
+                Thread.sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+
+        String s = userInputString;
+        userInputString = null;
+        return s;
+    }
+
     @Override
     public void open() {
         window.getCanvas().addActor(table);
@@ -342,4 +372,5 @@ public final class Terminal implements ServerWindow {
     public File getDirectory() {
         return directory;
     }
+
 }

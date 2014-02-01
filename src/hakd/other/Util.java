@@ -187,7 +187,7 @@ public final class Util {
                 if (s == null) {
                     break;
                 }
-                data += s; // might need + "\n"
+                data += s + "\n";
             }
         } catch (IOException e) {
             e.printStackTrace();
