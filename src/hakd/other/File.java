@@ -174,6 +174,17 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
         return file;
     }
 
+    /**
+     * Checks if a directory contains no files. This will return true if it is not a directory.
+     */
+    public boolean isEmpty() {
+        if (fileList == null) {
+            return true;
+        }
+
+        return fileList.isEmpty();
+    }
+
     @Override
     public String toString() {
         return name;
