@@ -15,6 +15,7 @@ public final class Command {
     private final Device device;
     private final Terminal terminal;
     private Thread t;
+    private boolean piped = false;
 
     /**
      * Runs the desired command on a separate thread. Not that any program would
@@ -30,10 +31,13 @@ public final class Command {
     }
 
     private void run() {
+        String name = input.split(" ")[0];
         t = new Thread(new Runnable() {
+
             @Override
             public void run() {
-                List<String> parameters = new ArrayList<String>();
+                List<List<String>> parameters = new ArrayList<List<String>>();
+                parameters.add(new ArrayList<String>());
 
                 String s = input;
 
@@ -47,24 +51,56 @@ public final class Command {
                     int l = s.length();
 
                     String next = inputTemp.substring(0, inputTemp.length() - l);
-                    parameters.add(next);
+                    if (next.equals("|") || next.equals("&&") || next.equals(";") || next.equals("||")) {
+                        piped = next.equals("|");
+                        parameters.add(new ArrayList<String>());
+                    }
+
+                    parameters.get(parameters.size() - 1).add(next);
                 }
 
                 Gdx.app.debug("Terminal Command", input + "   " + parameters.toString());
+
+                ArrayList returnedText = null;
+                boolean lastCommandFailed = false;
+
                 if (!parameters.isEmpty()) {
-                    try {
-                        runPython(parameters);
-                    } catch (FileNotFoundException e) {
-                        Gdx.app.debug("Terminal Info", "FileNotFound");
-                    } catch (PyException e) {
-                        Gdx.app.error("Terminal Error", e.getMessage(), e);
+                    for (List<String> l : parameters) {
+                        if (l.size() >= 2) {
+                            String operator = l.remove(0);
+
+                            try {
+                                if (operator.equals("|")) { // assumes successful
+                                    returnedText = runPython(l, returnedText);
+                                } else if (operator.equals(";")) {
+                                    returnedText = runPython(l, null);
+                                } else if (operator.equals("&&") && !lastCommandFailed) {
+                                    returnedText = runPython(l, null);
+                                } else if (operator.equals("||") && lastCommandFailed) {
+                                    returnedText = runPython(l, null);
+                                }
+                            } catch (FileNotFoundException e) {
+                                Gdx.app.debug("Terminal Info", "FileNotFound");
+                                lastCommandFailed = true;
+                            } catch (PyException e) {
+                                Gdx.app.error("Terminal Error", e.getMessage(), e);
+                                lastCommandFailed = true;
+                            }
+
+                            if (returnedText != null) {
+                                for (Object text : returnedText) {
+                                    if (text instanceof String) {
+                                        terminal.addText(s);
+                                    }
+                                }
+                            }
+                        }
                     }
                 }
-
                 terminal.setCommand(null);
             }
         });
-        // t.setName(name); might want to change this
+        t.setName("terminal command");
         t.start();
     }
 
@@ -80,7 +116,7 @@ public final class Command {
         terminal.setCommand(null);
     }
 
-    private void runPython(List<String> parameters) throws FileNotFoundException {
+    private ArrayList runPython(List<String> parameters, ArrayList returnedText) throws FileNotFoundException {
         PythonInterpreter pi = new PythonInterpreter();
 
         hakd.other.File file;
@@ -95,10 +131,12 @@ public final class Command {
 
         if (parameters.size() > 1) {
             parameters.remove(0); // first parameter is always the command
-            pi.set("parameters", parameters);
         }
 
         pi.set("terminal", terminal);
+        pi.set("parameters", parameters);
+        pi.set("piped_text", returnedText);
+
 
         // there really is no good way of doing this
         // if (!checkPythonForCheats(file)) {
@@ -106,6 +144,7 @@ public final class Command {
         // }
 
         pi.exec(file.getData());
+        return pi.get("returnText", ArrayList.class);
     }
 
 }
