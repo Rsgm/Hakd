@@ -5,6 +5,8 @@ import hakd.networks.devices.Device;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -141,4 +143,95 @@ public class FileUtils {
         return returnText;
     }
 
+    public List<String> ls(String options, String directory) {
+        List<String> returnText = new ArrayList<String>();
+        if (options.contains("h")) {
+            returnText.add("ls [-fhlRrSt] directory");
+            returnText.add("Copy the sourcefile to the target file");
+            returnText.add("Directory is the directory to list files in");
+            returnText.add("");
+            returnText.add("Options:");
+            returnText.add("  -f   do not sort the files, default sorts alphabetically");
+            returnText.add("  -h   shows this help text");
+            returnText.add("  -l   long format: size, last-modified date and filename");
+            returnText.add("  -m   separate lines with commas");
+            returnText.add("  -Q   enclose entry names in double quotes");
+            returnText.add("  -R   recursively list files");
+            returnText.add("  -r   reverse the list of files");
+            returnText.add("  -S   sort the list of files by size");
+            returnText.add("  -t   sort the list of files by modification time");
+            return returnText;
+        } else if (directory.isEmpty()) {
+            directory = terminal.getDirectory().getPath();
+        } else if (directory.startsWith("./")) {
+            directory = terminal.getDirectory().getPath() + directory.substring(2);
+        }
+
+        File dir = getFile(directory);
+        List<File> fileList;
+
+        if (options.contains("R")) {
+            fileList = dir.listFilesRecursive(dir);
+        } else {
+            fileList = dir.listFiles();
+        }
+
+        if (options.contains("f")) {
+            // don't sort if options contains "f", even if there are other sort options selected
+        } else if (options.contains("S")) { // sort by size
+            Collections.sort(fileList, new Comparator<File>() {
+                @Override
+                public int compare(File file, File file2) {
+                    return (file.getSize() + "").compareTo(file2.getSize() + ""); // this probably won't work numarically
+                }
+            });
+        } else if (options.contains("t")) { // sort by time
+            Collections.sort(fileList, new Comparator<File>() {
+                @Override
+                public int compare(File file, File file2) {
+                    return file.getTime().compareTo(file2.getTime());  // maybe sort by miliseconds
+                }
+            });
+        } else { // sort by name
+            Collections.sort(fileList, new Comparator<File>() {
+                @Override
+                public int compare(File file, File file2) {
+                    return file.toString().compareTo(file2.toString());
+                }
+            });
+        }
+
+        if (options.contains("r")) {
+            Collections.reverse(fileList);
+        }
+
+        if (options.contains("l")) {
+            for (File f : fileList) {
+                String s = "";
+//                s += f.getOwner(); TODO
+                s += f.getSize() + "   ";
+                s += f.getTime() + "   ";
+                s += f.getName() + "   ";
+                returnText.add(s);
+            }
+        } else {
+            for (File f : fileList) {
+                returnText.add(f.getName());
+            }
+        }
+
+        if (options.contains("Q")) {
+            for (int i = 0; i < returnText.size(); i++) {
+                String s = "\"" + returnText.get(i) + "\"";
+                returnText.set(i, s);
+            }
+        } else if (options.contains("m")) {
+            for (int i = 0; i < returnText.size(); i++) {
+                String s = returnText.get(i) + ",";
+                returnText.set(i, s);
+            }
+        }
+
+        return returnText;
+    }
 }
