@@ -4,7 +4,6 @@ import hakd.networks.devices.Device;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -13,9 +12,11 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     String data;
     File parentDirectory;
     // final String owner;
-    String time;
+    String time; // date modified
     long timeMs;
     Device device;
+
+    private final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
     boolean isDirectory;
     List<File> fileList;
@@ -33,8 +34,7 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
 
 //        owner = d.getDevice().getNetwork().getOwner().getName();
         device = d;
-
-        SimpleDateFormat f = new SimpleDateFormat("MM-dd HH:mm:ss");
+        SimpleDateFormat f = new SimpleDateFormat(DATE_PATTERN);
         Date date = new Date();
         timeMs = date.getTime();
         time = f.format(date);
@@ -46,7 +46,7 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     public void addDataByte(int b) {
         data += String.valueOf(b);
 
-        SimpleDateFormat f = new SimpleDateFormat("MM-dd HH:mm:ss");
+        SimpleDateFormat f = new SimpleDateFormat(DATE_PATTERN);
         Date date = new Date();
         timeMs = date.getTime();
         time = f.format(date);
@@ -58,7 +58,7 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     public void addDataChar(char c) {
         data += c;
 
-        SimpleDateFormat f = new SimpleDateFormat("MM-dd HH:mm:ss");
+        SimpleDateFormat f = new SimpleDateFormat(DATE_PATTERN);
         Date date = new Date();
         timeMs = date.getTime();
         time = f.format(date);
@@ -67,7 +67,7 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     public void setData(String s) {
         data = s;
 
-        SimpleDateFormat f = new SimpleDateFormat("MM-dd HH:mm:ss");
+        SimpleDateFormat f = new SimpleDateFormat(DATE_PATTERN);
         Date date = new Date();
         timeMs = date.getTime();
         time = f.format(date);
@@ -125,7 +125,7 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     }
 
     public List<File> listFiles() {
-        return Collections.unmodifiableList(fileList);
+        return new ArrayList<File>(fileList);
     }
 
     /**
@@ -178,16 +178,16 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
      * Checks if a directory contains no files. This will return true if it is not a directory.
      */
     public boolean isEmpty() {
-        if (fileList == null) {
-            return true;
-        }
-
-        return fileList.isEmpty();
+        return fileList == null || fileList.isEmpty();
     }
 
     @Override
     public String toString() {
         return name;
+    }
+
+    public int getSize() {
+        return data.length() * 1024; // TODO is is probably more realistic to multiply by 100 instead
     }
 
     public String getName() {
