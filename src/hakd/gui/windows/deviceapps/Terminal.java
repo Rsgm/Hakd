@@ -14,9 +14,8 @@ import hakd.gui.Assets;
 import hakd.networks.devices.Device;
 import hakd.other.File;
 
-import java.util.ArrayList;
+import java.util.*;
 import java.util.List;
-import java.util.Queue;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class Terminal implements ServerWindow {
@@ -228,8 +227,8 @@ public final class Terminal implements ServerWindow {
         String currentParameterText = parameters.get(currentParameter);
 
         // arrays to hold possible options of text completion
-        List<hakd.other.File> files = new ArrayList<hakd.other.File>();
-        List<hakd.other.File> filesCopy = new ArrayList<hakd.other.File>();
+        Set<File> files = new HashSet<File>();
+        Set<File> filesCopy = new HashSet<File>();
 
         String completedText = ""; // make a string containing the text of the current parameter, before the cursor, to manipulate into the finished parameter
         if (!currentParameterText.matches("^\\s+$")) {
@@ -238,9 +237,9 @@ public final class Terminal implements ServerWindow {
         }
 
         // fill the arrays with executable files in /bin as well as all the files in the current directory
-        files.addAll(device.getBin().listFilesRecursive(device.getBin()));
+        files.addAll(device.getBin().getRecursiveFileList(device.getBin()));
         if (currentParameter > 0) {
-            files.addAll(directory.listFiles());
+            files.addAll(directory.getFileMap().values());
         }
 
         // exclude files that don't start with the current parameter before the cursor
@@ -252,6 +251,7 @@ public final class Terminal implements ServerWindow {
         }
 
         int totalLength = 0;
+        File tempFile = (File) files.toArray()[0]; // I am running out of names
         if (files.size() > 1) { // show the list of possible options and set the manipulated parameter to the common beginning text of that list
             addText("");
             for (File f : files) {
@@ -268,8 +268,8 @@ public final class Terminal implements ServerWindow {
 
             int lastSameCharacter = 0; // cut the loops down by setting this to cursorposition, but I don't want to risk creating bugs
             l1:
-            for (int i = 0; i < files.get(0).getName().length(); i++) {
-                char character = files.get(0).getName().charAt(i);
+            for (int i = 0; i < tempFile.getName().length(); i++) {
+                char character = tempFile.getName().charAt(i);
                 for (File f : files) {
                     if (f.getName().charAt(i) != character) {
                         lastSameCharacter = i;
@@ -277,15 +277,15 @@ public final class Terminal implements ServerWindow {
                     }
                 }
             }
-            completedText = files.get(0).getName().substring(0, lastSameCharacter) + currentParameterText.substring(cursorPosition);
+            completedText = tempFile.getName().substring(0, lastSameCharacter) + currentParameterText.substring(cursorPosition);
             parameters.set(currentParameter, completedText);
             totalLength = lastSameCharacter;
         } else if (files.size() == 1) { // set the manipulated text to this parameter, adding any extra text after the cursor to the end
-            if (cursorPosition == files.get(0).getName().length()) {
+            if (cursorPosition == tempFile.getName().length()) {
                 return;
             }
 
-            completedText = files.get(0).getName();
+            completedText = tempFile.getName();
             totalLength = completedText.length() + 1;
             completedText += " " + currentParameterText.substring(cursorPosition);
             parameters.set(currentParameter, completedText);

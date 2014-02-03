@@ -5,8 +5,8 @@ import com.badlogic.gdx.math.Vector2;
 import hakd.game.Internet;
 import hakd.gui.Assets;
 
-import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Set;
 
 /**
  * Backbones are the infrastructure that make up the internet. Backbones connect
@@ -14,7 +14,7 @@ import java.util.HashMap;
  * together.
  */
 public final class BackboneProviderNetwork extends Network {
-    ArrayList<Sprite> backboneConnectionLines;
+    Set<Sprite> backboneConnectionLines;
     private final HashMap<String, InternetProviderNetwork> ipChildNetworkHashMap = new HashMap<String, InternetProviderNetwork>(255);
 
     public static final int maxDistance = 5000;
@@ -62,11 +62,11 @@ public final class BackboneProviderNetwork extends Network {
 
     }
 
-    public ArrayList<Sprite> getBackboneConnectionLines() {
+    public Set<Sprite> getBackboneConnectionLines() {
         return backboneConnectionLines;
     }
 
-    public void setBackboneConnectionLines(ArrayList<Sprite> backboneConnectionLines) {
+    public void setBackboneConnectionLines(Set<Sprite> backboneConnectionLines) {
         this.backboneConnectionLines = backboneConnectionLines;
     }
 

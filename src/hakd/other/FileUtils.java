@@ -4,10 +4,8 @@ import hakd.gui.windows.deviceapps.Terminal;
 import hakd.networks.devices.Device;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
+import java.lang.reflect.Method;
+import java.util.*;
 
 /**
  * An implementation of the file utilities from GNU CoreUtils.
@@ -19,8 +17,17 @@ import java.util.List;
  * I will try my best to simulate the functionality of them, but I will have to leave out options for some.
  */
 public class FileUtils {
+    public static final Map<String, Method> METHOD_MAP;
     private Device device;
     private Terminal terminal;
+
+    static {
+        Map<String, Method> methodMap = new HashMap<String, Method>();
+        for (Method m : FileUtils.class.getMethods()) {
+            methodMap.put(m.getName(), m);
+        }
+        METHOD_MAP = Collections.unmodifiableMap(methodMap);
+    }
 
     public FileUtils(Terminal terminal) {
         this.terminal = terminal;
@@ -55,7 +62,7 @@ public class FileUtils {
             if (dir == null) {
                 throw new IOException("File not found");
             }
-            for (File f : dir.listFiles()) { // search for files matching the regex name
+            for (File f : dir.getFileMap().values()) { // search for files matching the regex name
                 if (f.name.matches(name)) {
                     Files.add(f);
                 }
@@ -65,8 +72,27 @@ public class FileUtils {
         return Files;
     }
 
-    public List<String> cp(String options, String source, String target) throws IOException {
+    public List<String> cp(List<String> parameters) throws IOException {
         List<String> returnText = new ArrayList<String>();
+
+        String options;
+        String sourcePath;
+        String targetPath;
+        if (parameters.size() >= 2) {
+            if (parameters.get(0).contains("-")) {
+                options = parameters.get(0);
+                sourcePath = parameters.get(1);
+                targetPath = parameters.get(2);
+            } else {
+                options = "";
+                sourcePath = parameters.get(0);
+                targetPath = parameters.get(1);
+            }
+        } else {
+            returnText.add("cp [-hor] sourcefile targetfile");
+            return returnText;
+        }
+
         if (options.contains("h")) {
             returnText.add("cp [-hor] sourcefile targetfile");
             returnText.add("Copy the sourcefile to the target file");
@@ -80,20 +106,20 @@ public class FileUtils {
             returnText.add("  -o   overwrites all matching files");
             returnText.add("  -r   recursively find sourcefiles in the sourcefile directory");
             return returnText;
-        } else if (source.isEmpty() || target.isEmpty()) {
+        } else if (sourcePath.isEmpty() || targetPath.isEmpty()) {
             returnText.add("cp [-hor] sourcefile targetfile");
             return returnText;
-        } else if (source.startsWith("./")) {
-            source = terminal.getDirectory().getPath() + source.substring(2);
-        } else if (target.startsWith("./")) {
-            target = terminal.getDirectory().getPath() + target.substring(2);
+        } else if (sourcePath.startsWith("./")) {
+            sourcePath = terminal.getDirectory().getPath() + sourcePath.substring(2);
+        } else if (targetPath.startsWith("./")) {
+            targetPath = terminal.getDirectory().getPath() + targetPath.substring(2);
         }
 
-        File targetFile = getFile(target);
-        List<File> sourceFiles = getFilesStar(source);
+        File targetFile = getFile(targetPath);
+        List<File> sourceFiles = getFilesStar(sourcePath);
 
         if (sourceFiles.isEmpty()) {
-            sourceFiles.add(device.getFile(source));
+            sourceFiles.add(device.getFile(sourcePath));
         }
 
         if (sourceFiles.size() == 1) {
@@ -143,10 +169,29 @@ public class FileUtils {
         return returnText;
     }
 
-    public List<String> ls(String options, String directory) {
+    public List<String> ls(List<String> parameters) {
         List<String> returnText = new ArrayList<String>();
+
+        String options;
+        String directoryPath;
+        if (parameters.size() >= 2) {
+            options = parameters.get(0);
+            directoryPath = parameters.get(1);
+        } else if (parameters.size() == 1) {
+            if (parameters.get(0).contains("-")) {
+                options = parameters.get(0);
+                directoryPath = "";
+            } else {
+                options = "";
+                directoryPath = parameters.get(0);
+            }
+        } else {
+            options = "";
+            directoryPath = "";
+        }
+
         if (options.contains("h")) {
-            returnText.add("ls [-fhlRrSt] directory");
+            returnText.add("ls [-fhlmpQRrSt] [directory]");
             returnText.add("Copy the sourcefile to the target file");
             returnText.add("Directory is the directory to list files in");
             returnText.add("");
@@ -155,25 +200,26 @@ public class FileUtils {
             returnText.add("  -h   shows this help text");
             returnText.add("  -l   long format: size, last-modified date and filename");
             returnText.add("  -m   separate lines with commas");
+            returnText.add("  -p   gives the files as a path");
             returnText.add("  -Q   enclose entry names in double quotes");
             returnText.add("  -R   recursively list files");
             returnText.add("  -r   reverse the list of files");
             returnText.add("  -S   sort the list of files by size");
             returnText.add("  -t   sort the list of files by modification time");
             return returnText;
-        } else if (directory.isEmpty()) {
-            directory = terminal.getDirectory().getPath();
-        } else if (directory.startsWith("./")) {
-            directory = terminal.getDirectory().getPath() + directory.substring(2);
+        } else if (directoryPath.isEmpty()) {
+            directoryPath = terminal.getDirectory().getPath();
+        } else if (directoryPath.startsWith("./")) {
+            directoryPath = terminal.getDirectory().getPath() + directoryPath.substring(2);
         }
 
-        File dir = getFile(directory);
+        File directory = getFile(directoryPath);
         List<File> fileList;
 
         if (options.contains("R")) {
-            fileList = dir.listFilesRecursive(dir);
+            fileList = directory.getRecursiveFileList(directory);
         } else {
-            fileList = dir.listFiles();
+            fileList = (List<File>) directory.getFileMap().values();
         }
 
         if (options.contains("f")) {
@@ -213,6 +259,10 @@ public class FileUtils {
                 s += f.getTime() + "   ";
                 s += f.getName() + "   ";
                 returnText.add(s);
+            }
+        } else if (options.contains("p")) {
+            for (File f : fileList) {
+                returnText.add(f.getPath() + f.getName());
             }
         } else {
             for (File f : fileList) {

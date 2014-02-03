@@ -14,9 +14,10 @@ import hakd.other.File;
 import hakd.other.Util;
 
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public class Device implements Connectable {
     // stats
@@ -25,8 +26,8 @@ public class Device implements Connectable {
     String ip = ""; // all network variables will be in IP format
     String address;
 
-    final HashMap<String, Connection> connections = new HashMap<String, Connection>();
-    final HashMap<Integer, Port> ports = new HashMap<Integer, Port>(); // portNumber, program / if its closed just delete it
+    final Map<String, Connection> connections = new HashMap<String, Connection>();
+    final Map<Integer, Port> ports = new HashMap<Integer, Port>(); // portNumber, program / if its closed just delete it
     File logs; // TODO make this a file instead connecting from and the action after that
 
     Brand brand; // for example bell, or HQ
@@ -39,9 +40,8 @@ public class Device implements Connectable {
 
 
     // objects
-    final List<Part> parts = new ArrayList<Part>();
+    final Set<Part> parts = new HashSet<Part>();
     int partLimit;
-    Storage masterStorage; // TODO where the os resides
     DeviceType type;
 
     // gui
@@ -50,22 +50,27 @@ public class Device implements Connectable {
     ServerWindowStage window;
     Sprite tile;
 
-    // storage ArrayLists
-//    private final FileSystem fileSystem = new HakdFileSystem(provider);
-    private final File root = new File("root", null, null, this); // root directory of the storage filesystem, rm -rf /
-    private File sys = new File("sys", null, root, this); // operating system files, !FUN!
-    private File home = new File("home", null, root, this); // random files people save
-    private File bin = new File("bin", null, root, this); // (python)programs able to run
-    private File log = new File("log", null, root, this); // these log arrays have infinite storage, thanks to a new leap in quantum physics
+    // default files
+    private final File root = new File("root", null); // root directory of the storage filesystem, rm -rf /
+    private File sys = new File("sys", null); // operating system files, !FUN!
+    private File home = new File("home", null); // random files people save
+    private File bin = new File("bin", null); // (python)programs able to run
+    private File log = new File("log", null); // these log arrays have infinite storage, thanks to a new leap in quantum physics
 
     public Device() { // TODO: have random smartphone connections and disconnections. smartphones are like insects on a network, many types, random behavior, and there are lots of them
+        root.setDevice(this);
+        root.addFile(sys);
+        root.addFile(home);
+        root.addFile(bin);
+        root.addFile(log);
+
         try {
             for (int i = 0; i < 3; i++) {
-                home.addFile(new File("bash " + (int) (Math.random() * 8) + ".txt", Util.getFileData("bash", (int) (Math.random() * 8) + ""), home, this));
+                home.addFile(new File("bash " + (int) (Math.random() * 8) + ".txt", Util.getFileData("bash", (int) (Math.random() * 8) + "")));
             }
 
             for (java.io.File f : Util.PROGRAMS.values()) {
-                bin.addFile(new File(f.getName(), Util.getProgramData(f.getName()), bin, this));
+                bin.addFile(new File(f.getName(), Util.getProgramData(f.getName())));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -160,13 +165,12 @@ public class Device implements Connectable {
         }
 
         ports.remove(port);
-        return;
     }
 
     @Override
     public final void log(String name, String data) {
         try {
-            log.addFile(new File(name + ".log", data, log, this));
+            log.addFile(new File(name + ".log", data));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -258,6 +262,24 @@ public class Device implements Connectable {
         return file;
     }
 
+    public int getUsedSpace() {
+        int space = 0;
+        for (File f : root.getRecursiveFileList(root)) {
+            space += f.getSize();
+        }
+        return space;
+    }
+
+    public int getTotalSpace() {
+        int space = 0;
+        for (Part p : parts) {
+            if (p instanceof Storage) {
+                space += ((Storage) p).getCapacity();
+            }
+        }
+        return space;
+    }
+
     public final void dispose() {
         for (Connection c : connections.values()) {
             disconnect(c);
@@ -301,20 +323,12 @@ public class Device implements Connectable {
         return level;
     }
 
-    public HashMap<Integer, Port> getPorts() {
+    public Map<Integer, Port> getPorts() {
         return ports;
     }
 
-    public List<Part> getParts() {
+    public Set<Part> getParts() {
         return parts;
-    }
-
-    public Storage getMasterStorage() {
-        return masterStorage;
-    }
-
-    public void setMasterStorage(Storage masterStorage) {
-        this.masterStorage = masterStorage;
     }
 
     public void setNetwork(Network network) {
@@ -397,7 +411,7 @@ public class Device implements Connectable {
         this.address = address;
     }
 
-    public HashMap<String, Connection> getConnections() {
+    public Map<String, Connection> getConnections() {
         return connections;
     }
 

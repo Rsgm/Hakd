@@ -38,6 +38,7 @@ public final class Command {
             public void run() {
                 List<List<String>> parameters = new ArrayList<List<String>>();
                 parameters.add(new ArrayList<String>());
+                parameters.get(0).add(";");
 
                 String s = input;
 
@@ -63,37 +64,35 @@ public final class Command {
 
                 ArrayList returnedText = null;
                 boolean lastCommandFailed = false;
+                for (List<String> l : parameters) {
+                    if (l.size() >= 2) {
+                        String operator = l.remove(0);
 
-                if (!parameters.isEmpty()) {
-                    for (List<String> l : parameters) {
-                        if (l.size() >= 2) {
-                            String operator = l.remove(0);
-
-                            try {
-                                if (operator.equals("|")) { // assumes successful
-                                    returnedText = runPython(l, returnedText);
-                                } else if (operator.equals(";")) {
-                                    returnedText = runPython(l, null);
-                                } else if (operator.equals("&&") && !lastCommandFailed) {
-                                    returnedText = runPython(l, null);
-                                } else if (operator.equals("||") && lastCommandFailed) {
-                                    returnedText = runPython(l, null);
-                                }
-                            } catch (FileNotFoundException e) {
-                                Gdx.app.debug("Terminal Info", "FileNotFound");
-                                lastCommandFailed = true;
-                            } catch (PyException e) {
-                                Gdx.app.error("Terminal Error", e.getMessage(), e);
-                                lastCommandFailed = true;
+                        try {
+                            if (operator.equals("|")) { // assumes successful
+                                returnedText = runPython(l, returnedText);
+                            } else if (operator.equals(";")) {
+                                returnedText = runPython(l, null);
+                            } else if (operator.equals("&&") && !lastCommandFailed) {
+                                returnedText = runPython(l, null);
+                            } else if (operator.equals("||") && lastCommandFailed) {
+                                returnedText = runPython(l, null);
                             }
+                        } catch (FileNotFoundException e) {
+                            Gdx.app.debug("Terminal Info", "FileNotFound");
+                            lastCommandFailed = true;
+                        } catch (PyException e) {
+                            Gdx.app.error("Terminal Error", e.getMessage(), e);
+                            lastCommandFailed = true;
+                        }
 
-                            if (returnedText != null) {
-                                for (Object text : returnedText) {
-                                    if (text instanceof String) {
-                                        terminal.addText(s);
-                                    }
+                        if (returnedText != null) {
+                            for (Object text : returnedText) {
+                                if (text instanceof String) {
+                                    terminal.addText(s);
                                 }
                             }
+
                         }
                     }
                 }

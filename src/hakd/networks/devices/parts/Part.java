@@ -2,8 +2,8 @@ package hakd.networks.devices.parts;
 
 import hakd.networks.devices.Device;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public class Part {
     PartType type;
@@ -18,8 +18,8 @@ public class Part {
     }
 
     // finds all of the parts in the list of that type
-    public static List<Part> findParts(List<Part> parts, PartType type) {
-        List<Part> returnParts = new ArrayList<Part>();
+    public static Set<Part> findParts(Set<Part> parts, PartType type) {
+        Set<Part> returnParts = new HashSet<Part>();
         for (Part p : parts) {
             if (p.getType() == type) {
                 returnParts.add(p);

@@ -13,13 +13,14 @@ import hakd.gui.Assets;
 import hakd.gui.windows.actors.DesktopAppIcon;
 import hakd.networks.devices.Device;
 
-import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class Desktop {
     private final ServerWindowStage window;
     private final Group desktop;
     private final Device device;
-    private final ArrayList<Button> desktopApps;
+    private final Set<Button> desktopApps;
 
     private final Image background;
 
@@ -28,7 +29,7 @@ public final class Desktop {
         device = window.getDevice();
 
         desktop = new Group();
-        desktopApps = new ArrayList<Button>();
+        desktopApps = new HashSet<Button>();
 
         background = new Image(Assets.linearTextures.findRegion("wallpaper"));
         background.setBounds(0, 0, Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -98,7 +99,7 @@ public final class Desktop {
         return device;
     }
 
-    public ArrayList<Button> getDesktopApps() {
+    public Set<Button> getDesktopApps() {
         return desktopApps;
     }
 }

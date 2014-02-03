@@ -12,14 +12,15 @@ import hakd.networks.Network;
 import hakd.networks.devices.Device;
 import hakd.other.Util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 public final class Room {
     private Player player;
     private Network network;
-    private final List<Device> devices;
-    private final List<EmptyDeviceTile> emptyDeviceTiles;
+    private final Map<String, Device> devices;
+    private final Set<EmptyDeviceTile> emptyDeviceTiles;
 
     private TiledMap map;
     private Object[][] mapObjects;
@@ -36,7 +37,7 @@ public final class Room {
         network = player.getNetwork();
 
         devices = network.getDevices();
-        emptyDeviceTiles = new ArrayList<EmptyDeviceTile>();
+        emptyDeviceTiles = new HashSet<EmptyDeviceTile>();
 
         map = new TmxMapLoader().load("hakd/gui/resources/maps/" + roomMap.toString() + ".tmx");
 
@@ -64,7 +65,7 @@ public final class Room {
         }
 
         // set sprites(tile) of network devices
-        for (Device d : devices) {
+        for (Device d : devices.values()) {
             d.setTile(new Sprite(Assets.nearestTextures.findRegion("d" + d.getLevel())));
             d.getTile().setSize(d.getTile().getWidth() / GameScreen.tileSize, d.getTile().getHeight() / GameScreen.tileSize);
 
@@ -102,7 +103,7 @@ public final class Room {
      * Null if the tile in the map does not have an object.
      */
     public Object getObjectAtTile(int x, int y) {
-        for (Device d : devices) {
+        for (Device d : devices.values()) {
             if (x == d.getIsoX() && y == d.getIsoY()) {
                 return d;
             }
@@ -210,7 +211,7 @@ public final class Room {
         this.objetcts = objetcts;
     }
 
-    public List<Device> getDevices() {
+    public Map<String, Device> getDevices() {
         return devices;
     }
 }
@@ -240,4 +241,6 @@ public final class Room {
  * Use seeds to generate the internet, that way you can reload a save easier,
  * maybe, but all mission networks would have to be pre-generated and nothing
  * can ever despawn.
+ *
+ * Is this even relevant anymore?
  */

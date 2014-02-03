@@ -3,9 +3,7 @@ package hakd.other;
 import hakd.networks.devices.Device;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public final class File { // TODO file hashes! maybe just run an md5 hash on the java object hashcode, or just convert a random int/short to hex
     String name;
@@ -19,21 +17,19 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     private final String DATE_PATTERN = "yyyy-MM-dd'T'HH:mm:ss";
 
     boolean isDirectory;
-    List<File> fileList;
+    Map<String, File> fileMap;
 
 
-    public File(String name, String data, File directory, Device d) {
+    public File(String name, String data) {
         this.name = name;
         this.data = data;
-        this.parentDirectory = directory;
 
         if (data == null) {
             isDirectory = true;
-            fileList = new ArrayList<File>();
+            fileMap = new HashMap<String, File>();
         }
 
 //        owner = d.getDevice().getNetwork().getOwner().getName();
-        device = d;
         SimpleDateFormat f = new SimpleDateFormat(DATE_PATTERN);
         Date date = new Date();
         timeMs = date.getTime();
@@ -74,7 +70,7 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     }
 
     public File getFile(String fileName) {
-        for (File f : fileList) {
+        for (File f : fileMap.values()) {
             if (f.name.equals(fileName)) {
                 return f;
             }
@@ -83,7 +79,7 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     }
 
     public File getFileRecursive(String fileName) {
-        for (File f : listFilesRecursive(this)) {
+        for (File f : getRecursiveFileList(this)) {
             if (f.name.equals(fileName)) {
                 return f;
             }
@@ -96,46 +92,45 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
         do {
             parentDirectory = parentDirectory.parentDirectory;
 
-            if (parentDirectory == file) { // The only reason I care about this is because listFilesRecursive() will be stuck in a loop, otherwise I wouldn't care how players abused it
+            if (parentDirectory == file) { // The only reason I care about this is because getRecursiveFileList() will be stuck in a loop, otherwise I wouldn't care how players abused it
                 return; // relevant xkcd: http://xkcd.com/981/
             }
         } while (parentDirectory != null);
 
-        for (File f : fileList) {
+        for (File f : fileMap.values()) {
             if (f == file || f.name.equals(file.name)) { // I guess if they are the same file, they have the same name, but I am going to leave it so there is a less chance errors
                 return;
             }
         }
-        fileList.add(file);
+        fileMap.put(file.name, file);
         file.parentDirectory = this;
+        file.device = device;
     }
 
     public void removeFile(File file) {
-        while (fileList.contains(file)) { // again, just to make sure there are no copies
-            fileList.remove(file);
-        }
+        fileMap.remove(file.name);
     }
 
     public void removeFile(String fileName) {
-        for (File f : fileList) {
+        for (File f : fileMap.values()) {
             if (f.name.equals(fileName)) {
-                fileList.remove(f);
+                fileMap.remove(f);
             }   // I should return after this, but I need to be sure there are no file copies that somehow got there
         }
     }
 
-    public List<File> listFiles() {
-        return new ArrayList<File>(fileList);
+    public Map<String, File> getFileMap() {
+        return Collections.unmodifiableMap(fileMap);
     }
 
     /**
      * @param file where to start the search, should be the object in which this is being called on
      */
-    public List<File> listFilesRecursive(File file) {
+    public List<File> getRecursiveFileList(File file) {
         List<File> files = new ArrayList<File>();
-        for (File f : file.listFiles()) {
+        for (File f : file.getFileMap().values()) {
             if (f.isDirectory()) {
-                files.addAll(listFilesRecursive(f));
+                files.addAll(getRecursiveFileList(f));
             } else {
                 files.add(f);
             }
@@ -161,12 +156,12 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     }
 
     public File copy() {
-        File file = new File(name, data, null, device);
+        File file = new File(name, data);
         file.isDirectory = isDirectory;
 
         if (isDirectory) { // if it is a directory, copy its subfiles
-            file.fileList = new ArrayList<File>();
-            for (File f : fileList) {
+            file.fileMap = new HashMap<String, File>();
+            for (File f : fileMap.values()) {
                 file.addFile(f.copy()); // copy recursively
             }
         }
@@ -178,7 +173,7 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
      * Checks if a directory contains no files. This will return true if it is not a directory.
      */
     public boolean isEmpty() {
-        return fileList == null || fileList.isEmpty();
+        return fileMap == null || fileMap.isEmpty();
     }
 
     @Override
@@ -231,5 +226,11 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
 
     public long getTimeMs() {
         return timeMs;
+    }
+
+    public void setDevice(Device device) {
+        if (this.device == null) {
+            this.device = device;
+        }
     }
 }

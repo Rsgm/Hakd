@@ -35,8 +35,7 @@ public final class DeviceFactory {
             d.addPart(PartFactory.createGpu(level));
             d.addPart(PartFactory.createMemory(level));
 
-            d.setMasterStorage(PartFactory.createStorage(level, false));
-            d.addPart(d.getMasterStorage());
+            d.addPart(PartFactory.createStorage(level, false));
         }
 
         return d;

@@ -13,7 +13,7 @@ import hakd.networks.devices.DeviceFactory;
 import hakd.networks.devices.Server;
 import hakd.other.Util;
 
-import java.util.ArrayList;
+import java.util.HashSet;
 
 public class NetworkFactory {
 
@@ -142,7 +142,7 @@ public class NetworkFactory {
         isp.getMapIcon().setSize(75, 75);
 
         boolean containsNetworks = false;
-        for (Network n : internet.getIpNetworkHashMap().values()) {
+        for (Network n : internet.getNetworkMap().values()) {
             if (!(n instanceof BackboneProviderNetwork || n instanceof InternetProviderNetwork)) {
                 containsNetworks = true;
                 break;
@@ -176,10 +176,10 @@ public class NetworkFactory {
         backbone.parent = null;
         backbone.mapIcon = Assets.linearTextures.createSprite("backboneNetwork");
         backbone.mapIcon.setSize(100, 100);
-        backbone.backboneConnectionLines = new ArrayList<Sprite>();
+        backbone.backboneConnectionLines = new HashSet<Sprite>();
 
         boolean containsNetworks = false;
-        for (Network n : internet.getIpNetworkHashMap().values()) {
+        for (Network n : internet.getNetworkMap().values()) {
             if (!(n instanceof BackboneProviderNetwork || n instanceof InternetProviderNetwork)) {
                 containsNetworks = true;
                 break;

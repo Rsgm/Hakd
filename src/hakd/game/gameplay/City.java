@@ -7,8 +7,8 @@ import hakd.gui.Assets;
 import hakd.networks.Network;
 import hakd.other.Util;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 
 public class City {
     public static final int width = 150;
@@ -18,7 +18,7 @@ public class City {
     private final Sprite icon;
     private final String name;
     private final float density;
-    private final List<Network> networks;
+    private final Map<String, Network> networks;
 
     public City(Vector2 position) {
         this.position = position;
@@ -28,11 +28,11 @@ public class City {
 
         name = Util.ganerateCityName();
         density = (float) Noise.DENSITY.getValue(position.x, 0, position.y);
-        networks = new ArrayList<Network>();
+        networks = new HashMap<String, Network>();
     }
 
     public void addNetwork(Network n) {
-        networks.add(n);
+        networks.put(n.getIp(), n);
     }
 
     public void removeNetwork(Network n) {
@@ -60,7 +60,7 @@ public class City {
         return density;
     }
 
-    public List<Network> getNetworks() {
+    public Map<String, Network> getNetworks() {
         return networks;
     }
 }

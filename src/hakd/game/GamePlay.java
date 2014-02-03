@@ -13,6 +13,8 @@ import hakd.networks.Network;
 import hakd.networks.NetworkFactory;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
 
 public final class GamePlay {
@@ -20,8 +22,8 @@ public final class GamePlay {
     private Player player;
     private final GameScreen screen;
 
-    private final List<hakd.game.gameplay.Character> characterList;
-    private final List<City> cityList;
+    private final HashMap<String, Character> characterMap;
+    private final HashMap<String, City> cityMap;
 
     private Thread updateThread;
     private boolean active;
@@ -31,15 +33,14 @@ public final class GamePlay {
 
     public GamePlay(GameScreen screen, String name) {
         this.screen = screen;
-        cityList = new ArrayList<City>();
-        characterList = new ArrayList<Character>();
+        cityMap = new HashMap<String, City>();
+        characterMap = new HashMap<String, Character>();
 
         makeCities(1f, 4000);
         makeCities(.4f, 6000);
         makeCities(.2f, 8000);
 
-        internet = new Internet(cityList);
-        ((ArrayList) characterList).ensureCapacity(internet.getIpNetworkHashMap().size());
+        internet = new Internet(cityMap);
 
         makeCompanies();
         makeAgencies();
@@ -62,14 +63,16 @@ public final class GamePlay {
     }
 
     private void makePlayer(String name) {
-        City playerCity = cityList.get(0);
+        List<City> citiesSuffled = new ArrayList<City>(cityMap.values());
+        Collections.shuffle(citiesSuffled);
+        City playerCity = citiesSuffled.get(0); // I only initialize it because intellij yells at me
         List<InternetProviderNetwork> isps = new ArrayList<InternetProviderNetwork>(5);
 
-        for (int i = 0; i < cityList.size() * 4; i++) {
-            playerCity = cityList.get((int) (Math.random() * cityList.size()));
+        for (City c : citiesSuffled) {
+            playerCity = c;
 
             isps.clear();
-            for (Network n : playerCity.getNetworks()) {
+            for (Network n : playerCity.getNetworks().values()) {
                 if (n instanceof InternetProviderNetwork) {
                     isps.add((InternetProviderNetwork) n);
                 }
@@ -99,7 +102,7 @@ public final class GamePlay {
             public void run() {
                 lastTime = System.currentTimeMillis();
 
-                updateCharacterList();
+                updateCharacterMap();
                 while (active) {
                     timer += (System.currentTimeMillis() - lastTime) / 1000f;
                     try {
@@ -111,7 +114,7 @@ public final class GamePlay {
 
                     if (timer >= 3) {
                         timer = 0;
-                        updateCharacterList();
+                        updateCharacterMap();
                     }
 
                     update();
@@ -123,16 +126,16 @@ public final class GamePlay {
     }
 
     private void update() {
-        for (Character c : characterList) {
+        for (Character c : characterMap.values()) {
             c.update();
         }
     }
 
-    private void updateCharacterList() {
-        characterList.clear();
-        for (Network n : internet.getIpNetworkHashMap().values()) {
+    private void updateCharacterMap() {
+        characterMap.clear();
+        for (Network n : internet.getNetworkMap().values()) {
             Character c = n.getOwner();
-            characterList.add(c);
+            characterMap.put(c.getName(), c);
         }
     }
 
@@ -153,13 +156,14 @@ public final class GamePlay {
                     continue;
                 }
 
-                for (City c : cityList) {
+                for (City c : cityMap.values()) {
                     if (c.getPosition().dst(pos) < minDist) {
                         continue l;
                     }
                 }
 
-                cityList.add(new City(pos));
+                final City city = new City(pos);
+                cityMap.put(city.getName(), city);
             }
             Gdx.app.debug("Generating Cities", (float) y / density * 100 + "% done");
         }
@@ -181,8 +185,8 @@ public final class GamePlay {
         active = false;
     }
 
-    public List<City> getCityList() {
-        return cityList;
+    public HashMap<String, City> getCityMap() {
+        return cityMap;
     }
 
     public int getTutorialPos() {
@@ -209,7 +213,7 @@ public final class GamePlay {
         return player;
     }
 
-    public List<Character> getCharacterList() {
-        return characterList;
+    public HashMap<String, Character> getCharacterMap() {
+        return characterMap;
     }
 }

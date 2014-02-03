@@ -10,8 +10,9 @@ import hakd.game.gameplay.City;
 import hakd.gui.EmptyDeviceTile;
 import hakd.networks.devices.Device;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
 
 /**
  * A network represents a collection of devices.
@@ -29,9 +30,9 @@ public class Network {
     Network parent; // parent network
 
     // children device
-    final List<Device> devices = new ArrayList<Device>();
+    final Map<String, Device> devices = new HashMap<String, Device>();
     int deviceLimit; // The maximum allowable devices on the network, also the amount to generate is based on this value. This must be less than 255
-    List<EmptyDeviceTile> EmptyDeviceTiles;
+    Set<EmptyDeviceTile> EmptyDeviceTiles;
 
     // gui stuff
     Sprite mapIcon;
@@ -67,7 +68,7 @@ public class Network {
             return false;
         }
 
-        devices.add(device);
+        devices.put(device.getIp(), device);
 
         device.setIp(ip);
         device.setNetwork(this);
@@ -98,12 +99,7 @@ public class Network {
      * Finds the device with the given ip connected to the dns.
      */
     public final Device getDevice(String ip) {
-        for (Device d : devices) {
-            if (ip.equals(d.getIp())) {
-                return d;
-            }
-        }
-        return null;
+        return devices.get(ip);
     }
 
     void placeNetwork(float regionSize) {
@@ -141,16 +137,16 @@ public class Network {
                 continue;
             }
 
-            if (internet.getIpNetworkHashMap() == null || internet.getIpNetworkHashMap().isEmpty()) {
+            if (internet.getNetworkMap() == null || internet.getNetworkMap().isEmpty()) {
                 break;
             }
 
             int j = 0;
-            for (Network n : internet.getIpNetworkHashMap().values()) {
+            for (Network n : internet.getNetworkMap().values()) {
                 j++;
                 if (v.dst2(n.getMapIcon().getX(), n.getMapIcon().getY()) <= regionSize * regionSize && n != this) {
                     continue l1;
-                } else if (j >= internet.getIpNetworkHashMap().size()) {
+                } else if (j >= internet.getNetworkMap().size()) {
                     break l1;
                 }
             }
@@ -201,6 +197,7 @@ public class Network {
         Owner(String company) {
             this.company = company;
         }
+
     }
 
 
@@ -284,7 +281,7 @@ public class Network {
         this.parent = parent;
     }
 
-    public List<Device> getDevices() {
+    public Map<String, Device> getDevices() {
         return devices;
     }
 
@@ -296,11 +293,11 @@ public class Network {
         this.deviceLimit = deviceLimit;
     }
 
-    public List<EmptyDeviceTile> getEmptyDeviceTiles() {
+    public Set<EmptyDeviceTile> getEmptyDeviceTiles() {
         return EmptyDeviceTiles;
     }
 
-    public void setEmptyDeviceTiles(List<EmptyDeviceTile> emptyDeviceTiles) {
+    public void setEmptyDeviceTiles(Set<EmptyDeviceTile> emptyDeviceTiles) {
         EmptyDeviceTiles = emptyDeviceTiles;
     }
 

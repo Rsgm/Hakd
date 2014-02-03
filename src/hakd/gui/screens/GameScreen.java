@@ -23,7 +23,7 @@ import hakd.gui.windows.WindowStage;
 import hakd.networks.devices.Device;
 
 public final class GameScreen extends HakdScreen {
-    private Player player; // TODO Sometime make this an array and have other people in the game with different skills and personalities private int arraylist<npc> npcs = new arraylist<npc>(); maybe
+    private Player player;
 
     public static final float tileSize = 64;
 
@@ -90,7 +90,7 @@ public final class GameScreen extends HakdScreen {
         renderer.render();
 
         rBatch.begin();
-        for (Device d : player.getNetwork().getDevices()) {
+        for (Device d : player.getNetwork().getDevices().values()) {
             d.getTile().draw(rBatch);
         }
         for (EmptyDeviceTile e : player.getNetwork().getEmptyDeviceTiles()) {

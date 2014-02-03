@@ -23,8 +23,8 @@ import libnoiseforjava.util.ImageCafe;
 import libnoiseforjava.util.NoiseMap;
 import libnoiseforjava.util.RendererImage;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 public final class MapScreen extends HakdScreen {
     private final Internet internet;
@@ -35,13 +35,13 @@ public final class MapScreen extends HakdScreen {
 
     private final SpriteBatch territoryBatch;
 
-    private final List<Sprite> networkSprites;
-    private final List<Sprite> ispSprites;
-    private final List<Sprite> territorySprites;
-    private final List<Sprite> backboneSprites;
-    private final List<Sprite> connectionLineSprites;
-    private final List<Sprite> parentLineSprites;
-    private final List<Sprite> backboneLineSprites;
+    private final Set<Sprite> networkSprites;
+    private final Set<Sprite> ispSprites;
+    private final Set<Sprite> territorySprites;
+    private final Set<Sprite> backboneSprites;
+    private final Set<Sprite> connectionLineSprites;
+    private final Set<Sprite> parentLineSprites;
+    private final Set<Sprite> backboneLineSprites;
 
     private Texture land;
     private Texture density;
@@ -64,13 +64,13 @@ public final class MapScreen extends HakdScreen {
 
         territoryBatch = new SpriteBatch();
         territoryBatch.setShader(Assets.shaders.get(Assets.Shader.TERRITORY));
-        networkSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
-        ispSprites = new ArrayList<Sprite>(internet.getInternetProviderNetworks().size());
-        territorySprites = new ArrayList<Sprite>(internet.getInternetProviderNetworks().size());
-        backboneSprites = new ArrayList<Sprite>(internet.getBackboneProviderNetworks().size());
-        connectionLineSprites = new ArrayList<Sprite>(50);
-        parentLineSprites = new ArrayList<Sprite>(internet.getIpNetworkHashMap().size());
-        backboneLineSprites = new ArrayList<Sprite>(internet.getBackboneProviderNetworks().size());
+        networkSprites = new HashSet<Sprite>(internet.getNetworkMap().size());
+        ispSprites = new HashSet<Sprite>(internet.getInternetProviderNetworksMap().size());
+        territorySprites = new HashSet<Sprite>(internet.getInternetProviderNetworksMap().size());
+        backboneSprites = new HashSet<Sprite>(internet.getBackboneProviderNetworksMap().size());
+        connectionLineSprites = new HashSet<Sprite>(50);
+        parentLineSprites = new HashSet<Sprite>(internet.getNetworkMap().size());
+        backboneLineSprites = new HashSet<Sprite>(internet.getBackboneProviderNetworksMap().size());
 
         try {
             generateNoiseTexture(Noise.NoiseType.TERRAIN);
@@ -162,7 +162,7 @@ public final class MapScreen extends HakdScreen {
             s.draw(batch);
         }
 
-        for (City c : game.getGamePlay().getCityList()) {
+        for (City c : game.getGamePlay().getCityMap().values()) {
             c.getIcon().draw(batch);
             Assets.font.draw(batch, c.getName(), c.getPosition().x, c.getPosition().y + 80);
         }
@@ -178,7 +178,7 @@ public final class MapScreen extends HakdScreen {
         parentLineSprites.clear();
         backboneLineSprites.clear();
 
-        for (Network n : internet.getIpNetworkHashMap().values()) {
+        for (Network n : internet.getNetworkMap().values()) {
             if (n instanceof BackboneProviderNetwork) {
                 backboneSprites.add(n.getMapIcon());
                 backboneLineSprites.addAll(((BackboneProviderNetwork) n).getBackboneConnectionLines());
@@ -196,12 +196,12 @@ public final class MapScreen extends HakdScreen {
 
         }
 
-//        for (InternetProviderNetwork n : internet.getInternetProviderNetworks()) {
+//        for (InternetProviderNetwork n : internet.getInternetProviderNetworksMap()) {
 //            ispSprites.add(n.getMapIcon());
 //            parentLineSprites.add(n.getMapParentLine());
 //        }
 //
-//        for (Network n : internet.getBackboneProviderNetworks()) {
+//        for (Network n : internet.getBackboneProviderNetworksMap()) {
 //            backboneSprites.add(n.getMapIcon());
 //            backboneLineSprites.addAll(((BackboneProviderNetwork) n).getBackboneConnectionLines());
 //        }
