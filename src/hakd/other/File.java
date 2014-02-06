@@ -70,12 +70,7 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     }
 
     public File getFile(String fileName) {
-        for (File f : fileMap.values()) {
-            if (f.name.equals(fileName)) {
-                return f;
-            }
-        }
-        return null;
+        return fileMap.get(fileName);
     }
 
     public File getFileRecursive(String fileName) {
@@ -131,9 +126,8 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
         for (File f : file.getFileMap().values()) {
             if (f.isDirectory()) {
                 files.addAll(getRecursiveFileList(f));
-            } else {
-                files.add(f);
             }
+            files.add(f);
         }
 
         return files;
@@ -182,7 +176,10 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
     }
 
     public int getSize() {
-        return data.length() * 1024; // TODO is is probably more realistic to multiply by 100 instead
+        if (isDirectory) {
+            return 0;
+        }
+        return data.length() * 1024; // TODO is is probably more realistic to multiply by 100 instead, maybe 128
     }
 
     public String getName() {

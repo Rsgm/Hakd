@@ -13,6 +13,7 @@ import hakd.networks.devices.parts.Part.PartType;
 import hakd.other.File;
 import hakd.other.Util;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -242,8 +243,8 @@ public class Device implements Connectable {
         }
     }
 
-    public File getFile(String path) {
-        if (path.isEmpty() || !path.matches("^/.+?/$")) {
+    public File getFile(String path) throws FileNotFoundException {
+        if (path.isEmpty() || !path.matches("^/.*?$")) {
             return null;
         }
 
@@ -254,8 +255,8 @@ public class Device implements Connectable {
             File f = file.getFile(s);
             if (f != null) {
                 file = f;
-            } else {
-                return null;
+            } else if (!s.isEmpty()) {
+                throw new FileNotFoundException();
             }
         }
 

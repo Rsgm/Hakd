@@ -3,10 +3,15 @@ package hakd.game;
 import com.badlogic.gdx.Gdx;
 import hakd.gui.windows.deviceapps.Terminal;
 import hakd.networks.devices.Device;
+import hakd.other.coreutils.FileUtils;
+import hakd.other.coreutils.ShellUtils;
+import hakd.other.coreutils.TextUtils;
 import org.python.core.PyException;
 import org.python.util.PythonInterpreter;
 
 import java.io.FileNotFoundException;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,38 +36,15 @@ public final class Command {
     }
 
     private void run() {
-        String name = input.split(" ")[0];
         t = new Thread(new Runnable() {
 
             @Override
             public void run() {
-                List<List<String>> parameters = new ArrayList<List<String>>();
-                parameters.add(new ArrayList<String>());
-                parameters.get(0).add(";");
-
-                String s = input;
-
-                while (s.matches("\\s*[(?:\".*?\")|\\S+].*")) {
-                    if (s.startsWith(" ")) {
-                        s = s.replaceFirst("\\s+", "");
-                    }
-
-                    String inputTemp = s;
-                    s = s.replaceFirst("(?:\".*?\")|\\S+", "");
-                    int l = s.length();
-
-                    String next = inputTemp.substring(0, inputTemp.length() - l);
-                    if (next.equals("|") || next.equals("&&") || next.equals(";") || next.equals("||")) {
-                        piped = next.equals("|");
-                        parameters.add(new ArrayList<String>());
-                    }
-
-                    parameters.get(parameters.size() - 1).add(next);
-                }
+                List<List<String>> parameters = parameters();
 
                 Gdx.app.debug("Terminal Command", input + "   " + parameters.toString());
 
-                ArrayList returnedText = null;
+                ArrayList outputOfPreviousProgram = null;
                 boolean lastCommandFailed = false;
                 for (List<String> l : parameters) {
                     if (l.size() >= 2) {
@@ -70,29 +52,40 @@ public final class Command {
 
                         try {
                             if (operator.equals("|")) { // assumes successful
-                                returnedText = runPython(l, returnedText);
+                                outputOfPreviousProgram = runChooser(l, outputOfPreviousProgram);
                             } else if (operator.equals(";")) {
-                                returnedText = runPython(l, null);
+                                outputOfPreviousProgram = runChooser(l, null);
                             } else if (operator.equals("&&") && !lastCommandFailed) {
-                                returnedText = runPython(l, null);
+                                outputOfPreviousProgram = runChooser(l, null);
                             } else if (operator.equals("||") && lastCommandFailed) {
-                                returnedText = runPython(l, null);
+                                outputOfPreviousProgram = runChooser(l, null);
                             }
+                        } catch (IllegalAccessException e) {
+                            e.printStackTrace();
+                            lastCommandFailed = true;
+                        } catch (InvocationTargetException e) {
+                            e.printStackTrace();
+                            lastCommandFailed = true;
                         } catch (FileNotFoundException e) {
-                            Gdx.app.debug("Terminal Info", "FileNotFound");
+                            Gdx.app.debug("Terminal Info", e.getMessage(), e);
+                            terminal.addText("file not found");
                             lastCommandFailed = true;
                         } catch (PyException e) {
                             Gdx.app.error("Terminal Error", e.getMessage(), e);
                             lastCommandFailed = true;
                         }
 
-                        if (returnedText != null) {
-                            for (Object text : returnedText) {
+                        if (outputOfPreviousProgram != null) {
+                            for (final Object text : outputOfPreviousProgram) {
                                 if (text instanceof String) {
-                                    terminal.addText(s);
+                                    Gdx.app.postRunnable(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            terminal.addText((String) text);
+                                        }
+                                    });
                                 }
                             }
-
                         }
                     }
                 }
@@ -103,19 +96,56 @@ public final class Command {
         t.start();
     }
 
-    /**
-     * Stops the command. This uses the deprecated Thread.stop(), which means it
-     * will stop it no matter what. Normally this is very bad to do because it
-     * will be in the middle of something. This is realistic so I will leave it,
-     * there is also no better way.
-     */
-    @SuppressWarnings("deprecation")
-    public void stop() {
-        t.stop();
-        terminal.setCommand(null);
+    private List<List<String>> parameters() {
+        List<List<String>> parameters = new ArrayList<List<String>>();
+        parameters.add(new ArrayList<String>());
+        parameters.get(0).add(";");
+
+        String s = input;
+
+        while (s.matches("\\s*[(?:\".*?\")|\\S+].*")) {
+            if (s.startsWith(" ")) {
+                s = s.replaceFirst("\\s+", "");
+            }
+
+            String inputTemp = s;
+            s = s.replaceFirst("(?:\".*?\")|\\S+", "");
+            int l = s.length();
+
+            String next = inputTemp.substring(0, inputTemp.length() - l);
+            if (next.equals("|") || next.equals("&&") || next.equals(";") || next.equals("||")) {
+                piped = next.equals("|");
+                parameters.add(new ArrayList<String>());
+            }
+
+            parameters.get(parameters.size() - 1).add(next);
+        }
+
+        return parameters;
     }
 
-    private ArrayList runPython(List<String> parameters, ArrayList returnedText) throws FileNotFoundException {
+    private ArrayList runChooser(List<String> parameters, ArrayList pipedText) throws FileNotFoundException, InvocationTargetException, IllegalAccessException {
+        if (FileUtils.METHOD_MAP.containsKey(parameters.get(0))) {
+            FileUtils fileUtils = new FileUtils(terminal);
+            Method method = FileUtils.METHOD_MAP.get(parameters.get(0));
+            parameters.remove(0);
+            return (ArrayList) method.invoke(fileUtils, parameters);
+        } else if (TextUtils.METHOD_MAP.containsKey(parameters.get(0))) {
+            TextUtils textUtils = new TextUtils(terminal);
+            Method method = TextUtils.METHOD_MAP.get(parameters.get(0));
+            parameters.remove(0);
+            return (ArrayList) method.invoke(textUtils, parameters);
+        } else if (ShellUtils.METHOD_MAP.containsKey(parameters.get(0))) {
+            ShellUtils shellUtils = new ShellUtils(terminal);
+            Method method = ShellUtils.METHOD_MAP.get(parameters.get(0));
+            parameters.remove(0);
+            return (ArrayList) method.invoke(shellUtils, parameters);
+        } else {
+            return runPython(parameters, pipedText);
+        }
+    }
+
+    private ArrayList runPython(List<String> parameters, ArrayList pipedText) throws FileNotFoundException {
         PythonInterpreter pi = new PythonInterpreter();
 
         hakd.other.File file;
@@ -134,16 +164,29 @@ public final class Command {
 
         pi.set("terminal", terminal);
         pi.set("parameters", parameters);
-        pi.set("piped_text", returnedText);
+        pi.set("piped_text", pipedText);
+        pi.set("out", new ArrayList<String>());
 
 
         // there really is no good way of doing this
         // if (!checkPythonForCheats(file)) {
-        // return;
+        // return; // screw it, for now let them hack away
         // }
 
         pi.exec(file.getData());
-        return pi.get("returnText", ArrayList.class);
+        return pi.get("out", ArrayList.class);
+    }
+
+    /**
+     * Stops the command. This uses the deprecated Thread.stop(), which means it
+     * will stop it no matter what. Normally this is very bad to do because it
+     * will be in the middle of something. This is realistic so I will leave it,
+     * there is also no better way.
+     */
+    @SuppressWarnings("deprecation")
+    public void stop() {
+        t.stop();
+        terminal.setCommand(null);
     }
 
 }

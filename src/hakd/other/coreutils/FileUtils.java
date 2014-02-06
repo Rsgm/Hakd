@@ -1,8 +1,10 @@
-package hakd.other;
+package hakd.other.coreutils;
 
 import hakd.gui.windows.deviceapps.Terminal;
 import hakd.networks.devices.Device;
+import hakd.other.File;
 
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.util.*;
@@ -21,30 +23,30 @@ public class FileUtils {
     private Device device;
     private Terminal terminal;
 
-    static {
-        Map<String, Method> methodMap = new HashMap<String, Method>();
-        for (Method m : FileUtils.class.getMethods()) {
-            methodMap.put(m.getName(), m);
-        }
-        METHOD_MAP = Collections.unmodifiableMap(methodMap);
-    }
-
     public FileUtils(Terminal terminal) {
         this.terminal = terminal;
         this.device = terminal.getDevice();
     }
 
+    static {
+        Map<String, Method> methodMap = new HashMap<String, Method>();
+        for (Method m : FileUtils.class.getDeclaredMethods()) {
+            methodMap.put(m.getName(), m);
+        }
+        METHOD_MAP = Collections.unmodifiableMap(methodMap);
+    }
+
     /**
      * Finds the file with the given path on the server.
      */
-    private File getFile(String path) {
+    private File getFile(String path) throws FileNotFoundException {
         return device.getFile(path);
     }
 
     /**
      * Searches for files based on wildcards(*) in the given path.
      */
-    private List<File> getFilesStar(String path) throws IOException {
+    private List<File> getFilesStar(String path) throws FileNotFoundException {
         List<File> Files = new ArrayList<File>();
 
         if (path.contains("*")) {
@@ -60,10 +62,10 @@ public class FileUtils {
 
             File dir = getFile(dirPath);
             if (dir == null) {
-                throw new IOException("File not found");
+                throw new FileNotFoundException();
             }
             for (File f : dir.getFileMap().values()) { // search for files matching the regex name
-                if (f.name.matches(name)) {
+                if (f.getName().matches(name)) {
                     Files.add(f);
                 }
             }
@@ -88,12 +90,7 @@ public class FileUtils {
                 sourcePath = parameters.get(0);
                 targetPath = parameters.get(1);
             }
-        } else {
-            returnText.add("cp [-hor] sourcefile targetfile");
-            return returnText;
-        }
-
-        if (options.contains("h")) {
+        } else if (parameters.get(0).contains("h")) {
             returnText.add("cp [-hor] sourcefile targetfile");
             returnText.add("Copy the sourcefile to the target file");
             returnText.add("sourcefile is the file(s) or directory to be copied");
@@ -106,7 +103,12 @@ public class FileUtils {
             returnText.add("  -o   overwrites all matching files");
             returnText.add("  -r   recursively find sourcefiles in the sourcefile directory");
             return returnText;
-        } else if (sourcePath.isEmpty() || targetPath.isEmpty()) {
+        } else {
+            returnText.add("cp [-hor] sourcefile targetfile");
+            return returnText;
+        }
+
+        if (sourcePath.isEmpty() || targetPath.isEmpty()) {
             returnText.add("cp [-hor] sourcefile targetfile");
             return returnText;
         } else if (sourcePath.startsWith("./")) {
@@ -124,10 +126,21 @@ public class FileUtils {
 
         if (sourceFiles.size() == 1) {
             File sourceFile = sourceFiles.get(0);
-            if (sourceFile.isDirectory && !options.contains("r")) {
+
+            if (sourceFile.isDirectory() && !options.contains("r")) {
                 returnText.add("Please include -r to copy a directory");
                 return returnText;
-            } else if (targetFile.isDirectory) {
+            } else if (targetFile == null || !sourceFile.isDirectory()) {
+                File targetDirectory;
+                if (targetFile == null) {
+                    String targetDirectoryPath = sourcePath.substring(0, targetPath.lastIndexOf('\\'));
+                    targetDirectory = getFile(targetDirectoryPath);
+                } else {
+                    targetDirectory = targetFile.getParentDirectory();
+                    targetDirectory.removeFile(targetFile);
+                }
+                targetDirectory.addFile(sourceFile.copy());
+            } else if (targetFile.isDirectory()) {
                 if (targetFile.getFile(sourceFile.getName()) == null || options.contains("o")) {
                     targetFile.addFile(sourceFile.copy());
                     returnText.clear();
@@ -135,15 +148,11 @@ public class FileUtils {
                 } else {
                     throw new IOException("File already exists");
                 }
-            } else if (!sourceFile.isDirectory) {
-                File targetParent = targetFile.parentDirectory;
-                targetParent.removeFile(targetFile);
-                targetParent.addFile(sourceFile.copy());
             } else {
                 throw new IOException("Could not be copied");
             }
 
-        } else if (targetFile.isDirectory) {
+        } else if (targetFile.isDirectory()) {
             boolean notAllCopied = false;
 
             for (File f : sourceFiles) {
@@ -180,14 +189,14 @@ public class FileUtils {
         } else if (parameters.size() == 1) {
             if (parameters.get(0).contains("-")) {
                 options = parameters.get(0);
-                directoryPath = "";
+                directoryPath = terminal.getDirectory().getPath();
             } else {
                 options = "";
                 directoryPath = parameters.get(0);
             }
         } else {
             options = "";
-            directoryPath = "";
+            directoryPath = terminal.getDirectory().getPath();
         }
 
         if (options.contains("h")) {
@@ -213,38 +222,44 @@ public class FileUtils {
             directoryPath = terminal.getDirectory().getPath() + directoryPath.substring(2);
         }
 
-        File directory = getFile(directoryPath);
+        File directory = null;
+        try {
+            directory = getFile(directoryPath);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            return returnText;
+        }
         List<File> fileList;
 
         if (options.contains("R")) {
             fileList = directory.getRecursiveFileList(directory);
         } else {
-            fileList = (List<File>) directory.getFileMap().values();
+            fileList = new ArrayList<File>(directory.getFileMap().values());
         }
 
-        if (options.contains("f")) {
-            // don't sort if options contains "f", even if there are other sort options selected
-        } else if (options.contains("S")) { // sort by size
-            Collections.sort(fileList, new Comparator<File>() {
-                @Override
-                public int compare(File file, File file2) {
-                    return (file.getSize() + "").compareTo(file2.getSize() + ""); // this probably won't work numarically
-                }
-            });
-        } else if (options.contains("t")) { // sort by time
-            Collections.sort(fileList, new Comparator<File>() {
-                @Override
-                public int compare(File file, File file2) {
-                    return file.getTime().compareTo(file2.getTime());  // maybe sort by miliseconds
-                }
-            });
-        } else { // sort by name
-            Collections.sort(fileList, new Comparator<File>() {
-                @Override
-                public int compare(File file, File file2) {
-                    return file.toString().compareTo(file2.toString());
-                }
-            });
+        if (!options.contains("f")) {
+            if (options.contains("S")) { // sort by size
+                Collections.sort(fileList, new Comparator<File>() {
+                    @Override
+                    public int compare(File file, File file2) {
+                        return (file.getSize() + "").compareTo(file2.getSize() + ""); // this probably won't work numarically
+                    }
+                });
+            } else if (options.contains("t")) { // sort by time
+                Collections.sort(fileList, new Comparator<File>() {
+                    @Override
+                    public int compare(File file, File file2) {
+                        return file.getTime().compareTo(file2.getTime());  // maybe sort by miliseconds
+                    }
+                });
+            } else { // sort by name
+                Collections.sort(fileList, new Comparator<File>() {
+                    @Override
+                    public int compare(File file, File file2) {
+                        return file.toString().compareTo(file2.toString());
+                    }
+                });
+            }
         }
 
         if (options.contains("r")) {
