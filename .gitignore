@@ -11,3 +11,9 @@
 # Logs #
 ########
 *.log
+
+# Gradle files #
+################
+build/
+.gradle
+

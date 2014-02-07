@@ -1,0 +1,26 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'eclipse'
+apply plugin: 'idea'
+apply plugin: 'application'
+
+group = 'com.github.rsgm'
+version = '1.0.0-SNAPSHOT'
+description = 'Hacking game'
+
+repositories{
+  mavenCentral()
+}
+
+sourceSets.main.java.srcDirs ('src/hakd', 'lib/libnoiseforjava/src/libnoiseforjava')
+sourceSets.main.resources.srcDir ('src')
+
+dependencies {
+  compile 'com.badlogicgames.gdx:gdx:0.9.9'
+  compile 'com.badlogicgames.gdx:gdx-backend-lwjgl:0.9.9'
+  compile "com.badlogicgames.gdx:gdx-platform:0.9.9:natives-desktop"
+  compile 'org.python:jython:2.5.3'
+}
+
+mainClassName = "hakd.Main"
+
