@@ -24,15 +24,15 @@ Right after the game starts and the intro shows, click the screen to get to the 
 
 In the menu, type help for a list of commands. Type start [name] to start the game. The game world will begin to generate, but there is no graphics, so check the terminal. It should take a few seconds to a few minutes depending on your processor.
 
-Once the game starts:
-  Map:
+Once the game starts:  
+Map:
  * Tab to open the map, tab again to close it.
  * Click and drag to move.
  * Mouse wheel to zoom.
  * 1-(6 or 7, I forget) to view the other noise maps. Only 1 and 2 have data I think.
  * Left control to view the noise value at the cursor in the terminal.
 
-  Player room:
+Player room:
  * Arrow keys or asdw to move. The blue rectangle is the player(for now).
  * Mouse wheel to zoom.
  * Space when near a desk to buy a computer. Space near a computer to open it.
