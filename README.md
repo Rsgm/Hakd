@@ -16,6 +16,33 @@ Hakd is a game about hacking, with a realistic, simulated, and procedurally gene
  * [The old 3d Internet map](https://pbs.twimg.com/media/BSP9-SxCMAALpyk.png:large) - I went away from this because it was tougher to make it look nice. I have been considering making a 2d map on a 3d sphere for the map.
 
 
+###Instructions
+
+I reccomend starting this in a terminal so you can see what is happening, and if there are any errors.
+
+Right after the game starts and the intro shows, click the screen to get to the menu(do this quickly). If you do not, then a bug will crash the game after a few seconds of the spining circle, instead of going to the menu automatically. I know this sounds crazy, but if you just watch it run, you will understand.
+
+In the menu, type help for a list of commands. Type start [name] to start the game. The game world will begin to generate, but there is no graphics, so check the terminal. It should take a few seconds to a few minutes depending on your processor.
+
+Once the game starts:
+  Map:
+ * Tab to open the map, tab again to close it.
+ * Click and drag to move.
+ * Mouse wheel to zoom.
+ * 1-(6 or 7, I forget) to view the other noise maps. Only 1 and 2 have data I think.
+ * Left control to view the noise value at the cursor in the terminal.
+
+  Player room:
+ * Arrow keys or asdw to move. The blue rectangle is the player(for now).
+ * Mouse wheel to zoom.
+ * Space when near a desk to buy a computer. Space near a computer to open it.
+ * Click and drag the app icons to move them. Please don't move them off the screen, you will not get them back.
+ * Click the app icon to open the app.
+ * Drag the title bar on the app window to move it. Moving it outside of the screen will snap it back inside.
+
+I think those are all, but I could be wrong. Check the input processors(menu, map, and game) in .../gui/input/ if you want.
+
+
 ###Game world
 
 The game world consists of thousands of networks all connected to the central Internet. The Internet and the rest of the world is randomly/procedurally generated down to the cpu speed on a server.  
