@@ -4,7 +4,7 @@ Hakd is a single player game about hacking, with a realistic, simulated, and pro
  * Completely open world, you can hack into/mess with any server on any network you can find.
  * The player controls a server farm. For the end game, think of google's or the nsa's data center. (not that I have seen either in person)
 
-[My to-do list.](https://trello.com/b/aPgl1zpo/hak-d) This also has some of my ideas.
+[My to-do list.](https://trello.com/b/aPgl1zpo/hak-d) This also has some of my ideas. (This is out of date)
 
 
 ###Pictures
@@ -22,9 +22,7 @@ To run:
  * Download the latest release.
  * Extract the Hakd/ folder in the zip archive anywhere.
  * Run either Hakd/bin/Hakd(Linux/Mac) or Hakd/bin/Hakd.bat(Windows) depending on your OS.
- * Optionally, run the file in
-
-I reccomend starting this in a terminal so you can see what is happening, and if there are any errors.
+ * Optionally, run the file in command prompt or a terminal so you can see what is happening, and if there are any errors.
 
 Right after the game starts and the intro shows, click the screen to get to the menu(do this quickly). If you do not, then a bug will crash the game after a few seconds of the spining circle, instead of going to the menu automatically. I know this sounds crazy, but if you just watch it run, you will understand.
 
