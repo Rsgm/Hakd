@@ -31,13 +31,13 @@ task packageHakd(dependsOn: "installApp", type: Zip) {
             from 'README.md'
             from 'LICENSE.md'
             into('docs/') {
-                 from 'docs/'
+                from 'docs/'
             }
         }
 
-        into('bin/res/python/') { // put all files that gdx can't handle here
-            from 'build/resources/main/python/'
-            from 'build/resources/main/textfiles/'
+        into('bin/res/') { // put all files that gdx can't handle here
+            into('python/') { from 'build/resources/main/python/' }
+            into('textfiles/') { from 'build/resources/main/textfiles/' }
         }
     }
 }
