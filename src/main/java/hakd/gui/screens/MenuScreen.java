@@ -109,7 +109,7 @@ public final class MenuScreen extends HakdScreen {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
                 if (keycode == Input.Keys.ENTER && !commandRunning) {
-                    display.setText(display.getText() + "\n\n" + System.getProperty("user.name") + " @ 127.0.0.1" + " : ~" + "\n>" + input.getText());
+                    display.setText(display.getText() + "\n\n" + System.getProperty("user.name") + " @ 127.0.0.1" + " : ~" + "\n$ " + input.getText());
                     history.add(input.getText());
                     Command(input.getText());
                     commandRunning = true;

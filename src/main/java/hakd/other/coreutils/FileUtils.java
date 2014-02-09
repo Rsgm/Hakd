@@ -74,6 +74,36 @@ public class FileUtils {
         return Files;
     }
 
+    private List<File> getPathFileList(String path) {
+        String[] pathArray = path.split("/");
+        List<File> fileList = new ArrayList<File>();
+        fileList.add(device.getRoot());
+
+        for (String fileName : pathArray) {
+            File file = fileList.get(fileList.size() - 1).getFile(fileName);
+            if (file == null) {
+                break;
+            } else if (file.isDirectory()) {
+                fileList.add(file);
+            }
+        }
+
+        return fileList;
+    }
+
+    private List<String> getPathStringList(String path) {
+        String[] pathArray = path.split("/");
+        List<String> pathList = new ArrayList<String>();
+        pathList.add("/");
+
+        for (String fileName : pathArray) {
+            String filePath = pathList.get(pathList.size() - 1) + fileName + "/";
+            pathList.add(filePath);
+        }
+
+        return pathList;
+    }
+
     public List<String> cp(List<String> parameters) throws IOException {
         List<String> returnText = new ArrayList<String>();
 
@@ -201,8 +231,7 @@ public class FileUtils {
 
         if (options.contains("h")) {
             returnText.add("ls [-fhlmpQRrSt] [directory]");
-            returnText.add("Copy the sourcefile to the target file");
-            returnText.add("Directory is the directory to list files in");
+            returnText.add("List the files in the directory");
             returnText.add("");
             returnText.add("Options:");
             returnText.add("  -f   do not sort the files, default sorts alphabetically");
@@ -299,4 +328,72 @@ public class FileUtils {
 
         return returnText;
     }
+
+    public List<String> mkdir(List<String> parameters) {
+        List<String> returnText = new ArrayList<String>();
+
+        String options = "";
+        String directoryPath = "";
+        if (parameters.size() >= 2) {
+            options = parameters.get(0);
+            directoryPath = parameters.get(1);
+        } else if (parameters.size() == 1) {
+            directoryPath = parameters.get(0);
+        }
+
+        if (options.contains("h")) {
+            returnText.add("mkdir [-pv] [directory]");
+            returnText.add("Creates a directory at the given path");
+            returnText.add("");
+            returnText.add("Options:");
+            returnText.add("  -p   will also create all directories leading up to the given directory that do not exist already. If the given directory already exists, ignore the error.");
+            returnText.add("  -v   display each directory that mkdir creates, most often used with -p");
+            return returnText;
+        } else if (directoryPath.isEmpty()) {
+            returnText.add("mkdir [-pv] [directory]");
+            return returnText;
+        } else if (directoryPath.startsWith("./")) { //|| !directoryPath.startsWith("/")) {
+            directoryPath = terminal.getDirectory().getPath() + directoryPath.substring(2);
+        }
+
+        String name;
+        if (options.contains("p")) {
+            List<String> pathList = getPathStringList(directoryPath);
+
+            File lastFile = device.getRoot();
+            for (String dir : pathList) {
+                try {
+                    lastFile = device.getFile(dir);
+                } catch (FileNotFoundException e) {
+                    // expected
+
+                    String[] names = dir.split("/");
+                    name = names[names.length - 1];
+
+                    File file = new File(name, null);
+                    lastFile.addFile(file);
+                    lastFile = file;
+                    if (options.contains("v")) {
+                        returnText.add(file.getPath());
+                    }
+                }
+            }
+
+        } else {
+            String[] names = directoryPath.split("/");
+            name = names[names.length - 1];
+
+            List<File> fileList = getPathFileList(directoryPath);
+            File dir = fileList.get(fileList.size() - 1);
+            File file = new File(name, null);
+            dir.addFile(file);
+
+            if (options.contains("v") && dir.getFileMap().containsValue(file)) {
+                returnText.add(file.getPath());
+            }
+        }
+
+        return returnText;
+    }
+
 }

@@ -1,0 +1,9 @@
+@name:Properties.init
+DisplayWidth=5760
+DisplayHeight=1080
+RefreshRate=120
+MultiSampleType=2
+VSync=1
+EnvironmentQuality=2
+TextureQuality=3
+ShadowQuality=3

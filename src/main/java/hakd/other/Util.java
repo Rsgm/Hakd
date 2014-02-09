@@ -8,10 +8,12 @@ import java.io.File;
 import java.util.*;
 
 public final class Util {
-    public static final Map<String, File> TEXT_FILES; // this allows text to be mod friendly, because you don't have to change this class
+    public static final Map<String, Map<String, File>> TEXT_FILES; // this allows text to be mod friendly, because you don't have to change this class
     public static final Map<String, File> PROGRAMS; // this allows text to be mod friendly, because you don't have to change this class
 
     public static final File RESOURCES;
+
+    private static final int MAX_FILE_NUMBER = 1000;
 
     static {
         if (new File("src/main/resources/").exists()) {
@@ -20,14 +22,25 @@ public final class Util {
             RESOURCES = new File("res/");
         }
 
-        System.out.println(RESOURCES.getPath());
-
-        Map<String, File> textFileMap = new HashMap<String, File>();
-        File[] textFileList = new File(RESOURCES.getPath() + "/textfiles/tutorial/").listFiles();
+        // this may take longer to load if there are a lot of files, but it is worth not having to iterate through a directory more than once
+        Map<String, Map<String, File>> textFileMap = new HashMap<String, Map<String, File>>();
+        File[] textFileList = new File(RESOURCES.getPath() + "/textfiles/").listFiles();
         if (textFileList != null) {
-            for (File f : textFileList) {
-                if (f.isDirectory()) {
-                    textFileMap.put(f.getName(), new File(f.getPath()));
+            for (File d : textFileList) {
+                if (d.isDirectory()) {
+
+                    HashMap<String, File> fileHashMap = new HashMap<String, File>();
+
+                    File[] files = d.listFiles();
+                    if (files != null) {
+                        for (File f : files) {
+                            if (!f.isDirectory()) {
+                                fileHashMap.put(f.getName(), new File(f.getPath()));
+                            }
+                        }
+                    }
+
+                    textFileMap.put(d.getName(), fileHashMap);
                 }
             }
         }
@@ -127,24 +140,17 @@ public final class Util {
         return pi.get("name").toString();
     }
 
-    public static String getFileData(String directory, String fileName) {
+    public static hakd.other.File getFileData(String directory, String fileName) throws FileNotFoundException {
+        String name = "";
         String data = "";
         BufferedReader reader;
-        File file = null;
-        File dir = TEXT_FILES.get(directory);
-
-        file = TEXT_FILES.get(fileName);
+        File file = TEXT_FILES.get(directory).get(fileName);
 
         if (file == null) {
-            return ""; // I should probably throw an error here
+            throw new FileNotFoundException();
         }
 
-        try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return "";
-        }
+        reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
 
         String s;
         while (true) {
@@ -157,11 +163,15 @@ public final class Util {
 
             if (s == null) {
                 break;
+            } else if (s.startsWith("@name:")) {
+                name = s.substring(6);
+                int index = name.lastIndexOf('.');
+                name = name.substring(0, index) + "_" + (int) (Math.random() * MAX_FILE_NUMBER) + name.substring(index);
             }
             data += s + "\n";
         }
 
-        return data;
+        return new hakd.other.File(name, data);
     }
 
 

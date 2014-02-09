@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public final class File { // TODO file hashes! maybe just run an md5 hash on the java object hashcode, or just convert a random int/short to hex
-    String name;
+    private String name;
     String data;
     File parentDirectory;
     // final String owner;
@@ -21,7 +21,7 @@ public final class File { // TODO file hashes! maybe just run an md5 hash on the
 
 
     public File(String name, String data) {
-        this.name = name;
+        setName(name);
         this.data = data;
 
         if (data == null) {

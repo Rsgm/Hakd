@@ -67,7 +67,7 @@ public class Device implements Connectable {
 
         try {
             for (int i = 0; i < 3; i++) {
-                home.addFile(new File("bash " + (int) (Math.random() * 8) + ".txt", Util.getFileData("bash", (int) (Math.random() * 8) + "")));
+                home.addFile(Util.getFileData("bash", (int) (Math.random() * 9) + ""));
             }
 
             for (java.io.File f : Util.PROGRAMS.values()) {
