@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/hakd.iml" filepath="$PROJECT_DIR$/hakd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Hakd.iml" filepath="$PROJECT_DIR$/Hakd.iml" />
     </modules>
   </component>
 </project>
