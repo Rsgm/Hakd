@@ -1,5 +1,5 @@
 #Hakd
-Hakd is a game about hacking, with a realistic, simulated, and procedurally generated internet. This game simulates an entire internet for you to explore and mess around with all you want, legally.
+Hakd is a single player game about hacking, with a realistic, simulated, and procedurally generated internet. This game simulates an entire internet for you to explore and mess around with all you want, legally.
  * Procedurally generated Internet(at game start, random seed) with thousands of networks to hack.
  * Completely open world, you can hack into/mess with any server on any network you can find.
  * The player controls a server farm. For the end game, think of google's or the nsa's data center. (not that I have seen either in person)
@@ -18,11 +18,16 @@ Hakd is a game about hacking, with a realistic, simulated, and procedurally gene
 
 ###Instructions
 
+To run:
+ * Extract the Hakd/ folder in the zip archive anywhere.
+ * Run either Hakd/bin/Hakd(Linux/Mac) or Hakd/bin/Hakd.bat(Windows) depending on your OS.
+ * Optionally, run the file in
+
 I reccomend starting this in a terminal so you can see what is happening, and if there are any errors.
 
 Right after the game starts and the intro shows, click the screen to get to the menu(do this quickly). If you do not, then a bug will crash the game after a few seconds of the spining circle, instead of going to the menu automatically. I know this sounds crazy, but if you just watch it run, you will understand.
 
-In the menu, type help for a list of commands. Type start [name] to start the game. The game world will begin to generate, but there is no graphics, so check the terminal. It should take a few seconds to a few minutes depending on your processor.
+In the menu, type 'help.py' for a list of commands. Type start [name] to start the game. The game world will begin to generate, but there is no graphics, so check the terminal. It should take a few seconds to a few minutes depending on your processor.
 
 Once the game starts:  
 Map:
@@ -39,6 +44,13 @@ Player room:
  * Click and drag the app icons to move them. Please don't move them off the screen, you will not get them back.
  * Click the app icon to open the app.
  * Drag the title bar on the app window to move it. Moving it outside of the screen will snap it back inside.
+
+Terminal:
+ * Tab completion, can be used in some places. This can causecrashes if used with special characters like quotes.
+ * 'help.py' to see a list of programs.
+ * Programs must have .py at the end.
+ * The file system is like the unix filesystem. Use 'ls' to list files and folders, and 'ls -h' for help.
+ * Press control-c to stop a program. Warning, this is very dangerous because it does not tell the program it is stopping it.
 
 I think those are all, but I could be wrong. Check the input processors(menu, map, and game) in .../gui/input/ if you want.
 
@@ -64,25 +76,30 @@ If you are this far down, then you know about the player written hacking program
 The internet is made up of networks, Backbones and ISPsThe Internet structure lets Internet Backbones and Internet Service Providers handle smaller networks and their data. All networks connect to regional ISPs. ISPs connect to Backbones to have access to other regions and their ISPs and networks.
 
 Network hierarchy:
+```
+              Network
+                 V
+     __________Server___________
+     V            V            V
+FileSystem     Terminal      Parts -> | - CPU
+                                      | - GPU
+                                      | - Memory
+                                      | - Storage
+```
 
-                 Network
-                    V
-        __________Server___________
-        V            V            V
-    FileSystem     Terminal      Parts -> | - CPU
-                                          | - GPU
-                                          | - Memory
-                                          | - Storage
 
+###Compiling and Building Hakd
 
+For Linux and Mac, run this in the terminal:(I have not tested on mac yet):
+```
+./gradlew
+./gradlew packageHakd
+```
 
-###Required libraries
- - [libgdx](http://libgdx.badlogicgames.com/) [under lib/libgdx/]
-   * gdx.jar
-   * gdx-backend-lwjgl.jar
-   * gdx-backend-lwjgl-natives.jar
-   * gdx-natives.jar
-   * gdx-freetype.jar
-   * gdx-freetype-natives.jar
+For Windows, run this in command prompt:
+```
+./gradlew.bat
+./gradlew.bat packageHakd
+```
 
-* [Jython](http://www.jython.org/) - jython-standalone-2.7-b1.jar
+A packaged Hakd-(version).zip will be placed in /build/distributions/. This is can be used/released without any modification.

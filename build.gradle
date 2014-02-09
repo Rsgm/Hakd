@@ -4,23 +4,54 @@ apply plugin: 'eclipse'
 apply plugin: 'idea'
 apply plugin: 'application'
 
-group = 'com.github.rsgm'
-version = '1.0.0-SNAPSHOT'
-description = 'Hacking game'
+mainClassName = "hakd.Main"
 
-repositories{
-  mavenCentral()
+group = 'com.github.rsgm'
+description = 'Hacking game'
+version = '0.0.0'
+jar.manifest {
+    attributes 'Title': 'Hak\'d', 'Version': version
 }
 
-sourceSets.main.java.srcDirs ('src/hakd', 'lib/libnoiseforjava/src/libnoiseforjava')
-sourceSets.main.resources.srcDir ('src')
+sourceSets {
+    main {
+        java.srcDirs 'src/main/java/'
+        resources.srcDirs 'src/main/resources/', 'src/test/resources/'
+    }
+}
+
+
+task packageHakd(dependsOn: "installApp", type: Zip) {
+    description = 'Packages the install directory to a zip'
+    archiveName = "Hakd-${version}.zip"
+    into('Hakd/') {
+        from 'build/install/Hakd/'
+
+        into('bin') {
+            from 'README.md'
+            from 'LICENSE.md'
+            into('docs/') {
+                 from 'docs/'
+            }
+        }
+
+        into('bin/res/python/') { // put all files that gdx can't handle here
+            from 'build/resources/main/python/'
+            from 'build/resources/main/textfiles/'
+        }
+    }
+}
+
+
+
+repositories {
+    mavenCentral()
+}
 
 dependencies {
-  compile 'com.badlogicgames.gdx:gdx:0.9.9'
-  compile 'com.badlogicgames.gdx:gdx-backend-lwjgl:0.9.9'
-  compile "com.badlogicgames.gdx:gdx-platform:0.9.9:natives-desktop"
-  compile 'org.python:jython:2.5.3'
+    compile 'com.badlogicgames.gdx:gdx:0.9.9'
+    compile 'com.badlogicgames.gdx:gdx-backend-lwjgl:0.9.9'
+    compile "com.badlogicgames.gdx:gdx-platform:0.9.9:natives-desktop"
+    compile 'org.python:jython-standalone:2.7-b1'
 }
-
-mainClassName = "hakd.Main"
 
