@@ -8,7 +8,7 @@ mainClassName = "hakd.Main"
 
 group = 'com.github.rsgm'
 description = 'Hacking game'
-version = '0.0.0'
+version = '0.0.1'
 jar.manifest {
     attributes 'Title': 'Hak\'d', 'Version': version
 }
