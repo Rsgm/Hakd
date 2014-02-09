@@ -68,7 +68,7 @@ public class Network {
             return false;
         }
 
-        devices.put(device.getIp(), device);
+        devices.put(ip, device);
 
         device.setIp(ip);
         device.setNetwork(this);
@@ -78,7 +78,7 @@ public class Network {
     /**
      * Assigns an ip to a device. Note: This will return null if there are 255
      */
-    private final String assignIp() {
+    private String assignIp() {
         short[] deviceIp = null;
         short[] ip = Internet.ipFromString(this.ip);
 
