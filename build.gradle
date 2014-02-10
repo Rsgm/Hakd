@@ -8,9 +8,13 @@ mainClassName = "hakd.Main"
 
 group = 'com.github.rsgm'
 description = 'Hacking game'
-version = '0.0.1'
-jar.manifest {
-    attributes 'Title': 'Hak\'d', 'Version': version
+version = '0.0.3'
+targetCompatibility = 1.6
+
+jar {
+    manifest {
+        attributes('Title': 'Hak\'d', 'Version': version)
+    }
 }
 
 sourceSets {

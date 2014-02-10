@@ -40,6 +40,5 @@ public final class DesktopAppIcon extends ImageButton {
             }
         });
         setSize(30, 30);
-        setPosition(20, 20);
     }
 }

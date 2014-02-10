@@ -62,13 +62,10 @@ public final class ServerWindowStage implements WindowStage {
             info = new Info(this);
             shutdown = new Shutdown(this);
 
-            desktop = new Desktop(this); // has to be last, this creates the
-            // DesktopAppIcons
+            desktop = new Desktop(this); // has to be last, this creates the DesktopAppIcons
         }
 
-        desktop.open(); // default screen when you open the
-        // server, I may change it to a login or
-        // startup screen
+        desktop.open(); // default screen when you open the server, I may change it to a login or startup screen
     }
 
     @Override
