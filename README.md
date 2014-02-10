@@ -19,7 +19,7 @@ Hakd is a single player game about hacking, with a realistic, simulated, and pro
 ###Instructions
 
 To run:
- * Download the latest release.
+ * [Download the latest release.](https://github.com/Rsgm/Hakd/releases)
  * Extract the Hakd/ folder in the zip archive anywhere.
  * Run either Hakd/bin/Hakd(Linux/Mac) or Hakd/bin/Hakd.bat(Windows) depending on your OS.
  * Optionally, run the file in command prompt or a terminal so you can see what is happening, and if there are any errors.
