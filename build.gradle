@@ -9,6 +9,7 @@ mainClassName = "hakd.Main"
 group = 'com.github.rsgm'
 description = 'Hacking game'
 version = '0.0.3'
+ext.gdxVersion = "1.0-SNAPSHOT";
 targetCompatibility = 1.6
 
 jar {
@@ -50,12 +51,13 @@ task packageHakd(dependsOn: "installApp", type: Zip) {
 
 repositories {
     mavenCentral()
+    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
 }
 
 dependencies {
-    compile 'com.badlogicgames.gdx:gdx:0.9.9'
-    compile 'com.badlogicgames.gdx:gdx-backend-lwjgl:0.9.9'
-    compile "com.badlogicgames.gdx:gdx-platform:0.9.9:natives-desktop"
-    compile 'org.python:jython-standalone:2.7-b1'
+    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+    compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+    compile "org.python:jython-standalone:2.7-b1"
 }
 
