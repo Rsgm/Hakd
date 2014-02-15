@@ -41,7 +41,7 @@ public final class TitleScreen extends HakdScreen {
 
     @Override
     public void show() {
-        // game.setScreen(new MenuScreen(game)); // uncomment to skip title
+        game.setScreen(new MenuScreen(game)); // uncomment to skip title
 
         font = Assets.consoleFont;
         creditFont = Assets.font;
@@ -147,6 +147,9 @@ public final class TitleScreen extends HakdScreen {
     @Override
     public void dispose() {
         super.dispose();
-        keyClick.dispose();
+
+        if (keyClick != null) {
+            keyClick.dispose();
+        }
     }
 }

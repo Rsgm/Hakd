@@ -24,9 +24,7 @@ To run:
  * Run either Hakd/bin/Hakd(Linux/Mac) or Hakd/bin/Hakd.bat(Windows) depending on your OS.
  * Optionally, run the file in command prompt or a terminal so you can see what is happening, and if there are any errors.
 
-Right after the game starts and the intro shows, click the screen to get to the menu(do this quickly). If you do not, then a bug will crash the game after a few seconds of the spining circle, instead of going to the menu automatically. I know this sounds crazy, but if you just watch it run, you will understand.
-
-In the menu, type 'help.py' for a list of commands. Type start [name] to start the game. The game world will begin to generate, but there is no graphics, so check the terminal. It should take a few seconds to a few minutes depending on your processor.
+In the menu, type 'help' for a list of commands. Type start [name] to start the game. The game world will begin to generate, but there is no graphics, so check the terminal. It should take a few seconds to a few minutes depending on your processor.
 
 Once the game starts:  
 Map:
