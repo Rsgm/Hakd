@@ -14,7 +14,7 @@ import hakd.networks.Network;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.DeviceFactory;
 
-public final class BuyDeviceWindow implements Scene {
+public final class BuyDeviceScene implements Scene {
     private GameScreen screen;
     private final Stage stage;
 
@@ -22,7 +22,7 @@ public final class BuyDeviceWindow implements Scene {
     private final ScrollPane scroll;
     private final Table table;
 
-    public BuyDeviceWindow(Network network, int amountToShow, int level, Device.DeviceType typeToBuy, EmptyDeviceTile o) {
+    public BuyDeviceScene(Network network, int amountToShow, int level, Device.DeviceType typeToBuy, EmptyDeviceTile o) {
         Skin skin = Assets.skin;
 
         stage = new Stage();

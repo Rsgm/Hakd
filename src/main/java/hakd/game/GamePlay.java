@@ -7,7 +7,6 @@ import hakd.game.gameplay.City;
 import hakd.game.gameplay.Player;
 import hakd.gui.screens.GameScreen;
 import hakd.gui.screens.MapScreen;
-import hakd.gui.windows.TutorialWindow;
 import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
 import hakd.networks.NetworkFactory;
@@ -176,9 +175,7 @@ public final class GamePlay {
         }
 
         tutorialPos++;
-        TutorialWindow t = new TutorialWindow(tutorialPos);
-
-        t.open();
+        // tutorial code
     }
 
     public void dispose() {

@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import hakd.gui.Assets;
 import hakd.gui.EmptyDeviceTile;
-import hakd.gui.windows.BuyDeviceWindow;
+import hakd.gui.windows.BuyDeviceScene;
 import hakd.gui.windows.deviceapps.GameScene;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
@@ -15,10 +15,10 @@ public final class BuyDeviceButton extends TextButton {
     private final Network network;
     private final Device newDevice;
 
-    private final BuyDeviceWindow newDeviceWindow;
+    private final BuyDeviceScene newDeviceWindow;
     private final EmptyDeviceTile emptyDeviceTile;
 
-    public BuyDeviceButton(Network network, final BuyDeviceWindow newDeviceWindow, Skin skin, Device newDevice, EmptyDeviceTile emptyDeviceTile) {
+    public BuyDeviceButton(Network network, final BuyDeviceScene newDeviceWindow, Skin skin, Device newDevice, EmptyDeviceTile emptyDeviceTile) {
         super("buy", skin);
 
         this.network = network;

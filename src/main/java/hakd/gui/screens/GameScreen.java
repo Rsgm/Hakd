@@ -18,7 +18,7 @@ import hakd.gui.EmptyDeviceTile;
 import hakd.gui.Room;
 import hakd.gui.Room.RoomMap;
 import hakd.gui.input.GameInput;
-import hakd.gui.windows.BuyDeviceWindow;
+import hakd.gui.windows.BuyDeviceScene;
 import hakd.gui.windows.Scene;
 import hakd.networks.devices.Device;
 
@@ -134,7 +134,7 @@ public final class GameScreen extends HakdScreen {
             if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
 
                 if (o instanceof EmptyDeviceTile) {
-                    openWindow = new BuyDeviceWindow(player.getNetwork(), 4, 0, Device.DeviceType.SERVER, (EmptyDeviceTile) o);
+                    openWindow = new BuyDeviceScene(player.getNetwork(), 4, 0, Device.DeviceType.SERVER, (EmptyDeviceTile) o);
                     openWindow.setScreen(this);
                     openWindow.open();
                 } else if (o instanceof Device) {
