@@ -9,7 +9,7 @@ import java.util.*;
 
 public final class Util {
     public static final Map<String, Map<String, File>> TEXT_FILES; // this allows text to be mod friendly, because you don't have to change this class
-    public static final Map<String, File> PROGRAMS; // this allows text to be mod friendly, because you don't have to change this class
+    public static final Map<String, String> PROGRAMS; // this allows text to be mod friendly, because you don't have to change this class
 
     public static final File RESOURCES;
 
@@ -46,13 +46,27 @@ public final class Util {
         }
         TEXT_FILES = Collections.unmodifiableMap(textFileMap);
 
-        Map<String, File> programs = new HashMap<String, File>();
+        Map<String, String> programs = new HashMap<String, String>();
         for (File f : listFiles(new File(RESOURCES.getPath() + "/python/programs/"))) {
             if (!f.isDirectory()) {
-                programs.put(f.getName(), f);
+                String data = "";
+
+                BufferedReader reader;
+                try {
+                    reader = new BufferedReader(new InputStreamReader(new FileInputStream(f)));
+                    while (true) {
+                        String s = reader.readLine();
+                        if (s == null) {
+                            break;
+                        }
+                        data += s + "\n";
+                    }
+                    programs.put(f.getName().substring(0, f.getName().length() - 3), data);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
             }
         }
-
         PROGRAMS = Collections.unmodifiableMap(programs);
     }
 
@@ -167,51 +181,12 @@ public final class Util {
                 name = s.substring(6);
                 int index = name.lastIndexOf('.');
                 name = name.substring(0, index) + "_" + (int) (Math.random() * MAX_FILE_NUMBER) + name.substring(index);
+            } else {
+                data += s + "\n";
             }
-            data += s + "\n";
         }
 
         return new hakd.other.File(name, data);
-    }
-
-
-    public static String getProgramData(String name) {
-        List<File> fileList = listFiles(new File(RESOURCES.getPath() + "/python/programs/"));
-        File file = null;
-
-        for (File f : fileList) {
-            if (f.getName().equals(name)) {
-                file = f;
-                break;
-            }
-        }
-
-        if (file == null) {
-            return "";
-        }
-
-        String data = "";
-        BufferedReader reader;
-        try {
-            reader = new BufferedReader(new InputStreamReader(new FileInputStream(file)));
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-            return "";
-        }
-
-        try {
-            while (true) {
-                String s = reader.readLine();
-                if (s == null) {
-                    break;
-                }
-                data += s + "\n";
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return data;
     }
 
     /**

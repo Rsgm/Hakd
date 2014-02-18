@@ -3,12 +3,12 @@ package hakd.game.gameplay;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.gui.Assets;
 import hakd.gui.screens.GameScreen;
-import hakd.gui.windows.deviceapps.ServerWindowStage;
+import hakd.gui.windows.deviceapps.GameScene;
 import hakd.networks.Network;
 import hakd.other.Util;
 
 public final class Player extends Character {
-    private ServerWindowStage openWindow;
+    private GameScene openWindow;
     private final GameScreen screen;
     private Sprite sprite;
     private int isoX;
@@ -48,11 +48,11 @@ public final class Player extends Character {
         return name;
     }
 
-    public ServerWindowStage getOpenWindow() {
+    public GameScene getOpenWindow() {
         return openWindow;
     }
 
-    public void setOpenWindow(ServerWindowStage openWindow) {
+    public void setOpenWindow(GameScene openWindow) {
         this.openWindow = openWindow;
     }
 

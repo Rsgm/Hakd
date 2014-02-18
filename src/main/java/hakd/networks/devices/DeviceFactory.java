@@ -1,6 +1,6 @@
 package hakd.networks.devices;
 
-import hakd.gui.windows.deviceapps.ServerWindowStage;
+import hakd.gui.windows.deviceapps.GameScene;
 import hakd.networks.Network;
 import hakd.networks.devices.parts.PartFactory;
 
@@ -53,7 +53,7 @@ public final class DeviceFactory {
         network.addDevice(d);
 
         if (d.getNetwork().getType() == Network.NetworkType.PLAYER) {
-            d.setWindow(new ServerWindowStage(d));
+            d.setWindow(new GameScene(d));
         }
 
         return d;
@@ -77,7 +77,7 @@ public final class DeviceFactory {
         d.setType(type);
 
         if (network.getType() == Network.NetworkType.PLAYER) {
-            d.setWindow(new ServerWindowStage(d));
+            d.setWindow(new GameScene(d));
         }
 
         return d;

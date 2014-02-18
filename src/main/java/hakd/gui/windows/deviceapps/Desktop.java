@@ -17,14 +17,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public final class Desktop {
-    private final ServerWindowStage window;
+    private final GameScene window;
     private final Group desktop;
     private final Device device;
     private final Set<Button> desktopApps;
 
     private final Image background;
 
-    public Desktop(ServerWindowStage w) {
+    public Desktop(GameScene w) {
         window = w;
         device = window.getDevice();
 
@@ -91,9 +91,16 @@ public final class Desktop {
         shutdown.setPosition(40, 350);
         desktopApps.add(shutdown);
         desktop.addActor(shutdown);
+
+        s = Assets.linearTextures.createSprite("infoUp");
+        s.setColor(c);
+        ImageButton textEdit = new DesktopAppIcon(new TextureRegionDrawable(Assets.linearTextures.findRegion("infoUp")), new SpriteDrawable(s), window.getTextEdit());
+        shutdown.setPosition(40, 300);
+        desktopApps.add(textEdit);
+        desktop.addActor(textEdit);
     }
 
-    public ServerWindowStage getWindow() {
+    public GameScene getWindow() {
         return window;
     }
 

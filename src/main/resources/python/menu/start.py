@@ -1,4 +1,4 @@
-#@help:start.py [name] - Starts a new game and gives the player the specified name.
+#@help:start [name] - Starts a new game and gives the player the specified name.
 from hakd.gui.screens import GameScreen
 from hakd.game.pythonapi.menu import PyMenu
 

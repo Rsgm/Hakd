@@ -3,24 +3,21 @@ package hakd.gui.windows.deviceapps;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.Table;
+import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import hakd.gui.Assets;
-import hakd.networks.devices.Device;
 
-public final class Info implements ServerWindow {
-    private final ServerWindowStage window;
-    private final Device device;
+public final class Info extends SceneWindow {
     private final Window infoWindow;
     private final ScrollPane scroll;
     private final Table table;
     private final ImageButton close;
 
-    public Info(ServerWindowStage w) {
-        window = w;
-        device = w.getDevice();
-
-        Skin skin = Assets.skin;
+    public Info(GameScene w) {
+        super(w);
 
         infoWindow = new Window(device.getType() + " info", skin);
         infoWindow.setSize(200, 300);
@@ -77,13 +74,13 @@ public final class Info implements ServerWindow {
     public void open() {
         table.clear();
         add();
-        window.getCanvas().addActor(infoWindow);
+        scene.getCanvas().addActor(infoWindow);
     }
 
     @Override
     public void close() {
         table.clear();
-        window.getCanvas().removeActor(infoWindow);
+        scene.getCanvas().removeActor(infoWindow);
     }
 
     private void add() {

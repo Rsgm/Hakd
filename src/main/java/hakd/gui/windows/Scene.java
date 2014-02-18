@@ -2,7 +2,7 @@ package hakd.gui.windows;
 
 import hakd.gui.screens.GameScreen;
 
-public interface WindowStage {
+public interface Scene {
     public void render();
 
     public void open();

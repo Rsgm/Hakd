@@ -6,12 +6,12 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import hakd.gui.windows.deviceapps.ServerWindow;
+import hakd.gui.windows.deviceapps.SceneWindow;
 
 public final class DesktopAppIcon extends ImageButton {
     private boolean dragged = true;
 
-    public DesktopAppIcon(Drawable imageUp, Drawable imageDown, final ServerWindow window) {
+    public DesktopAppIcon(Drawable imageUp, Drawable imageDown, final SceneWindow window) {
         super(imageUp, imageDown);
 
         addListener(new InputListener() {

@@ -1,4 +1,4 @@
-#@help:nmap.py [IPv4 address] - Scans the ports of the device with the given address. USE AT OWN RISK.
+#@help:nmap [IPv4 address] - Scans the ports of the device with the given address. USE AT OWN RISK.
 #Taken from http://www.pythonforbeginners.com/code-snippets-source-code/port-scanner-in-python/
 #
 #Eddited a bit by Rsgm123

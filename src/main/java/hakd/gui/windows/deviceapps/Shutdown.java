@@ -1,10 +1,11 @@
 package hakd.gui.windows.deviceapps;
 
-public final class Shutdown implements ServerWindow {
-    private final ServerWindowStage window;
+public final class Shutdown extends SceneWindow {
+    private final GameScene window;
 
-    public Shutdown(ServerWindowStage w) {
-        window = w;
+    public Shutdown(GameScene scene) {
+        super(scene);
+        window = scene;
     }
 
     @Override

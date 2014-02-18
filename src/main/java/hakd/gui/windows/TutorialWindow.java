@@ -10,7 +10,7 @@ import hakd.gui.Assets;
 import hakd.gui.screens.GameScreen;
 import hakd.other.Util;
 
-public final class TutorialWindow implements WindowStage {
+public final class TutorialWindow implements Scene {
     private GameScreen screen;
     private final Stage stage;
 

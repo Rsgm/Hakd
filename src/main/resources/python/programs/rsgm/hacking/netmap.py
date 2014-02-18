@@ -1,4 +1,4 @@
-#@help:nmap.py [options] {target} - A script full of powerful tools to scan networks.
+#@help:nmap [options] {target} - A script full of powerful tools to scan networks.
 
 def help():
 	print 'help'

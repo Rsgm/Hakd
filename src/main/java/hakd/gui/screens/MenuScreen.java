@@ -94,7 +94,7 @@ public final class MenuScreen extends HakdScreen {
         }
 
         display.setText(terminalInfo + "\n-----------------------------------------------------");
-        input.setMessageText("Type 'help.py' here to get started.");
+        input.setMessageText("Type 'help' here to get started.");
 
         input.addListener(new InputListener() {
             @Override
@@ -279,7 +279,7 @@ public final class MenuScreen extends HakdScreen {
         }
 
         for (File f : files) {
-            if (f.getName().equals(parameters.get(0))) {
+            if (f.getName().equals(parameters.get(0) + ".py")) {
                 file = f;
             }
         }

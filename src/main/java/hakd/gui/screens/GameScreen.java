@@ -19,7 +19,7 @@ import hakd.gui.Room;
 import hakd.gui.Room.RoomMap;
 import hakd.gui.input.GameInput;
 import hakd.gui.windows.BuyDeviceWindow;
-import hakd.gui.windows.WindowStage;
+import hakd.gui.windows.Scene;
 import hakd.networks.devices.Device;
 
 public final class GameScreen extends HakdScreen {
@@ -29,7 +29,7 @@ public final class GameScreen extends HakdScreen {
 
     private String playerName;
     private Room room;
-    private WindowStage openWindow = null;
+    private Scene openWindow = null;
     private MapScreen map;
     private IsometricTiledMapRenderer renderer; // it says this is experimental, but it was an old article
     private GameInput input;
@@ -218,11 +218,11 @@ public final class GameScreen extends HakdScreen {
         this.renderer = renderer;
     }
 
-    public WindowStage getOpenWindow() {
+    public Scene getOpenWindow() {
         return openWindow;
     }
 
-    public void setOpenWindow(WindowStage openWindow) {
+    public void setOpenWindow(Scene openWindow) {
         this.openWindow = openWindow;
     }
 

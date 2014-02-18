@@ -1,8 +1,10 @@
 package hakd.other.coreutils;
 
+import hakd.game.Command;
 import hakd.gui.windows.deviceapps.Terminal;
 import hakd.networks.devices.Device;
 
+import java.io.OutputStreamWriter;
 import java.lang.reflect.Method;
 import java.util.Collections;
 import java.util.HashMap;
@@ -10,12 +12,14 @@ import java.util.Map;
 
 public class ShellUtils {
     public static final Map<String, Method> METHOD_MAP;
-    private Device device;
-    private Terminal terminal;
+    private final Device device;
+    private final Terminal terminal;
+    private final OutputStreamWriter out;
 
-    public ShellUtils(Terminal terminal) {
-        this.terminal = terminal;
+    public ShellUtils(Command command) {
+        this.terminal = command.getTerminal();
         this.device = terminal.getDevice();
+        out = new OutputStreamWriter(command.getOutputStream());
     }
 
     static {

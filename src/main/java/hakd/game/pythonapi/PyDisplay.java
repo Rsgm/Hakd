@@ -4,36 +4,36 @@ import com.badlogic.gdx.Gdx;
 import hakd.gui.windows.deviceapps.Terminal;
 
 public final class PyDisplay {
+    private final Terminal terminal;
 
-    public void write(final Terminal t, final String s) {
+    public PyDisplay(Terminal terminal) {
+        this.terminal = terminal;
+    }
+
+    public void write(final String s) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                t.addText(s);
+                terminal.addTextln(s);
             }
         });
     }
 
-    public void over_write(final Terminal t, final String s, final int lineFromBottom) {
+    public void over_write(final String s, final int lineFromBottom) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                t.replaceText(s, lineFromBottom);
+                terminal.replaceText(s, lineFromBottom);
             }
         });
     }
 
-    public void clear(final Terminal t) {
+    public void clear() {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                t.getDisplay().setText("root @ " + t.getDevice().getIp() + " : " + t.getDirectory().getPath() + "\n>");
+                terminal.getDisplay().setText("root @ " + terminal.getDevice().getIp() + " : " + terminal.getDirectory().getPath() + "\n>");
             }
         });
     }
-
-    public String input(Terminal terminal, String display) {
-        return terminal.input(display);
-    }
-
 }

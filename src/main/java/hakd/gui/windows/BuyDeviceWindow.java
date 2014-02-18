@@ -14,7 +14,7 @@ import hakd.networks.Network;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.DeviceFactory;
 
-public final class BuyDeviceWindow implements WindowStage {
+public final class BuyDeviceWindow implements Scene {
     private GameScreen screen;
     private final Stage stage;
 

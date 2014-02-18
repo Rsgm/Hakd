@@ -1,4 +1,4 @@
-#@help:ftp.py {ip} - Connects to a server and downloads the file being served.
+#@help:ftp {ip} - Connects to a server and downloads the file being served.
 from hakd.game.pythonapi import PyDisplay
 from hakd.game.pythonapi import PyNetworking
 from hakd.connection import Port

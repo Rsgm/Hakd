@@ -1,8 +1,11 @@
 package hakd.game;
 
 import com.badlogic.gdx.Gdx;
+import hakd.game.pythonapi.PyDebug;
+import hakd.game.pythonapi.PyDisplay;
+import hakd.game.pythonapi.PyNetworking;
+import hakd.game.pythonapi.PyTest;
 import hakd.gui.windows.deviceapps.Terminal;
-import hakd.networks.devices.Device;
 import hakd.other.coreutils.FileUtils;
 import hakd.other.coreutils.ShellUtils;
 import hakd.other.coreutils.TextUtils;
@@ -10,97 +13,74 @@ import org.python.core.PyException;
 import org.python.util.PythonInterpreter;
 
 import java.io.FileNotFoundException;
+import java.io.OutputStream;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Queue;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public final class Command {
     private final String input;
-    private final Device device;
     private final Terminal terminal;
-    private Thread t;
-    private boolean piped = false;
+
+    private final Operation operation;
+    private List<String> pipedInput;
+    private List<String> pipedOutput;
+    private final Queue<Character> out = new ConcurrentLinkedQueue<Character>();
+    private final OutputStream outputStream;
 
     /**
      * Runs the desired command on a separate thread. Not that any program would
      * be intensive at all, but sleep(n) or large iterations will not lock up
      * the game.
      */
-    public Command(String input, Device device, Terminal terminal) {
+    public Command(String input, final Terminal terminal, Operation operation) {
         this.input = input;
-        this.device = device;
         this.terminal = terminal;
+        this.operation = operation;
 
-        run();
-    }
-
-    private void run() {
-        t = new Thread(new Runnable() {
-
+        outputStream = new OutputStream() {
             @Override
-            public void run() {
-                List<List<String>> parameters = parameters();
-
-                Gdx.app.debug("Terminal Command", input + "   " + parameters.toString());
-
-                ArrayList outputOfPreviousProgram = null;
-                boolean lastCommandFailed = false;
-                for (List<String> l : parameters) {
-                    if (l.size() >= 2) {
-                        String operator = l.remove(0);
-
-                        try {
-                            if (operator.equals("|")) { // assumes successful
-                                outputOfPreviousProgram = runChooser(l, outputOfPreviousProgram);
-                            } else if (operator.equals(";")) {
-                                outputOfPreviousProgram = runChooser(l, null);
-                            } else if (operator.equals("&&") && !lastCommandFailed) {
-                                outputOfPreviousProgram = runChooser(l, null);
-                            } else if (operator.equals("||") && lastCommandFailed) {
-                                outputOfPreviousProgram = runChooser(l, null);
-                            }
-                        } catch (IllegalAccessException e) {
-                            e.printStackTrace();
-                            lastCommandFailed = true;
-                        } catch (InvocationTargetException e) {
-                            e.printStackTrace();
-                            lastCommandFailed = true;
-                        } catch (FileNotFoundException e) {
-                            Gdx.app.debug("Terminal Info", e.getMessage(), e);
-                            terminal.addText("file not found");
-                            lastCommandFailed = true;
-                        } catch (PyException e) {
-                            Gdx.app.error("Terminal Error", e.getMessage(), e);
-                            lastCommandFailed = true;
-                        }
-
-                        if (outputOfPreviousProgram != null) {
-                            for (final Object text : outputOfPreviousProgram) {
-                                if (text instanceof String) {
-                                    Gdx.app.postRunnable(new Runnable() {
-                                        @Override
-                                        public void run() {
-                                            terminal.addText((String) text);
-                                        }
-                                    });
-                                }
-                            }
-                        }
-                    }
-                }
-                terminal.setCommand(null);
+            public void write(int i) {
+                terminal.addText((char) i);
+                out.offer((char) i);
             }
-        });
-        t.setName("terminal command");
-        t.start();
+        };
     }
 
-    private List<List<String>> parameters() {
-        List<List<String>> parameters = new ArrayList<List<String>>();
-        parameters.add(new ArrayList<String>());
-        parameters.get(0).add(";");
+    public boolean run() {
+        List<String> parameters = parameters();
 
+        Gdx.app.debug("Terminal Command", input + "   " + parameters.toString());
+
+        if (parameters.isEmpty()) {
+            return false;
+        }
+
+        try {
+            runChooser(parameters);   // stop the command list altogether, that is how linux does it
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+            return false;
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+            return false;
+        } catch (FileNotFoundException e) {
+            Gdx.app.debug("Terminal Info", e.getMessage(), e);
+            terminal.addTextln("file not found");
+            return false;
+        } catch (PyException e) {
+            Gdx.app.error("Terminal Error", e.getMessage(), e);
+            return false;
+        }
+
+        return true;
+    }
+
+    private List<String> parameters() {
+        List<String> parameters = new ArrayList<String>();
         String s = input;
 
         while (s.matches("\\s*[(?:\".*?\")|\\S+].*")) {
@@ -113,39 +93,47 @@ public final class Command {
             int l = s.length();
 
             String next = inputTemp.substring(0, inputTemp.length() - l);
-            if (next.equals("|") || next.equals("&&") || next.equals(";") || next.equals("||")) {
-                piped = next.equals("|");
-                parameters.add(new ArrayList<String>());
-            }
-
-            parameters.get(parameters.size() - 1).add(next);
+            parameters.add(next);
         }
 
         return parameters;
     }
 
-    private ArrayList runChooser(List<String> parameters, ArrayList pipedText) throws FileNotFoundException, InvocationTargetException, IllegalAccessException {
+    private void runChooser(List<String> parameters) throws FileNotFoundException, InvocationTargetException, IllegalAccessException {
         if (FileUtils.METHOD_MAP.containsKey(parameters.get(0))) {
-            FileUtils fileUtils = new FileUtils(terminal);
+            FileUtils fileUtils = new FileUtils(this);
             Method method = FileUtils.METHOD_MAP.get(parameters.get(0));
             parameters.remove(0);
-            return (ArrayList) method.invoke(fileUtils, parameters);
+            method.invoke(fileUtils, parameters, pipedInput);
+            return;
         } else if (TextUtils.METHOD_MAP.containsKey(parameters.get(0))) {
-            TextUtils textUtils = new TextUtils(terminal);
+            TextUtils textUtils = new TextUtils(this);
             Method method = TextUtils.METHOD_MAP.get(parameters.get(0));
             parameters.remove(0);
-            return (ArrayList) method.invoke(textUtils, parameters);
+            method.invoke(textUtils, parameters, pipedInput);
+            return;
         } else if (ShellUtils.METHOD_MAP.containsKey(parameters.get(0))) {
-            ShellUtils shellUtils = new ShellUtils(terminal);
+            ShellUtils shellUtils = new ShellUtils(this);
             Method method = ShellUtils.METHOD_MAP.get(parameters.get(0));
             parameters.remove(0);
-            return (ArrayList) method.invoke(shellUtils, parameters);
+            method.invoke(shellUtils, parameters, pipedInput);
+            return;
         } else {
-            return runPython(parameters, pipedText);
+            runPython(parameters, pipedInput);
+        }
+
+        pipedOutput.add("");
+        for (char c : out) {
+            if (c == '\n') {
+                pipedOutput.add("");
+            } else {
+                String element = pipedOutput.get(pipedOutput.size() - 1) + c;
+                pipedOutput.set(pipedOutput.size() - 1, element);
+            }
         }
     }
 
-    private ArrayList runPython(List<String> parameters, ArrayList pipedText) throws FileNotFoundException {
+    private void runPython(List<String> parameters, List<String> pipedText) throws FileNotFoundException {
         PythonInterpreter pi = new PythonInterpreter();
 
         hakd.other.File file;
@@ -163,10 +151,17 @@ public final class Command {
         }
 
         pi.set("terminal", terminal);
+        pi.set("DISPLAY", new PyDisplay(terminal));
+        pi.set("DEBUG", new PyDebug(terminal));
+        pi.set("NETWORKING", new PyNetworking(terminal));
+        pi.set("TEST", new PyTest(terminal));
+
         pi.set("parameters", parameters);
         pi.set("piped_text", pipedText);
-        pi.set("out", new ArrayList<String>());
 
+//        pi.set("Display", new PyDisplay(Terminal));
+        pi.setIn(terminal.getInputStream());
+        pi.setOut(outputStream);
 
         // there really is no good way of doing this
         // if (!checkPythonForCheats(file)) {
@@ -174,18 +169,33 @@ public final class Command {
         // }
 
         pi.exec(file.getData());
-        return pi.get("out", ArrayList.class);
     }
 
-    /**
-     * Stops the command. This uses the deprecated Thread.stop(), which means it
-     * will stop it no matter what. Normally this is very bad to do because it
-     * will be in the middle of something. This is realistic so I will leave it,
-     * there is also no better way.
-     */
-    @SuppressWarnings("deprecation")
-    public void stop() {
-        t.stop();
-        terminal.setCommand(null);
+    public enum Operation {
+        PIPE/* '|' */, SUCCESSFUL/* '&&' */, NOT_SUCCESSFUL/* '||' */, EITHER/* ';' */
+    }
+
+    public List<String> getPipedOutput() {
+        return pipedOutput;
+    }
+
+    public void setPipedInput(List<String> pipedInput) {
+        this.pipedInput = pipedInput;
+    }
+
+    public Operation getOperation() {
+        return operation;
+    }
+
+    public Queue<Character> getOut() {
+        return out;
+    }
+
+    public Terminal getTerminal() {
+        return terminal;
+    }
+
+    public OutputStream getOutputStream() {
+        return outputStream;
     }
 }

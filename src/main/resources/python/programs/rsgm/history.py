@@ -1,4 +1,4 @@
-#@help:history.py {show|clear} - Scans for open ports on the specified device.
+#@help:history {show|clear} - Scans for open ports on the specified device.
 from hakd.game.pythonapi import PyDisplay
 
 try:

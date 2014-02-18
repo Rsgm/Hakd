@@ -1,4 +1,4 @@
-#@help:cheat.py {program} [arguments] - A script full of cheaty debug tools.
+#@help:cheat {program} [arguments] - A script full of cheaty debug tools.
 from hakd.game.pythonapi import PyDisplay
 from hakd.game.pythonapi import PyNetworking
 from hakd.connection import Port

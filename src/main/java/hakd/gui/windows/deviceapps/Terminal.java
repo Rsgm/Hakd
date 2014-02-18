@@ -4,8 +4,11 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
-import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
+import com.badlogic.gdx.scenes.scene2d.ui.Label;
 import com.badlogic.gdx.scenes.scene2d.ui.Label.LabelStyle;
+import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
+import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
@@ -14,15 +17,12 @@ import hakd.gui.Assets;
 import hakd.networks.devices.Device;
 import hakd.other.File;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.util.*;
-import java.util.List;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public final class Terminal implements ServerWindow {
-    private final ServerWindowStage window;
-
-    private final Table table;
-
+public final class Terminal extends SceneWindow {
     private final TextField input;
     private final Label display;
     private final ScrollPane scroll;
@@ -30,24 +30,23 @@ public final class Terminal implements ServerWindow {
     private final List<String> history; // command history
     private int line = 0; // holds the position of the history
     private final Device device;
-    private Command command;
+    private Queue<Command> commandQueue;
     private File directory;
-    private final Queue<Character> userInputBuffer;
-    private String userInputString;
 
-    public Terminal(ServerWindowStage w) {
-        window = w;
-        device = window.getDevice();
+    private final Queue<Character> inputQueue;
+    private final InputStream inputStream;
+    private Thread commandThread;
+
+    public Terminal(GameScene scene) {
+        super(scene);
+        device = this.scene.getDevice();
         directory = device.getHome();
 
-        Skin skin = Assets.skin;
+        commandQueue = new ConcurrentLinkedQueue<Command>(); // not sure if this should be concurrent, it might need to be in the future
         history = new ArrayList<String>();
 
-        table = new com.badlogic.gdx.scenes.scene2d.ui.Window("Terminal", skin);
-        table.setSize(window.getCanvas().getWidth() * .9f, window.getCanvas().getHeight() * .9f);
-
         ImageButton close = new ImageButton(new TextureRegionDrawable(Assets.linearTextures.findRegion("close")));
-        close.setPosition(table.getWidth() - close.getWidth(), table.getHeight() - close.getHeight() - 20);
+        close.setPosition(window.getWidth() - close.getWidth(), window.getHeight() - close.getHeight() - 20);
 
         input = new TextField("", skin.get("console", TextFieldStyle.class));
         display = new Label("", skin.get("console", LabelStyle.class));
@@ -56,34 +55,33 @@ public final class Terminal implements ServerWindow {
         display.setWrap(false); // this being true would mess up text line insertion
         display.setAlignment(10, Align.left);
         display.setText("Terminal [Version 0." + ((int) (Math.random() * 100)) / 10 + "]" + "\nroot @ " + device.getIp() + "\nMemory: " + device.getMemoryCapacity() + "MB\nStorage: " + device.getStorageCapacity() + "GB");
+        input.setFocusTraversal(false);
 
-        userInputBuffer = new ConcurrentLinkedQueue<Character>();
+        window.add(scroll).expand().fill();
+        window.row();
+        window.add(input).left().fillX();
+        window.addActor(close);
 
-        table.addListener(new InputListener() {
+        inputQueue = new ConcurrentLinkedQueue<Character>();
+        inputStream = new InputStream() {
             @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                // touch up will not work without this returning true
-                return true;
-            }
-
-            @Override
-            public void touchUp(InputEvent event, float x, float y, int pointer, int button) {
-                if (y >= table.getHeight() - 20) {
-                    if (table.getX() < 0) {
-                        table.setX(0);
-                    }
-                    if (table.getY() < 0) {
-                        table.setY(0);
-                    }
-                    if (table.getX() + table.getWidth() > Gdx.graphics.getWidth()) {
-                        table.setX(Gdx.graphics.getWidth() - table.getWidth());
-                    }
-                    if (table.getY() + table.getHeight() > Gdx.graphics.getHeight()) {
-                        table.setY(Gdx.graphics.getHeight() - table.getHeight());
+            public int read() throws IOException {
+                while (inputQueue.isEmpty()) {
+                    try {
+                        Thread.sleep(5000);
+                    } catch (InterruptedException e) {
+                        Gdx.app.error("Thread Sleep", "Insomnia", e);
                     }
                 }
+
+                if (!inputQueue.isEmpty()) {
+                    return inputQueue.poll();
+                } else {
+                    return '\n';
+                }
             }
-        });
+        };
+
 
         close.addListener(new InputListener() {
             @Override
@@ -101,17 +99,17 @@ public final class Terminal implements ServerWindow {
         input.addListener(new InputListener() {
             @Override
             public boolean keyDown(InputEvent event, int keycode) {
-                if (keycode == Keys.ENTER && command == null) {
-                    display.setText(display.getText() + "\n\nroot @ " + device.getIp() + " : " + directory.getPath() + "\n$ " + input.getText());
+                if (keycode == Keys.ENTER && commandQueue.isEmpty()) {
+                    addTextln("\nroot @ " + device.getIp() + " : " + directory.getPath() + "\n$ " + input.getText());
                     history.add(input.getText());
-                    command = new Command(input.getText(), device, Terminal.this);
+                    command();
 
                     line = history.size();
                     input.setText("");
-                } else if (keycode == Keys.C && (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && command != null) {
-                    addText("Program Stopped");
-                    command.stop();
-                } else if (keycode == Keys.TAB && command == null) {
+                } else if (keycode == Keys.C && (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && !commandQueue.isEmpty()) {
+                    addTextln("Program Stopped");
+                    stop();
+                } else if (keycode == Keys.TAB && commandQueue.isEmpty()) {
                     tab(); // this was getting way too long
                 } else if (keycode == Keys.DOWN && line < history.size() - 1) {
                     line++;
@@ -121,37 +119,124 @@ public final class Terminal implements ServerWindow {
                     line--;
                     input.setText(history.get(line));
                     input.setCursorPosition(input.getText().length());
-                } else if (command != null) {
+                } else if (!commandQueue.isEmpty()) {
                     if (keycode == Keys.ENTER) {
-                        userInputString = input.getText();
                         input.setText("");
                     }
-                    userInputBuffer.offer(event.getCharacter());
+                    inputQueue.offer(event.getCharacter());
                 }
                 return true;
             }
 
             @Override
             public boolean keyUp(InputEvent event, int keycode) {
-                if (keycode == Keys.ENTER || (keycode == Keys.C && (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && command != null)) {
+                if (keycode == Keys.ENTER || (keycode == Keys.C && (Gdx.input.isKeyPressed(Keys.CONTROL_LEFT) || Gdx.input.isKeyPressed(Keys.CONTROL_RIGHT)) && !commandQueue.isEmpty())) {
                     scroll.setScrollY(scroll.getMaxY());
                 }
-                return super.keyUp(event, keycode);
+                return true;
             }
         });
 
-        table.add(scroll).expand().fill();
-        table.row();
-        table.add(input).left().fillX();
+        display.addListener(new InputListener() {
+            @Override
+            public boolean keyDown(InputEvent event, int keycode) {
+                super.keyDown(event, keycode);
 
-        table.addActor(close);
+                if (!commandQueue.isEmpty()) {
+                    if (keycode == Keys.ENTER) {
+                        input.setText("");
+                    }
+                    inputQueue.offer(event.getCharacter());
+                }
+                return true;
+            }
+
+            @Override
+            public boolean keyUp(InputEvent event, int keycode) {
+                super.keyUp(event, keycode);
+                return true;
+            }
+        });
     }
 
-    public void addText(final String text) {
+    private void command() {
+        String s = input.getText() + ";";
+        String inputString = input.getText();
+
+        Scanner scanner = new Scanner(s);
+        String next;
+        while (true) {
+            next = scanner.findInLine(".*?[|&;]{1,2}");
+            if (next == null) {
+                break;
+            }
+
+            Command.Operation operation = Command.Operation.EITHER;
+            if (next.endsWith("|")) {
+                operation = Command.Operation.PIPE;
+            } else if (next.endsWith("&&")) {
+                operation = Command.Operation.SUCCESSFUL;
+            } else if (next.endsWith("||")) {
+                operation = Command.Operation.NOT_SUCCESSFUL;
+            } else if (next.endsWith(";")) {
+                operation = Command.Operation.EITHER;
+            }
+
+            next = next.replaceAll("[|&;]{1,2}", ""); // is this assignment needed? does replace all need to be assigned to the string it is called on?
+            inputString = inputString.substring(next.length());
+
+            Command c = new Command(next, Terminal.this, operation);
+            commandQueue.offer(c);
+        }
+
+        commandThread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                boolean successful = false;
+
+                List<String> previousOutput = null;
+                while (!commandQueue.isEmpty()) {
+                    Command c = commandQueue.poll();
+                    Command.Operation operation = c.getOperation();
+                    c.setPipedInput(previousOutput);
+
+                    if (operation == Command.Operation.PIPE) { // assumes successful
+                        successful = c.run();
+                    } else if (operation == Command.Operation.EITHER) {
+                        successful = c.run();
+                    } else if (operation == Command.Operation.SUCCESSFUL && successful) {
+                        successful = c.run();
+                    } else if (operation == Command.Operation.NOT_SUCCESSFUL && !successful) {
+                        successful = c.run();
+                    }
+
+                    previousOutput = c.getPipedOutput();
+                }
+            }
+        });
+        commandThread.start();
+    }
+
+    public void addTextln(final String text) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                display.setText(display.getText() + "\n   " + text);
+                display.setText(display.getText() + text + "\n   ");
+                scroll.setScrollY(scroll.getMaxY());
+            }
+        });
+    }
+
+    public void addText(final char c) {
+        Gdx.app.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                if (c == '\n') {
+
+                    display.setText(display.getText() + "\n   ");
+                } else {
+                    display.setText(display.getText() + "" + c);
+                }
                 scroll.setScrollY(scroll.getMaxY());
             }
         });
@@ -259,16 +344,20 @@ public final class Terminal implements ServerWindow {
             }
         }
 
-        int totalLength = 0;
+        if (files.isEmpty()) {
+            return;
+        }
+
+        int totalLength;
         File tempFile = (File) files.toArray()[0]; // I am running out of names
         if (files.size() > 1) { // show the list of possible options and set the manipulated parameter to the common beginning text of that list
-            addText("");
+            addTextln("");
             for (File f : files) {
                 String availableFiles = f.getName();
                 if (f.isDirectory()) {
                     availableFiles += "/";
                 }
-                addText(availableFiles);
+                addTextln(availableFiles);
             }
 
             if (currentParameterText.matches("^\\s+$")) {
@@ -318,60 +407,48 @@ public final class Terminal implements ServerWindow {
         directory = tempDirectory;
     }
 
-    public String input(final String display) {
-        Gdx.app.postRunnable(new Runnable() {
-            @Override
-            public void run() {
-                addText(display);
-            }
-        });
+    /**
+     * Stops the command thread. This uses the deprecated Thread.stop(), which means it
+     * will stop it no matter what. Normally this is very bad to do because it
+     * will be in the middle of something. This is realistic so I will leave it,
+     * there is also no better way.
+     */
+    @SuppressWarnings("deprecation")
+    public void stop() {
+//        commandThread.interrupt();
+//        if (!commandThread.isInterrupted() || commandThread.isAlive()) {
+        commandThread.stop();
+//        }
 
-        userInputString = null;
-        while (userInputString == null) {
-            try {
-                Thread.sleep(100);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }
-
-        String s = userInputString;
-        userInputString = null;
-        return s;
-    }
-
-    @Override
-    public void open() {
-        window.getCanvas().addActor(table);
-    }
-
-    @Override
-    public void close() {
-        window.getCanvas().removeActor(table);
+        commandQueue.clear();
     }
 
     public Label getDisplay() {
         return display;
     }
 
-    public ScrollPane getScroll() {
-        return scroll;
+    public Queue<Command> getCommandQueue() {
+        return commandQueue;
     }
 
-    public Command getCommand() {
-        return command;
+    public void setCommandQueue(Queue<Command> commandQueue) {
+        this.commandQueue = commandQueue;
     }
 
-    public void setCommand(Command command) {
-        this.command = command;
+    public Thread getCommandThread() {
+        return commandThread;
+    }
+
+    public void setCommandThread(Thread commandThread) {
+        this.commandThread = commandThread;
+    }
+
+    public Queue<Character> getInputQueue() {
+        return inputQueue;
     }
 
     public List<String> getHistory() {
         return history;
-    }
-
-    public void setLine(int line) {
-        this.line = line;
     }
 
     public Device getDevice() {
@@ -382,4 +459,7 @@ public final class Terminal implements ServerWindow {
         return directory;
     }
 
+    public InputStream getInputStream() {
+        return inputStream;
+    }
 }

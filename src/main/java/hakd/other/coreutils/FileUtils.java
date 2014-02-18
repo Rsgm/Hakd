@@ -1,11 +1,13 @@
 package hakd.other.coreutils;
 
+import hakd.game.Command;
 import hakd.gui.windows.deviceapps.Terminal;
 import hakd.networks.devices.Device;
 import hakd.other.File;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintStream;
 import java.lang.reflect.Method;
 import java.util.*;
 
@@ -20,12 +22,14 @@ import java.util.*;
  */
 public class FileUtils {
     public static final Map<String, Method> METHOD_MAP;
-    private Device device;
-    private Terminal terminal;
+    private final Device device;
+    private final Terminal terminal;
+    private final PrintStream out;
 
-    public FileUtils(Terminal terminal) {
-        this.terminal = terminal;
+    public FileUtils(Command command) {
+        this.terminal = command.getTerminal();
         this.device = terminal.getDevice();
+        out = new PrintStream(command.getOutputStream());
     }
 
     static {
@@ -104,9 +108,7 @@ public class FileUtils {
         return pathList;
     }
 
-    public List<String> cp(List<String> parameters) throws IOException {
-        List<String> returnText = new ArrayList<String>();
-
+    public void cp(List<String> parameters, List<String> input) throws IOException {
         String options;
         String sourcePath;
         String targetPath;
@@ -121,26 +123,26 @@ public class FileUtils {
                 targetPath = parameters.get(1);
             }
         } else if (parameters.get(0).contains("h")) {
-            returnText.add("cp [-hor] sourcefile targetfile");
-            returnText.add("Copy the sourcefile to the target file");
-            returnText.add("sourcefile is the file(s) or directory to be copied");
-            returnText.add("targetfile is the file or directory to copy to");
-            returnText.add("");
-            returnText.add("Use a * as a wildcard for specifying multiple source files");
-            returnText.add("");
-            returnText.add("Options:");
-            returnText.add("  -h   shows this help text");
-            returnText.add("  -o   overwrites all matching files");
-            returnText.add("  -r   recursively find sourcefiles in the sourcefile directory");
-            return returnText;
+            out.println("cp [-hor] sourcefile targetfile");
+            out.println("Copy the sourcefile to the target file");
+            out.println("sourcefile is the file(s) or directory to be copied");
+            out.println("targetfile is the file or directory to copy to");
+            out.println("");
+            out.println("Use a * as a wildcard for specifying multiple source files");
+            out.println("");
+            out.println("Options:");
+            out.println("  -h   shows this help text");
+            out.println("  -o   overwrites all matching files");
+            out.println("  -r   recursively find sourcefiles in the sourcefile directory");
+            return;
         } else {
-            returnText.add("cp [-hor] sourcefile targetfile");
-            return returnText;
+            out.println("cp [-hor] sourcefile targetfile");
+            return;
         }
 
         if (sourcePath.isEmpty() || targetPath.isEmpty()) {
-            returnText.add("cp [-hor] sourcefile targetfile");
-            return returnText;
+            out.println("cp [-hor] sourcefile targetfile");
+            return;
         } else if (sourcePath.startsWith("./")) {
             sourcePath = terminal.getDirectory().getPath() + sourcePath.substring(2);
         } else if (targetPath.startsWith("./")) {
@@ -158,8 +160,7 @@ public class FileUtils {
             File sourceFile = sourceFiles.get(0);
 
             if (sourceFile.isDirectory() && !options.contains("r")) {
-                returnText.add("Please include -r to copy a directory");
-                return returnText;
+                out.println("Please include -r to copy a directory");
             } else if (targetFile == null || !sourceFile.isDirectory()) {
                 File targetDirectory;
                 if (targetFile == null) {
@@ -173,8 +174,6 @@ public class FileUtils {
             } else if (targetFile.isDirectory()) {
                 if (targetFile.getFile(sourceFile.getName()) == null || options.contains("o")) {
                     targetFile.addFile(sourceFile.copy());
-                    returnText.clear();
-                    return returnText;
                 } else {
                     throw new IOException("File already exists");
                 }
@@ -194,23 +193,15 @@ public class FileUtils {
             }
 
             if (notAllCopied) {
-                returnText.add("Not all files could be copied");
-                return returnText;
-            } else {
-                return returnText;
+                out.println("Not all files could be copied");
             }
 
         } else {
             throw new IOException("Could not copied");
         }
-
-        returnText.clear();
-        return returnText;
     }
 
-    public List<String> ls(List<String> parameters) {
-        List<String> returnText = new ArrayList<String>();
-
+    public void ls(List<String> parameters, List<String> input) throws IOException {
         String options;
         String directoryPath;
         if (parameters.size() >= 2) {
@@ -230,21 +221,21 @@ public class FileUtils {
         }
 
         if (options.contains("h")) {
-            returnText.add("ls [-fhlmpQRrSt] [directory]");
-            returnText.add("List the files in the directory");
-            returnText.add("");
-            returnText.add("Options:");
-            returnText.add("  -f   do not sort the files, default sorts alphabetically");
-            returnText.add("  -h   shows this help text");
-            returnText.add("  -l   long format: size, last-modified date and filename");
-            returnText.add("  -m   separate lines with commas");
-            returnText.add("  -p   gives the files as a path");
-            returnText.add("  -Q   enclose entry names in double quotes");
-            returnText.add("  -R   recursively list files");
-            returnText.add("  -r   reverse the list of files");
-            returnText.add("  -S   sort the list of files by size");
-            returnText.add("  -t   sort the list of files by modification time");
-            return returnText;
+            out.println("ls [-fhlmpQRrSt] [directory]");
+            out.println("List the files in the directory");
+            out.println("");
+            out.println("Options:");
+            out.println("  -f   do not sort the files, default sorts alphabetically");
+            out.println("  -h   shows this help text");
+            out.println("  -l   long format: size, last-modified date and filename");
+            out.println("  -m   separate lines with commas");
+            out.println("  -p   gives the files as a path");
+            out.println("  -Q   enclose entry names in double quotes");
+            out.println("  -R   recursively list files");
+            out.println("  -r   reverse the list of files");
+            out.println("  -S   sort the list of files by size");
+            out.println("  -t   sort the list of files by modification time");
+            return;
         } else if (directoryPath.isEmpty()) {
             directoryPath = terminal.getDirectory().getPath();
         } else if (directoryPath.startsWith("./")) {
@@ -256,7 +247,7 @@ public class FileUtils {
             directory = getFile(directoryPath);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
-            return returnText;
+            return;
         }
         List<File> fileList;
 
@@ -302,36 +293,20 @@ public class FileUtils {
                 s += f.getSize() + "   ";
                 s += f.getTime() + "   ";
                 s += f.getName() + "   ";
-                returnText.add(s);
+                out.println(s);
             }
         } else if (options.contains("p")) {
             for (File f : fileList) {
-                returnText.add(f.getPath() + f.getName());
+                out.println(f.getPath() + f.getName());
             }
         } else {
             for (File f : fileList) {
-                returnText.add(f.getName());
+                out.println(f.getName());
             }
         }
-
-        if (options.contains("Q")) {
-            for (int i = 0; i < returnText.size(); i++) {
-                String s = "\"" + returnText.get(i) + "\"";
-                returnText.set(i, s);
-            }
-        } else if (options.contains("m")) {
-            for (int i = 0; i < returnText.size(); i++) {
-                String s = returnText.get(i) + ",";
-                returnText.set(i, s);
-            }
-        }
-
-        return returnText;
     }
 
-    public List<String> mkdir(List<String> parameters) {
-        List<String> returnText = new ArrayList<String>();
-
+    public void mkdir(List<String> parameters, List<String> input) throws IOException {
         String options = "";
         String directoryPath = "";
         if (parameters.size() >= 2) {
@@ -342,16 +317,16 @@ public class FileUtils {
         }
 
         if (options.contains("h")) {
-            returnText.add("mkdir [-pv] [directory]");
-            returnText.add("Creates a directory at the given path");
-            returnText.add("");
-            returnText.add("Options:");
-            returnText.add("  -p   will also create all directories leading up to the given directory that do not exist already. If the given directory already exists, ignore the error.");
-            returnText.add("  -v   display each directory that mkdir creates, most often used with -p");
-            return returnText;
+            out.println("mkdir [-pv] [directory]");
+            out.println("Creates a directory at the given path");
+            out.println("");
+            out.println("Options:");
+            out.println("  -p   will also create all directories leading up to the given directory that do not exist already. If the given directory already exists, ignore the error.");
+            out.println("  -v   display each directory that mkdir creates, most often used with -p");
+            return;
         } else if (directoryPath.isEmpty()) {
-            returnText.add("mkdir [-pv] [directory]");
-            return returnText;
+            out.println("mkdir [-pv] [directory]");
+            return;
         } else if (directoryPath.startsWith("./")) { //|| !directoryPath.startsWith("/")) {
             directoryPath = terminal.getDirectory().getPath() + directoryPath.substring(2);
         }
@@ -374,7 +349,7 @@ public class FileUtils {
                     lastFile.addFile(file);
                     lastFile = file;
                     if (options.contains("v")) {
-                        returnText.add(file.getPath());
+                        out.println(file.getPath());
                     }
                 }
             }
@@ -389,11 +364,9 @@ public class FileUtils {
             dir.addFile(file);
 
             if (options.contains("v") && dir.getFileMap().containsValue(file)) {
-                returnText.add(file.getPath());
+                out.println(file.getPath());
             }
         }
-
-        return returnText;
     }
 
 }

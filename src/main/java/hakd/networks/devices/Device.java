@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.connection.Connectable;
 import hakd.connection.Connection;
 import hakd.connection.Port;
-import hakd.gui.windows.deviceapps.ServerWindowStage;
+import hakd.gui.windows.deviceapps.GameScene;
 import hakd.networks.Network;
 import hakd.networks.devices.parts.*;
 import hakd.networks.devices.parts.Part.Brand;
@@ -48,7 +48,7 @@ public class Device implements Connectable {
     // gui
     int isoX; // isoX and isoY are first set in EmptyDeviceTile on room creation, then transferred to a the new device when bought, and back to an EmptyDeviceTile when trashed
     int isoY;
-    ServerWindowStage window;
+    GameScene window;
     Sprite tile;
 
     // default files
@@ -70,8 +70,8 @@ public class Device implements Connectable {
                 home.addFile(Util.getFileData("bash", (int) (Math.random() * 9) + ""));
             }
 
-            for (java.io.File f : Util.PROGRAMS.values()) {
-                bin.addFile(new File(f.getName(), Util.getProgramData(f.getName())));
+            for (String f : Util.PROGRAMS.keySet()) {
+                bin.addFile(new File(f, Util.PROGRAMS.get(f)));
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -245,7 +245,7 @@ public class Device implements Connectable {
 
     public File getFile(String path) throws FileNotFoundException {
         if (path.isEmpty() || !path.matches("^/.*?$")) {
-            return null;
+            throw new FileNotFoundException();
         }
 
         File file = root;
@@ -364,11 +364,11 @@ public class Device implements Connectable {
         this.model = model;
     }
 
-    public ServerWindowStage getWindow() {
+    public GameScene getWindow() {
         return window;
     }
 
-    public void setWindow(ServerWindowStage window) {
+    public void setWindow(GameScene window) {
         this.window = window;
     }
 

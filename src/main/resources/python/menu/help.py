@@ -1,4 +1,4 @@
-#@help:help.py - Shows this help text. Also [...] are optional arguments and {...} are required arguments.
+#@help:help - Shows this help text. Also [...] are optional arguments and {...} are required arguments.
 from hakd.game.pythonapi.menu import PyMenu
 from hakd.other import Util
 import os

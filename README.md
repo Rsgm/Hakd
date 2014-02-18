@@ -43,7 +43,7 @@ Player room:
  * Drag the title bar on the app window to move it. Moving it outside of the screen will snap it back inside.
 
 Terminal:
- * Tab completion, can be used in some places. This can causecrashes if used with special characters like quotes.
+ * Tab completion, can be used in some places. This can cause crashes if used with special characters like quotes.
  * 'help.py' to see a list of programs.
  * Programs must have .py at the end.
  * The file system is like the unix filesystem. Use 'ls' to list files and folders, and 'ls -h' for help.

@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import hakd.gui.Assets;
 import hakd.gui.EmptyDeviceTile;
 import hakd.gui.windows.BuyDeviceWindow;
-import hakd.gui.windows.deviceapps.ServerWindowStage;
+import hakd.gui.windows.deviceapps.GameScene;
 import hakd.networks.Network;
 import hakd.networks.devices.Device;
 
@@ -45,7 +45,7 @@ public final class BuyDeviceButton extends TextButton {
                 newDevice.setIsoX(emptyDeviceTile.getIsoX());
                 newDevice.setIsoY(emptyDeviceTile.getIsoY());
                 newDevice.getTile().setRegion(Assets.nearestTextures.findRegion("d" + newDevice.getLevel()));
-                newDevice.setWindow(new ServerWindowStage(newDevice));
+                newDevice.setWindow(new GameScene(newDevice));
 
                 network.addDevice(newDevice);
                 network.getEmptyDeviceTiles().remove(emptyDeviceTile);

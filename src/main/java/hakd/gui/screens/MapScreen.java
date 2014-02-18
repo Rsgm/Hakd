@@ -109,6 +109,7 @@ public final class MapScreen extends HakdScreen {
     public void render(float delta) {
         super.render(delta);
 
+
 //        System.out.println((int) (1 / delta));
         time += delta;
         if (time >= 1) {
