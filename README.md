@@ -6,6 +6,7 @@ Hakd is a single player game about hacking, with a realistic, simulated, and pro
 
 [My to-do list.](https://trello.com/b/aPgl1zpo/hak-d) This also has some of my ideas. (This is out of date)
 
+[Skip down to Compiling and Building Hakd.](https://github.com/Rsgm/Hakd/edit/master/README.md#setting-up-the-project)
 
 ###Pictures
 
@@ -85,13 +86,28 @@ FileSystem     Terminal      Parts -> | - CPU
 ```
 
 
-###Compiling and Building Hakd
+###Setting up the Project
 
-For Linux and Mac, run this in the terminal:(I have not tested on mac yet):
-```
-./gradlew
-./gradlew packageHakd
-```
+These are all meant to be run in the command prompt/terminal, in the Hakd source directory. Any of these will download gradle if it has not yet.
+
+View gradle tasks and help:
+windows: ```./gradlew.bat tasks```
+linux/mac: ```./gradlew tasks```
+
+You have to let gradle build the project files for eclipse/intelij to know that it is a project. This should also download the dependencies.
+
+For Intellij projects run:
+windows: ```./gradlew.bat idea```
+linux/mac: ```./gradle idea```
+
+For Eclipse projects run:
+windows: ```./gradlew.bat eclipse```
+linux/mac: ```./gradle eclipse```
+
+
+###Building and Running
+
+These are all meant to be run in the command prompt/terminal, in the Hakd source directory. Any of these will download gradle if it has not yet.
 
 For Windows, run this in command prompt:
 ```
@@ -99,4 +115,14 @@ For Windows, run this in command prompt:
 ./gradlew.bat packageHakd
 ```
 
+For Linux and Mac, run this in the terminal:
+```
+./gradlew
+./gradlew packageHakd
+```
+
 A packaged Hakd-(version).zip will be placed in /build/distributions/. This is can be used/released without any modification.
+
+You can also run Hakd through gradle, if you don't want to package it:
+windows: ```./gradlew.bat run```
+linux/mac: ```./gradlew run```
