@@ -55,6 +55,7 @@ public final class MapScreen extends HakdScreen {
 
     public static final int NOISE_GENERATION_SIZE = 800; // how many points to draw. default: 800, best quality would be around 2500
     public static final int NOISE_DISPLAY_SIZE = 50000; // how large of an area to spread the points out on. default: 50000
+//    private overlay mapOverlay;
 
     public MapScreen(Game game, Internet internet) {
         super(game);
@@ -100,6 +101,8 @@ public final class MapScreen extends HakdScreen {
         cam.update();
 
         reloadSprites();
+
+//        mapOverlay = new overlay();
 
         Gdx.gl.glClearColor(1, 1, 1, 1);
         Gdx.input.setInputProcessor(input);
@@ -168,6 +171,8 @@ public final class MapScreen extends HakdScreen {
             Assets.font.draw(batch, c.getName(), c.getPosition().x, c.getPosition().y + 80);
         }
         batch.end();
+
+//        mapOverlay.render();
     }
 
     private void reloadSprites() {

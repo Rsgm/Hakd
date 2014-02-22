@@ -1,4 +1,4 @@
-package hakd.gui.windows.deviceapps;
+package hakd.gui.windows.device;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -6,10 +6,9 @@ import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import hakd.gui.input.GameInput;
 import hakd.gui.screens.GameScreen;
-import hakd.gui.windows.Scene;
 import hakd.networks.devices.Device;
 
-public final class GameScene implements Scene {
+public final class GameScene {
     private final Stage stage;
     private final Group canvas;
 
@@ -36,7 +35,6 @@ public final class GameScene implements Scene {
         canvas.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
     }
 
-    @Override
     public void render() {
         stage.act(Gdx.graphics.getDeltaTime());
         desktop.getDesktop().toBack(); // makes sure no windows can go behind it
@@ -48,7 +46,6 @@ public final class GameScene implements Scene {
         // }
     }
 
-    @Override
     public void open() {
         Gdx.input.setInputProcessor(stage);
         stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
@@ -70,14 +67,12 @@ public final class GameScene implements Scene {
         desktop.open(); // default screen when you open the server, I may change it to a login or startup screen
     }
 
-    @Override
     public void close() {
         canvas.clear();
-        screen.setOpenWindow(null);
+        screen.setGameScene(null);
         Gdx.input.setInputProcessor(new GameInput(screen.getGame(), (OrthographicCamera) screen.getCam(), screen.getPlayer()));
     }
 
-    @Override
     public void setScreen(GameScreen screen) {
         this.screen = screen;
     }

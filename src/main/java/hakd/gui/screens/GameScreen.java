@@ -9,17 +9,17 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.scenes.scene2d.Stage;
 import hakd.game.GamePlay;
 import hakd.game.Hakd;
 import hakd.game.Internet;
 import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
-import hakd.gui.EmptyDeviceTile;
 import hakd.gui.Room;
 import hakd.gui.Room.RoomMap;
 import hakd.gui.input.GameInput;
-import hakd.gui.windows.BuyDeviceScene;
-import hakd.gui.windows.Scene;
+import hakd.gui.windows.device.GameScene;
+import hakd.gui.windows.dialogs.EmptyDeviceDialog;
 import hakd.networks.devices.Device;
 
 public final class GameScreen extends HakdScreen {
@@ -29,12 +29,13 @@ public final class GameScreen extends HakdScreen {
 
     private String playerName;
     private Room room;
-    private Scene openWindow = null;
+    private GameScene gameScene = null;
     private MapScreen map;
     private IsometricTiledMapRenderer renderer; // it says this is experimental, but it was an old article
     private GameInput input;
 
     private boolean firstTimeShown = true;
+    private final Stage dialogStage = new Stage();
 
     public GameScreen(Game game, String playerName) {
         super(game);
@@ -93,11 +94,11 @@ public final class GameScreen extends HakdScreen {
         for (Device d : player.getNetwork().getDevices().values()) {
             d.getTile().draw(rBatch);
         }
-        for (EmptyDeviceTile e : player.getNetwork().getEmptyDeviceTiles()) {
+        for (Room.EmptyDeviceTile e : player.getNetwork().getEmptyDeviceTiles()) {
             e.getTile().draw(rBatch);
         }
 
-        if (openWindow == null) {
+        if (gameScene == null) {
             updateMovement();
             checkPosition(rBatch);
         }
@@ -105,9 +106,12 @@ public final class GameScreen extends HakdScreen {
         player.getSprite().draw(rBatch);
         rBatch.end();
 
-        if (openWindow != null) {
-            openWindow.render();
+        if (gameScene != null) {
+            gameScene.render();
         }
+
+        dialogStage.act(Gdx.graphics.getDeltaTime());
+        dialogStage.draw();
     }
 
     private void checkPosition(SpriteBatch batch) {
@@ -131,15 +135,13 @@ public final class GameScreen extends HakdScreen {
 
             s.draw(batch);
 
-            if (Gdx.input.isKeyPressed(Keys.SPACE) && openWindow == null) {
-
-                if (o instanceof EmptyDeviceTile) {
-                    openWindow = new BuyDeviceScene(player.getNetwork(), 4, 0, Device.DeviceType.SERVER, (EmptyDeviceTile) o);
-                    openWindow.setScreen(this);
-                    openWindow.open();
+            if (Gdx.input.isKeyPressed(Keys.SPACE) && gameScene == null) {
+                if (o instanceof Room.EmptyDeviceTile) {
+                    EmptyDeviceDialog open = new EmptyDeviceDialog();
+                    open.show(dialogStage);
                 } else if (o instanceof Device) {
                     d.getWindow().setScreen(this);
-                    openWindow = d.getWindow();
+                    gameScene = d.getWindow();
                     d.getWindow().open();
                 }
             }
@@ -218,12 +220,12 @@ public final class GameScreen extends HakdScreen {
         this.renderer = renderer;
     }
 
-    public Scene getOpenWindow() {
-        return openWindow;
+    public GameScene getGameScene() {
+        return gameScene;
     }
 
-    public void setOpenWindow(Scene openWindow) {
-        this.openWindow = openWindow;
+    public void setGameScene(GameScene gameScene) {
+        this.gameScene = gameScene;
     }
 
     public MapScreen getMap() {

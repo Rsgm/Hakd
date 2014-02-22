@@ -1,7 +1,7 @@
 package hakd.other.coreutils;
 
 import hakd.game.Command;
-import hakd.gui.windows.deviceapps.Terminal;
+import hakd.gui.windows.device.Terminal;
 import hakd.networks.devices.Device;
 
 import java.io.OutputStreamWriter;

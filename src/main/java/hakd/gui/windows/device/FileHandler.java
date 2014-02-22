@@ -1,4 +1,4 @@
-package hakd.gui.windows.deviceapps;
+package hakd.gui.windows.device;
 
 import hakd.other.File;
 

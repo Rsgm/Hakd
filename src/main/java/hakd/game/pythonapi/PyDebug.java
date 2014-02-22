@@ -4,7 +4,7 @@ import hakd.Main;
 import hakd.game.Internet;
 import hakd.game.gameplay.City;
 import hakd.game.gameplay.Player;
-import hakd.gui.windows.deviceapps.Terminal;
+import hakd.gui.windows.device.Terminal;
 import hakd.networks.Network;
 import hakd.networks.NetworkFactory;
 

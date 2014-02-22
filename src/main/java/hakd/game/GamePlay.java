@@ -10,6 +10,8 @@ import hakd.gui.screens.MapScreen;
 import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
 import hakd.networks.NetworkFactory;
+import hakd.networks.devices.Device;
+import hakd.networks.devices.DeviceFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -83,11 +85,14 @@ public final class GamePlay {
         }
 
         player = new Player(name, screen, playerCity);
-        Network n = NetworkFactory.createPlayerNetwork(player, playerCity, internet);
+        final Network network = NetworkFactory.createPlayerNetwork(player, playerCity, internet);
+        final Device device = DeviceFactory.createDevice(0, Device.DeviceType.SERVER);
+        network.setDeviceLimit(1);
+        network.addDevice(device);
 
         final InternetProviderNetwork isp = isps.get((int) (Math.random() * isps.size()));
-        internet.addNetworkToInternet(n, isp);
-        playerCity.addNetwork(n);
+        internet.addNetworkToInternet(network, isp);
+        playerCity.addNetwork(network);
         screen.setPlayer(player);
     }
 

@@ -111,7 +111,9 @@ public final class MenuScreen extends HakdScreen {
                 if (keycode == Input.Keys.ENTER && !commandRunning) {
                     display.setText(display.getText() + "\n\n" + System.getProperty("user.name") + " @ 127.0.0.1" + " : ~" + "\n$ " + input.getText());
                     history.add(input.getText());
+
                     Command(input.getText());
+
                     commandRunning = true;
                     line = history.size();
                     input.setText("");
@@ -251,7 +253,7 @@ public final class MenuScreen extends HakdScreen {
                     parameters.add(next);
                 }
 
-                Gdx.app.debug("Menu Command", s + parameters.toString());
+                Gdx.app.debug("Menu Command", s + " " + parameters.toString());
                 if (!parameters.isEmpty()) {
                     try {
                         runPython(parameters);

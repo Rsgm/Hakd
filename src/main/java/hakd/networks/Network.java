@@ -7,7 +7,7 @@ import hakd.game.Internet;
 import hakd.game.Noise;
 import hakd.game.gameplay.Character;
 import hakd.game.gameplay.City;
-import hakd.gui.EmptyDeviceTile;
+import hakd.gui.Room;
 import hakd.networks.devices.Device;
 
 import java.util.HashMap;
@@ -32,7 +32,7 @@ public class Network {
     // children device
     final Map<String, Device> devices = new HashMap<String, Device>();
     int deviceLimit; // The maximum allowable devices on the network, also the amount to generate is based on this value. This must be less than 255
-    Set<EmptyDeviceTile> EmptyDeviceTiles;
+    Set<Room.EmptyDeviceTile> EmptyDeviceTiles;
 
     // gui stuff
     Sprite mapIcon;
@@ -293,11 +293,11 @@ public class Network {
         this.deviceLimit = deviceLimit;
     }
 
-    public Set<EmptyDeviceTile> getEmptyDeviceTiles() {
+    public Set<Room.EmptyDeviceTile> getEmptyDeviceTiles() {
         return EmptyDeviceTiles;
     }
 
-    public void setEmptyDeviceTiles(Set<EmptyDeviceTile> emptyDeviceTiles) {
+    public void setEmptyDeviceTiles(Set<Room.EmptyDeviceTile> emptyDeviceTiles) {
         EmptyDeviceTiles = emptyDeviceTiles;
     }
 

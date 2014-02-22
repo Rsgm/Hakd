@@ -1,7 +1,7 @@
 package hakd.game.pythonapi;
 
 import hakd.game.Internet;
-import hakd.gui.windows.deviceapps.Terminal;
+import hakd.gui.windows.device.Terminal;
 
 public final class PyNetworking {
     private final Terminal terminal;

@@ -4,7 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.connection.Connectable;
 import hakd.connection.Connection;
 import hakd.connection.Port;
-import hakd.gui.windows.deviceapps.GameScene;
+import hakd.gui.windows.device.GameScene;
 import hakd.networks.Network;
 import hakd.networks.devices.parts.*;
 import hakd.networks.devices.parts.Part.Brand;

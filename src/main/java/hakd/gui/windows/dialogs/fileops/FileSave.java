@@ -1,11 +1,11 @@
-package hakd.gui.windows.fileops;
+package hakd.gui.windows.dialogs.fileops;
 
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import hakd.gui.Assets;
-import hakd.gui.windows.deviceapps.FileHandler;
+import hakd.gui.windows.device.FileHandler;
 import hakd.networks.devices.Device;
 import hakd.other.File;
 

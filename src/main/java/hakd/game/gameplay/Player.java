@@ -3,8 +3,7 @@ package hakd.game.gameplay;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import hakd.gui.Assets;
 import hakd.gui.screens.GameScreen;
-import hakd.gui.windows.deviceapps.GameScene;
-import hakd.networks.Network;
+import hakd.gui.windows.device.GameScene;
 import hakd.other.Util;
 
 public final class Player extends Character {
@@ -34,18 +33,6 @@ public final class Player extends Character {
 
     @Override
     public void update() {
-    }
-
-    public Network getNetwork() {
-        return network;
-    }
-
-    public void setNetwork(Network network) {
-        this.network = network;
-    }
-
-    public String getName() {
-        return name;
     }
 
     public GameScene getOpenWindow() {

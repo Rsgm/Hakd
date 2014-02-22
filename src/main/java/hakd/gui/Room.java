@@ -64,16 +64,6 @@ public final class Room {
             i++;
         }
 
-        // set sprites(tile) of network devices
-        for (Device d : devices.values()) {
-            d.setTile(new Sprite(Assets.nearestTextures.findRegion("d" + d.getLevel())));
-            d.getTile().setSize(d.getTile().getWidth() / GameScreen.tileSize, d.getTile().getHeight() / GameScreen.tileSize);
-
-            float[] ortho = Util.isoToOrtho(d.getIsoX(), d.getIsoY(), floor.getHeight());
-
-            d.getTile().setPosition(ortho[0], ortho[1]);
-        }
-
         // create unused device spaces and set their sprite to "d-1"
         for (Object[] o : mapObjects) {
             if (o[0] instanceof String && o[1] instanceof Integer && o[2] instanceof Integer) {
@@ -137,6 +127,34 @@ public final class Room {
 
     public void dispose() {
         map.dispose();
+    }
+
+    public static class EmptyDeviceTile {
+        int isoX;
+        int isoY;
+        private Sprite tile;
+
+        public EmptyDeviceTile(int x, int y) {
+            isoX = x;
+            isoY = y;
+
+        }
+
+        public int getIsoX() {
+            return isoX;
+        }
+
+        public int getIsoY() {
+            return isoY;
+        }
+
+        public Sprite getTile() {
+            return tile;
+        }
+
+        public void setTile(Sprite tile) {
+            this.tile = tile;
+        }
     }
 
     public Player getPlayer() {

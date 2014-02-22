@@ -45,7 +45,7 @@ public final class Internet {
     public Internet(HashMap<String, City> cities) {
         int backbones = cities.size();
         int isps = (int) (backbones * (Math.random() * 2 + 1));
-        int networks = 0;//(int) (isps * (Math.random() * 3 + 2));
+        int networks = (int) (isps * (Math.random() * 3 + 2));
 
         backboneProviderNetworksMap = new HashMap<String, BackboneProviderNetwork>(isps);
         internetProviderNetworksMap = new HashMap<String, InternetProviderNetwork>(backbones);

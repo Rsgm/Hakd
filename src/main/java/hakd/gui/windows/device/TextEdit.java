@@ -1,12 +1,12 @@
-package hakd.gui.windows.deviceapps;
+package hakd.gui.windows.device;
 
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import hakd.gui.windows.fileops.FileClose;
-import hakd.gui.windows.fileops.FileOpen;
-import hakd.gui.windows.fileops.FileSave;
+import hakd.gui.windows.dialogs.fileops.FileClose;
+import hakd.gui.windows.dialogs.fileops.FileOpen;
+import hakd.gui.windows.dialogs.fileops.FileSave;
 import hakd.other.File;
 
 public class TextEdit extends SceneWindow implements FileHandler {
@@ -108,7 +108,7 @@ public class TextEdit extends SceneWindow implements FileHandler {
     }
 
     private void updateScroll() {
-        int max = display.getLines() - ((int) display.getLinesShowing / 2f); // rounding should not matter too much
+        int max = display.getLines() - (int) (display.getLinesShowing() / 2f); // rounding should not matter too much
         max = max < 1 ? 1 : max;
 
         scroll.setRange(1, max);

@@ -6,7 +6,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
 import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import hakd.gui.windows.deviceapps.SceneWindow;
+import hakd.gui.windows.device.SceneWindow;
 
 public final class DesktopAppIcon extends ImageButton {
     private boolean dragged = true;

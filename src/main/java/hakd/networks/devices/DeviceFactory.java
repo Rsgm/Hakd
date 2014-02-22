@@ -1,6 +1,6 @@
 package hakd.networks.devices;
 
-import hakd.gui.windows.deviceapps.GameScene;
+import hakd.gui.windows.device.GameScene;
 import hakd.networks.Network;
 import hakd.networks.devices.parts.PartFactory;
 

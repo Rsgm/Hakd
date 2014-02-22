@@ -5,7 +5,7 @@ import hakd.game.pythonapi.PyDebug;
 import hakd.game.pythonapi.PyDisplay;
 import hakd.game.pythonapi.PyNetworking;
 import hakd.game.pythonapi.PyTest;
-import hakd.gui.windows.deviceapps.Terminal;
+import hakd.gui.windows.device.Terminal;
 import hakd.other.coreutils.FileUtils;
 import hakd.other.coreutils.ShellUtils;
 import hakd.other.coreutils.TextUtils;

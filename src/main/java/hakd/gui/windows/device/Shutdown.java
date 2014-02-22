@@ -1,4 +1,4 @@
-package hakd.gui.windows.deviceapps;
+package hakd.gui.windows.device;
 
 public final class Shutdown extends SceneWindow {
     private final GameScene window;
