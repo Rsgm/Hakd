@@ -16,15 +16,15 @@ import hakd.networks.devices.Device;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class Desktop {
-    private final GameScene window;
+public final class Desktop { // why not just combine this with deviceScene?
+    private final DeviceScene window;
     private final Group desktop;
     private final Device device;
     private final Set<Button> desktopApps;
 
     private final Image background;
 
-    public Desktop(GameScene w) {
+    public Desktop(DeviceScene w) {
         window = w;
         device = window.getDevice();
 
@@ -46,7 +46,7 @@ public final class Desktop {
         window.getCanvas().removeActor(desktop);
     }
 
-    private void defaultApps() {
+    private void defaultApps() { // TODO automate this
         Sprite s;
         Color c = new Color(.7f, .7f, .7f, 1f);
 
@@ -100,7 +100,7 @@ public final class Desktop {
         desktop.addActor(textEdit);
     }
 
-    public GameScene getWindow() {
+    public DeviceScene getWindow() {
         return window;
     }
 

@@ -8,7 +8,7 @@ import hakd.gui.input.GameInput;
 import hakd.gui.screens.GameScreen;
 import hakd.networks.devices.Device;
 
-public final class GameScene {
+public final class DeviceScene {
     private final Stage stage;
     private final Group canvas;
 
@@ -26,7 +26,8 @@ public final class GameScene {
     private GameScreen screen;
     private Shutdown shutdown;
 
-    public GameScene(Device d) {
+    public DeviceScene(GameScreen screen, Device d) {
+        this.screen = screen;
         stage = new Stage();
         device = d;
 
@@ -69,8 +70,8 @@ public final class GameScene {
 
     public void close() {
         canvas.clear();
-        screen.setGameScene(null);
-        Gdx.input.setInputProcessor(new GameInput(screen.getGame(), (OrthographicCamera) screen.getCam(), screen.getPlayer()));
+        screen.setDeviceScene(null);
+        Gdx.input.setInputProcessor(new GameInput(screen.getGame(), (OrthographicCamera) screen.getCam()));
     }
 
     public void setScreen(GameScreen screen) {

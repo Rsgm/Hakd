@@ -5,25 +5,25 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.InputProcessor;
 import com.badlogic.gdx.graphics.OrthographicCamera;
+import com.badlogic.gdx.math.Vector2;
+import com.badlogic.gdx.math.collision.Ray;
 import hakd.game.Hakd;
-import hakd.game.gameplay.Player;
+import hakd.gui.HakdSprite;
+import hakd.gui.Room;
 import hakd.gui.screens.GameScreen;
+import hakd.networks.devices.Device;
+import hakd.other.Util;
 
 public final class GameInput implements InputProcessor {
     private final Hakd game;
-
     private final OrthographicCamera cam;
-
-    private final Player player;
     private final GameScreen screen;
-
     private int lastMouseX;
     private int lastMouseY;
 
-    public GameInput(Game game, OrthographicCamera cam, Player player) {
+    public GameInput(Game game, OrthographicCamera cam) {
         this.game = (Hakd) game;
         this.cam = cam;
-        this.player = player;
         this.screen = (GameScreen) game.getScreen();
     }
 
@@ -36,7 +36,6 @@ public final class GameInput implements InputProcessor {
     public boolean keyUp(int keycode) {
         if (keycode == Keys.TAB) {
             game.setScreen(screen.getMap());
-
         }
         return true;
     }
@@ -53,18 +52,30 @@ public final class GameInput implements InputProcessor {
 
     @Override
     public boolean touchUp(int screenX, int screenY, int pointer, int button) {
-        return false;
+        Ray ray = cam.getPickRay(Gdx.input.getX(), Gdx.input.getY());
+
+        HakdSprite sprite = null;
+        for (Room.DeviceTile tile : screen.getRoom().getDeviceTileMap().values()) {
+            if (tile.getTile().getBoundingRectangle().contains(ray.origin.x, ray.origin.y)) {
+                sprite = tile.getTile();
+                break;
+            }
+        }
+
+        if (sprite != null && sprite.getObject() != null) {
+            screen.setDeviceScene(((Device) sprite.getObject()).getDeviceScene());
+            screen.getDeviceScene().open();
+        }
+        return true;
     }
 
     @Override
     public boolean touchDragged(int screenX, int screenY, int pointer) {
-        float height = screen.getRoom().getFloor().getHeight();
-        float width = screen.getRoom().getFloor().getWidth();
+        float height = screen.getRoom().getFloorLayer().getHeight();
+        float width = screen.getRoom().getFloorLayer().getWidth();
 
         float deltaX = (lastMouseX - screenX) / (Gdx.graphics.getWidth() / width) * cam.zoom;
         float deltaY = (screenY - lastMouseY) / (Gdx.graphics.getHeight() / height) * cam.zoom;
-
-//        System.out.println(deltaX + "	" + deltaY + "	" + cam.position.x + "	" + cam.position.y);
 
         cam.translate(deltaX, deltaY);
 
@@ -77,6 +88,11 @@ public final class GameInput implements InputProcessor {
     public boolean mouseMoved(int screenX, int screenY) {
         lastMouseX = screenX;
         lastMouseY = screenY;
+
+        Ray ray = cam.getPickRay(Gdx.input.getX(), Gdx.input.getY());
+        Vector2 vector2 = Util.orthoToIso(ray.origin.x, ray.origin.y);
+        System.out.println(ray.origin.toString() + "  -  " + vector2.toString() + "  -  " + Util.isoToOrtho(vector2.x, vector2.y).toString());
+
         return true;
     }
 

@@ -53,7 +53,7 @@ public final class MapScreen extends HakdScreen {
 
     private Noise.NoiseType currentBackground;
 
-    public static final int NOISE_GENERATION_SIZE = 800; // how many points to draw. default: 800, best quality would be around 2500
+    public static final int NOISE_GENERATION_SIZE = 512; // how many points to draw. default: 512(must be power of two), best quality would be around 2500
     public static final int NOISE_DISPLAY_SIZE = 50000; // how large of an area to spread the points out on. default: 50000
 //    private overlay mapOverlay;
 
@@ -64,7 +64,6 @@ public final class MapScreen extends HakdScreen {
         this.gameScreen = (GameScreen) game.getScreen();
 
         territoryBatch = new SpriteBatch();
-        territoryBatch.setShader(Assets.shaders.get(Assets.Shader.TERRITORY));
         networkSprites = new HashSet<Sprite>(internet.getNetworkMap().size());
         ispSprites = new HashSet<Sprite>(internet.getInternetProviderNetworksMap().size());
         territorySprites = new HashSet<Sprite>(internet.getInternetProviderNetworksMap().size());
@@ -72,6 +71,8 @@ public final class MapScreen extends HakdScreen {
         connectionLineSprites = new HashSet<Sprite>(50);
         parentLineSprites = new HashSet<Sprite>(internet.getNetworkMap().size());
         backboneLineSprites = new HashSet<Sprite>(internet.getBackboneProviderNetworksMap().size());
+
+        territoryBatch.setShader(Assets.shaders.get(Assets.Shader.TERRITORY));
 
         try {
             generateNoiseTexture(Noise.NoiseType.TERRAIN);
@@ -168,7 +169,7 @@ public final class MapScreen extends HakdScreen {
 
         for (City c : game.getGamePlay().getCityMap().values()) {
             c.getIcon().draw(batch);
-            Assets.font.draw(batch, c.getName(), c.getPosition().x, c.getPosition().y + 80);
+            Assets.textFont.draw(batch, c.getName(), c.getPosition().x, c.getPosition().y + 80);
         }
         batch.end();
 

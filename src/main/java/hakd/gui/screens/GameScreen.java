@@ -2,40 +2,29 @@ package hakd.gui.screens;
 
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.Input;
-import com.badlogic.gdx.Input.Keys;
 import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
-import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import hakd.game.GamePlay;
-import hakd.game.Hakd;
 import hakd.game.Internet;
+import hakd.game.gameplay.Character;
 import hakd.game.gameplay.Player;
-import hakd.gui.Assets;
 import hakd.gui.Room;
-import hakd.gui.Room.RoomMap;
 import hakd.gui.input.GameInput;
-import hakd.gui.windows.device.GameScene;
-import hakd.gui.windows.dialogs.EmptyDeviceDialog;
-import hakd.networks.devices.Device;
+import hakd.gui.windows.device.DeviceScene;
 
 public final class GameScreen extends HakdScreen {
-    private Player player;
-
-    public static final float tileSize = 64;
-
     private String playerName;
+    private Character player;
     private Room room;
-    private GameScene gameScene = null;
+    private DeviceScene deviceScene = null;
     private MapScreen map;
     private IsometricTiledMapRenderer renderer; // it says this is experimental, but it was an old article
     private GameInput input;
 
     private boolean firstTimeShown = true;
-    private final Stage dialogStage = new Stage();
+    private final Stage dialogStage = new Stage(); // TODO this will be the overlay
 
     public GameScreen(Game game, String playerName) {
         super(game);
@@ -46,9 +35,7 @@ public final class GameScreen extends HakdScreen {
     public void show() {
         super.show();
 
-        // this should all be in the constructor,
-        // but there is a bug where the top right 1/4th of the screen is white and all textures are white
-        // this somehow works
+        // this should all be in the constructor, but there is a bug where the top right 1/4th of the screen is white and all textures are white, this somehow works
         if (firstTimeShown) {
             firstTimeShown = false;
 
@@ -57,25 +44,20 @@ public final class GameScreen extends HakdScreen {
             }
 
             GamePlay gamePlay = new GamePlay(this, playerName);
-            ((Hakd) game).setGamePlay(gamePlay);
-
-            room = new Room(player, this, RoomMap.room1);
-
-            Sprite sprite = player.getSprite();
-            sprite.setSize(sprite.getWidth() / tileSize, sprite.getHeight() / tileSize);
+            (game).setGamePlay(gamePlay);
 
             cam = new OrthographicCamera();
-            ((OrthographicCamera) cam).setToOrtho(false, room.getFloor().getWidth(), room.getFloor().getHeight());
+            ((OrthographicCamera) cam).setToOrtho(false, room.getFloorLayer().getWidth(), room.getFloorLayer().getHeight());
             cam.update();
 
             renderer.setView((OrthographicCamera) cam);
             renderer.getSpriteBatch().setShader(gdxShader);
 
-            cam.position.x = room.getFloor().getWidth() / 2;
+            cam.position.x = room.getFloorLayer().getWidth() / 2;
             cam.position.y = 0;
 
             map = new MapScreen(game, gamePlay.getInternet());
-            input = new GameInput(game, (OrthographicCamera) cam, player);
+            input = new GameInput(game, (OrthographicCamera) cam);
 
             Gdx.input.setInputProcessor(input);
         }
@@ -91,61 +73,17 @@ public final class GameScreen extends HakdScreen {
         renderer.render();
 
         rBatch.begin();
-        for (Device d : player.getNetwork().getDevices().values()) {
-            d.getTile().draw(rBatch);
+        for (Room.DeviceTile t : room.getDeviceTileMap().values()) {
+            t.getTile().draw(rBatch);
         }
-        for (Room.EmptyDeviceTile e : player.getNetwork().getEmptyDeviceTiles()) {
-            e.getTile().draw(rBatch);
-        }
-
-        if (gameScene == null) {
-            updateMovement();
-            checkPosition(rBatch);
-        }
-
-        player.getSprite().draw(rBatch);
         rBatch.end();
 
-        if (gameScene != null) {
-            gameScene.render();
+        if (deviceScene != null) {
+            deviceScene.render();
         }
 
         dialogStage.act(Gdx.graphics.getDeltaTime());
         dialogStage.draw();
-    }
-
-    private void checkPosition(SpriteBatch batch) {
-        int x = player.getIsoX();
-        int y = player.getIsoY();
-
-        Object o = room.getObjectAtTile(x, y - 1);
-
-        if (o != null) {
-            Device d = null;
-            String code;
-            if (o instanceof Device) {
-                d = (Device) o;
-            } else if (o instanceof String) {
-                code = (String) o;
-            }
-
-            Sprite s = new Sprite(Assets.linearTextures.findRegion("spaceBarIcon"));
-            s.setPosition(player.getSprite().getX(), player.getSprite().getY() + 32 / tileSize);
-            s.setSize(16 / tileSize, 16 / tileSize);
-
-            s.draw(batch);
-
-            if (Gdx.input.isKeyPressed(Keys.SPACE) && gameScene == null) {
-                if (o instanceof Room.EmptyDeviceTile) {
-                    EmptyDeviceDialog open = new EmptyDeviceDialog();
-                    open.show(dialogStage);
-                } else if (o instanceof Device) {
-                    d.getWindow().setScreen(this);
-                    gameScene = d.getWindow();
-                    d.getWindow().open();
-                }
-            }
-        }
     }
 
     @Override
@@ -161,42 +99,7 @@ public final class GameScreen extends HakdScreen {
         Gdx.input.setInputProcessor(null);
     }
 
-    private void updateMovement() {
-        Input i = Gdx.input;
-
-        float x = 0;
-        float y = 0;
-        if ((i.isKeyPressed(Keys.W) || i.isKeyPressed(Keys.UP))) {
-            x += 1;
-            y += 1;
-        }
-        if (i.isKeyPressed(Keys.A) || i.isKeyPressed(Keys.LEFT)) {
-            x += -1;
-            y += 1;
-        }
-        if (i.isKeyPressed(Keys.S) || i.isKeyPressed(Keys.DOWN)) {
-            x += -1;
-            y += -1;
-        }
-        if (i.isKeyPressed(Keys.D) || i.isKeyPressed(Keys.RIGHT)) {
-            x += 1;
-            y += -1;
-        }
-
-        if (x < -1 || x > 1) {
-            x /= 2; // x does not equal 2
-        }
-
-        player.move(1.41f * x / tileSize, y / tileSize / 1.41f);
-        // these were at 1.5f each, they may need to be changed to account for screen size
-    }
-
-    public void changeMap(TiledMap map) { // TODO make a transition effect
-        renderer = new IsometricTiledMapRenderer(map, 1 / tileSize);
-        // tilesize has to be float, otherwise it will round
-    }
-
-    public Player getPlayer() {
+    public Character getPlayer() {
         return player;
     }
 
@@ -216,16 +119,12 @@ public final class GameScreen extends HakdScreen {
         return renderer;
     }
 
-    public void setRenderer(IsometricTiledMapRenderer renderer) {
-        this.renderer = renderer;
+    public DeviceScene getDeviceScene() {
+        return deviceScene;
     }
 
-    public GameScene getGameScene() {
-        return gameScene;
-    }
-
-    public void setGameScene(GameScene gameScene) {
-        this.gameScene = gameScene;
+    public void setDeviceScene(DeviceScene deviceScene) {
+        this.deviceScene = deviceScene;
     }
 
     public MapScreen getMap() {
@@ -238,5 +137,9 @@ public final class GameScreen extends HakdScreen {
 
     public void setInput(GameInput input) {
         this.input = input;
+    }
+
+    public void setRenderer(IsometricTiledMapRenderer renderer) {
+        this.renderer = renderer;
     }
 }

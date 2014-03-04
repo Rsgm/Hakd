@@ -1,10 +1,11 @@
 package hakd.networks.devices;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.math.Vector2;
 import hakd.connection.Connectable;
 import hakd.connection.Connection;
 import hakd.connection.Port;
-import hakd.gui.windows.device.GameScene;
+import hakd.gui.HakdSprite;
+import hakd.gui.windows.device.DeviceScene;
 import hakd.networks.Network;
 import hakd.networks.devices.parts.*;
 import hakd.networks.devices.parts.Part.Brand;
@@ -21,11 +22,9 @@ import java.util.Map;
 import java.util.Set;
 
 public class Device implements Connectable {
-    // stats
     Network network;
     int level;
     String ip = ""; // all network variables will be in IP format
-    String address;
 
     final Map<String, Connection> connections = new HashMap<String, Connection>();
     final Map<Integer, Port> ports = new HashMap<Integer, Port>(); // portNumber, program / if its closed just delete it
@@ -39,17 +38,15 @@ public class Device implements Connectable {
     int cpuSpeed; // in MHz, additive
     int gpuSpeed; // in MHz, additive
 
-
     // objects
     final Set<Part> parts = new HashSet<Part>();
     int partLimit;
     DeviceType type;
 
     // gui
-    int isoX; // isoX and isoY are first set in EmptyDeviceTile on room creation, then transferred to a the new device when bought, and back to an EmptyDeviceTile when trashed
-    int isoY;
-    GameScene window;
-    Sprite tile;
+    Vector2 isoPos;
+    DeviceScene deviceScene;
+    HakdSprite tile;
 
     // default files
     private final File root = new File("root", null); // root directory of the storage filesystem, rm -rf /
@@ -282,9 +279,12 @@ public class Device implements Connectable {
     }
 
     public final void dispose() {
+        // TODO stop terminal command threads
+
         for (Connection c : connections.values()) {
             disconnect(c);
         }
+
         for (Port p : ports.values()) {
             try {
                 closePort(p.getPortNumber());
@@ -295,8 +295,8 @@ public class Device implements Connectable {
 
         network.removeDevice(this);
         ip = null;
-        address = null;
         network = null;
+
     }
 
     public enum DeviceType {
@@ -364,12 +364,12 @@ public class Device implements Connectable {
         this.model = model;
     }
 
-    public GameScene getWindow() {
-        return window;
+    public DeviceScene getDeviceScene() {
+        return deviceScene;
     }
 
-    public void setWindow(GameScene window) {
-        this.window = window;
+    public void setDeviceScene(DeviceScene deviceScene) {
+        this.deviceScene = deviceScene;
     }
 
     public int getMemoryCapacity() {
@@ -388,11 +388,11 @@ public class Device implements Connectable {
         this.storageCapacity = storageCapacity;
     }
 
-    public Sprite getTile() {
+    public HakdSprite getTile() {
         return tile;
     }
 
-    public void setTile(Sprite tile) {
+    public void setTile(HakdSprite tile) {
         this.tile = tile;
     }
 
@@ -402,14 +402,6 @@ public class Device implements Connectable {
 
     public void setIp(String ip) {
         this.ip = ip;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
     }
 
     public Map<String, Connection> getConnections() {
@@ -432,22 +424,6 @@ public class Device implements Connectable {
         this.partLimit = partLimit;
     }
 
-    public int getIsoX() {
-        return isoX;
-    }
-
-    public void setIsoX(int isoX) {
-        this.isoX = isoX;
-    }
-
-    public int getIsoY() {
-        return isoY;
-    }
-
-    public void setIsoY(int isoY) {
-        this.isoY = isoY;
-    }
-
     public File getRoot() {
         return root;
     }
@@ -466,5 +442,13 @@ public class Device implements Connectable {
 
     public File getLog() {
         return log;
+    }
+
+    public Vector2 getIsoPos() {
+        return isoPos;
+    }
+
+    public void setIsoPos(Vector2 isoPos) {
+        this.isoPos = isoPos;
     }
 }

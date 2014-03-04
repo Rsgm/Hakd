@@ -9,12 +9,12 @@ import hakd.gui.Assets;
 import hakd.networks.devices.Device;
 
 public abstract class SceneWindow {
-    protected final GameScene scene;
+    protected final DeviceScene scene;
     protected final Window window;
     protected final Device device;
     protected final Skin skin = Assets.skin;
 
-    protected SceneWindow(GameScene scene) {
+    protected SceneWindow(DeviceScene scene) {
         this.scene = scene;
 
         window = new Window("", skin);
@@ -58,7 +58,7 @@ public abstract class SceneWindow {
         scene.getCanvas().removeActor(window);
     }
 
-    public GameScene getScene() {
+    public DeviceScene getScene() {
         return scene;
     }
 

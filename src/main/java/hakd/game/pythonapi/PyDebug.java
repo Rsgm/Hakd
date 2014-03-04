@@ -5,6 +5,7 @@ import hakd.game.Internet;
 import hakd.game.gameplay.City;
 import hakd.game.gameplay.Player;
 import hakd.gui.windows.device.Terminal;
+import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
 import hakd.networks.NetworkFactory;
 
@@ -23,8 +24,8 @@ public final class PyDebug {
         return Main.HAKD.getGamePlay().getPlayer();
     }
 
-    public Network createNetwork(City city, Internet internet) {
-        return NetworkFactory.createNetwork(Network.NetworkType.TEST, city, internet);
+    public Network createNetwork(City city, Internet internet, InternetProviderNetwork isp) {
+        return NetworkFactory.createNetwork(Network.NetworkType.TEST, isp);
     }
 
 

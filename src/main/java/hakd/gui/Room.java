@@ -3,86 +3,106 @@ package hakd.gui;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
+import com.badlogic.gdx.maps.objects.RectangleMapObject;
 import com.badlogic.gdx.maps.tiled.TiledMap;
 import com.badlogic.gdx.maps.tiled.TiledMapTileLayer;
 import com.badlogic.gdx.maps.tiled.TmxMapLoader;
+import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
+import com.badlogic.gdx.math.Vector2;
+import hakd.game.GamePlay;
+import hakd.game.gameplay.Character;
+import hakd.game.gameplay.City;
 import hakd.game.gameplay.Player;
-import hakd.gui.screens.GameScreen;
+import hakd.gui.windows.device.DeviceScene;
+import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
+import hakd.networks.NetworkFactory;
 import hakd.networks.devices.Device;
+import hakd.networks.devices.DeviceFactory;
 import hakd.other.Util;
 
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 public final class Room {
-    private Player player;
-    private Network network;
+    public static int TILE_SIZE;
+    public static int ROOM_HEIGHT;
+
+    private final Character player;
+    private final Network network;
     private final Map<String, Device> devices;
-    private final Set<EmptyDeviceTile> emptyDeviceTiles;
+    private final Map<Vector2, DeviceTile> deviceTileMap;
 
-    private TiledMap map;
-    private Object[][] mapObjects;
+    private final TiledMap map;
 
-    private TiledMapTileLayer floor;
-    private TiledMapTileLayer wall;
-    private MapLayer bounds; // if it matters, maybe rename this to wall/boundary layer
-    private TiledMapTileLayer objetcts; // Intractable tiles
+    private final TiledMapTileLayer floorLayer;
+    private final TiledMapTileLayer wallLayer;
+    private final MapLayer deviceLayer; // if it matters, maybe rename this to wall/boundary layer
+    private final TiledMapTileLayer objectLayer; // Interactable tiles?
 
-    private GameScreen gameScreen;
+    private final GamePlay gamePlay;
 
-    public Room(Player player, GameScreen gameScreen, RoomMap roomMap) {
+    public Room(Character player, GamePlay gamePlay, RoomMap roomMap) {
         this.player = player;
-        network = player.getNetwork();
+        this.gamePlay = gamePlay;
 
-        devices = network.getDevices();
-        emptyDeviceTiles = new HashSet<EmptyDeviceTile>();
+        ((Player) player).setRoom(this);
+        deviceTileMap = new HashMap<Vector2, DeviceTile>();
+
 
         map = new TmxMapLoader().load("maps/" + roomMap.toString() + ".tmx");
 
-        floor = (TiledMapTileLayer) map.getLayers().get("floor");
-        floor = (TiledMapTileLayer) map.getLayers().get("wall");
-        bounds = map.getLayers().get("bounds");
-        objetcts = (TiledMapTileLayer) map.getLayers().get("objects");
+        floorLayer = (TiledMapTileLayer) map.getLayers().get("floor");
+        wallLayer = (TiledMapTileLayer) map.getLayers().get("wall");
+        deviceLayer = map.getLayers().get("devices");
+        objectLayer = (TiledMapTileLayer) map.getLayers().get("objects");
 
-        int deviceLimit = Integer.parseInt((String) map.getProperties().get("devices"));
-        network.setDeviceLimit(deviceLimit);
+        ROOM_HEIGHT = floorLayer.getHeight();
+        TILE_SIZE = (int) floorLayer.getTileWidth();
 
         buildRoom();
-        gameScreen.changeMap(map);
+        gamePlay.getGameScreen().setRenderer(new IsometricTiledMapRenderer(map, 1f / TILE_SIZE)); // don't let this round, that is why 1 is a floatmap
+
+        if (player.getNetwork() == null) {
+            City playerCity = player.getCity();
+            List<InternetProviderNetwork> isps = new ArrayList<InternetProviderNetwork>(5);
+            for (Network n : playerCity.getNetworks().values()) {
+                if (n instanceof InternetProviderNetwork) {
+                    isps.add((InternetProviderNetwork) n);
+                }
+            }
+
+            network = NetworkFactory.createPlayerNetwork((Player) player, playerCity, gamePlay.getInternet());
+            InternetProviderNetwork isp = isps.get((int) (Math.random() * isps.size()));
+            gamePlay.getInternet().addNetworkToInternet(network, isp);
+            playerCity.addNetwork(network);
+            network.setDeviceLimit(1);
+
+            Device device = DeviceFactory.createDevice(0, Device.DeviceType.SERVER);
+            HakdSprite tile = new HakdSprite(Assets.nearestTextures.findRegion("d0"));
+            tile.setSize(tile.getWidth() / TILE_SIZE, tile.getHeight() / TILE_SIZE);
+            tile.setObject(device);
+            device.setTile(tile);
+            network.addDevice(device);
+        } else {
+            network = player.getNetwork();
+        }
+        int deviceLimit = deviceLayer.getObjects().getCount();
+        network.setDeviceLimit(deviceLimit);
+        devices = network.getDevices();
     }
 
     private void buildRoom() {
-        mapObjects = new Object[bounds.getObjects().getCount()][3];
-
-        int i = 0;
-        for (MapObject o : bounds.getObjects()) {
-            mapObjects[i][0] = o.getName();
-            mapObjects[i][1] = Integer.parseInt((String) o.getProperties().get("x"));
-            mapObjects[i][2] = Integer.parseInt((String) o.getProperties().get("y"));
-            i++;
-        }
-
-        // create unused device spaces and set their sprite to "d-1"
-        for (Object[] o : mapObjects) {
-            if (o[0] instanceof String && o[1] instanceof Integer && o[2] instanceof Integer) {
-
-                if (((String) o[0]).matches("device") && getObjectAtTile((Integer) o[1], (Integer) o[2]).equals("empty")) {
-                    EmptyDeviceTile emptyDeviceTile = new EmptyDeviceTile((Integer) o[1], (Integer) o[2]);
-
-                    emptyDeviceTile.setTile(new Sprite(Assets.nearestTextures.findRegion("d-1")));
-                    emptyDeviceTile.getTile().setSize(emptyDeviceTile.getTile().getWidth() / GameScreen.tileSize, emptyDeviceTile.getTile().getHeight() / GameScreen.tileSize);
-
-                    float[] ortho = Util.isoToOrtho((Integer) o[1], (Integer) o[2], floor.getHeight());
-
-                    emptyDeviceTile.getTile().setPosition(ortho[0], ortho[1]);
-
-                    emptyDeviceTiles.add(emptyDeviceTile);
-                }
+        for (MapObject o : deviceLayer.getObjects()) {
+            if (!(o instanceof RectangleMapObject)) {
+                continue;
             }
+            RectangleMapObject r = (RectangleMapObject) o; // all objects on the device layer will be rectangles
+
+            int x = Integer.parseInt((String) r.getProperties().get("x"));
+            int y = Integer.parseInt((String) r.getProperties().get("y"));
+            DeviceTile tile = new DeviceTile(x, y);
+            deviceTileMap.put(tile.isoPos, tile);
         }
-        network.setEmptyDeviceTiles(emptyDeviceTiles);
     }
 
     /**
@@ -92,30 +112,30 @@ public final class Room {
      * The string "other", if no device was found there.
      * Null if the tile in the map does not have an object.
      */
-    public Object getObjectAtTile(int x, int y) {
-        for (Device d : devices.values()) {
-            if (x == d.getIsoX() && y == d.getIsoY()) {
-                return d;
-            }
-        }
 
-        for (EmptyDeviceTile e : emptyDeviceTiles) {
-            if (x == e.getIsoX() && y == e.getIsoY()) {
-                return e;
-            }
-        }
+    public DeviceTile getDeviceAtTile(int x, int y) {
+        return deviceTileMap.get(new Vector2(x, y));
+    }
 
-        for (Object[] o : mapObjects) {
-            if (((Integer) o[1]) == x && ((Integer) o[2]) == y) {
-                if (o[0].equals("device")) {
-                    return "empty";
-                } else {
-                    return "other";
+    public void addDevice(Device device) {
+        if (deviceTileMap.containsKey(device.getIsoPos())) {
+            deviceTileMap.get(device.getIsoPos()).device = device;
+        } else { // if the device is not in the room, assign it to a random tile
+            for (DeviceTile tile : deviceTileMap.values()) { // due to the nature of a set, this should be considered random
+                if (tile.device == null) {
+                    Vector2 v = tile.getIsoPos();
+                    device.setIsoPos(v);
+                    tile.setDevice(device);
+                    break;
                 }
             }
         }
 
-        return null;
+        device.setDeviceScene(new DeviceScene(gamePlay.getGameScreen(), device));
+    }
+
+    public void removeDevice(Device device) {
+        deviceTileMap.get(device.getIsoPos()).device = null;
     }
 
     public enum RoomMap {
@@ -129,108 +149,89 @@ public final class Room {
         map.dispose();
     }
 
-    public static class EmptyDeviceTile {
-        int isoX;
-        int isoY;
-        private Sprite tile;
+    public static class DeviceTile {
+        final Vector2 isoPos;
+        Device device;
 
-        public EmptyDeviceTile(int x, int y) {
-            isoX = x;
-            isoY = y;
+        private static final Sprite TABLE;
+        private final HakdSprite table; // the default sprite if there is no device, or the empty device tile
 
+        static {
+            TABLE = new Sprite(Assets.nearestTextures.findRegion("d-1"));
+            TABLE.setSize(TABLE.getWidth() / TILE_SIZE, TABLE.getHeight() / TILE_SIZE);
         }
 
-        public int getIsoX() {
-            return isoX;
+        public DeviceTile(int x, int y) {
+            isoPos = new Vector2(x, y);
+
+            table = new HakdSprite(TABLE);
+            Vector2 pos = Util.isoToOrtho(isoPos.x, isoPos.y);
+            table.setPosition(pos.x, pos.y);
         }
 
-        public int getIsoY() {
-            return isoY;
+        public Vector2 getIsoPos() {
+            return isoPos;
         }
 
-        public Sprite getTile() {
-            return tile;
+        public HakdSprite getTile() {
+            if (device == null || device.getTile() == null) {
+                return table;
+            }
+
+            return device.getTile();
         }
 
-        public void setTile(Sprite tile) {
-            this.tile = tile;
+        public Device getDevice() {
+            return device;
+        }
+
+        public void setDevice(Device device) {
+            this.device = device;
+
+            if (device.getTile() != null) {
+                device.getTile().setPosition(table.getX(), table.getY());
+            }
         }
     }
 
-    public Player getPlayer() {
+    public Character getPlayer() {
         return player;
-    }
-
-    public void setPlayer(Player player) {
-        this.player = player;
     }
 
     public Network getNetwork() {
         return network;
     }
 
-    public void setNetwork(Network network) {
-        this.network = network;
-    }
-
     public TiledMap getMap() {
         return map;
     }
 
-    public void setMap(TiledMap map) {
-        this.map = map;
+    public TiledMapTileLayer getFloorLayer() {
+        return floorLayer;
     }
 
-    public TiledMapTileLayer getFloor() {
-        return floor;
+    public GamePlay getGamePlay() {
+        return gamePlay;
     }
 
-    public void setFloor(TiledMapTileLayer floor) {
-        this.floor = floor;
+    public TiledMapTileLayer getWallLayer() {
+        return wallLayer;
     }
 
-    public GameScreen getGameScreen() {
-        return gameScreen;
+    public MapLayer getDeviceLayer() {
+        return deviceLayer;
     }
 
-    public void setGameScreen(GameScreen gameScreen) {
-        this.gameScreen = gameScreen;
-    }
-
-    public Object[][] getMapObjects() {
-        return mapObjects;
-    }
-
-    public void setMapObjects(Object[][] mapObjects) {
-        this.mapObjects = mapObjects;
-    }
-
-    public TiledMapTileLayer getWall() {
-        return wall;
-    }
-
-    public void setWall(TiledMapTileLayer wall) {
-        this.wall = wall;
-    }
-
-    public MapLayer getBounds() {
-        return bounds;
-    }
-
-    public void setBounds(MapLayer bounds) {
-        this.bounds = bounds;
-    }
-
-    public TiledMapTileLayer getObjetcts() {
-        return objetcts;
-    }
-
-    public void setObjetcts(TiledMapTileLayer objetcts) {
-        this.objetcts = objetcts;
+    public TiledMapTileLayer getObjectLayer() {
+        return objectLayer;
     }
 
     public Map<String, Device> getDevices() {
         return devices;
+    }
+
+    public Map<Vector2, DeviceTile> getDeviceTileMap() {
+        return Collections.unmodifiableMap(deviceTileMap);
     }
 }
 
@@ -244,7 +245,7 @@ public final class Room {
  * temps, etc. The server room will start out with a desktop in the middle, and
  * could potentially scale up to data center sizes. This will allow for better
  * visuals and a more in control feeling than just being an admin on a terminal.
- * I have a feel that this is a terrible mistake.
+ * I have a feeling that this is a terrible mistake. // (months later trying to figure this out) probably due to the amount of work it will(has in hindsight) coasted
  * 
  * That means I will need a placement system for servers, like slots in the
  * room. I will also need graphics and 3d models on top of the 3d projection
@@ -261,4 +262,5 @@ public final class Room {
  * can ever despawn.
  *
  * Is this even relevant anymore?
+ * (talking to my past self again) Not really, but I will keep it as a reminder of what I saw in this game at that time.
  */

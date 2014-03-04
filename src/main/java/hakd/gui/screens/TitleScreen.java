@@ -44,7 +44,7 @@ public final class TitleScreen extends HakdScreen {
         game.setScreen(new MenuScreen(game)); // uncomment to skip title
 
         font = Assets.consoleFont;
-        creditFont = Assets.font;
+        creditFont = Assets.textFont;
 
         font.setColor(0f, 0f, 0f, 0f);
         creditFont.setColor(0.0f, 1f, 0.0f, 0.18f);

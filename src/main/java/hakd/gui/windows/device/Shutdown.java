@@ -1,9 +1,9 @@
 package hakd.gui.windows.device;
 
 public final class Shutdown extends SceneWindow {
-    private final GameScene window;
+    private final DeviceScene window;
 
-    public Shutdown(GameScene scene) {
+    public Shutdown(DeviceScene scene) {
         super(scene);
         window = scene;
     }

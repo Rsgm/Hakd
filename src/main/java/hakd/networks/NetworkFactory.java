@@ -8,6 +8,7 @@ import hakd.game.gameplay.City;
 import hakd.game.gameplay.Company;
 import hakd.game.gameplay.Player;
 import hakd.gui.Assets;
+import hakd.gui.HakdSprite;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.DeviceFactory;
 import hakd.networks.devices.Server;
@@ -20,16 +21,19 @@ public class NetworkFactory {
     /**
      * Create a network, and populate it, based on the type
      */
-    public static Network createNetwork(Network.NetworkType type, City city, Internet internet) {
+    public static Network createNetwork(Network.NetworkType type, InternetProviderNetwork isp) {
         Gdx.app.debug("Network Added", "Normal");
 
+        Internet internet = isp.getInternet();
+        City city = isp.getCity();
         Network network = createNetwork();
+
         int level = (int) (Math.random() * 8);
         Network.IpRegion ipRegion;
         Character owner;
         int deviceLimit;
         Network.Stance stance = Network.Stance.NEUTRAL; // TODO move stances to the npc/player classes
-        Sprite mapIcon;
+        HakdSprite mapIcon;
 
         switch (type) {
             case NPC:
@@ -37,7 +41,7 @@ public class NetworkFactory {
                 owner = new Character(network, Util.ganerateName(), city);
                 deviceLimit = 4;
                 stance = Network.Stance.NEUTRAL;
-                mapIcon = Assets.linearTextures.createSprite("network");
+                mapIcon = new HakdSprite(Assets.linearTextures.findRegion("network"));
                 mapIcon.setSize(50, 50);
                 break;
             case TEST:
@@ -45,14 +49,14 @@ public class NetworkFactory {
                 owner = new Character(network, Util.ganerateName(), city);
                 deviceLimit = 32;
                 stance = Network.Stance.NEUTRAL;
-                mapIcon = Assets.linearTextures.createSprite("network");
+                mapIcon = new HakdSprite(Assets.linearTextures.findRegion("network"));
                 mapIcon.setSize(50, 50);
                 break;
             case BUSINESS: // company // random company
                 ipRegion = Network.IpRegion.BUSINESS;
                 owner = new Company(network, Util.ganerateName(), city);
                 deviceLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
-                mapIcon = Assets.linearTextures.createSprite("network");
+                mapIcon = new HakdSprite(Assets.linearTextures.findRegion("network"));
                 mapIcon.setSize(50, 50);
                 break;
             default: // copied from the npc case
@@ -60,19 +64,9 @@ public class NetworkFactory {
                 owner = new Character(network, Util.ganerateName(), city);
                 deviceLimit = 4;
                 stance = Network.Stance.NEUTRAL;
-                mapIcon = Assets.linearTextures.createSprite("network");
+                mapIcon = new HakdSprite(Assets.linearTextures.findRegion("network"));
                 mapIcon.setSize(50, 50);
                 break;
-        }
-
-        // used to add randomness to the amount of servers to make given serverLimit
-        int d = (int) Math.round(deviceLimit * (Math.random() * 0.35 + 0.65));
-
-        for (int i = 0; i < d; i++) { // create servers on the network
-            Server server = (Server) DeviceFactory.createDevice(Device.DeviceType.SERVER);
-            network.addDevice(server);
-            server.setNetwork(network);
-
         }
 
         network.setLevel(level);
@@ -83,7 +77,18 @@ public class NetworkFactory {
         network.setOwner(owner);
         network.setInternet(internet);
 
+        internet.addNetworkToInternet(network, isp);
         network.placeNetwork(Network.networkRegionSize);
+
+        // used to add randomness to the amount of servers to make given serverLimit
+        int d = (int) Math.round(deviceLimit * (Math.random() * 0.35 + 0.65));
+
+        for (int i = 0; i < d; i++) { // create servers on the network
+            Server server = (Server) DeviceFactory.createDevice(Device.DeviceType.SERVER);
+            network.addDevice(server);
+            server.setNetwork(network);
+
+        }
 
         return network;
     }
@@ -104,7 +109,7 @@ public class NetworkFactory {
         network.setCity(city);
         network.setInternet(internet);
 
-        Sprite s = Assets.linearTextures.createSprite("playerNetwork");
+        HakdSprite s = new HakdSprite(Assets.linearTextures.findRegion("playerNetwork"));
         network.setMapIcon(s);
         network.getMapIcon().setSize(50, 50);
         network.placeNetwork(Network.networkRegionSize);
@@ -137,7 +142,7 @@ public class NetworkFactory {
         isp.setCity(city);
         //		isp.setOwner(InternetProviderNetwork.IspName.values()[(int) (Math.random() * InternetProviderNetwork.IspName.values().length)].toString());
 
-        Sprite s = Assets.linearTextures.createSprite("ispNetwork");
+        HakdSprite s = new HakdSprite(Assets.linearTextures.findRegion("ispNetwork"));
         isp.setMapIcon(s);
         isp.getMapIcon().setSize(75, 75);
 
@@ -153,6 +158,16 @@ public class NetworkFactory {
             isp.placeNetwork(Network.networkRegionSize);
         } else {
             isp.placeNetwork(Network.ispRegionSize);
+        }
+
+        int amount = (int) (Math.random() * Internet.NETWORK_MULTIPLIER + 2);
+        for (int i = 0; i < amount; i++) {
+            if (isp.getIpChildNetworkHashMap().size() < 256) {
+                Network network = NetworkFactory.createNetwork(Network.NetworkType.NPC, isp);
+                city.addNetwork(network);
+            } else {
+                break;
+            }
         }
 
         return isp;
@@ -174,8 +189,8 @@ public class NetworkFactory {
         backbone.setCity(city);
 
         backbone.parent = null;
-        backbone.mapIcon = Assets.linearTextures.createSprite("backboneNetwork");
-        backbone.mapIcon.setSize(100, 100);
+        backbone.setMapIcon(new HakdSprite(Assets.linearTextures.findRegion("backboneNetwork")));
+        backbone.getMapIcon().setSize(100, 100);
         backbone.backboneConnectionLines = new HashSet<Sprite>();
 
         boolean containsNetworks = false;

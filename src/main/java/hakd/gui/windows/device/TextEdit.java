@@ -4,6 +4,7 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
+import hakd.gui.Assets;
 import hakd.gui.windows.dialogs.fileops.FileClose;
 import hakd.gui.windows.dialogs.fileops.FileOpen;
 import hakd.gui.windows.dialogs.fileops.FileSave;
@@ -14,13 +15,14 @@ public class TextEdit extends SceneWindow implements FileHandler {
     private final Slider scroll;
     private final Table buttonTable;
 
+    private final Button newFile;
     private final Button open;
     private final Button save;
     private final Button close;
 
     private File file;
 
-    public TextEdit(GameScene scene) {
+    public TextEdit(DeviceScene scene) {
         super(scene);
         window.setTitle("TextEdit");
 
@@ -28,17 +30,34 @@ public class TextEdit extends SceneWindow implements FileHandler {
         display = new TextArea("", skin.get("text-edit", TextField.TextFieldStyle.class));
         scroll = new Slider(1, 1, 1, true, skin);
 
-        open = new TextButton("Open", skin);
-        save = new TextButton("Save", skin);
+        newFile = new Button(skin);
+        open = new Button(skin);
+        save = new Button(skin);
         close = new TextButton("Close", skin);
+        newFile.add(new Image(Assets.linearTextures.findRegion("file")));
+        open.add(new Image(Assets.linearTextures.findRegion("folder")));
+        save.add(new Image(Assets.linearTextures.findRegion("save")));
+//        close.add(new Image(Assets.linearTextures.findRegion("close")));
 
-        buttonTable.add(open, save, close);
-
+        buttonTable.add(newFile, open, save, close);
         window.add(buttonTable).left();
         window.row();
         window.add(display).expand().fill();
         window.add(scroll).expandY().fill();
 
+        newFile.addListener(new ClickListener() {
+            @Override
+            public void clicked(InputEvent event, float x, float y) {
+                super.clicked(event, x, y);
+                if (isModified()) {
+                    FileSave save = new FileSave(device, TextEdit.this);
+                    save.show(TextEdit.this.scene.getStage());
+                } else {
+                    file = null;
+                    display.setText("");
+                }
+            }
+        });
         open.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
@@ -51,21 +70,18 @@ public class TextEdit extends SceneWindow implements FileHandler {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-
-                if (file == null && isModified()) {
+                if (isModified()) {
                     FileSave save = new FileSave(device, TextEdit.this);
                     save.show(TextEdit.this.scene.getStage());
                 } else {
                     save();
                 }
-
             }
         });
         close.addListener(new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
-
                 if (isModified()) {
                     FileClose close = new FileClose(device, TextEdit.this);
                     close.show(TextEdit.this.scene.getStage());

@@ -21,7 +21,7 @@ public final class Assets {
 
     public static Skin skin;
 
-    public static BitmapFont font;
+    public static BitmapFont textFont;
     public static BitmapFont consoleFont;
     public static Color fontColor;
     public static Color consoleFontColor;
@@ -32,22 +32,22 @@ public final class Assets {
         nearestTextures = new TextureAtlas(Gdx.files.internal("nTextures.txt"));
         linearTextures = new TextureAtlas(Gdx.files.internal("lTextures.txt"));
 
-        // I used black because it is a texture that will not change
-        nearestTextures.findRegion("black").getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
-
         skin = new Skin(Gdx.files.internal("skins/uiskin.json"));
 
-        font = skin.getFont("default-font");
-        consoleFont = skin.getFont("console-font");
+        textFont = skin.getFont("text-font");
         fontColor = new Color(1.0f, 1.0f, 1.0f, 1.0f);
-        consoleFontColor = new Color(0.0f, 0.7f, 0.0f, 1.0f);
-        font.setColor(fontColor);
-        consoleFont.setColor(consoleFontColor);
+        textFont.setColor(fontColor);
+        textFont.setScale(.6f);
 
-        font.setScale(1f);
+        consoleFont = skin.getFont("console-font");
+        consoleFontColor = new Color(0.0f, 0.7f, 0.0f, 1.0f);
+        consoleFont.setColor(consoleFontColor);
         consoleFont.setScale(.6f);
 
-        skin.getFont("console-font-0").getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+        // I used black because it is a texture that will not change
+        nearestTextures.findRegion("black").getTexture().setFilter(TextureFilter.Nearest, TextureFilter.Nearest);
+        textFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
+        consoleFont.getRegion().getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
         skin.getAtlas().findRegion("default").getTexture().setFilter(TextureFilter.Linear, TextureFilter.Linear);
 
         generateShaders();
@@ -90,6 +90,6 @@ public final class Assets {
     }
 
     public enum Shader {
-        GDX_DEFAULT, DEFAULT, TERRITORY;
+        GDX_DEFAULT, DEFAULT, TERRITORY
     }
 }

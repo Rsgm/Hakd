@@ -1,8 +1,10 @@
 package hakd.gui.windows.dialogs.fileops;
 
 
+import com.badlogic.gdx.scenes.scene2d.Actor;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
+import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import hakd.gui.Assets;
 import hakd.gui.windows.device.FileHandler;
@@ -20,8 +22,9 @@ public class FileSave extends Dialog {
         Button save = new TextButton("Save", skin);
         Button cancel = new TextButton("Cancel", skin);
 
-        fileTree.setMultiSelect(false);
+        fileTree.getSelection().setMultiple(false);
         fileTree.add(AddFilesToTree(device.getRoot()));
+//        fileTree.getSelection().setActor(fileName);
 
         getButtonTable().add(fileName);
         button(save);
@@ -33,16 +36,10 @@ public class FileSave extends Dialog {
 
         System.out.println(getContentTable().getWidth() + "   " + getContentTable().getHeight());
 
-        fileTree.addListener(new ClickListener() {
+        fileTree.addListener(new ChangeListener() {
             @Override
-            public void clicked(InputEvent event, float x, float y) {
-                super.clicked(event, x, y);
-
-                if (fileTree.getSelection().size == 0) {
-                    return;
-                }
-
-                File file = (File) fileTree.getSelection().get(0).getObject();
+            public void changed(ChangeEvent event, Actor actor) {
+                File file = (File) fileTree.getSelection().first().getObject();
                 if (file != null && !file.isDirectory()) {
                     System.out.println(file.getPath());
                     fileName.setText(file.getName()); // there is an error with getting root dir from its path
@@ -54,11 +51,11 @@ public class FileSave extends Dialog {
             public void clicked(InputEvent event, float x, float y) {
                 super.clicked(event, x, y);
 
-                if (fileTree.getSelection().size == 0 || fileName.getText().isEmpty()) {
+                if (fileTree.getSelection().isEmpty() || fileName.getText().isEmpty()) {
                     FileSave.this.cancel();
                 }
 
-                Tree.Node selection = fileTree.getSelection().get(0);
+                Tree.Node selection = fileTree.getSelection().first();
                 File dir;
                 if (((File) selection.getObject()).isDirectory()) {
                     dir = (File) selection.getObject();

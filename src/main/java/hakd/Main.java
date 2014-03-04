@@ -11,7 +11,6 @@ public final class Main {
         LwjglApplicationConfiguration config = new LwjglApplicationConfiguration();
         config.resizable = false;
         config.samples = 8; // can go to 16 or 32 I think
-        config.useGL20 = true;
         config.title = "Hak'd";
         new LwjglApplication(HAKD, config);
     }

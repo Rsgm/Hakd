@@ -37,7 +37,7 @@ public final class Terminal extends SceneWindow {
     private final InputStream inputStream;
     private Thread commandThread;
 
-    public Terminal(GameScene scene) {
+    public Terminal(DeviceScene scene) {
         super(scene);
         device = this.scene.getDevice();
         directory = device.getHome();

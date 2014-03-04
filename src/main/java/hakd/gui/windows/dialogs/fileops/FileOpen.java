@@ -16,7 +16,7 @@ public class FileOpen extends Dialog {
         super("Open", Assets.skin);
 
         final Tree fileTree = new Tree(skin);
-        fileTree.setMultiSelect(false);
+        fileTree.getSelection().setMultiple(false);
         fileTree.add(AddFilesToTree(device.getRoot()));
 
         text("Select a file to open");
@@ -37,11 +37,11 @@ public class FileOpen extends Dialog {
                     closeDialog.show(getStage());
                 }
 
-                if (fileTree.getSelection().size == 0 || ((File) fileTree.getSelection().get(0).getObject()).isDirectory()) {
+                if (fileTree.getSelection().isEmpty() || ((File) fileTree.getSelection().first().getObject()).isDirectory()) {
                     return;
                 }
 
-                fileHandler.openFile((File) fileTree.getSelection().get(0).getObject());
+                fileHandler.openFile((File) fileTree.getSelection().first().getObject());
             }
         });
     }

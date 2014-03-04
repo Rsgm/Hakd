@@ -5,13 +5,11 @@ import com.badlogic.gdx.math.Vector2;
 import hakd.game.gameplay.Character;
 import hakd.game.gameplay.City;
 import hakd.game.gameplay.Player;
+import hakd.gui.Room;
 import hakd.gui.screens.GameScreen;
 import hakd.gui.screens.MapScreen;
 import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
-import hakd.networks.NetworkFactory;
-import hakd.networks.devices.Device;
-import hakd.networks.devices.DeviceFactory;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -19,9 +17,13 @@ import java.util.HashMap;
 import java.util.List;
 
 public final class GamePlay {
+    private static final float ROOM_UPDATE_SPEED = 1;
+    private static final float CHARACTERMAP_UPDATE_SPEED = 3;
+    private static final float CHARACTER_UPDATE_SPEED = 1;
+
     private final Internet internet;
     private Player player;
-    private final GameScreen screen;
+    private final GameScreen gameScreen;
 
     private final HashMap<String, Character> characterMap;
     private final HashMap<String, City> cityMap;
@@ -29,11 +31,8 @@ public final class GamePlay {
     private Thread updateThread;
     private boolean active;
 
-    private int tutorialPos = 0;
-    private boolean tutorialEnabled = true;
-
     public GamePlay(GameScreen screen, String name) {
-        this.screen = screen;
+        this.gameScreen = screen;
         cityMap = new HashMap<String, City>();
         characterMap = new HashMap<String, Character>();
 
@@ -48,7 +47,7 @@ public final class GamePlay {
         makeHackers();
         makePlayer(name);
 
-        startCharacterUpdateTrhead();
+        startUpdateThread();
     }
 
     private void makeCompanies() {
@@ -66,37 +65,25 @@ public final class GamePlay {
     private void makePlayer(String name) {
         List<City> citiesSuffled = new ArrayList<City>(cityMap.values());
         Collections.shuffle(citiesSuffled);
-        City playerCity = citiesSuffled.get(0); // I only initialize it because intellij yells at me
-        List<InternetProviderNetwork> isps = new ArrayList<InternetProviderNetwork>(5);
+        City playerCity = null;
 
         for (City c : citiesSuffled) {
             playerCity = c;
-
-            isps.clear();
             for (Network n : playerCity.getNetworks().values()) {
                 if (n instanceof InternetProviderNetwork) {
-                    isps.add((InternetProviderNetwork) n);
+                    break;
                 }
-            }
-
-            if (!isps.isEmpty()) {
-                break;
             }
         }
 
-        player = new Player(name, screen, playerCity);
-        final Network network = NetworkFactory.createPlayerNetwork(player, playerCity, internet);
-        final Device device = DeviceFactory.createDevice(0, Device.DeviceType.SERVER);
-        network.setDeviceLimit(1);
-        network.addDevice(device);
+        player = new Player(name, playerCity);
 
-        final InternetProviderNetwork isp = isps.get((int) (Math.random() * isps.size()));
-        internet.addNetworkToInternet(network, isp);
-        playerCity.addNetwork(network);
-        screen.setPlayer(player);
+        Room room = new Room(player, this, Room.RoomMap.room1);
+        gameScreen.setRoom(room);
+        gameScreen.setPlayer(player);
     }
 
-    private void startCharacterUpdateTrhead() {
+    private void startUpdateThread() {
         active = true;
         updateThread = new Thread(new Runnable() {
             public float timer = 0;
@@ -108,20 +95,23 @@ public final class GamePlay {
 
                 updateCharacterMap();
                 while (active) {
-                    timer += (System.currentTimeMillis() - lastTime) / 1000f;
                     try {
                         Thread.sleep(50);
                     } catch (InterruptedException e) {
                         Gdx.app.error("GamePlay Thread", "Insomnia", e);
                         e.printStackTrace();
                     }
+                    float deltaTime = (System.currentTimeMillis() - lastTime) / 1000.0f;
+                    timer += deltaTime;
 
-                    if (timer >= 3) {
-                        timer = 0;
+                    if (timer % CHARACTERMAP_UPDATE_SPEED <= deltaTime) {
                         updateCharacterMap();
                     }
 
-                    update();
+                    if (timer % CHARACTER_UPDATE_SPEED <= deltaTime) {
+                        updateCharacters();
+                    }
+
                     lastTime = System.currentTimeMillis();
                 }
             }
@@ -129,7 +119,7 @@ public final class GamePlay {
         updateThread.start();
     }
 
-    private void update() {
+    private void updateCharacters() {
         for (Character c : characterMap.values()) {
             c.update();
         }
@@ -146,7 +136,7 @@ public final class GamePlay {
     private void makeCities(float minDensity, int minDist) {
         float w = City.width / 2;
         float h = City.height / 2;
-        int density = 500; // how close to gether to pick the possible city generation points (this should be smaller than the map density)
+        int density = 500; // how close together to pick the possible city generation points (this should be smaller than the map density)
 
         for (int y = 0; y < density; y++) {
             l:
@@ -171,16 +161,6 @@ public final class GamePlay {
             }
             Gdx.app.debug("Generating Cities", (float) y / density * 100 + "% done");
         }
-
-    }
-
-    public void openTutorial() {
-        if (!tutorialEnabled) {
-            return;
-        }
-
-        tutorialPos++;
-        // tutorial code
     }
 
     public void dispose() {
@@ -189,22 +169,6 @@ public final class GamePlay {
 
     public HashMap<String, City> getCityMap() {
         return cityMap;
-    }
-
-    public int getTutorialPos() {
-        return tutorialPos;
-    }
-
-    public void setTutorialPos(int tutorialPos) {
-        this.tutorialPos = tutorialPos;
-    }
-
-    public boolean isTutorialEnabled() {
-        return tutorialEnabled;
-    }
-
-    public void setTutorialEnabled(boolean tutorialEnabled) {
-        this.tutorialEnabled = tutorialEnabled;
     }
 
     public Internet getInternet() {
@@ -217,5 +181,9 @@ public final class GamePlay {
 
     public HashMap<String, Character> getCharacterMap() {
         return characterMap;
+    }
+
+    public GameScreen getGameScreen() {
+        return gameScreen;
     }
 }

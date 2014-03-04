@@ -7,12 +7,12 @@ import hakd.game.Internet;
 import hakd.game.Noise;
 import hakd.game.gameplay.Character;
 import hakd.game.gameplay.City;
-import hakd.gui.Room;
+import hakd.game.gameplay.Player;
+import hakd.gui.HakdSprite;
 import hakd.networks.devices.Device;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * A network represents a collection of devices.
@@ -32,10 +32,9 @@ public class Network {
     // children device
     final Map<String, Device> devices = new HashMap<String, Device>();
     int deviceLimit; // The maximum allowable devices on the network, also the amount to generate is based on this value. This must be less than 255
-    Set<Room.EmptyDeviceTile> EmptyDeviceTiles;
 
     // gui stuff
-    Sprite mapIcon;
+    private HakdSprite mapIcon;
     Sprite mapParentLine;
     Vector2 pos; // holds the position of the center of the sprite
 
@@ -53,9 +52,14 @@ public class Network {
      * Removes a device from the network, as well as disposes it, removing any
      * connections.
      */
-    public final void removeDevice(Device d) {
-        devices.remove(d);
-        d.dispose();
+    public final void removeDevice(Device device) {
+        devices.remove(device.getIp());
+        device.dispose();
+
+        if (owner instanceof Player) {
+            device.getTile().setObject(null);
+            ((Player) owner).getRoom().removeDevice(device);
+        }
     }
 
     /**
@@ -72,6 +76,10 @@ public class Network {
 
         device.setIp(ip);
         device.setNetwork(this);
+
+        if (owner instanceof Player) {
+            ((Player) owner).getRoom().addDevice(device);
+        }
         return true;
     }
 
@@ -172,7 +180,7 @@ public class Network {
     }
 
     public enum Stance {
-        FRIENDLY, NEUTRAL, ENEMY; // TODO do I want to give the network or the npc a stance?
+        FRIENDLY, NEUTRAL, ENEMY // TODO do I want to give the network or the npc a stance?
     }
 
     public enum IpRegion {
@@ -187,19 +195,6 @@ public class Network {
             this.max = max;
         }
     }
-
-    public enum Owner {
-        COMPANY("Company"), TEST("Test"); // these will be replaced with better
-        // ones
-
-        public final String company;
-
-        Owner(String company) {
-            this.company = company;
-        }
-
-    }
-
 
     public int getLevel() {
         return level;
@@ -293,20 +288,13 @@ public class Network {
         this.deviceLimit = deviceLimit;
     }
 
-    public Set<Room.EmptyDeviceTile> getEmptyDeviceTiles() {
-        return EmptyDeviceTiles;
-    }
-
-    public void setEmptyDeviceTiles(Set<Room.EmptyDeviceTile> emptyDeviceTiles) {
-        EmptyDeviceTiles = emptyDeviceTiles;
-    }
-
-    public Sprite getMapIcon() {
+    public HakdSprite getMapIcon() {
         return mapIcon;
     }
 
-    public void setMapIcon(Sprite mapIcon) {
+    public void setMapIcon(HakdSprite mapIcon) {
         this.mapIcon = mapIcon;
+        mapIcon.setObject(this);
     }
 
     public Sprite getMapParentLine() {

@@ -163,6 +163,9 @@
             <filename>graphics/playerNetwork.png</filename>
             <filename>graphics/network.png</filename>
             <filename>graphics/circle.png</filename>
+            <filename>graphics/save.png</filename>
+            <filename>graphics/file.png</filename>
+            <filename>graphics/folder.png</filename>
         </array>
         <key>ignoreFileList</key>
         <array/>

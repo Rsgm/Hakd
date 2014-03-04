@@ -32,4 +32,8 @@ public class Character {
     public void setNetwork(Network network) {
         this.network = network;
     }
+
+    public City getCity() {
+        return city;
+    }
 }

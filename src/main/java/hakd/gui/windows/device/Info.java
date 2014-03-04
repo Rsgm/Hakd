@@ -16,7 +16,7 @@ public final class Info extends SceneWindow {
     private final Table table;
     private final ImageButton close;
 
-    public Info(GameScene w) {
+    public Info(DeviceScene w) {
         super(w);
 
         infoWindow = new Window(device.getType() + " info", skin);

@@ -1,25 +1,38 @@
 {
 
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    default-font: { file: default.fnt }
+    DejaVu-Sans-Mono: { file: font/Fonts_0.fnt }
 },
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    console-font-0: { file: Dejavu_Sans_Mono.fnt }
+    Droid-Sans-Mono: { file: font/Fonts_1.fnt }
 },
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    console-font-1: { file: Droid_Sans_Mono.fnt }
+    FreeMono: { file: font/Fonts_2.fnt }
 },
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    console-font-2: { file: Free_Mono.fnt }
+    Droid-Sans: { file: font/Fonts_3.fnt }
 },
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    console-font-3: { file: Ubuntu_Mono.fnt }
+    DejaVu-Sans: { file: font/Fonts_4.fnt }
 },
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    console-font-4: { file: White_Rabbit.fnt }
+    FreeSans: { file: font/Fonts_5.fnt }
 },
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    console-font: console-font-0
+    White-Rabbit: { file: font/Fonts_6.fnt }
+},
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+    Ubuntu: { file: font/Fonts_7.fnt }
+},
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+    Ubuntu-Mono: { file: font/Fonts_8.fnt }
+},
+
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+    text-font: Ubuntu
+},
+com.badlogic.gdx.graphics.g2d.BitmapFont: {
+    console-font: DejaVu-Sans-Mono
 },
 
 com.badlogic.gdx.graphics.Color: {
@@ -37,17 +50,17 @@ com.badlogic.gdx.scenes.scene2d.ui.Button$ButtonStyle: {
 	toggle: { down: default-round-down, checked: default-round-down, up: default-round }
 },
 com.badlogic.gdx.scenes.scene2d.ui.TextButton$TextButtonStyle: {
-	default: { down: default-round-down, up: default-round, font: default-font, fontColor: white },
-	toggle: { down: default-round-down, up: default-round, checked: default-round-down, font: default-font, fontColor: white, downFontColor: red }
+	default: { down: default-round-down, up: default-round, font: text-font, fontColor: white },
+	toggle: { down: default-round-down, up: default-round, checked: default-round-down, font: text-font, fontColor: white, downFontColor: red }
 },
 com.badlogic.gdx.scenes.scene2d.ui.ScrollPane$ScrollPaneStyle: {
 	default: { vScroll: default-scroll, hScrollKnob: default-round-large, background: default-rect, hScroll: default-scroll, vScrollKnob: default-round-large }
 },
 com.badlogic.gdx.scenes.scene2d.ui.SelectBox$SelectBoxStyle: {
 	default: {
-		font: default-font, fontColor: white, background: default-select,
+		font: text-font, fontColor: white, background: default-select,
 		scrollStyle: default,
-		listStyle: { font: default-font, selection: default-select-selection }
+		listStyle: { font: text-font, selection: default-select-selection }
 	}
 },
 com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
@@ -55,27 +68,27 @@ com.badlogic.gdx.scenes.scene2d.ui.SplitPane$SplitPaneStyle: {
 	default-horizontal: { handle: default-splitpane }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Window$WindowStyle: {
-	default: { titleFont: default-font, background: default-window, titleFontColor: white },
-	dialog: { titleFont: default-font, background: default-window, titleFontColor: white, stageBackground: dialogDim }
+	default: { titleFont: text-font, background: default-window, titleFontColor: white },
+	dialog: { titleFont: text-font, background: default-window, titleFontColor: white, stageBackground: dialogDim }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Slider$SliderStyle: {
 	default-horizontal: { background: default-slider, knob: default-slider-knob },
 	default-vertical: { background: default-slider, knob: default-slider-knob }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Label$LabelStyle: {
-	default: { font: default-font, fontColor: white },
+	default: { font: text-font, fontColor: white },
 	console: { font: console-font, fontColor: green }
 },
 com.badlogic.gdx.scenes.scene2d.ui.TextField$TextFieldStyle: {
-	default: { selection: selection, background: textfield, font: default-font, fontColor: white, cursor: cursor },
+	default: { selection: selection, background: textfield, font: text-font, fontColor: white, cursor: cursor },
 	console: { selection: selection, background: textfield, font: console-font, fontColor: green, cursor: cursor },
 	text-edit: { selection: selection, background: textfield, font: console-font, fontColor: white, cursor: cursor }
 },
 com.badlogic.gdx.scenes.scene2d.ui.CheckBox$CheckBoxStyle: {
-	default: { checkboxOn: check-on, checkboxOff: check-off, font: default-font, fontColor: white }
+	default: { checkboxOn: check-on, checkboxOff: check-off, font: text-font, fontColor: white }
 },
 com.badlogic.gdx.scenes.scene2d.ui.List$ListStyle: {
-	default: { fontColorUnselected: white, selection: default-rect-pad, fontColorSelected: white, font: default-font }
+	default: { fontColorUnselected: white, selection: default-rect-pad, fontColorSelected: white, font: text-font }
 },
 com.badlogic.gdx.scenes.scene2d.ui.Touchpad$TouchpadStyle: {
 	default: { background: default-pane, knob: default-round-large }

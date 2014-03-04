@@ -4,6 +4,7 @@ import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import hakd.game.Internet;
 import hakd.gui.Assets;
+import hakd.gui.HakdSprite;
 
 import java.util.HashMap;
 import java.util.Set;
@@ -33,8 +34,10 @@ public final class BackboneProviderNetwork extends Network {
         ipChildNetworkHashMap.put(isp.getIp(), isp);
 
         // connection line between isp and backbone(this)
+        HakdSprite mapIcon = getMapIcon();
+        HakdSprite ispMapIcon = isp.getMapIcon();
         Vector2 v1 = new Vector2(mapIcon.getX() + (mapIcon.getWidth() / 2), mapIcon.getY() + (mapIcon.getHeight() / 2));
-        Vector2 v2 = new Vector2(isp.mapIcon.getX() + (isp.mapIcon.getWidth() / 2), isp.mapIcon.getY() + (isp.mapIcon.getHeight() / 2));
+        Vector2 v2 = new Vector2(ispMapIcon.getX() + (ispMapIcon.getWidth() / 2), ispMapIcon.getY() + (ispMapIcon.getHeight() / 2));
         Sprite line = Assets.nearestTextures.createSprite("dashedLine");
         line.setOrigin(0, 0);
         line.setSize(v1.dst(v2), 3);

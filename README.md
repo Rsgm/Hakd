@@ -36,9 +36,8 @@ Map:
  * Left control to view the noise value at the cursor in the terminal.
 
 Player room:
- * Arrow keys or wasd to move. The blue rectangle is the player(for now).
  * Mouse wheel to zoom.
- * Space when near a desk to buy a computer. Space near a computer to open it.
+ * Click on a server to open the desktop.
  * Click and drag the app icons to move them. Please don't move them off the screen, you will not get them back.
  * Click the app icon to open the app.
  * Drag the title bar on the app window to move it. Moving it outside of the screen will snap it back inside.

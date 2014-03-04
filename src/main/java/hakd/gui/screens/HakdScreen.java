@@ -24,9 +24,8 @@ public class HakdScreen implements Screen {
     public HakdScreen(Game game) {
         this.game = (Hakd) game;
 
-        gdxShader = Assets.shaders.get(Assets.Shader.GDX_DEFAULT);
-
         batch = new SpriteBatch();
+        gdxShader = Assets.shaders.get(Assets.Shader.GDX_DEFAULT);
         batch.setShader(gdxShader);
     }
 
@@ -37,7 +36,6 @@ public class HakdScreen implements Screen {
     @Override
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
-
         cam.update();
         gdxShader.setUniformMatrix("u_projTrans", cam.combined);
     }
@@ -62,8 +60,8 @@ public class HakdScreen implements Screen {
     @Override
     public void dispose() {
         Gdx.input.setInputProcessor(null);
-        gdxShader.dispose();
         batch.dispose();
+        gdxShader.dispose();
     }
 
     public int getWidth() {

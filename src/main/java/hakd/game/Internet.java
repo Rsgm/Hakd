@@ -30,35 +30,40 @@ public final class Internet {
     /**
      * Contains all IPs and their registered addresses, if they have one.
      */
-    private final Map<String, short[]> addressMap;
+    private final Map<String, String> addressMap;
 
     /**
      * Used when generating IPs to find an unused, random ip.
      */
     public static List<Short> ipNumbers = new ArrayList<Short>(255);
 
+    public static final int BACKBONE_MULTIPLIER = 1;
+    public static final int ISP_MULTIPLIER = 2;
+    public static final int NETWORK_MULTIPLIER = 3;
+    public final int INITIAL_BACKBONE_SIZE;
+    public final int INITIAL_ISP_SIZE;
+
     /**
      * This is only created at the start of the game.
      *
-     * @param cities
+     * @param cities list of cities in the world.
      */
     public Internet(HashMap<String, City> cities) {
-        int backbones = cities.size();
-        int isps = (int) (backbones * (Math.random() * 2 + 1));
-        int networks = (int) (isps * (Math.random() * 3 + 2));
+        INITIAL_BACKBONE_SIZE = BACKBONE_MULTIPLIER * cities.size();
+        INITIAL_ISP_SIZE = (int) (INITIAL_BACKBONE_SIZE * (Math.random() * ISP_MULTIPLIER + 1));
+        int network_size = (int) (INITIAL_ISP_SIZE * (Math.random() * NETWORK_MULTIPLIER + 2)); // not very accurate, but it helps
 
-        backboneProviderNetworksMap = new HashMap<String, BackboneProviderNetwork>(isps);
-        internetProviderNetworksMap = new HashMap<String, InternetProviderNetwork>(backbones);
-        networkMap = new HashMap<String, Network>(networks + isps + backbones);
-        addressMap = new HashMap<String, short[]>(networks + isps + backbones);
+        backboneProviderNetworksMap = new HashMap<String, BackboneProviderNetwork>(INITIAL_BACKBONE_SIZE);
+        internetProviderNetworksMap = new HashMap<String, InternetProviderNetwork>(INITIAL_ISP_SIZE);
+        networkMap = new HashMap<String, Network>(network_size + INITIAL_ISP_SIZE + INITIAL_BACKBONE_SIZE);
+        addressMap = new HashMap<String, String>(network_size + INITIAL_ISP_SIZE + INITIAL_BACKBONE_SIZE);
 
         for (short i = 1; i <= 256; i++) {
             ipNumbers.add(i);
         }
 
         generateBackbones(cities);
-        generateIsps(isps, cities);
-        generateNetworks(networks, cities);
+        generateIsps(INITIAL_ISP_SIZE, cities);
     }
 
     private void generateBackbones(HashMap<String, City> cities) {
@@ -165,46 +170,6 @@ public final class Internet {
         }
     }
 
-
-    /**
-     * Creates the initial game networks.
-     */
-    private void generateNetworks(int amount, HashMap<String, City> cities) {
-        List<City> citiesShuffled = new ArrayList<City>(cities.values());
-
-        for (int i = 0; i < amount; i++) {
-            float random = (float) (Math.random() * 2 - 1);
-            Collections.shuffle(citiesShuffled);
-
-            for (City c : citiesShuffled) {
-                if (c.getDensity() >= random) {
-                    List<InternetProviderNetwork> cityISPs = new ArrayList<InternetProviderNetwork>();
-                    for (Network n : c.getNetworks().values()) {
-                        if (n instanceof InternetProviderNetwork) {
-                            cityISPs.add((InternetProviderNetwork) n);
-                        }
-                    }
-
-                    if (cityISPs.isEmpty()) {
-                        continue;
-                    }
-
-                    InternetProviderNetwork isp = cityISPs.get((int) (Math.random() * cityISPs.size()));
-
-                    if (isp.getIpChildNetworkHashMap().size() < 256) {
-                        Network network = NetworkFactory.createNetwork(NetworkType.NPC, c, this);
-                        addNetworkToInternet(network, isp);
-                        c.addNetwork(network);
-
-                        break;
-                    }
-                }
-            }
-        }
-
-
-    }
-
     /**
      * Adds a network to the internet(network map) and the specified ISP. Not for provider networks.
      */
@@ -267,14 +232,26 @@ public final class Internet {
 
     /**
      * Registers a url to an ip so that not everything is an IP, a player can buy an address.
+     *
+     * @return True if it was registered correctly, otherwise false.
      */
-    public boolean addUrl(String ip, String address) {
+    public boolean addAddress(String ip, String address) {
         if (address.matches("^[\\d|\\w]{1,64}\\.\\w{2,3}$") && !addressMap.containsValue(address)) { // address regex
-            getDevice(ip).setAddress(address);
+            addressMap.put(address, ip);
             return true; // "you have successfully registered the url " + url +
             // " for the ip " + ip;
         }
-        return false; // "Sorry, either that URL is already registered, or a bug)."
+        return false; // "Sorry, either that URL is already registered)."
+    }
+
+    /**
+     * Remove an address from the addressMap.
+     *
+     * @return True if the address map does not contain the address, otherwise false. This will return true even if it never contained the address.
+     */
+    public boolean removeAddress(String address) {
+        addressMap.remove(address);
+        return !addressMap.containsKey(address);
     }
 
     /**
@@ -290,10 +267,7 @@ public final class Internet {
     /**
      * Public dns ip request, gets the ip of a server at that address.
      */
-    public short[] getIp(String address) {
-        if (!addressMap.containsKey(address)) {
-            return null;
-        }
+    public String getIp(String address) {
         return addressMap.get(address);
     }
 
@@ -326,22 +300,22 @@ public final class Internet {
     }
 
     public Map<String, InternetProviderNetwork> getInternetProviderNetworksMap() {
-        return internetProviderNetworksMap;
+        return Collections.unmodifiableMap(internetProviderNetworksMap);
     }
 
     public Map<String, BackboneProviderNetwork> getBackboneProviderNetworksMap() {
-        return backboneProviderNetworksMap;
+        return Collections.unmodifiableMap(backboneProviderNetworksMap);
     }
 
     public Map<String, Network> getNetworkMap() {
-        return networkMap;
+        return Collections.unmodifiableMap(networkMap);
     }
 
-    public Map<String, short[]> getAddressMap() {
-        return addressMap;
+    public Map<String, String> getAddressMap() {
+        return Collections.unmodifiableMap(addressMap);
     }
 
     public static List<Short> getIpNumbers() {
-        return ipNumbers;
+        return Collections.unmodifiableList(ipNumbers);
     }
 }
