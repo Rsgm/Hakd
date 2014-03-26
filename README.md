@@ -125,3 +125,4 @@ A packaged Hakd-(version).zip will be placed in /build/distributions/. This is c
 You can also run Hakd through gradle, if you don't want to package it:
 windows: ```./gradlew.bat run```
 linux/mac: ```./gradlew run```
+
