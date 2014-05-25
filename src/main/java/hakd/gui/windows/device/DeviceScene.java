@@ -8,7 +8,7 @@ import hakd.gui.input.GameInput;
 import hakd.gui.screens.GameScreen;
 import hakd.networks.devices.Device;
 
-public final class DeviceScene {
+public class DeviceScene {
     private final Stage stage;
     private final Group canvas;
 

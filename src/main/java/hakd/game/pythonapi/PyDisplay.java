@@ -3,7 +3,7 @@ package hakd.game.pythonapi;
 import com.badlogic.gdx.Gdx;
 import hakd.gui.windows.device.Terminal;
 
-public final class PyDisplay {
+public class PyDisplay {
     private final Terminal terminal;
 
     public PyDisplay(Terminal terminal) {

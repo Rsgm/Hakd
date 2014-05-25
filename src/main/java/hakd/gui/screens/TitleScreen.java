@@ -10,7 +10,7 @@ import hakd.gui.Assets;
 import hakd.gui.input.TitleInput;
 import org.python.util.PythonInterpreter;
 
-public final class TitleScreen extends HakdScreen {
+public class TitleScreen extends HakdScreen {
     private BitmapFont font;
     private BitmapFont creditFont;
 

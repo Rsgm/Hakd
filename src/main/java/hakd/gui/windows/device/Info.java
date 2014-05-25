@@ -10,7 +10,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import hakd.gui.Assets;
 
-public final class Info extends SceneWindow {
+public class Info extends SceneWindow {
     private final Window infoWindow;
     private final ScrollPane scroll;
     private final Table table;

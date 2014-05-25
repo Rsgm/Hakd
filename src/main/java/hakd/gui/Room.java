@@ -23,7 +23,7 @@ import hakd.other.Util;
 
 import java.util.*;
 
-public final class Room {
+public class Room {
     public static int TILE_SIZE;
     public static int ROOM_HEIGHT;
 

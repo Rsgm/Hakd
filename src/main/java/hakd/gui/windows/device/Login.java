@@ -8,7 +8,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.ui.TextField;
 import hakd.gui.Assets;
 
-public final class Login { // PyTest window, I am not sure I will use this one. I may
+public class Login { // PyTest window, I am not sure I will use this one. I may
     // use this before you can access some "websites".
     final com.badlogic.gdx.scenes.scene2d.ui.Window table;
 

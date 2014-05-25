@@ -18,7 +18,7 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.List;
 
-public final class MenuScreen extends HakdScreen {
+public class MenuScreen extends HakdScreen {
     private final Stage stage;
     private final Table canvas;
 

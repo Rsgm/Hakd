@@ -3,7 +3,7 @@ package hakd.networks.devices;
 import hakd.networks.Network;
 import hakd.networks.devices.parts.PartFactory;
 
-public final class DeviceFactory {
+public class DeviceFactory {
 
     /**
      * Create a device and give it parts.

@@ -14,7 +14,7 @@ import hakd.gui.Room;
 import hakd.gui.input.GameInput;
 import hakd.gui.windows.device.DeviceScene;
 
-public final class GameScreen extends HakdScreen {
+public class GameScreen extends HakdScreen {
     private String playerName;
     private Character player;
     private Room room;

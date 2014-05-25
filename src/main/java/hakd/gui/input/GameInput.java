@@ -14,7 +14,7 @@ import hakd.gui.screens.GameScreen;
 import hakd.networks.devices.Device;
 import hakd.other.Util;
 
-public final class GameInput implements InputProcessor {
+public class GameInput implements InputProcessor {
     private final Hakd game;
     private final OrthographicCamera cam;
     private final GameScreen screen;

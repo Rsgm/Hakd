@@ -5,7 +5,7 @@ import hakd.networks.devices.Device;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-public final class File { // TODO file hashes! maybe just run an md5 hash on the java object hashcode, or just convert a random int/short to hex
+public class File { // TODO file hashes! maybe just run an md5 hash on the java object hashcode, or just convert a random int/short to hex
     private String name;
     String data;
     File parentDirectory;

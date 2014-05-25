@@ -1,6 +1,6 @@
 package hakd.game.gameplay.store;
 
 
-public final class Website {
+public class Website {
 
 }

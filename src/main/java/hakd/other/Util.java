@@ -9,7 +9,7 @@ import java.io.*;
 import java.io.File;
 import java.util.*;
 
-public final class Util {
+public class Util {
     public static final Map<String, Map<String, File>> TEXT_FILES; // this allows text to be mod friendly, because you don't have to change this class
     public static final Map<String, String> PROGRAMS; // this allows text to be mod friendly, because you don't have to change this class
 

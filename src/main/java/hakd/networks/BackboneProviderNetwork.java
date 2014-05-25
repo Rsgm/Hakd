@@ -14,7 +14,7 @@ import java.util.Set;
  * ISPs to the internet, as well as connecting other backboneProviderNetworks
  * together.
  */
-public final class BackboneProviderNetwork extends Network {
+public class BackboneProviderNetwork extends Network {
     Set<Sprite> backboneConnectionLines;
     private final HashMap<String, InternetProviderNetwork> ipChildNetworkHashMap = new HashMap<String, InternetProviderNetwork>(255);
 

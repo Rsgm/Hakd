@@ -15,7 +15,7 @@ import java.lang.reflect.Field;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public final class Assets {
+public class Assets {
     public static TextureAtlas nearestTextures;
     public static TextureAtlas linearTextures;
 

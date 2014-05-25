@@ -3,7 +3,7 @@ package hakd.game.gameplay;
 import hakd.gui.Room;
 import hakd.gui.windows.device.DeviceScene;
 
-public final class Player extends Character {
+public class Player extends Character {
     private Room room;
     private DeviceScene openWindow;
 

@@ -22,7 +22,7 @@ import java.io.InputStream;
 import java.util.*;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
-public final class Terminal extends SceneWindow {
+public class Terminal extends SceneWindow {
     private final TextField input;
     private final Label display;
     private final ScrollPane scroll;

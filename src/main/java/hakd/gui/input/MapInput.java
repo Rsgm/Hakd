@@ -8,7 +8,7 @@ import com.badlogic.gdx.math.collision.Ray;
 import hakd.game.Noise;
 import hakd.gui.screens.MapScreen;
 
-public final class MapInput implements InputProcessor {
+public class MapInput implements InputProcessor {
     private final OrthographicCamera cam;
     private final MapScreen screen;
     private int lastMouseX;

@@ -26,7 +26,7 @@ import libnoiseforjava.util.RendererImage;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class MapScreen extends HakdScreen {
+public class MapScreen extends HakdScreen {
     private final Internet internet;
 
     private final GameScreen gameScreen;

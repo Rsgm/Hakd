@@ -4,7 +4,7 @@ import com.badlogic.gdx.Game;
 import com.badlogic.gdx.InputProcessor;
 import hakd.gui.screens.MenuScreen;
 
-public final class TitleInput implements InputProcessor {
+public class TitleInput implements InputProcessor {
     private final Game game;
 
     public TitleInput(Game game) {

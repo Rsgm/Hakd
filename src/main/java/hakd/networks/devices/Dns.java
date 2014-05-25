@@ -2,7 +2,7 @@ package hakd.networks.devices;
 
 import java.util.Map;
 
-public final class Dns extends Device {
+public class Dns extends Device {
     /**
      * Contains all IPs and their registered addresses, if they have one. Should be a reference to the internet's hashmap.
      */

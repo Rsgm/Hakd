@@ -5,7 +5,7 @@ import libnoiseforjava.NoiseGen;
 import libnoiseforjava.exception.ExceptionInvalidParam;
 import libnoiseforjava.module.*;
 
-public final class Noise {
+public class Noise {
     public static final ModuleBase TERRAIN; // mostly for aesthetics
     public static final ModuleBase DENSITY; // cities/towns/rural, how close networks will be or the chance of generating a network on that spot.
     public static final ModuleBase POLITICS; // political espionage? dependant on countries, maybe

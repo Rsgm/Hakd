@@ -6,7 +6,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 /**
  * Ports connect to other ports and send data between each other. There may only be one port connected to another at a time.
  */
-public final class Port {
+public class Port {
     private String program;
     private int portNumber;
     private String protocol;

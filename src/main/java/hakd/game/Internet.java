@@ -10,7 +10,7 @@ import hakd.networks.devices.Device;
 
 import java.util.*;
 
-public final class Internet {
+public class Internet {
     /**
      * Contains all ISPs. Note: ISPs can only be public.
      */

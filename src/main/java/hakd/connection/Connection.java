@@ -6,7 +6,7 @@ import hakd.networks.devices.Device;
  * Connections are one way paths for data to travel through. This will control
  * all data transfers since it has speed and the routeDevices to take.
  */
-public final class Connection {
+public class Connection {
     private Device host;
     private Device client;
 

@@ -1,5 +1,5 @@
 package hakd.gui.windows.device;
 
-public final class Web {
+public class Web {
 
 }

@@ -4,7 +4,7 @@ import com.badlogic.gdx.Gdx;
 import hakd.gui.screens.GameScreen;
 import hakd.gui.screens.MenuScreen;
 
-public final class PyMenu {
+public class PyMenu {
 
     public static void setScreen(final MenuScreen currentScreen, final String name) {
         Gdx.app.postRunnable(new Runnable() {

@@ -16,7 +16,7 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
-public final class GamePlay {
+public class GamePlay {
     private static final float ROOM_UPDATE_SPEED = 1;
     private static final float CHARACTERMAP_UPDATE_SPEED = 3;
     private static final float CHARACTER_UPDATE_SPEED = 1;

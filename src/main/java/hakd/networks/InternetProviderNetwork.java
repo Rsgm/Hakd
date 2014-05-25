@@ -11,7 +11,7 @@ import java.util.HashMap;
 /**
  * Provides internet access to networks.
  */
-public final class InternetProviderNetwork extends Network {
+public class InternetProviderNetwork extends Network {
     private final HashMap<String, Network> ipChildNetworkHashMap = new HashMap<String, Network>(255);
 
     public static final int MAX_DISTANCE = 1000;

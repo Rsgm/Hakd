@@ -16,7 +16,7 @@ import hakd.networks.devices.Device;
 import java.util.HashSet;
 import java.util.Set;
 
-public final class Desktop { // why not just combine this with deviceScene?
+public class Desktop { // why not just combine this with deviceScene?
     private final DeviceScene window;
     private final Group desktop;
     private final Device device;

@@ -1,6 +1,6 @@
 package hakd.networks.devices.parts;
 
-public final class Storage extends Part {
+public class Storage extends Part {
     private boolean ssd; // doubles the speed
     private int capacity; // in GB
     private int speed; // either MHz or MB/s(megabyte/s, not megabit/s) depending on the part cpu also has core modifier speed = speed (1.8*cores)

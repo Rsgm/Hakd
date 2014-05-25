@@ -7,7 +7,7 @@ import com.badlogic.gdx.Preferences;
 import hakd.gui.Assets;
 import hakd.gui.screens.TitleScreen;
 
-public final class Hakd extends Game {
+public class Hakd extends Game {
     private Preferences prefs;
     // private static Preferences save1; // save this for later // Use kryo
 

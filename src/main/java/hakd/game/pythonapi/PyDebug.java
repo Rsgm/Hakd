@@ -9,7 +9,7 @@ import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
 import hakd.networks.NetworkFactory;
 
-public final class PyDebug {
+public class PyDebug {
     private final Terminal terminal;
 
     public PyDebug(Terminal terminal) {

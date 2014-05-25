@@ -1,6 +1,6 @@
 package hakd.networks.devices.parts;
 
-public final class Memory extends Part {
+public class Memory extends Part {
     private int capacity;
 
     public Memory() {
