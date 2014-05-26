@@ -3,13 +3,14 @@ package hakd.gui.screens;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Screen;
+import com.badlogic.gdx.assets.AssetManager;
 import com.badlogic.gdx.graphics.Camera;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.thesecretpie.shader.ShaderManager;
 import hakd.game.Hakd;
-import hakd.gui.Assets;
 
 public class HakdScreen implements Screen {
     int width = Gdx.graphics.getWidth();
@@ -19,14 +20,29 @@ public class HakdScreen implements Screen {
 
     Camera cam;
     SpriteBatch batch;
-    ShaderProgram gdxShader;
 
-    public HakdScreen(Game game) {
-        this.game = (Hakd) game;
+    final ShaderManager shaders;
+    final AssetManager assets;
+
+    public HakdScreen(Hakd game) {
+        this.game = game;
 
         batch = new SpriteBatch();
-        gdxShader = Assets.shaders.get(Assets.Shader.GDX_DEFAULT);
-        batch.setShader(gdxShader);
+
+        assets = Hakd.assets;
+        ShaderProgram.pedantic = false;
+        shaders = new ShaderManager("shaders", assets);
+
+        loadShaders();
+    }
+
+    private void loadShaders() {
+        shaders.add("bloom", "default.vert", "bloom.frag");
+        shaders.createFB("bloom_fb");
+        shaders.add("default", "default.vert", "default.frag");
+        shaders.createFB("default_fb");
+        shaders.add("lines", "lines.vert", "lines.frag");
+        shaders.createFB("lines_fb");
     }
 
     @Override
@@ -37,7 +53,6 @@ public class HakdScreen implements Screen {
     public void render(float delta) {
         Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT | GL20.GL_DEPTH_BUFFER_BIT | (Gdx.graphics.getBufferFormat().coverageSampling ? GL20.GL_COVERAGE_BUFFER_BIT_NV : 0));
         cam.update();
-        gdxShader.setUniformMatrix("u_projTrans", cam.combined);
     }
 
     @Override
@@ -61,7 +76,6 @@ public class HakdScreen implements Screen {
     public void dispose() {
         Gdx.input.setInputProcessor(null);
         batch.dispose();
-        gdxShader.dispose();
     }
 
     public int getWidth() {
@@ -102,5 +116,9 @@ public class HakdScreen implements Screen {
 
     public void setCam(OrthographicCamera cam) {
         this.cam = cam;
+    }
+
+    public AssetManager getAssets() {
+        return assets;
     }
 }

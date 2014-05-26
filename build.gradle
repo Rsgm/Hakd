@@ -8,8 +8,8 @@ mainClassName = "hakd.Main"
 
 group = 'com.github.rsgm'
 description = 'Hacking game'
-version = '0.0.3'
-ext.gdxVersion = "1.0-SNAPSHOT";
+version = '0.0.4'
+ext.gdxVersion = "1.0.0";
 targetCompatibility = 1.6
 
 jar {

@@ -1,13 +1,13 @@
 package hakd.gui.input;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.InputProcessor;
+import hakd.game.Hakd;
 import hakd.gui.screens.MenuScreen;
 
 public class TitleInput implements InputProcessor {
-    private final Game game;
+    private final Hakd game;
 
-    public TitleInput(Game game) {
+    public TitleInput(Hakd game) {
         this.game = game;
     }
 

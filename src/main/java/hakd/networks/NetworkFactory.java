@@ -2,12 +2,13 @@ package hakd.networks;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import hakd.game.Hakd;
 import hakd.game.Internet;
 import hakd.game.gameplay.Character;
 import hakd.game.gameplay.City;
 import hakd.game.gameplay.Company;
 import hakd.game.gameplay.Player;
-import hakd.gui.Assets;
 import hakd.gui.HakdSprite;
 import hakd.networks.devices.Device;
 import hakd.networks.devices.DeviceFactory;
@@ -41,7 +42,7 @@ public class NetworkFactory {
                 owner = new Character(network, Util.ganerateName(), city);
                 deviceLimit = 4;
                 stance = Network.Stance.NEUTRAL;
-                mapIcon = new HakdSprite(Assets.linearTextures.findRegion("network"));
+                mapIcon = new HakdSprite(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("network"));
                 mapIcon.setSize(50, 50);
                 break;
             case TEST:
@@ -49,14 +50,14 @@ public class NetworkFactory {
                 owner = new Character(network, Util.ganerateName(), city);
                 deviceLimit = 32;
                 stance = Network.Stance.NEUTRAL;
-                mapIcon = new HakdSprite(Assets.linearTextures.findRegion("network"));
+                mapIcon = new HakdSprite(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("network"));
                 mapIcon.setSize(50, 50);
                 break;
             case BUSINESS: // company // random company
                 ipRegion = Network.IpRegion.BUSINESS;
                 owner = new Company(network, Util.ganerateName(), city);
                 deviceLimit = (int) ((level + 1) * (Math.random() * 3 + 1));
-                mapIcon = new HakdSprite(Assets.linearTextures.findRegion("network"));
+                mapIcon = new HakdSprite(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("network"));
                 mapIcon.setSize(50, 50);
                 break;
             default: // copied from the npc case
@@ -64,7 +65,7 @@ public class NetworkFactory {
                 owner = new Character(network, Util.ganerateName(), city);
                 deviceLimit = 4;
                 stance = Network.Stance.NEUTRAL;
-                mapIcon = new HakdSprite(Assets.linearTextures.findRegion("network"));
+                mapIcon = new HakdSprite(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("network"));
                 mapIcon.setSize(50, 50);
                 break;
         }
@@ -77,8 +78,8 @@ public class NetworkFactory {
         network.setOwner(owner);
         network.setInternet(internet);
 
-        internet.addNetworkToInternet(network, isp);
         network.placeNetwork(Network.networkRegionSize);
+        internet.addNetworkToInternet(network, isp);
 
         // used to add randomness to the amount of servers to make given serverLimit
         int d = (int) Math.round(deviceLimit * (Math.random() * 0.35 + 0.65));
@@ -109,7 +110,7 @@ public class NetworkFactory {
         network.setCity(city);
         network.setInternet(internet);
 
-        HakdSprite s = new HakdSprite(Assets.linearTextures.findRegion("playerNetwork"));
+        HakdSprite s = new HakdSprite(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("playerNetwork"));
         network.setMapIcon(s);
         network.getMapIcon().setSize(50, 50);
         network.placeNetwork(Network.networkRegionSize);
@@ -142,7 +143,7 @@ public class NetworkFactory {
         isp.setCity(city);
         //		isp.setOwner(InternetProviderNetwork.IspName.values()[(int) (Math.random() * InternetProviderNetwork.IspName.values().length)].toString());
 
-        HakdSprite s = new HakdSprite(Assets.linearTextures.findRegion("ispNetwork"));
+        HakdSprite s = new HakdSprite(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("ispNetwork"));
         isp.setMapIcon(s);
         isp.getMapIcon().setSize(75, 75);
 
@@ -189,7 +190,7 @@ public class NetworkFactory {
         backbone.setCity(city);
 
         backbone.parent = null;
-        backbone.setMapIcon(new HakdSprite(Assets.linearTextures.findRegion("backboneNetwork")));
+        backbone.setMapIcon(new HakdSprite(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("backboneNetwork")));
         backbone.getMapIcon().setSize(100, 100);
         backbone.backboneConnectionLines = new HashSet<Sprite>();
 

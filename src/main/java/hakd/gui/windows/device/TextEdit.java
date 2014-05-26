@@ -1,10 +1,11 @@
 package hakd.gui.windows.device;
 
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import hakd.gui.Assets;
+import hakd.game.Hakd;
 import hakd.gui.windows.dialogs.fileops.FileClose;
 import hakd.gui.windows.dialogs.fileops.FileOpen;
 import hakd.gui.windows.dialogs.fileops.FileSave;
@@ -34,9 +35,9 @@ public class TextEdit extends SceneWindow implements FileHandler {
         open = new Button(skin);
         save = new Button(skin);
         close = new TextButton("Close", skin);
-        newFile.add(new Image(Assets.linearTextures.findRegion("file")));
-        open.add(new Image(Assets.linearTextures.findRegion("folder")));
-        save.add(new Image(Assets.linearTextures.findRegion("save")));
+        newFile.add(new Image(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("file")));
+        open.add(new Image(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("folder")));
+        save.add(new Image(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("save")));
 //        close.add(new Image(Assets.linearTextures.findRegion("close")));
 
         buttonTable.add(newFile, open, save, close);

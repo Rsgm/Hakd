@@ -1,10 +1,9 @@
 package hakd.networks;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Vector2;
 import hakd.game.Internet;
-import hakd.gui.Assets;
 import hakd.gui.HakdSprite;
+import hakd.other.Line;
 
 import java.util.HashMap;
 
@@ -34,12 +33,7 @@ public class InternetProviderNetwork extends Network {
         HakdSprite networkMapIcon = network.getMapIcon();
         Vector2 v1 = new Vector2(mapIcon.getX() + (mapIcon.getWidth() / 2), mapIcon.getY() + (mapIcon.getHeight() / 2));
         Vector2 v2 = new Vector2(networkMapIcon.getX() + (networkMapIcon.getWidth() / 2), networkMapIcon.getY() + (networkMapIcon.getHeight() / 2));
-        Sprite line = Assets.nearestTextures.createSprite("dashedLine");
-        line.setOrigin(0, 0);
-        line.setSize(v1.dst(v2), 3);
-        line.setPosition(v1.x, v1.y);
-        line.setRotation(v1.sub(v2).scl(-1).angle());
-        network.setMapParentLine(line);
+        network.setMapParentLine(new Line(v1, v2));
     }
 
     public void unregister() {

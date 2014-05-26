@@ -5,14 +5,14 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
-import hakd.gui.Assets;
+import hakd.game.Hakd;
 import hakd.networks.devices.Device;
 
 public abstract class SceneWindow {
     protected final DeviceScene scene;
     protected final Window window;
     protected final Device device;
-    protected final Skin skin = Assets.skin;
+    protected final Skin skin = Hakd.assets.get("skins/uiskin.json", Skin.class);
 
     protected SceneWindow(DeviceScene scene) {
         this.scene = scene;

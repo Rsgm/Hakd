@@ -4,9 +4,9 @@ Hakd is a single player game about hacking, with a realistic, simulated, and pro
  * Completely open world, you can hack into/mess with any server on any network you can find.
  * The player controls a server farm. For the end game, think of google's or the nsa's data center. (not that I have seen either in person)
 
-[My to-do list.](https://trello.com/b/aPgl1zpo/hak-d) This also has some of my ideas. (This is out of date)
+[My to-do list,](https://trello.com/b/aPgl1zpo/hak-d) This also has some of my ideas. (This is out of date)
 
-[Skip down to Compiling and Building Hakd.](https://github.com/Rsgm/Hakd/edit/master/README.md#setting-up-the-project)
+[Skip down to Compiling and Building Hakd.](https://github.com/Rsgm/Hakd#building-and-running)
 
 ###Pictures
 

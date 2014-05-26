@@ -4,8 +4,13 @@ import com.badlogic.gdx.Application;
 import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Preferences;
-import hakd.gui.Assets;
-import hakd.gui.screens.TitleScreen;
+import com.badlogic.gdx.assets.AssetManager;
+import com.badlogic.gdx.graphics.Color;
+import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
+import com.badlogic.gdx.scenes.scene2d.ui.Skin;
+import hakd.gui.screens.MenuScreen;
 
 public class Hakd extends Game {
     private Preferences prefs;
@@ -13,10 +18,10 @@ public class Hakd extends Game {
 
     private GamePlay gamePlay;
 
+    public static final AssetManager assets = new AssetManager();
+
     @Override
     public void create() {
-        Assets.load();
-
         prefs = Gdx.app.getPreferences("hakd-prefs");
 
         if (!prefs.getBoolean("played-before")) {
@@ -33,7 +38,32 @@ public class Hakd extends Game {
 
         Gdx.app.setLogLevel(prefs.getInteger("log-level")); // TODO save a copy of the console to a log file
 
-        setScreen(new TitleScreen(this));
+        loadAssets();
+
+        setScreen(new MenuScreen(this));
+    }
+
+    private void loadAssets() {
+        assets.load("nTextures.txt", TextureAtlas.class);
+        assets.load("lTextures.txt", TextureAtlas.class);
+        assets.load("skins/uiskin.json", Skin.class);
+        assets.load("skins/font/Fonts_7.fnt", BitmapFont.class); // text font
+        assets.load("skins/font/Fonts_0.fnt", BitmapFont.class); // consol font
+        assets.finishLoading();
+
+        BitmapFont textFont = assets.get("skins/font/Fonts_7.fnt", BitmapFont.class);
+        textFont.setColor(new Color(1.0f, 1.0f, 1.0f, 1.0f));
+        textFont.setScale(.6f);
+
+        BitmapFont consoleFont = assets.get("skins/font/Fonts_0.fnt", BitmapFont.class);
+        consoleFont.setColor(new Color(0.0f, 0.7f, 0.0f, 1.0f));
+        consoleFont.setScale(.6f);
+
+        // set texture filters
+        assets.get("nTextures.txt", TextureAtlas.class).findRegion("black").getTexture().setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
+        textFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        consoleFont.getRegion().getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
+        assets.get("skins/uiskin.json", Skin.class).getAtlas().findRegion("default").getTexture().setFilter(Texture.TextureFilter.Linear, Texture.TextureFilter.Linear);
     }
 
     private void newPrefs() {
@@ -64,7 +94,8 @@ public class Hakd extends Game {
         if (gamePlay != null) {
             gamePlay.dispose();
         }
-        Assets.dispose();
+
+        assets.dispose();
     }
 
     public GamePlay getGamePlay() {

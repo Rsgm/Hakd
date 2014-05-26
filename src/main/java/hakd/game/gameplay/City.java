@@ -1,9 +1,10 @@
 package hakd.game.gameplay;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.math.Vector2;
+import hakd.game.Hakd;
 import hakd.game.Noise;
-import hakd.gui.Assets;
 import hakd.networks.Network;
 import hakd.other.Util;
 
@@ -23,7 +24,7 @@ public class City {
     public City(Vector2 position) {
         this.position = position;
 
-        icon = Assets.linearTextures.createSprite("circle");
+        icon = Hakd.assets.get("lTextures.txt", TextureAtlas.class).createSprite("circle");
         icon.setBounds(position.x - width / 2, position.y - height / 2, width, height);
 
         name = Util.ganerateCityName();

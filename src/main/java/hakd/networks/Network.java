@@ -1,6 +1,5 @@
 package hakd.networks;
 
-import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
 import hakd.game.Internet;
@@ -10,6 +9,7 @@ import hakd.game.gameplay.City;
 import hakd.game.gameplay.Player;
 import hakd.gui.HakdSprite;
 import hakd.networks.devices.Device;
+import hakd.other.Line;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -35,7 +35,7 @@ public class Network {
 
     // gui stuff
     private HakdSprite mapIcon;
-    Sprite mapParentLine;
+    Line mapParentLine;
     Vector2 pos; // holds the position of the center of the sprite
 
     public static final int backboneRegionSize = 2000; // diameter of the circle
@@ -297,11 +297,11 @@ public class Network {
         mapIcon.setObject(this);
     }
 
-    public Sprite getMapParentLine() {
+    public Line getMapParentLine() {
         return mapParentLine;
     }
 
-    public void setMapParentLine(Sprite mapParentLine) {
+    public void setMapParentLine(Line mapParentLine) {
         this.mapParentLine = mapParentLine;
     }
 

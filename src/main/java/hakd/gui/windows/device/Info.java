@@ -1,6 +1,7 @@
 package hakd.gui.windows.device;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -8,7 +9,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.ScrollPane;
 import com.badlogic.gdx.scenes.scene2d.ui.Table;
 import com.badlogic.gdx.scenes.scene2d.ui.Window;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import hakd.gui.Assets;
+import hakd.game.Hakd;
 
 public class Info extends SceneWindow {
     private final Window infoWindow;
@@ -25,7 +26,7 @@ public class Info extends SceneWindow {
         scroll = new ScrollPane(table);
         infoWindow.add(scroll);
 
-        close = new ImageButton(new TextureRegionDrawable(Assets.linearTextures.findRegion("close")));
+        close = new ImageButton(new TextureRegionDrawable(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("close")));
         close.setPosition(infoWindow.getWidth() - close.getWidth(), infoWindow.getHeight() - close.getHeight() - 20);
 
         infoWindow.addListener(new InputListener() {

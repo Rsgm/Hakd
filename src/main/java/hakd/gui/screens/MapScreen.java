@@ -1,21 +1,24 @@
 package hakd.gui.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.OrthographicCamera;
-import com.badlogic.gdx.graphics.Pixmap;
-import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.*;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
+import com.badlogic.gdx.graphics.glutils.ShaderProgram;
+import com.badlogic.gdx.math.Vector2;
+import delaunay.Pnt;
+import delaunay.Triangle;
+import delaunay.Triangulation;
+import hakd.game.Hakd;
 import hakd.game.Internet;
 import hakd.game.Noise;
 import hakd.game.gameplay.City;
-import hakd.gui.Assets;
 import hakd.gui.input.MapInput;
 import hakd.networks.BackboneProviderNetwork;
 import hakd.networks.InternetProviderNetwork;
 import hakd.networks.Network;
+import hakd.other.Line;
 import libnoiseforjava.exception.ExceptionInvalidParam;
 import libnoiseforjava.module.ModuleBase;
 import libnoiseforjava.util.ColorCafe;
@@ -23,7 +26,9 @@ import libnoiseforjava.util.ImageCafe;
 import libnoiseforjava.util.NoiseMap;
 import libnoiseforjava.util.RendererImage;
 
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 public class MapScreen extends HakdScreen {
@@ -39,9 +44,14 @@ public class MapScreen extends HakdScreen {
     private final Set<Sprite> ispSprites;
     private final Set<Sprite> territorySprites;
     private final Set<Sprite> backboneSprites;
-    private final Set<Sprite> connectionLineSprites;
-    private final Set<Sprite> parentLineSprites;
-    private final Set<Sprite> backboneLineSprites;
+
+    private final Set<Line> connectionLines; // change this to a line set
+    private final Set<Line> parentLines;
+    private final Set<Line> backboneLines;
+
+    private Mesh connectionLinesMesh;
+    private Mesh parentLinesMesh;
+    private Mesh backboneLinesMesh;
 
     private Texture land;
     private Texture density;
@@ -51,13 +61,16 @@ public class MapScreen extends HakdScreen {
     private Texture income;
     private Texture crime;
 
+    BitmapFont textFont = assets.get(("skins/font/Fonts_7.fnt"), BitmapFont.class);
+
     private Noise.NoiseType currentBackground;
 
-    public static final int NOISE_GENERATION_SIZE = 512; // how many points to draw. default: 512(must be power of two), best quality would be around 2500
+    public static final int NOISE_GENERATION_SIZE = 800; // how many points to draw. default: 800, best quality would be around 2500
     public static final int NOISE_DISPLAY_SIZE = 50000; // how large of an area to spread the points out on. default: 50000
+    public static final int INITIAL_TRIANGLE_SIZE = MapScreen.NOISE_DISPLAY_SIZE * 1000;
 //    private overlay mapOverlay;
 
-    public MapScreen(Game game, Internet internet) {
+    public MapScreen(Hakd game, Internet internet) {
         super(game);
 
         this.internet = internet;
@@ -68,11 +81,10 @@ public class MapScreen extends HakdScreen {
         ispSprites = new HashSet<Sprite>(internet.getInternetProviderNetworksMap().size());
         territorySprites = new HashSet<Sprite>(internet.getInternetProviderNetworksMap().size());
         backboneSprites = new HashSet<Sprite>(internet.getBackboneProviderNetworksMap().size());
-        connectionLineSprites = new HashSet<Sprite>(50);
-        parentLineSprites = new HashSet<Sprite>(internet.getNetworkMap().size());
-        backboneLineSprites = new HashSet<Sprite>(internet.getBackboneProviderNetworksMap().size());
 
-        territoryBatch.setShader(Assets.shaders.get(Assets.Shader.TERRITORY));
+        connectionLines = new HashSet<Line>(50);
+        parentLines = new HashSet<Line>(internet.getBackboneProviderNetworksMap().size());
+        backboneLines = new HashSet<Line>(internet.getBackboneProviderNetworksMap().size());
 
         try {
             generateNoiseTexture(Noise.NoiseType.TERRAIN);
@@ -113,13 +125,21 @@ public class MapScreen extends HakdScreen {
     public void render(float delta) {
         super.render(delta);
 
-
 //        System.out.println((int) (1 / delta));
         time += delta;
         if (time >= 1) {
             reloadSprites();
+            time = 0;
         }
 
+        renderBackground();
+        renderSprites();
+        renderLines();
+
+//        mapOverlay.render();
+    }
+
+    private void renderBackground() {
         territoryBatch.setProjectionMatrix(cam.combined);
         territoryBatch.begin();
         switch (currentBackground) {
@@ -142,38 +162,61 @@ public class MapScreen extends HakdScreen {
                 territoryBatch.draw(income, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
         }
         territoryBatch.end();
+    }
 
+    private void renderSprites() {
         batch.setProjectionMatrix(cam.combined);
         batch.begin();
+
 //        for (Sprite s : territorySprites) {
 //            s.draw(batch);
 //        }
-        for (Sprite s : backboneLineSprites) {
-            s.draw(batch);
-        }
-        for (Sprite s : parentLineSprites) {
-            s.draw(batch);
-        }
+
         for (Sprite s : backboneSprites) {
             s.draw(batch);
         }
+
         for (Sprite s : ispSprites) {
             s.draw(batch);
         }
+
         for (Sprite s : networkSprites) {
             s.draw(batch);
         }
-        for (Sprite s : connectionLineSprites) {
-            s.draw(batch);
-        }
+
+//        for (Sprite s : connectionLineSprites) {
+//            s.draw(batch);
+//        }
 
         for (City c : game.getGamePlay().getCityMap().values()) {
             c.getIcon().draw(batch);
-            Assets.textFont.draw(batch, c.getName(), c.getPosition().x, c.getPosition().y + 80);
+            textFont.draw(batch, c.getName(), c.getPosition().x, c.getPosition().y + 80);
         }
         batch.end();
+    }
 
-//        mapOverlay.render();
+    private void renderLines() {
+        ShaderProgram lines = shaders.get("lines");
+
+        lines.begin();
+        lines.setUniformMatrix("u_worldView", cam.combined);
+
+        if (backboneLinesMesh != null && backboneLinesMesh.getNumVertices() > 0) {
+            lines.setAttributef("a_color", 255f / 255f, 149f / 255f, 38f / 255f, 1);
+            backboneLinesMesh.render(lines, GL20.GL_LINES);
+        }
+
+        if (parentLinesMesh != null && parentLinesMesh.getNumVertices() > 0) {
+            lines.setAttributef("a_color", 0f / 255f, 255f / 255f, 142f / 255f, 1);
+            parentLinesMesh.render(lines, GL20.GL_LINES);
+        }
+
+//        if (connectionLinesMesh != null && connectionLinesMesh.getNumVertices() > 0) {
+//        lines.setAttributef("a_color", 0f / 255f, 255f / 255f, 142f / 255f, 1);
+//            connectionLinesMesh.render(shaders.getCurrent(), GL20.GL_LINES);
+//        }
+
+        lines.end();
     }
 
     private void reloadSprites() {
@@ -181,38 +224,63 @@ public class MapScreen extends HakdScreen {
         ispSprites.clear();
         territorySprites.clear();
         backboneSprites.clear();
-        connectionLineSprites.clear();
-        parentLineSprites.clear();
-        backboneLineSprites.clear();
+
+        backboneLines.clear();
+        parentLines.clear();
+        connectionLines.clear();
 
         for (Network n : internet.getNetworkMap().values()) {
             if (n instanceof BackboneProviderNetwork) {
                 backboneSprites.add(n.getMapIcon());
-                backboneLineSprites.addAll(((BackboneProviderNetwork) n).getBackboneConnectionLines());
             } else if (n instanceof InternetProviderNetwork) {
                 ispSprites.add(n.getMapIcon());
-                parentLineSprites.add(n.getMapParentLine());
+                parentLines.add(n.getMapParentLine());
             } else {
                 networkSprites.add(n.getMapIcon());
-                parentLineSprites.add(n.getMapParentLine());
+                parentLines.add(n.getMapParentLine());
             }
-
-            //			for(Connection c : n.getconnections) {
-            //			    connectionLineSprites.addc.getLine();
-            //			}
-
         }
 
-//        for (InternetProviderNetwork n : internet.getInternetProviderNetworksMap()) {
-//            ispSprites.add(n.getMapIcon());
-//            parentLineSprites.add(n.getMapParentLine());
-//        }
-//
-//        for (Network n : internet.getBackboneProviderNetworksMap()) {
-//            backboneSprites.add(n.getMapIcon());
-//            backboneLineSprites.addAll(((BackboneProviderNetwork) n).getBackboneConnectionLines());
-//        }
+        drawBackboneLines();
+
+        // create backbone line mesh
+        float[] vertexArray = fillLineVertexArray(backboneLines, new Color(255f / 255f, 149f / 255f, 38f / 255f, 1));
+        backboneLinesMesh = new Mesh(true, vertexArray.length, 0, VertexAttribute.Position());
+        backboneLinesMesh.setVertices(vertexArray);
+
+        // create parent line mesh
+        vertexArray = fillLineVertexArray(parentLines, new Color(0f / 255f, 255f / 255f, 142f / 255f, 1));
+        parentLinesMesh = new Mesh(true, vertexArray.length, 0, VertexAttribute.Position());
+        parentLinesMesh.setVertices(vertexArray);
+
+        // create connection line mesh
+        vertexArray = fillLineVertexArray(connectionLines, new Color(0f / 255f, 0f / 255f, 0f / 255f, 1));
+        connectionLinesMesh = new Mesh(true, vertexArray.length, 0, VertexAttribute.Position());
+        connectionLinesMesh.setVertices(vertexArray);
     }
+
+
+    private float[] fillLineVertexArray(Set<Line> lineList, Color color) {
+        List<Float> vertexList = new ArrayList<Float>();
+        for (Line line : lineList) {
+            // position A
+            vertexList.add(line.getPointA().x);
+            vertexList.add(line.getPointA().y);
+            vertexList.add(0f);
+
+            // position B
+            vertexList.add(line.getPointB().x);
+            vertexList.add(line.getPointB().y);
+            vertexList.add(0f);
+        }
+        float[] vertexArray = new float[vertexList.size()];
+        int i = 0;
+        for (Float v : vertexList) {
+            vertexArray[i++] = (v != null ? v : 0f); // Or whatever default you want.
+        }
+        return vertexArray;
+    }
+
 
     private void generateNoiseTexture(Noise.NoiseType type) throws ExceptionInvalidParam {
         ModuleBase noise = null;
@@ -352,6 +420,39 @@ public class MapScreen extends HakdScreen {
                 break;
         }
         pixmap.dispose();
+    }
+
+    private void drawBackboneLines() {
+        Triangulation triangulation = new Triangulation(new Triangle(new Pnt(-INITIAL_TRIANGLE_SIZE, -INITIAL_TRIANGLE_SIZE), new Pnt(INITIAL_TRIANGLE_SIZE, -INITIAL_TRIANGLE_SIZE), new Pnt(0, INITIAL_TRIANGLE_SIZE))); // Used to draw backbone lines
+
+        for (BackboneProviderNetwork backbone : game.getGamePlay().getInternet().getBackboneProviderNetworksMap().values()) { // iterate through backbones and add points to set and triangulation
+            triangulation.delaunayPlace(new Pnt(backbone.getPos().x, backbone.getPos().y));
+        }
+
+        Set<Vector2[]> lines = new HashSet<Vector2[]>(); // hold the lines that have been drawn
+        for (Triangle triangle : triangulation) {
+            Pnt pntA = triangle.get(0);
+            Pnt pntB = triangle.get(1);
+            Pnt pntC = triangle.get(2);
+            Vector2 pointA = new Vector2((float) pntA.coord(0), (float) pntA.coord(1));// points of the line
+            Vector2 pointB = new Vector2((float) pntB.coord(0), (float) pntB.coord(1));
+            Vector2 pointC = new Vector2((float) pntC.coord(0), (float) pntC.coord(1));
+
+            Line line = new Line(pointA, pointB);
+            if (!backboneLines.contains(line) && line.getPointA().dst(line.getPointB()) < INITIAL_TRIANGLE_SIZE / 2) {
+                backboneLines.add(line);
+            }
+
+            line = new Line(pointB, pointC);
+            if (!backboneLines.contains(line) && line.getPointA().dst(line.getPointB()) < INITIAL_TRIANGLE_SIZE / 2) {
+                backboneLines.add(line);
+            }
+
+            line = new Line(pointA, pointC);
+            if (!backboneLines.contains(line) && line.getPointA().dst(line.getPointB()) < INITIAL_TRIANGLE_SIZE / 2) {
+                backboneLines.add(line);
+            }
+        }
     }
 
     @Override

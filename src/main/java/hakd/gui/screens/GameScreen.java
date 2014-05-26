@@ -1,12 +1,12 @@
 package hakd.gui.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import hakd.game.GamePlay;
+import hakd.game.Hakd;
 import hakd.game.Internet;
 import hakd.game.gameplay.Character;
 import hakd.game.gameplay.Player;
@@ -26,7 +26,7 @@ public class GameScreen extends HakdScreen {
     private boolean firstTimeShown = true;
     private final Stage dialogStage = new Stage(); // TODO this will be the overlay
 
-    public GameScreen(Game game, String playerName) {
+    public GameScreen(Hakd game, String playerName) {
         super(game);
         this.playerName = playerName;
     }
@@ -51,7 +51,6 @@ public class GameScreen extends HakdScreen {
             cam.update();
 
             renderer.setView((OrthographicCamera) cam);
-            renderer.getSpriteBatch().setShader(gdxShader);
 
             cam.position.x = room.getFloorLayer().getWidth() / 2;
             cam.position.y = 0;

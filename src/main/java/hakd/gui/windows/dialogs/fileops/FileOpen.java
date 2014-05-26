@@ -4,16 +4,16 @@ package hakd.gui.windows.dialogs.fileops;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import hakd.gui.Assets;
+import hakd.game.Hakd;
 import hakd.gui.windows.device.FileHandler;
 import hakd.networks.devices.Device;
 import hakd.other.File;
 
 public class FileOpen extends Dialog {
-    Skin skin = Assets.skin;
+    Skin skin = Hakd.assets.get("skins/uiskin.json", Skin.class);
 
     public FileOpen(final Device device, final FileHandler fileHandler) {
-        super("Open", Assets.skin);
+        super("Open", Hakd.assets.get("skins/uiskin.json", Skin.class));
 
         final Tree fileTree = new Tree(skin);
         fileTree.getSelection().setMultiple(false);

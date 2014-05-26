@@ -6,16 +6,16 @@ import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ChangeListener;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import hakd.gui.Assets;
+import hakd.game.Hakd;
 import hakd.gui.windows.device.FileHandler;
 import hakd.networks.devices.Device;
 import hakd.other.File;
 
 public class FileSave extends Dialog {
-    private final Skin skin = Assets.skin;
+    private final Skin skin = Hakd.assets.get("skins/uiskin.json", Skin.class);
 
     public FileSave(Device device, final FileHandler fileHandler) {
-        super("Save File As", Assets.skin);
+        super("Save File As", Hakd.assets.get("skins/uiskin.json", Skin.class));
 
         final Tree fileTree = new Tree(skin);
         final TextField fileName = new TextField("", skin); // holds the name, not the path

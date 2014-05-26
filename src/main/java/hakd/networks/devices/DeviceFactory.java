@@ -83,7 +83,20 @@ public class DeviceFactory {
             case DNS:
                 return new Dns();
             case SERVER:
-                return new Server();
+                final Server server = new Server();
+
+//                try {
+//                    for (int i = 0; i < 3; i++) {
+//                        server.getHome().addFile(Util.getFileData("bash", (int) (Math.random() * 9) + ""));
+//                    }
+//
+//                    for (String f : Util.PROGRAMS.keySet()) {
+//                        server.getBin().addFile(new File(f, Util.PROGRAMS.get(f)));
+//                    }
+//                } catch (Exception e) {
+//                    e.printStackTrace();
+//                }
+                return server;
         }
     }
 }

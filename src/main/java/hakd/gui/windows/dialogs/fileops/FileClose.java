@@ -7,7 +7,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.Dialog;
 import com.badlogic.gdx.scenes.scene2d.ui.Skin;
 import com.badlogic.gdx.scenes.scene2d.ui.TextButton;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
-import hakd.gui.Assets;
+import hakd.game.Hakd;
 import hakd.gui.windows.device.FileHandler;
 import hakd.networks.devices.Device;
 
@@ -15,9 +15,9 @@ public class FileClose extends Dialog {
 
 
     public FileClose(final Device device, final FileHandler fileHandler) {
-        super("Close", Assets.skin);
+        super("Close", Hakd.assets.get("skins/uiskin.json", Skin.class));
 
-        Skin skin = Assets.skin;
+        Skin skin = Hakd.assets.get("skins/uiskin.json", Skin.class);
 
         text("This file has been modified.\nAre you sure you want to quit?");
 

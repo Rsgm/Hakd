@@ -82,26 +82,6 @@ public class Internet {
 
             city.addNetwork(backbone);
         }
-
-
-        // create backbone lines
-//        List<Vector2> positions = new ArrayList<Vector2>(backboneProviderNetworksMap.size());
-//        for (BackboneProviderNetwork b : backboneProviderNetworksMap) {
-//            positions.add(b.getPos());
-//
-//            TODO I guess use Delaunay Triangulation https://github.com/irstv/jdelaunay/wiki
-//        }
-//        if (!isIntersected) {
-//            Vector2 v1 = new Vector2(b1.getPos());
-//            Vector2 v2 = new Vector2(b2.getPos());
-//            Sprite line = Assets.nearestTextures.createSprite("dashedLine");
-//            line.setOrigin(0, 0);
-//            line.setSize(v1.dst(v2), 3);
-//            line.setPosition(v1.x, v1.y);
-//            line.setRotation(v1.sub(v2).scl(-1).angle());
-//            b1.getBackboneConnectionLines().add(line);
-//            b2.getBackboneConnectionLines().add(line);
-// }
     }
 
     private void generateIsps(int amount, HashMap<String, City> cities) {

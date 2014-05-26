@@ -2,6 +2,7 @@ package hakd.gui.windows.device;
 
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input.Keys;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.scenes.scene2d.InputEvent;
 import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.ui.ImageButton;
@@ -13,7 +14,7 @@ import com.badlogic.gdx.scenes.scene2d.ui.TextField.TextFieldStyle;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import hakd.game.Command;
-import hakd.gui.Assets;
+import hakd.game.Hakd;
 import hakd.networks.devices.Device;
 import hakd.other.File;
 
@@ -45,7 +46,7 @@ public class Terminal extends SceneWindow {
         commandQueue = new ConcurrentLinkedQueue<Command>(); // not sure if this should be concurrent, it might need to be in the future
         history = new ArrayList<String>();
 
-        ImageButton close = new ImageButton(new TextureRegionDrawable(Assets.linearTextures.findRegion("close")));
+        ImageButton close = new ImageButton(new TextureRegionDrawable(Hakd.assets.get("lTextures.txt", TextureAtlas.class).findRegion("close")));
         close.setPosition(window.getWidth() - close.getWidth(), window.getHeight() - close.getHeight() - 20);
 
         input = new TextField("", skin.get("console", TextFieldStyle.class));

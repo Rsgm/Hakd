@@ -1,6 +1,7 @@
 package hakd.game.pythonapi.menu;
 
 import com.badlogic.gdx.Gdx;
+import hakd.game.Hakd;
 import hakd.gui.screens.GameScreen;
 import hakd.gui.screens.MenuScreen;
 
@@ -10,7 +11,7 @@ public class PyMenu {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                currentScreen.getGame().setScreen(new GameScreen(currentScreen.getGame(), name));
+                currentScreen.getGame().setScreen(new GameScreen(((Hakd) currentScreen.getGame()), name));
             }
         });
     }

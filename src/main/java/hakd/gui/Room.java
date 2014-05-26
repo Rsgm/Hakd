@@ -1,6 +1,7 @@
 package hakd.gui;
 
 import com.badlogic.gdx.graphics.g2d.Sprite;
+import com.badlogic.gdx.graphics.g2d.TextureAtlas;
 import com.badlogic.gdx.maps.MapLayer;
 import com.badlogic.gdx.maps.MapObject;
 import com.badlogic.gdx.maps.objects.RectangleMapObject;
@@ -10,6 +11,7 @@ import com.badlogic.gdx.maps.tiled.TmxMapLoader;
 import com.badlogic.gdx.maps.tiled.renderers.IsometricTiledMapRenderer;
 import com.badlogic.gdx.math.Vector2;
 import hakd.game.GamePlay;
+import hakd.game.Hakd;
 import hakd.game.gameplay.Character;
 import hakd.game.gameplay.City;
 import hakd.game.gameplay.Player;
@@ -78,7 +80,7 @@ public class Room {
             network.setDeviceLimit(1);
 
             Device device = DeviceFactory.createDevice(0, Device.DeviceType.SERVER);
-            HakdSprite tile = new HakdSprite(Assets.nearestTextures.findRegion("d0"));
+            HakdSprite tile = new HakdSprite(Hakd.assets.get("nTextures.txt", TextureAtlas.class).findRegion("d0"));
             tile.setSize(tile.getWidth() / TILE_SIZE, tile.getHeight() / TILE_SIZE);
             tile.setObject(device);
             device.setTile(tile);
@@ -157,7 +159,7 @@ public class Room {
         private final HakdSprite table; // the default sprite if there is no device, or the empty device tile
 
         static {
-            TABLE = new Sprite(Assets.nearestTextures.findRegion("d-1"));
+            TABLE = new Sprite(Hakd.assets.get("nTextures.txt", TextureAtlas.class).findRegion("d-1"));
             TABLE.setSize(TABLE.getWidth() / TILE_SIZE, TABLE.getHeight() / TILE_SIZE);
         }
 

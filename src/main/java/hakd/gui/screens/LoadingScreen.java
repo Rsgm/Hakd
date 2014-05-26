@@ -1,10 +1,10 @@
 package hakd.gui.screens;
 
-import com.badlogic.gdx.Game;
+import hakd.game.Hakd;
 
 public class LoadingScreen extends HakdScreen {
 
-    public LoadingScreen(Game game) { // use when there is any lag switching scenes
+    public LoadingScreen(Hakd game) { // use when there is any lag switching scenes
         super(game);
     }
 

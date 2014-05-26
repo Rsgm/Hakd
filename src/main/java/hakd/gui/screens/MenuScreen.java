@@ -1,6 +1,5 @@
 package hakd.gui.screens;
 
-import com.badlogic.gdx.Game;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.Input;
 import com.badlogic.gdx.graphics.OrthographicCamera;
@@ -9,7 +8,8 @@ import com.badlogic.gdx.scenes.scene2d.InputListener;
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.*;
 import com.badlogic.gdx.scenes.scene2d.utils.Align;
-import hakd.gui.Assets;
+import com.badlogic.gdx.utils.viewport.FitViewport;
+import hakd.game.Hakd;
 import hakd.other.Util;
 import org.python.util.PythonInterpreter;
 
@@ -35,15 +35,14 @@ public class MenuScreen extends HakdScreen {
 
     private Thread t;
 
-    public MenuScreen(Game game) {
+    public MenuScreen(Hakd game) {
         super(game);
 
         cam = new OrthographicCamera();
         ((OrthographicCamera) cam).setToOrtho(false, width, height);
         cam.update();
 
-        stage = new Stage();
-        stage.getSpriteBatch().setShader(Assets.shaders.get(Assets.Shader.DEFAULT));
+        stage = new Stage(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), cam));
         canvas = new Table();
         stage.addActor(canvas);
         canvas.setSize(Gdx.graphics.getWidth(), Gdx.graphics.getHeight());
@@ -54,34 +53,20 @@ public class MenuScreen extends HakdScreen {
         super.show();
 
         Gdx.input.setInputProcessor(stage);
-        stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
 
         StartTerminal();
     }
 
-    @Override
-    public void render(float delta) {
-        super.render(delta);
-
-        stage.act(Gdx.graphics.getDeltaTime());
-        stage.draw();
-    }
-
-    @Override
-    public void dispose() {
-        super.dispose();
-        if (commandRunning) {
-            stop();
-        }
-    }
-
     private void StartTerminal() {
-        Skin skin = Assets.skin;
+        Skin skin = assets.get(("skins/uiskin.json"), Skin.class);
         history = new ArrayList<String>();
 
         input = new TextField("", skin.get("console", TextField.TextFieldStyle.class));
         display = new Label("", skin.get("console", Label.LabelStyle.class));
         scroll = new ScrollPane(display, skin);
+
+        display.setFontScale(.6f);
+        input.getStyle().font.setScale(.6f);
 
         display.setWrap(false);
         display.setAlignment(10, Align.left);
@@ -196,6 +181,22 @@ public class MenuScreen extends HakdScreen {
         canvas.add(scroll).expand().fill();
         canvas.row();
         canvas.add(input).left().fillX();
+    }
+
+    @Override
+    public void render(float delta) {
+        super.render(delta);
+
+        stage.act(Gdx.graphics.getDeltaTime());
+        stage.draw();
+    }
+
+    @Override
+    public void dispose() {
+        super.dispose();
+        if (commandRunning) {
+            stop();
+        }
     }
 
     public void addText(String text) {

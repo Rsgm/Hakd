@@ -4,6 +4,7 @@ import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.scenes.scene2d.Group;
 import com.badlogic.gdx.scenes.scene2d.Stage;
+import com.badlogic.gdx.utils.viewport.FitViewport;
 import hakd.gui.input.GameInput;
 import hakd.gui.screens.GameScreen;
 import hakd.networks.devices.Device;
@@ -49,7 +50,7 @@ public class DeviceScene {
 
     public void open() {
         Gdx.input.setInputProcessor(stage);
-        stage.setViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight(), false);
+        stage.setViewport(new FitViewport(Gdx.graphics.getWidth(), Gdx.graphics.getHeight()));
 
         if (desktop == null) {
             terminal0 = new Terminal(this);
