@@ -1,0 +1,15 @@
+apply plugin: "java"
+
+sourceCompatibility = 1.6
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+sourceSets.main.java.srcDirs = ["src/"]
+//sourceSets.main.resources.srcDirs = [ "assets/" ]
+
+jar.doFirst(){
+    into('assets/'){ from 'assets/' } // internal asset directory
+}
+
+eclipse.project {
+    name = appName + "-core"
+}

@@ -1,63 +1,80 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'eclipse'
-apply plugin: 'idea'
-apply plugin: 'application'
-
-mainClassName = "hakd.Main"
-
-group = 'com.github.rsgm'
-description = 'Hacking game'
-version = '0.0.4'
-ext.gdxVersion = "1.0.0";
-targetCompatibility = 1.6
-
-jar {
-    manifest {
-        attributes('Title': 'Hak\'d', 'Version': version)
+buildscript {
+    repositories {
+        mavenCentral()
+        mavenLocal()
+    }
+    dependencies {
     }
 }
+def tempVersion = '0.0.4'
 
-sourceSets {
-    main {
-        java.srcDirs 'src/main/java/'
-        resources.srcDirs 'src/main/resources/', 'src/test/resources/'
+allprojects {
+    apply plugin: "eclipse"
+    apply plugin: "idea"
+
+    ext {
+        appName = 'Hakd'
+        description = 'Hacking game'
+        gdxVersion = '1.3.1-SNAPSHOT';
     }
-}
 
-
-task packageHakd(dependsOn: "installApp", type: Zip) {
-    description = 'Packages the install directory to a zip'
-    archiveName = "Hakd-${version}.zip"
-    into('Hakd/') {
-        from 'build/install/Hakd/'
-
-        into('bin') {
-            from 'README.md'
-            from 'LICENSE.md'
-            into('docs/') {
-                from 'docs/'
-            }
-        }
-
-        into('bin/res/') { // put all files that gdx can't handle here
-            into('python/') { from 'build/resources/main/python/' }
-            into('textfiles/') { from 'build/resources/main/textfiles/' }
-        }
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
 }
 
 
+project(":desktop") {
+    apply plugin: "java"
+    apply plugin: 'application'
 
-repositories {
-    mavenCentral()
-    maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
+    version = tempVersion
+
+    dependencies {
+        compile project(":core")
+
+        compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
+        compile "com.badlogicgames.gdx:gdx-freetype-platform:$gdxVersion:natives-desktop"
+    }
 }
 
-dependencies {
-    compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-    compile "com.badlogicgames.gdx:gdx-backend-lwjgl:$gdxVersion"
-    compile "com.badlogicgames.gdx:gdx-platform:$gdxVersion:natives-desktop"
-    compile "org.python:jython-standalone:2.7-b1"
+project(":core") {
+    apply plugin: "java"
+
+    version = tempVersion
+
+    dependencies {
+        compile project(":delaunay")
+        compile project(":gdx-shaders")
+        compile project(":libnoise")
+
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+        compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
+        compile "commons-cli:commons-cli:1.2"
+
+        // jython beta 2 uses java 1.7, beta 1 uses 1.6 which is what I would like to keep the requirement at
+        compile "org.python:jython-standalone:2.7-b1"
+    }
 }
 
+project(":delaunay") {
+    apply plugin: "java"
+}
+project(":gdx-shaders") {
+    apply plugin: "java"
+
+    dependencies {
+        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
+    }
+}
+project(":libnoise") {
+    apply plugin: "java"
+}
+
+tasks.eclipse.doLast {
+    delete ".project"
+}

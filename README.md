@@ -87,7 +87,7 @@ FileSystem     Terminal      Parts -> | - CPU
 
 ###Setting up the Project
 
-These are all meant to be run in the command prompt/terminal, in the Hakd source directory. Any of these will download gradle if it has not yet.
+These are all meant to be run in the command prompt/terminal, in the Hakd source directory. Any of these will download gradle if it has not yet been downloaded.
 
 View gradle tasks and help:
 windows: ```./gradlew.bat tasks```
@@ -106,23 +106,14 @@ linux/mac: ```./gradle eclipse```
 
 ###Building and Running
 
-These are all meant to be run in the command prompt/terminal, in the Hakd source directory. Any of these will download gradle if it has not yet.
+These are all meant to be run in the command prompt/terminal, in the Hakd source directory. Any of these will download gradle if it has not yet been downloaded.
 
-For Windows, run this in command prompt:
-```
-./gradlew.bat
-./gradlew.bat packageHakd
-```
+Windows: ```./gradlew.bat clean distZip```
+Linux/Mac: ```./gradlew clean distZip```
 
-For Linux and Mac, run this in the terminal:
-```
-./gradlew
-./gradlew packageHakd
-```
-
-A packaged Hakd-(version).zip will be placed in /build/distributions/. This is can be used/released without any modification.
+A packaged Hakd-(version).zip will be placed in desktop/build/distributions/. This is can be used/released without any modification.
 
 You can also run Hakd through gradle, if you don't want to package it:
-windows: ```./gradlew.bat run```
-linux/mac: ```./gradlew run```
-
+windows: ```./gradlew.bat runSource```
+linux/mac: ```./gradlew runSource```
+This is faster than distZip, but it will have the same asset paths as in an IDE, which is different from the distZip asset paths.

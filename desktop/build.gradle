@@ -1,0 +1,60 @@
+apply plugin: 'java'
+apply plugin: 'application'
+
+sourceCompatibility = 1.6
+sourceSets.main.java.srcDirs = ['src/']
+
+mainClassName = 'DesktopLauncher'
+project.ext.mainClassName = mainClassName
+project.ext.assetsDir = new File('../core/assets');
+
+// java plugin
+// =================================================
+task runSource(dependsOn: classes, type: JavaExec) {
+    main = project.mainClassName
+    classpath = sourceSets.main.runtimeClasspath
+    standardInput = System.in
+    workingDir = '..' //project.assetsDir
+    ignoreExitValue = true
+}
+
+// application plugin
+// =================================================
+distZip.description = 'Packages the install directory to a zip'
+distZip.archiveName = "Hakd-${version}.zip"
+
+applicationDistribution.into('') {
+    into('docs/') { from '../docs' }
+    from('../README.md')
+    from('../LICENSE.md')
+
+    into('bin/assets/') {
+        // use for assets that gdx.files.internal can't load, if it gives an error about any new assets you have added, try adding it here
+        into('shaders/') {
+            from('../gdx-shaders/src/com/thesecretpie/shader/shaders/')  // shaders from thesecretpie
+            from('../core/assets/shaders/')
+        }
+        into('python/') { from('../core/assets/python/') }
+        into('textfiles/') { from('../core/assets/textfiles/') }
+    }
+}
+
+// other
+// =================================================
+eclipse {
+    project {
+        name = appName + '-desktop'
+        linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/core/assets'
+    }
+}
+
+task afterEclipseImport(description: 'Post processing after project generation', group: 'IDE') {
+    doLast {
+        def classpath = new XmlParser().parse(file('.classpath'))
+        new Node(classpath, 'classpathentry', [kind: 'src', path: 'assets']);
+        def writer = new FileWriter(file('.classpath'))
+        def printer = new XmlNodePrinter(new PrintWriter(writer))
+        printer.setPreserveWhitespace(true)
+        printer.print(classpath)
+    }
+}

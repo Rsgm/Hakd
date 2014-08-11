@@ -3,6 +3,11 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Hakd.iml" filepath="$PROJECT_DIR$/Hakd.iml" />
+      <module fileurl="file://$PROJECT_DIR$/core/core.iml" filepath="$PROJECT_DIR$/core/core.iml" />
+      <module fileurl="file://$PROJECT_DIR$/delaunay/delaunay.iml" filepath="$PROJECT_DIR$/delaunay/delaunay.iml" />
+      <module fileurl="file://$PROJECT_DIR$/desktop/desktop.iml" filepath="$PROJECT_DIR$/desktop/desktop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gdx-shaders/gdx-shaders.iml" filepath="$PROJECT_DIR$/gdx-shaders/gdx-shaders.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libnoise/libnoise.iml" filepath="$PROJECT_DIR$/libnoise/libnoise.iml" />
     </modules>
   </component>
 </project>
