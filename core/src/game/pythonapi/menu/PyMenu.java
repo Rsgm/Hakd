@@ -6,30 +6,35 @@ import gui.screens.GameScreen;
 import gui.screens.MenuScreen;
 
 public class PyMenu {
+    private final MenuScreen menuScreen;
 
-    public static void setScreen(final MenuScreen currentScreen, final String name) {
+    public PyMenu(MenuScreen menuScreen) {
+        this.menuScreen = menuScreen;
+    }
+
+    public void setScreen(final String name) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                currentScreen.getGame().setScreen(new GameScreen(((Hakd) currentScreen.getGame()), name));
+                menuScreen.getGame().setScreen(new GameScreen(((Hakd) menuScreen.getGame()), name));
             }
         });
     }
 
-    public static void write(final MenuScreen screen, final String s) {
+    public void write(final String s) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                screen.addText(s);
+                menuScreen.getTerminal().addText(s);
             }
         });
     }
 
-    public static void over_write(final MenuScreen screen, final String s, final int lineFromBottom) {
+    public void over_write(final String s, final int lineFromBottom) {
         Gdx.app.postRunnable(new Runnable() {
             @Override
             public void run() {
-                screen.replaceText(s, lineFromBottom);
+                menuScreen.getTerminal().replaceText(s, lineFromBottom);
             }
         });
     }

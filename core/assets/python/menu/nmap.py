@@ -1,54 +1,60 @@
 #@help:nmap [IPv4 address] - Scans the ports of the device with the given address. USE AT OWN RISK.
 #Taken from http://www.pythonforbeginners.com/code-snippets-source-code/port-scanner-in-python/
 #
-#Eddited a bit by Rsgm123
+#Eddited a bit by Rsgm
 
 from game.pythonapi.menu import PyMenu
 import socket
 import sys
 from datetime import datetime
 
-try:
-    # Ask for input
-    remoteServer    = parameters[0]
-    remoteServerIP  = socket.gethostbyname(remoteServer)
 
-    # Print a nice banner with information on which host we are about to scan
-    screen.addText("-" * 60)
-    screen.addText("Please wait, scanning remote host " + remoteServerIP)
-    screen.addText("This could take a few minutes.")
-    screen.addText("-" * 60)
+# Ask for input
+remoteServer = options.valueOf('a')
+remoteServerIP  = socket.gethostbyname(remoteServer)
 
-    # Check what time the scan started
-    t1 = datetime.now()
+# Print a nice banner with information on which host we are about to scan
+menu.write("-" * 60)
+menu.write("Please wait, scanning remote host " + remoteServerIP)
+menu.write("This could take a few minutes.")
+menu.write("-" * 60)
 
-    # Using the range function to specify ports (here it will scans all ports between 1 and 1024)
+# Check what time the scan started
+t1 = datetime.now()
 
-    # We also put in some error handling for catching errors
+# Using the range function to specify ports (here it will scans all ports between 1 and 1024)
 
-    for port in range(1,1024):
-        try:
-            sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-            result = sock.connect_ex((remoteServerIP, port))
-            if result == 0:
-                screen.addText("Port " + str(port) + ": Open")
-            sock.close()
+# We also put in some error handling for catching errors
 
-        except socket.gaierror:
-            screen.addText('Hostname could not be resolved. Exiting')
-            sys.exit()
+for port in range(1,1024):
+    try:
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        result = sock.connect_ex((remoteServerIP, port))
+        if result == 0:
+            menu.write("Port " + str(port) + ": Open")
+        sock.close()
 
-        except socket.error:
-    	    print str(port) + " - closed"
+    except socket.gaierror:
+        menu.write('Hostname could not be resolved. Exiting')
+        sys.exit()
 
-    # Checking the time again
-    t2 = datetime.now()
+    except socket.error:
+        print str(port) + " - closed"
 
-    # Calculates the difference of time, to see how long it took to run the script
-    total =  t2 - t1
+# Checking the time again
+t2 = datetime.now()
 
-    # Printing the information to screen
-    screen.addText('Scanning Completed in: ' + str(total))
-except IndexError:
-    PyMenu.write(screen, 'Please provide the IP of the ftp server.')
+# Calculates the difference of time, to see how long it took to run the script
+total =  t2 - t1
 
+# Printing the information to screen
+menu.write('Scanning Completed in: ' + str(total))
+
+
+#@parse_start
+def getParser():
+    p = OptionParser()
+    p.acceptsAll(["h", "help"], "show help" ).forHelp
+    p.accepts("a", "sets the address to scan, this can be an IP or a URL").requiredUnless("h").withRequiredArg().describedAs("address")
+    return p
+#@parse_end

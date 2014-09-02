@@ -190,6 +190,8 @@ public class Util {
         return files;
     }
 
+
+
     public static String tutorialText(int pos) {
         String text = "";
 
@@ -209,5 +211,12 @@ public class Util {
         }
 
         return text;
+    }
+
+    public static String getParserCode(File file) {
+        String text = Gdx.files.internal(file.getPath()).readString();
+        String parseCode = text.substring(text.indexOf("#@parse_start"), text.lastIndexOf("#@parse_end"));
+
+        return "from joptsimple import OptionParser\n\n" + parseCode + "\nparser = getParser()";
     }
 }
