@@ -285,7 +285,12 @@ public class MenuScreen extends HakdScreen {
         PythonInterpreter pi = new PythonInterpreter();
         Py.getSystemState().path.append(new PyString(file.getParentFile().getAbsolutePath()));
 
-        String parserCode = Util.getParserCode(file);
+        String parserCode = null;
+        try {
+            parserCode = Util.getParserCode(file);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
         pi.exec(parserCode);
         OptionParser parser = (OptionParser) pi.get("parser").__tojava__(OptionParser.class);
         Set<String> options = new HashSet<String>(parser.recognizedOptions().keySet());

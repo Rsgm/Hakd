@@ -3,6 +3,7 @@ package other;
 import com.badlogic.gdx.Gdx;
 import com.badlogic.gdx.math.Vector2;
 import gui.Room;
+import libnoiseforjava.exception.ExceptionInvalidParam;
 import org.python.util.PythonInterpreter;
 
 import java.io.*;
@@ -213,8 +214,12 @@ public class Util {
         return text;
     }
 
-    public static String getParserCode(File file) {
+    public static String getParserCode(File file) throws Exception {
         String text = Gdx.files.internal(file.getPath()).readString();
+        if(!text.contains("#@parse_start") || !text.contains("#@parse_end")){
+            throw new Exception("No option parser defined.");
+        }
+
         String parseCode = text.substring(text.indexOf("#@parse_start"), text.lastIndexOf("#@parse_end"));
 
         return "from joptsimple import OptionParser\n\n" + parseCode + "\nparser = getParser()";

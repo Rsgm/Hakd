@@ -250,6 +250,8 @@ public class MenuTerminal extends Terminal {
                     } catch (OptionException e) {
                         addText(e.getMessage() + ". Try using -h.");
                         Gdx.app.debug("Jopt", e.getMessage());
+                    } catch (Exception e) {
+                        Gdx.app.debug("Menu Info", "Parser not found, ");
                     }
 
                     commandRunning = false;
@@ -273,7 +275,7 @@ public class MenuTerminal extends Terminal {
         commandThread.start();
     }
 
-    private void runPython(String command) throws FileNotFoundException {
+    private void runPython(String command) throws Exception {
         String name = command.contains(" ") ? command.substring(0, command.indexOf(" ")) : command;
         File[] files = Gdx.files.internal(Util.ASSETS + "/python/menu/").file().listFiles();
         File file = null;
