@@ -6,16 +6,16 @@ buildscript {
     dependencies {
     }
 }
-def tempVersion = '0.0.4'
 
 allprojects {
     apply plugin: "eclipse"
     apply plugin: "idea"
 
+    version = '0.0.4'
     ext {
         appName = 'Hakd'
         description = 'Hacking game'
-        gdxVersion = '1.3.2-SNAPSHOT';
+        gdxVersion = '1.4.2-SNAPSHOT';
     }
 
     repositories {
@@ -31,8 +31,6 @@ project(":desktop") {
     apply plugin: "java"
     apply plugin: 'application'
 
-    version = tempVersion
-
     dependencies {
         compile project(":core")
 
@@ -45,8 +43,6 @@ project(":desktop") {
 project(":core") {
     apply plugin: "java"
 
-    version = tempVersion
-
     dependencies {
         compile project(":delaunay")
         compile project(":gdx-shaders")
@@ -54,10 +50,9 @@ project(":core") {
 
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
-        compile 'net.sf.jopt-simple:jopt-simple:4.7-beta-1'
 
-        // jython beta 2 uses java 1.7, beta 1 uses 1.6 which is what I would like to keep the requirement at
-        compile "org.python:jython-standalone:2.7-b1"
+        compile 'net.sf.jopt-simple:jopt-simple:4.7-beta-1'
+        compile "org.python:jython-standalone:2.7-b2"
     }
 }
 

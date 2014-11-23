@@ -1,7 +1,7 @@
 apply plugin: 'java'
 apply plugin: 'application'
 
-sourceCompatibility = 1.6
+sourceCompatibility = 1.7
 sourceSets.main.java.srcDirs = ['src/']
 
 mainClassName = 'DesktopLauncher'
@@ -43,16 +43,16 @@ applicationDistribution.into('') {
 // =================================================
 eclipse {
     project {
-        name = appName + '-desktop'
+        name = appName + "-desktop"
         linkedResource name: 'assets', type: '2', location: 'PARENT-1-PROJECT_LOC/core/assets'
     }
 }
 
-task afterEclipseImport(description: 'Post processing after project generation', group: 'IDE') {
+task afterEclipseImport(description: "Post processing after project generation", group: "IDE") {
     doLast {
-        def classpath = new XmlParser().parse(file('.classpath'))
-        new Node(classpath, 'classpathentry', [kind: 'src', path: 'assets']);
-        def writer = new FileWriter(file('.classpath'))
+        def classpath = new XmlParser().parse(file(".classpath"))
+        new Node(classpath, "classpathentry", [kind: 'src', path: 'assets']);
+        def writer = new FileWriter(file(".classpath"))
         def printer = new XmlNodePrinter(new PrintWriter(writer))
         printer.setPreserveWhitespace(true)
         printer.print(classpath)
