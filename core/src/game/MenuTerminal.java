@@ -57,8 +57,8 @@ public class MenuTerminal extends Terminal {
 
         display.setWrap(false);
         display.setAlignment(10, Align.left);
-        String terminalInfo = "Terminal [[Version 0." + ((int) (Math.random() * 100)) / 10 + "]";
-        terminalInfo += "\n" + System.getProperty("user.name") + "@127.0.0.1";
+        String terminalInfo = "[#3C91BF]Terminal [[Version 0." + ((int) (Math.random() * 100)) / 10 + "]";
+        terminalInfo += "\n[#38FF4C]" + System.getProperty("user.name") + "[] @ [#FFC123]127.0.0.1[]";
         terminalInfo += "\nStorage:";
 
         // makes hakd start a bit slower, but lets the first jython program start a bit sooner
@@ -73,7 +73,7 @@ public class MenuTerminal extends Terminal {
         }
 
         display.setText(terminalInfo + "\n-----------------------------------------------------\n" +
-                "     Type \"help\" to get started.\n\n");
+                "     Type \"help\" to get started.[]\n\n");
     }
 
     @Override

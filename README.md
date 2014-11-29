@@ -27,7 +27,7 @@ To run:
 
 In the menu, type 'help' for a list of commands. Type start [name] to start the game. The game world will begin to generate, but there is no graphics, so check the terminal. It should take a few seconds to a few minutes depending on your processor.
 
-Once the game starts:  
+Once the game starts:
 Map:
  * Tab to open the map, tab again to close it.
  * Click and drag to move.
@@ -54,7 +54,7 @@ I think those are all, but I could be wrong. Check the input processors(menu, ma
 
 ###Game world
 
-The game world consists of thousands of networks all connected to the central Internet. The Internet and the rest of the world is randomly/procedurally generated down to the cpu speed on a server.  
+The game world consists of thousands of networks all connected to the central Internet. The Internet and the rest of the world is randomly/procedurally generated down to the cpu speed on a server.
 There is nothing stopping you from hacking into the ISP of the town over and sending logs of every packet to a storage based data center that you can remotely connect to.
 
 
@@ -62,7 +62,7 @@ There is nothing stopping you from hacking into the ISP of the town over and sen
 
 The main screen is a server room. The player can go up to any of his/her servers and access their terminals. Through these terminals, they can access and interact with the Internet. I will probably have more apps with guis though, like a web browser.
 
-Players run commands from within a terminal. Seems simple enough, but the terminal is a python interpreter. This means that players can write their own scripts/programs to hack with and edit existing, pre-built programs. 
+Players run commands from within a terminal. Seems simple enough, but the terminal is a python interpreter. This means that players can write their own scripts/programs to hack with and edit existing, pre-built programs.
 All commands and programs are written in python. You will be able to buy and download default software from the stores or torrent sites in the game I write myself.
 
 
@@ -87,33 +87,37 @@ FileSystem     Terminal      Parts -> | - CPU
 
 ###Setting up the Project
 
+This project uses gradle to build and optionally run.
 These are all meant to be run in the command prompt/terminal, in the Hakd source directory. Any of these will download gradle if it has not yet been downloaded.
 
-View gradle tasks and help:
-windows: ```./gradlew.bat tasks```
-linux/mac: ```./gradlew tasks```
+####Before gradle can be used, you must run this command first:
+windows: ```./gradlew.bat cloneGdxShaders cloneLibNoise```  
+linux/mac: ```./gradlew cloneGdxShaders cloneLibNoise```  
+This will download the dependencies, not on maven, from github.
+You will need to import the project after running this to add these dependencies to the classpath.
 
-You have to let gradle build the project files for eclipse/intelij to know that it is a project. This should also download the dependencies.
+View gradle tasks and help:  
+windows: ```./gradlew.bat tasks```  
+linux/mac: ```./gradlew tasks```  
+You have to let gradle build the project files for eclipse/intelij to know that it is a project. This will also download the dependencies.
 
-For Intellij projects run:
-windows: ```./gradlew.bat idea```
+For Intellij projects run:  
+windows: ```./gradlew.bat idea```  
 linux/mac: ```./gradle idea```
 
-For Eclipse projects run:
-windows: ```./gradlew.bat eclipse```
+For Eclipse projects run:  
+windows: ```./gradlew.bat eclipse```  
 linux/mac: ```./gradle eclipse```
 
 
 ###Building and Running
 
-These are all meant to be run in the command prompt/terminal, in the Hakd source directory. Any of these will download gradle if it has not yet been downloaded.
-
+To build Hakd, run:  
 Windows: ```./gradlew.bat clean distZip```
-Linux/Mac: ```./gradlew clean distZip```
+Linux/Mac: ```./gradlew clean distZip```  
+A packaged Hakd-{version}.zip will be placed in desktop/build/distributions/. This is can be used and released without any modification.
 
-A packaged Hakd-(version).zip will be placed in desktop/build/distributions/. This is can be used/released without any modification.
-
-You can also run Hakd through gradle, if you don't want to package it:
-windows: ```./gradlew.bat runSource```
-linux/mac: ```./gradlew runSource```
-This is faster than distZip, but it will have the same asset paths as in an IDE, which is different from the distZip asset paths.
+You can also run Hakd through gradle, if you don't want to package it:  
+windows: ```./gradlew.bat run```
+linux/mac: ```./gradlew run```  
+This is faster than distZip, but it will have the same asset paths as in an IDE, which is different from the distZip asset paths and may raise compatibility issues between them.

@@ -67,7 +67,7 @@ public class GameScreen extends HakdScreen {
     public void render(float delta) {
         super.render(delta);
 
-        SpriteBatch rBatch = (SpriteBatch) renderer.getSpriteBatch();
+        SpriteBatch rBatch = (SpriteBatch) renderer.getBatch();
         renderer.setView((OrthographicCamera) cam);
         renderer.render();
 

@@ -1,1 +1,1 @@
-include 'desktop', 'core', 'delaunay' ,'gdx-shaders' ,'libnoise'
+include 'desktop', 'core', 'gdx-shaders', 'libnoiseforjava'

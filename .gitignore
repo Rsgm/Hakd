@@ -16,9 +16,19 @@
 build/
 .gradle
 
+# Git Dependencies #
+####################
+gdx-shaders/
+libnoiseforjava/
+
 # Idea #
 ##########
 .idea/
 *.iml
 *.ipr
 *.iws
+
+# Other #
+#########
+graphics/
+cities

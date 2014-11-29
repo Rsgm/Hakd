@@ -91,7 +91,7 @@ public class Hakd extends Game {
         prefs.putBoolean("sound", true);
         prefs.putInteger("log-level", Application.LOG_DEBUG);
 
-        prefs.flush();
+//        prefs.flush();
         // unfortunately this makes this game non-portable, kind of
 
         // TODO ask user if they want the game to save anything, including settings and game save. Maybe ask in the settings and default to no saving

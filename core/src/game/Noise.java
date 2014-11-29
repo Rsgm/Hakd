@@ -99,8 +99,12 @@ public class Noise {
             landSelector.setBounds(0, 10); // -0.3, 1
             landSelector.setEdgeFalloff(.2);
 
-            Clamp clamp = new Clamp(landSelector);
-            clamp.setBounds(0, 1);
+            Select select = new Select(new Const(-1), new Const(1), landSelector);
+            select.setBounds(0, .1);
+            select.setEdgeFalloff(.02);
+
+            Clamp clamp = new Clamp(select);
+            clamp.setBounds(-1, 1);
             return clamp;
         } catch (ExceptionInvalidParam exceptionInvalidParam) {
             exceptionInvalidParam.printStackTrace();

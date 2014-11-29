@@ -21,7 +21,7 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
-public class Device implements Connectable {
+public /*abstract*/ class Device implements Connectable {
     Network network;
     int level;
     String ip = ""; // all network variables will be in IP format

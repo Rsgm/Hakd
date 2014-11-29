@@ -4,31 +4,33 @@ buildscript {
         mavenLocal()
     }
     dependencies {
+        classpath 'com.palominolabs.gradle.task:gradle-git-clone-task:0.0.2'
     }
 }
 
-allprojects {
-    apply plugin: "eclipse"
-    apply plugin: "idea"
+version = '0.0.4'
 
-    version = '0.0.4'
+allprojects {
+    apply plugin: 'eclipse'
+    apply plugin: 'idea'
+
     ext {
+        sourceCompatibility = 1.7
         appName = 'Hakd'
         description = 'Hacking game'
-        gdxVersion = '1.4.2-SNAPSHOT';
+        gdxVersion = '1.4.2-SNAPSHOT'
     }
 
     repositories {
         mavenLocal()
         mavenCentral()
         maven { url "https://oss.sonatype.org/content/repositories/snapshots/" }
-        maven { url "https://oss.sonatype.org/content/repositories/releases/" }
     }
 }
 
 
 project(":desktop") {
-    apply plugin: "java"
+    apply plugin: 'java'
     apply plugin: 'application'
 
     dependencies {
@@ -41,33 +43,39 @@ project(":desktop") {
 }
 
 project(":core") {
-    apply plugin: "java"
+    apply plugin: 'java'
+
+    /**
+     * clone gdx-shaders to use as a dependency
+     */
+    task cloneGdxShaders(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
+        dir = file('../gdx-shaders')
+        uri = 'https://github.com/Rsgm/gdx-shaders.git'
+        treeish = 'v1.4' // a git hash, or tag name, or branch name
+    }
+
+    /**
+     * clone libnoiseforjava to use as a dependency
+     */
+    task cloneLibNoise(type: com.palominolabs.gradle.task.git.clone.GitCloneTask) {
+        dir = file('../libnoiseforjava')
+        uri = 'https://github.com/Rsgm/libnoiseforjava.git'
+        treeish = 'v1.0' // a git hash, or tag name, or branch name
+    }
 
     dependencies {
-        compile project(":delaunay")
-        compile project(":gdx-shaders")
-        compile project(":libnoise")
+        compile project(':gdx-shaders')
+        compile project(':libnoiseforjava')
 
         compile "com.badlogicgames.gdx:gdx:$gdxVersion"
         compile "com.badlogicgames.gdx:gdx-freetype:$gdxVersion"
 
+
+        //compile 'jline:jline:2.12'
         compile 'net.sf.jopt-simple:jopt-simple:4.7-beta-1'
-        compile "org.python:jython-standalone:2.7-b2"
+        compile 'org.orbisgis:jdelaunay:0.5.3'// not sure if I want this, or to turn the backbones into a tree structure
+        compile 'org.python:jython-standalone:2.7-b3'
     }
-}
-
-project(":delaunay") {
-    apply plugin: "java"
-}
-project(":gdx-shaders") {
-    apply plugin: "java"
-
-    dependencies {
-        compile "com.badlogicgames.gdx:gdx:$gdxVersion"
-    }
-}
-project(":libnoise") {
-    apply plugin: "java"
 }
 
 tasks.eclipse.doLast {

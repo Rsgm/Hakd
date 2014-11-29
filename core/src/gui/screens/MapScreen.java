@@ -6,26 +6,25 @@ import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.Sprite;
 import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.glutils.ShaderProgram;
-import com.badlogic.gdx.math.Vector2;
-import delaunay.Pnt;
-import delaunay.Triangle;
-import delaunay.Triangulation;
 import game.Hakd;
 import game.Internet;
 import game.Noise;
 import game.gameplay.City;
 import gui.input.MapInput;
-import networks.BackboneProviderNetwork;
-import networks.InternetProviderNetwork;
-import networks.Network;
-import other.Line;
 import libnoiseforjava.exception.ExceptionInvalidParam;
 import libnoiseforjava.module.ModuleBase;
 import libnoiseforjava.util.ColorCafe;
 import libnoiseforjava.util.ImageCafe;
 import libnoiseforjava.util.NoiseMap;
 import libnoiseforjava.util.RendererImage;
-import other.Util;
+import networks.BackboneProviderNetwork;
+import networks.InternetProviderNetwork;
+import networks.Network;
+import org.jdelaunay.delaunay.ConstrainedMesh;
+import org.jdelaunay.delaunay.error.DelaunayError;
+import org.jdelaunay.delaunay.geometries.DEdge;
+import org.jdelaunay.delaunay.geometries.DPoint;
+import other.Line;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -145,22 +144,28 @@ public class MapScreen extends HakdScreen {
         territoryBatch.begin();
         switch (currentBackground) {
             case TERRAIN:
-                territoryBatch.draw(land, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
+                territoryBatch.draw(land,
+                        -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
                 break;
             case DENSITY:
-                territoryBatch.draw(density, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
+                territoryBatch.draw(density,
+                        -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
                 break;
             case POLITICS:
-                territoryBatch.draw(politics, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
+                territoryBatch.draw(politics,
+                        -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
                 break;
             case ETHICS:
-                territoryBatch.draw(ethics, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
+                territoryBatch.draw(ethics,
+                        -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
                 break;
             case COUNTRY:
-                territoryBatch.draw(country, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
+                territoryBatch.draw(country,
+                        -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
                 break;
             case INCOME:
-                territoryBatch.draw(income, -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
+                territoryBatch.draw(income,
+                        -NOISE_DISPLAY_SIZE / 2, -NOISE_DISPLAY_SIZE / 2, NOISE_DISPLAY_SIZE, NOISE_DISPLAY_SIZE);
         }
         territoryBatch.end();
     }
@@ -260,7 +265,13 @@ public class MapScreen extends HakdScreen {
         connectionLinesMesh.setVertices(vertexArray);
     }
 
-
+    /**
+     * Fills a vertex array to be used in openGL rendering for the lines.
+     *
+     * @param lineList which line list to use
+     * @param color    the color to use
+     * @return
+     */
     private float[] fillLineVertexArray(Set<Line> lineList, Color color) {
         List<Float> vertexList = new ArrayList<Float>();
         for (Line line : lineList) {
@@ -274,7 +285,8 @@ public class MapScreen extends HakdScreen {
             vertexList.add(line.getPointB().y);
             vertexList.add(0f);
         }
-        float[] vertexArray = new float[vertexList.size()];
+
+        float[] vertexArray = new float[vertexList.size()]; // probably could only use an array and set the size to linelist.size*3 or something
         int i = 0;
         for (Float v : vertexList) {
             vertexArray[i++] = (v != null ? v : 0f); // Or whatever default you want.
@@ -283,6 +295,12 @@ public class MapScreen extends HakdScreen {
     }
 
 
+    /**
+     * Generate the noise texture to use for the map, then renders it
+     *
+     * @param type
+     * @throws ExceptionInvalidParam
+     */
     private void generateNoiseTexture(Noise.NoiseType type) throws ExceptionInvalidParam {
         ModuleBase noise = null;
         RendererImage renderer = new RendererImage();
@@ -295,13 +313,8 @@ public class MapScreen extends HakdScreen {
                 }
                 noise = Noise.TERRAIN;
                 renderer.clearGradient();
-                renderer.addGradientPoint(-1, new ColorCafe(10, 10, 255, 255));
-                renderer.addGradientPoint(0, new ColorCafe(39, 140, 255, 255));
-                renderer.addGradientPoint(.25, new ColorCafe(240, 240, 88, 255));
-                renderer.addGradientPoint(.5, new ColorCafe(0, 140, 0, 255));
-                renderer.addGradientPoint(.73, new ColorCafe(127, 51, 0, 255));
-                renderer.addGradientPoint(.75, new ColorCafe(120, 120, 120, 255));
-                renderer.addGradientPoint(1, new ColorCafe(234, 234, 234, 255));
+                renderer.addGradientPoint(-1, new ColorCafe(10, 10, 80, 255));
+                renderer.addGradientPoint(1, new ColorCafe(39, 140, 255, 255));
                 break;
             case DENSITY:
                 if (density != null) {
@@ -365,9 +378,13 @@ public class MapScreen extends HakdScreen {
                 break;
         }
 
+        // fill noise array
         for (int y = 0; y < NOISE_GENERATION_SIZE; y++) {
-            for (int x = 0; x < NOISE_GENERATION_SIZE; x++) { // maybe use separate threads to get the values and set them to arrays. e.g. float[250][5000] ten times
-                float f = (float) noise.getValue((x - NOISE_GENERATION_SIZE / 2) * NOISE_DISPLAY_SIZE / NOISE_GENERATION_SIZE, 0, (y - NOISE_GENERATION_SIZE / 2) * NOISE_DISPLAY_SIZE / NOISE_GENERATION_SIZE);
+            for (int x = 0; x <
+                            NOISE_GENERATION_SIZE; x++) { // maybe use separate threads to get the values and set them to arrays. e.g. float[250][5000] ten times
+                float f = (float) noise.getValue(
+                        (x - NOISE_GENERATION_SIZE / 2) * NOISE_DISPLAY_SIZE / NOISE_GENERATION_SIZE, 0,
+                        (y - NOISE_GENERATION_SIZE / 2) * NOISE_DISPLAY_SIZE / NOISE_GENERATION_SIZE);
                 noiseArray[x][NOISE_GENERATION_SIZE - y - 1] = f;
             }
             Gdx.app.debug("Filling Noise Array", (float) y / NOISE_GENERATION_SIZE * 100 + "% done");
@@ -381,10 +398,15 @@ public class MapScreen extends HakdScreen {
         renderer.setDestImage(imageCafe);
         renderer.render();
 
+        // fill color array
         for (int y = 0; y < NOISE_GENERATION_SIZE; y++) {
-            for (int x = 0; x < NOISE_GENERATION_SIZE; x++) { // maybe use separate threads to get the values and set them to arrays. e.g. float[250][5000] ten times
+            for (int x = 0; x <
+                            NOISE_GENERATION_SIZE; x++) { // maybe use separate threads to get the values and set them to arrays. e.g. float[250][5000] ten times
                 ColorCafe color = imageCafe.getValue(x, y);
-                int c = Color.rgba8888((float) color.getRed() / 255f, (float) color.getGreen() / 255f, (float) color.getBlue() / 255f, (float) color.getAlpha() / 255f);
+                int c = Color.rgba8888(
+                        (float) color.getRed() / 255f,
+                        (float) color.getGreen() / 255f,
+                        (float) color.getBlue() / 255f, (float) color.getAlpha() / 255f);
                 pixmap.drawPixel(x, y, c);
             }
             Gdx.app.debug("Filling Pixmap", (float) y / NOISE_GENERATION_SIZE * 100 + "% done");
@@ -424,35 +446,28 @@ public class MapScreen extends HakdScreen {
     }
 
     private void drawBackboneLines() {
-        Triangulation triangulation = new Triangulation(new Triangle(new Pnt(-INITIAL_TRIANGLE_SIZE, -INITIAL_TRIANGLE_SIZE), new Pnt(INITIAL_TRIANGLE_SIZE, -INITIAL_TRIANGLE_SIZE), new Pnt(0, INITIAL_TRIANGLE_SIZE))); // Used to draw backbone lines
+        ConstrainedMesh mesh = new ConstrainedMesh(); // everything will be on the x/y plane, so z will always be zero
 
-        for (BackboneProviderNetwork backbone : game.getGamePlay().getInternet().getBackboneProviderNetworksMap().values()) { // iterate through backbones and add points to set and triangulation
-            triangulation.delaunayPlace(new Pnt(backbone.getPos().x, backbone.getPos().y));
-        }
+        try {
+            mesh.addConstraintEdge(new DEdge(-INITIAL_TRIANGLE_SIZE, -INITIAL_TRIANGLE_SIZE, 0, INITIAL_TRIANGLE_SIZE, -INITIAL_TRIANGLE_SIZE, 0));
+            mesh.addConstraintEdge(new DEdge(-INITIAL_TRIANGLE_SIZE, -INITIAL_TRIANGLE_SIZE, 0, -INITIAL_TRIANGLE_SIZE, INITIAL_TRIANGLE_SIZE, 0));
+            mesh.addConstraintEdge(new DEdge(INITIAL_TRIANGLE_SIZE, INITIAL_TRIANGLE_SIZE, 0, INITIAL_TRIANGLE_SIZE, -INITIAL_TRIANGLE_SIZE, 0));
+            mesh.addConstraintEdge(new DEdge(INITIAL_TRIANGLE_SIZE, INITIAL_TRIANGLE_SIZE, 0, -INITIAL_TRIANGLE_SIZE, INITIAL_TRIANGLE_SIZE, 0));
 
-        Set<Vector2[]> lines = new HashSet<Vector2[]>(); // hold the lines that have been drawn
-        for (Triangle triangle : triangulation) {
-            Pnt pntA = triangle.get(0);
-            Pnt pntB = triangle.get(1);
-            Pnt pntC = triangle.get(2);
-            Vector2 pointA = new Vector2((float) pntA.coord(0), (float) pntA.coord(1));// points of the line
-            Vector2 pointB = new Vector2((float) pntB.coord(0), (float) pntB.coord(1));
-            Vector2 pointC = new Vector2((float) pntC.coord(0), (float) pntC.coord(1));
-
-            Line line = new Line(pointA, pointB);
-            if (!backboneLines.contains(line) && line.getPointA().dst(line.getPointB()) < INITIAL_TRIANGLE_SIZE / 2) {
-                backboneLines.add(line);
+            for (BackboneProviderNetwork backbone : game.getGamePlay().getInternet().getBackboneProviderNetworksMap().values()) { // iterate through backbones and add points to set and triangulation
+                mesh.addPoint(new DPoint(backbone.getPos().x, backbone.getPos().y, 0));
             }
 
-            line = new Line(pointB, pointC);
-            if (!backboneLines.contains(line) && line.getPointA().dst(line.getPointB()) < INITIAL_TRIANGLE_SIZE / 2) {
-                backboneLines.add(line);
+            mesh.processDelaunay();// run delaunay algorithm
+            List<DEdge> edges = mesh.getEdges(); // hold edges
+            for (DEdge e : edges) {
+                if (!backboneLines.contains(e)) {
+                    backboneLines.add(new Line(e));
+                }
             }
 
-            line = new Line(pointA, pointC);
-            if (!backboneLines.contains(line) && line.getPointA().dst(line.getPointB()) < INITIAL_TRIANGLE_SIZE / 2) {
-                backboneLines.add(line);
-            }
+        } catch (DelaunayError delaunayError) {
+            delaunayError.printStackTrace();
         }
     }
 

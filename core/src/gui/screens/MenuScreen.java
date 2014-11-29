@@ -69,7 +69,7 @@ public class MenuScreen extends HakdScreen {
         }
         terminal.setConsoleReader(consoleReader);
         terminal.setMenuScreen(this);
-        consoleReader.setDefaultPrompt("[#BF5C2B]" + System.getProperty("user.name") + "[] @ 127.0.0.1" + " ~ $ ");
+        consoleReader.setDefaultPrompt("[#38FF4C]" + System.getProperty("user.name") + "[] @ [#FFC123]127.0.0.1[] [#4B6ABF]~[] [#E54235]$[] ");
 
         consoleReader.addCompletor(argumentCompletor);
     }

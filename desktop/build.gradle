@@ -10,7 +10,7 @@ project.ext.assetsDir = new File('../core/assets');
 
 // java plugin
 // =================================================
-task runSource(dependsOn: classes, type: JavaExec) {
+run() {
     main = project.mainClassName
     classpath = sourceSets.main.runtimeClasspath
     standardInput = System.in
