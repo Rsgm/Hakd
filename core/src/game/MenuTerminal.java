@@ -52,7 +52,7 @@ public class MenuTerminal extends Terminal {
         display = new Label("", skin.get("console", Label.LabelStyle.class));
         scroll = new ScrollPane(display, skin);
 
-        display.setFontScale(.6f);
+//        display.setFontScale(.6f);
         display.getStyle().font.setMarkupEnabled(true); // for now, this is broken for labels, but I will leave it in so I can easily tell when it gets fixed
 
         display.setWrap(false);
@@ -68,12 +68,12 @@ public class MenuTerminal extends Terminal {
         // I could just search for /dev/sd* if on linux(mac too?) and read the size of them some how, not worth the work
         for (int i = 0; i < File.listRoots().length; i++) {
             terminalInfo += "\n    Drive[[" + i + "]  " + (-File.listRoots()[i].getFreeSpace() +
-                    File.listRoots()[i].getTotalSpace()) / 1000000000 + "GB Used,  " +
-                    File.listRoots()[i].getTotalSpace() / 1000000000 + "GB Total";
+                                                           File.listRoots()[i].getTotalSpace()) / 1000000000 + "GB Used,  " +
+                            File.listRoots()[i].getTotalSpace() / 1000000000 + "GB Total";
         }
 
         display.setText(terminalInfo + "\n-----------------------------------------------------\n" +
-                "     Type \"help\" to get started.[]\n\n");
+                        "     Type \"help\" to get started.[]\n\n");
     }
 
     @Override
@@ -156,7 +156,6 @@ public class MenuTerminal extends Terminal {
             return code;
         }
 
-        System.out.println();
         switch (code) {
             case MOVE_TO_BEG:
                 return 1;
@@ -228,7 +227,7 @@ public class MenuTerminal extends Terminal {
 
         if (text.length() > 0) {
             display.setText(display.getText() + escapeBrackets(text));
-            System.out.println(text);
+//            System.out.println(text);
         }
     }
 
@@ -406,7 +405,6 @@ public class MenuTerminal extends Terminal {
                 buffer.setCharAt(cursor, blinkTempChar);
             }
         }
-        System.out.println();
     }
 
     // this class is strictly for the optionparser in runPython(), there is no character escapes or any other necessary modification

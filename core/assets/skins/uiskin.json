@@ -1,7 +1,6 @@
 {
-
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
-    DejaVu-Sans-Mono: { file: font/Fonts_0.fnt }
+    DejaVu-Sans-Mono: { file: font/DejaVu-Sans-Mono.fnt }
 },
 com.badlogic.gdx.graphics.g2d.BitmapFont: {
     Droid-Sans-Mono: { file: font/Fonts_1.fnt }

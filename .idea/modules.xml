@@ -9,9 +9,11 @@
       <module fileurl="file://$PROJECT_DIR$/core-git-dependencies-git-dependencies/core-git-dependencies-git-dependencies.iml" filepath="$PROJECT_DIR$/core-git-dependencies-git-dependencies/core-git-dependencies-git-dependencies.iml" />
       <module fileurl="file://$PROJECT_DIR$/core-git-dependencies/libnoiseforjava/core-git-dependencies-libnoiseforjava.iml" filepath="$PROJECT_DIR$/core-git-dependencies/libnoiseforjava/core-git-dependencies-libnoiseforjava.iml" />
       <module fileurl="file://$PROJECT_DIR$/desktop/desktop.iml" filepath="$PROJECT_DIR$/desktop/desktop.iml" />
+      <module fileurl="file://$PROJECT_DIR$/gdx-shaders/gdx-shaders.iml" filepath="$PROJECT_DIR$/gdx-shaders/gdx-shaders.iml" />
       <module fileurl="file://$PROJECT_DIR$/core-git-dependencies-git-dependencies/gdx-shaders/gdx-shaders.iml" filepath="$PROJECT_DIR$/core-git-dependencies-git-dependencies/gdx-shaders/gdx-shaders.iml" />
       <module fileurl="file://$PROJECT_DIR$/gdx-shaders/gdx-shaders.iml" filepath="$PROJECT_DIR$/gdx-shaders/gdx-shaders.iml" />
       <module fileurl="file://$PROJECT_DIR$/libnoise/libnoise.iml" filepath="$PROJECT_DIR$/libnoise/libnoise.iml" />
+      <module fileurl="file://$PROJECT_DIR$/libnoiseforjava/libnoiseforjava.iml" filepath="$PROJECT_DIR$/libnoiseforjava/libnoiseforjava.iml" />
       <module fileurl="file://$PROJECT_DIR$/core-git-dependencies-git-dependencies/libnoiseforjava/libnoiseforjava.iml" filepath="$PROJECT_DIR$/core-git-dependencies-git-dependencies/libnoiseforjava/libnoiseforjava.iml" />
     </modules>
   </component>
