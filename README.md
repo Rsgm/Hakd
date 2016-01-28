@@ -1,3 +1,14 @@
+#Update
+As much as I don't want to give up on this game, I kind of have to.
+My plan was to finish it before college and maybe workon it when I had time, boy was I wrong.
+It is nowhere near finished and I have no time to work on it. I don't think I ever will either, not this version at least.
+I have always hated how the code worked and constantly refactored the code how I liked it. It is just a huge mess though.
+I have also grown to hate java. I may work on this game again, but not this project.
+I love the idea and have no similar games to play. I may remake it in another language/framework at some point.
+
+
+-----------------
+
 #Hakd
 Hakd is a single player game about hacking, with a realistic, simulated, and procedurally generated internet. This game simulates an entire internet for you to explore and mess around with all you want, legally.
  * Procedurally generated Internet(at game start, random seed) with thousands of networks to hack.
